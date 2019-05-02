@@ -1,0 +1,74 @@
+object frmHemsireler: TfrmHemsireler
+  Left = 0
+  Top = 0
+  Caption = 'frmHemsireler'
+  ClientHeight = 424
+  ClientWidth = 691
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object cxFotoPanel: TcxGroupBox
+    Left = 440
+    Top = 8
+    Caption = 'Foto'
+    TabOrder = 0
+    Height = 153
+    Width = 121
+    object Foto: TcxImage
+      Left = 3
+      Top = 15
+      Align = alClient
+      Properties.ClearKey = 46
+      Properties.PopupMenuLayout.MenuItems = []
+      Properties.ReadOnly = False
+      Properties.Stretch = True
+      TabOrder = 0
+      ExplicitLeft = 2
+      ExplicitTop = -2
+      ExplicitWidth = 117
+      ExplicitHeight = 124
+      Height = 99
+      Width = 115
+    end
+    object cxGroupBox1: TcxGroupBox
+      Left = 3
+      Top = 114
+      Align = alBottom
+      PanelStyle.Active = True
+      TabOrder = 1
+      ExplicitLeft = 2
+      ExplicitTop = 122
+      ExplicitWidth = 117
+      Height = 29
+      Width = 115
+      object cxFotoEkleButton: TcxButton
+        Tag = -50
+        Left = 2
+        Top = 2
+        Width = 56
+        Height = 25
+        Align = alLeft
+        Caption = 'Ekle'
+        TabOrder = 0
+        OnClick = cxFotoEkleButtonClick
+      end
+      object cxFotoTemizle: TcxButton
+        Tag = -51
+        Left = 58
+        Top = 2
+        Width = 56
+        Height = 25
+        Align = alLeft
+        Caption = 'Temizle'
+        TabOrder = 1
+      end
+    end
+  end
+end

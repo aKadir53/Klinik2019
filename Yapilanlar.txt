@@ -1,0 +1,244 @@
+yapýlanlar
+---------------------------------
+iþe giriþ, iþten çýkýþ, iþe dönüþ, iþ kazasý, ... muayene tipleri
+doktor kartýna doktor cep telefonu yoksa eklenecek ok.
+personel taným bilgileri ekranýnda popup menü içinden hasta raporlarý ve ilaç tedavi kaldýrýlacak
+hasta kartýna durumda aktif pasif seçenekleri yanýna bir de yeni seçeneði eklenecek.
+aþý kartý taný kartý gibi þeylere yetki tanýmý kontrolü (userkontrolset ile çözüldü)
+hasta kartýna med eczane giriþi düðmesi eklenecek (popup menuye mi ???)
+firma tanýmlarýna doktor seçimi eklendi
+kullanýcý tanýum ekranýnda kullanýcý seçmeden sað tarafa formdaki diðer kontrollere müdahale edemesin. (Abdulkadir yapmýþ, ben de takliden firma kartlarýna ekledim)
+doktor þirket eþleþtirmeleri yapýlabilir (o þirkete yeni personel girildiðinde hangi doktora sms atacak) - Abdulkadir firmanýn tek doktoru olur diyerek firma kartýna ekledi
+fþrma kartlarýna telefon1 2 fax yetkili yetklitelef yetkilkimaili eklendi
+kontrol zorunlu vs bilgilerinin datasete yüklenip oradan kontrol edilmeleri
+registry sunucu IP ve osgb kodu boþ ise sabit IP ve OSGB1 atamasý
+listede seçmeden vazgeçince enable olmamasý (giriþ ünitesine diziye atama eklenip firma, doktor ve kullanýcý taným ekranlarýnda seçilmiþ seçilmemiþ kontrolü eklendi)
+excel altyapýsý sql unique index kontrolleri  (set nocount on eklendi, Abdulkadir test etmiþ, OK.)
+hasta kartý (personel kartý) üzerine firmasýný gösteren etiket...(label eklendi)
+firma kodunun ve isminin, þube kombosuna da baz teþkiðl etmesi lazým. adamýn firmasýnýn þubeleri gelmeli (filtre atamasý kayýt yüklendikten sonrasýna taþýnýp labelin captionu verildi)
+firma kartýna trigger eklendi, yeni firma insert olunca 00/Merkez þube ekleme iþi yapacak.
+þube tablosundan personel karta foreign key konuldu
+personel kart tablosunda þube primary key yapýldý
+view'ý kaldýracaðýz (doldur boþalt yaptýk)
+personel kartýndaki þube seçiminde komboya manuel eklediðimiz 00 merkezleri kaldýrdýk.
+þirket seçmeden giriþ yapmaya mani olundu
+-----------
+foreign keyler...
+doktor þirket arasý ok.
+firma doktor arasý ok.
+þube doktor arasý ok.
+reçete reçete detay arasý ok.
+reçete doktor arasý ok.
+user doktor arasý ok.
+user þirket arasý ok.
+-------------------
+ilk yapýda tek tek personel kartýndan eðitim açýp eklemek gerekiyordu
+personel_egitim tablosundan dosya no alanýný imha edip þirket için eðitim düzenleme ekranýna çevirdik
+daha sonra þirket eðitimlerine personel seçip atama yaptýrdýk.
+bu kapsamda;
+EÐÝTÝM EKRANINA eðitime personel ekle butonu eklendi
+butona basýnca liste açtýrýldý
+formun altýna grid eklenip listeden seçtikçe altýna eklenmesi saðlandý
+personel_egitim tablosuna egitimID ve PersonelDosyaNo alanlarýna göre Unique index eklendi
+o þirketin personellerinden o eðitimde eklenmemiþ olanlarýn listelenmesi saðlandý.
+personel ekleme gridinde kolonlarýn bandýný daralttýk
+iþ kazasýnýn altýna menüye personel eðitimleri eklendi
+personel kartýndaki eðitim düðmesi geri kapatýldý
+login ekranýnda registry'den sunucu ismi gelmezse userID yerine demo atamasý da yapýldý. demo kullanýcýsý için sabit olarak OSGB_UZMAN veritabanýna baðlanma ve sabit sunucu IP'sine baðlanma özelliði eklendi
+þirket tablosuna ssk (?) bölge müdürlüðü sicil numarasý eklendi. þube tablosuna da eklendi. þirket tablosunda bilgi deðiþtiðinde þube tablosunda ayný bilgiye sahip þube kayýtlarýnýn da eþ zamanlý güncellenmesi saðlandý (trigger)
+eðitimler ekranýnda þirket eðitimi seçerken gelen listedeki mantýksýz manasýz sütunlar yerine eðitim açýklamasý da getirildi
+eðitim seçiminde where ile o þirketin eðitimleri getirtilecek þekilde düzeltildi.
+login formu bekleyin resmi ortalanmasý...
+Egitim_Tnm tablosundaki süre ve açýklama alanlarý imha edildi.
+personel eðitim menüsü imaj 505 setlendi (sonra 486 oldu)
+gerçek veritabanlarýnda personel kartýna TCKIMLIKNO alaný üzerinden SirketKod, TCKIMLIKNO unique index
+eðitim ekranýna baský seçeneði eklendi
+eðitim sertifikasý baskýsý eklendi baský olarak
+iþ kazasý ve meslek hastalýðý bildirim formu ekle ekraný ??? (Abdulkadir eklemiþ)
+isg exe osgb exe kýsayolunu oluþturmalý (Abdulkadir ekledi)
+users tablosundaki user alaný insert'te setlenmiyor - User alanýný kaldýrdým koddan temizleyip Kullanici alaný ile deðiþtirdim.
+doktor þirket eþleþmesi yerine doktor þube eþleþmesi - þirket seçiminde þirket listesi için view yapýlýp þube / doktor gruplu þube joini yapýldý. bir þirketin tek bir þubesine bile baksa o doktorum listesine þirket gelecek. Not: kýrýlým sayýsý kadar listede þirket çoklamasý oluyor maalesef.
+reçete silmede foreign key hatasý veriyordu, önce detayýn detayý, sonra detay, en son master silinecek þekilde düzenleme yapýldý. Ýlave olarak Reçete ve detay tablolarýnýn kendi aralarýndaki foreign key tanýmlamalarý yapýldý.
+Projeye about frm (Hakkýnda formu) eklendi. Firma logosu, Firma ismi, bilgisayar ismi, web adresi, lisans durumu, programýn telif yasalarý ile koruma altýnda olduðu ve yetkisiz veya izinsiz þekilde kurulum, mavi nokta bilgi teknolojileri Ltd. þti. Ýþ yeri Hekimliði E-Reçete programý vs bilgiler gösterildi.
+reçete ilaç, Taný açýklama ve ilaç açýklama gridlerinde kayýt yokken çift týklanmasý durumunda pencere açýlmada hata çýkmasýna karþýlýk datasetin kayýt sayýsý bilgisi kontrol edildi.
+yeni personel açarken verdiði null hatalý hatasý için variant çevrimi yerine asString düzeltmesi
+yeni personel açarken Þirket kodu atamasý, Aktif / Pasif / yeni seçeneðinde Yeni deðerinin ilk deðer atamasý eklendi. Kadir'in notu:- label ve combo tagý -1 ya da -100 olmalý veritabanýna oku yaz yapmamalý þeklindeydi fakat þirket kodu alanýnýn veritabanýna yazýlmasý gerekiyordu.
+eðitimlerde kaydedince eðitim ID'si veritabanýndan güncellenmiyor idi. Giriþ form altyapýsýnda Identity deðeri yakalama özelliði eklendi ve personel eðitimlerinde kutu içerisine atanmasý saðlandý.
+eðitim formunda yeni düðmesine basýnca yapýlan kayýttan sonra id alsa bile grid dataseti açýlmýyor ve satýr seçilmiyor idi. null veya deðil fonksiyonla sql üreten bir yapý yapýlýp refreshlenmesi saðlandý.
+saha gözetim formlarýnda;
+saha gözetim master gridinde firma kaldýrýldý
+popup'ta firma ve ünvan gibi defter no eklendi.
+saha gözetim iptal seçeneði eklendi 
+saha gözetim gridinde çift týklama yerine deðiþtir menüsü ekleyerek yapýldý
+saha gözetim master kayýtlarda gezindikçe alttaki data yenilenecek þekilde güncelleme yapýldý.
+üzerine gelinen master kayýtta sorular hiç yoksa sorularý dolduracak þekilde düzenlendi.
+silmeden önce soru sormasý eklendi.
+saha gözetim sorularýnda ilk deðer olarak tüm satýrlara UygunMu = 1 atandý ve uygun deðilse tespit veya öneri boþ olarak satýrý kaydedememesi saðlandý
+saha gözetim formu baskýsý eklendi. bunun için view ve sp yapýldý
+saha gözlem formu detay gridinin gruplanmasý iþlemi yapýldý. mutfak denetiminde lazým olmuþtu
+saha gözlem formu detay getir sp sýra numaralarýnýn sonuç setindeki açýklamalara "." karakteri ile eklenmesi, konu_sira alanýnýn gridden kaldýrýlmasý yapýldý. gruplamadaki problemi çözemeyince bu usûle geri döndük
+
+
+personel kart alanlarý null olabilir yapýldý
+þube tablosuna IGU dakika ve doktordakika alanlarý eklenip ISGKatip excel'inden güncellenmesi saðlandý
+reçeteden geliþler tblosuna foreign key kontrol edilip eklendi
+yeni muayene aç dendiðinde ekrandaki personelin þirketi, soldaki aktif þirketten farklý ise geliþler tablosuna aktif þirketle kayýt açmaya çalýþtýðý için foreign key hatasý çakýyor
+tek osgb arzu haným, protokol numaralarý ilerlemiyor dedi. düzeltildi
+taným ekranlarýnda þifre kutularýný *'lama
+enabled/disabled eðitim formuna da koyduk
+UZMAN veritabanýnda nace kodlarý (çok tehlikeli = 1, tehlikeli = 3, az tehlikeli = 5) * 365 nace kodlarý tablosu update edildi
+TehlikeSiniflari adlý tablo açýldý
+nacekods tablosundan ilk deðerleri dolduruldu
+nacekods-tehlikesiniflari arasýna foreign key eklendi
+uyruðu vs alanlarda excel aktarým düzeltmeleri yapýldý. Telefon alanýnýn içindeki boþluk, tire ve parantez karakterleri silinerek rakamlar birbirleri ile birleþtirildi.
+personel kartýndaki menüdeki en alttaki "sil" "muayene sil" olarak deðiþtirildi
+reçete header yoksa ekle sil düðmelerinde uyarý vermesi saðlandý. hattâ reçete iþlemlerinin tümünde reçete baþlýðý var / yok, medulaya gönderilmiþ / gönderilmemiþ kontroller eklendi.
+hizlikayitfrm excel'den personel aktarýmý için alan eþleþtirme iþlemi bir kere yapýldý ise, her excel yüklemede alan eþleþtirmeyi otomatik yapmasý eklendi.
+Reçete ilaç eklemede üstte ilaç listesinden ilacý alt gride eklerken kutu adedi varsayýlan deðer 1 olacak þekilde ayarlama yapýldý.
+login ekranýnda IP numarasý yýldýzlandý, firma kodu yýldýzlamasý kaldýrýldý, veritabaný yýldýzlý býrakýlarak firma ünvaný osgb tanýmý bilgisi label üzerinde gösterildi.
+yeni personelde muayene gridinin tazelenmemesi problemi giderildi.
+diðer personel ara seçeneði cancel seçildiðinde devam etme problemi giderildi
+þube tanýmlama ekranýnda doktor ve iþ güvenlik uzmaný kombolarýndan deðer silinememe hatasý düzeltildi.
+þirket elemaný grubunda login olurken bu þirkette çalýþma yetkiniz yok mesajý verme hatasý giderildi
+þube tanýmlarý gibi popupgridform ekranýnda çalýþan formlarda tamam seçilince dataset post, vazgeç seçilince dataset.cancel yapýlmasý saðlandý
+kullanýcý kartlarýnda grup yetkilerinden yeniden al ve kullanýcý yetkilerini sil düðmeleri eklendi
+güncellemeler otomatik uygulanýp baþarý ile tamamlanýnca uygula düðmesi sönmediði için çift çalýþma hatasý oluþabiliyordu, sönmesi saðlandý
+güncelleme formunda iþlem göstergesi eklendi
+güncelleme formunda iþlem göstergesi gözüküp kaybolunca formActivate eventi tekrar tetiklenip listeyi temizliyordu, FormActivate kodunda liste yenileme sadece form ilk açýlýnca yapýlacak þekilde ayarlandý
+otomatik excel aktarým altyapýsýna tabloyu boþalt alaný eklendi. 0 ise boþaltmadan ekleyecek. 1 ise boþaltarak ekleyecek, null ise her seferinde soracak
+otomatik excel aktarým altyapýsýna aktarým sonrasýnda çalýþtýrýlacak bir sp varsa tanýmlanabilmesi için alan eklendi
+PERSONEL LÝSTESÝ ÝKÝ buton reçete ve muayene formu disable yapýldý
+excel aktarýmýnda ekrandaki ve veritabanýndaki çift tckimlik numarasý kontrolleri. farklý firmada ve þubde varsa uyarý ver kabul ederse devam et, ayný þirket þubede varsa uyarý ver devam etme, pasifse aktif hale getirilebilir.
+Personel aktarýrken þube seçili deðilse hata verdirildi.
+Firma logo ekleyince þirket kodu null olamaz hatasý veriyordu veritabaný, append'den sonra þirket kodu atamasý yapýldý
+E-imzasýz reçete gönderme özelliði açýldý (kadir)
+Osgb doktoru kendine baðlý olmayan firma personelinin tamamýný görsün diyor Zafer Bey. Osgb polikliniði için lazým. doktorlar için personelim olmayan personel arama gibi birþey ekleyebiliriz (kadir yapmýþ)
+Personel kartýnda bazý bilgiler boþ ise yeni muayene açarken hata veriyor.(kadir düzeltmiþti)
+muayene kartýnda doktor seçimi gerekebilir. (kadir eklemiþti)
+user kartlarýnda pasife çekme ve pasif kullanýcýnýn girememesi lazým demiþiz. þifresi boþ olan kullanýcýlar pasif sayýldý. ayrýca alan eklemedik.
+"eðitime personel seçince liste boþsa boþ satýr eklemeye çalýþýyor kýrýlýnca post yapamadýðý zaman cancel yapmalý, yoksa gride gidip esc'ye basmadan baþka personel eklenemiyor." except'e cancel eklendi.
+seçili personeli sil seçilince onay sormasý ve silme iþleminden sonra refresh olunca o satýrda kalmasý saðlandý
+liste aç formunda genel olarak tamam'a basýlsa bile gridde kayýt yoksa boþ satýr ekleme problemi vardý. çift týklama ve tamam düðmelerindeki problemler ayrý ayrý çözüldü
+eðitim ekraný þirket seçimi olmadan genel çalýþmasý ve farklý firmalardan personel seçebilmesi güncellemeleri
+eðitim baskýsýnda problem varmýþ deniyordu sp'sinde þirket baðlantýsý düzeltilip left join yapýldý
+personel eðitimlerinde personel seçiminde filtre kalkmasý lazým (kadir'le kaldýrdýk)
+personel tablosunda primary key ve unique index kurgusu düzeltilecek (dosyaNo tek unique key yapýldý, foreign key tanýmlarý da buna göre düzeltildi)
+doktor tanýmlarýnda seçim kutusunda kullanýcý doktor ise doktor filtresi ekleyip doktorlara kendi ayarlarýný deðiþtirebilme imkâný verilebilir (verdik. Ýþ güvenlik uzmanlarýna da aynýsýný yaptýk)
+ISG Katip programýndan iþyerleri ve hekimler dökümü için Excel aktarýmý yapýldý
+eðitim formunda Yeni (!) düðmesine basmadan kayýt girince sapýtýyor sorununa karþý disabled / enabled...
+usersettings usermenusettings vs tablolarýn foreign key vs ile korumaya alýnmasý
+
+personel aktarým soyadý ayarlamasýnda alan eþleþtirme yapýlmamýþsa yapýlmalý. sadece adý ve soyadý alanlarý eþleþtirilebilir (evet aynen böyle yaptýk ve çok güzel oldu). 
+personel kartlarýný excel'den aktarýmda resetli alan eþleþtirmede grid sütun baþlýklarý yedeklenip, iþlem iptal edildiðinde geri konulmasý eklendi
+update formunda sql güncelleme açýklamasýný thermo'da kutuda açýklama olarak gösterdik
+sunucuya son update'i güncellemesek bile önceden bekleyen update varsa hepsini alýyordu. mesela sunucu 1026, yayýnlanmamýþ update 1046, o veritabaný 1026 ise update çalýþtýrmýyor, doðru. fakat o veritabaný 1022'de kalmýþsa 4 update var diye pencereyi açýyor fakat tümünü güncelliyordu. düzeltildi.
+
+eðitimci için iþ güvenlik uzmaný ya da doktor seçebilmeli, veritabanýna free format isim yazabiliriz notu kapsamýnda view yapýlarak doktor ve iþ güvenlik uzmaný isimlerinin toplamý liste olarak seçtirildi ve kodu yerine adý yazdýrýlacak hâle getirildi.
+hizlikayit formunu iki ayrý menüye koyduk. personel kartlarýný excel'den aktar iþleminin düðmeleri ile isg katip aktarýmý ve benzer aktarýmlarýn düðmeleri birbirlerine karýþýyordu. form tagý bazýnda düðme gösterip gizleme ile karýþýklýk izale edildi
+
+isg katip exceline þube açýklamasý ve firma ünvaný birleþtirme ve ayýrmaya yarayan sütunlar eklenmiþti
+ilgili yapýlacaklar notu:
+muayene tipleri için tablo açýlýp tablodan getirtilebilir. zannediyorum view yapmýþtýk ama muayene türlerini gösteren yerlerde sadece eskilerinin tanýmlarý gözüküyor.
+muayene eklerken türleri view'dan almýyordu. önce view'dan alýr hâle getirdik. sonra tablo yapýp foreign key ekledik. view'ý kaldýrmayýp tablodan getirir hale getirdik
+gebe muayenesi tanýmý view'a eklenmiþti, bugün muayene türleri tablosuna da taþýdýk
+ilave olarak seçilecek bilgi tanýmlama ekranýnda muayene türleri tanýmlanabilmesi için gerekli tanýmlar eklendi.
+
+firma kartlarýna þirket birleþtir þube ayýr iþlemleri için þube kaydýrma düðmesi eklendi.
+
+
+þifre boþsa clipboard'da sekme karakterli string arayýp otomatik giriþ vs.. enter karakteri varsa ilk satýr için kendi giriþ yapýp ikinci program kopyasýný açabilme özelliði ekledim kendim için
+
+firma kartlarýnda zorunlu alan kontrolüne takýlsa bile firmalogo insert olmaya çalýþýyor. silerken de silmiyor problemine karþý altyapý müdahalesi
+ilaç dataseti lokalde bir dataset oluþturup ona baðladýk. sýk kullanýlan ayarýný da bellekte tuttuk. programda sadece reçeteden ilk açýlýrken ilaçlarý yükleyecek. sýk kullanýlan tiki deðiþtikçe tazeleyecek. onun dýþýnda bellekten çalýþacak.
+imes osgb murat bey sýk kullanýlanlar kalkýk gelsin istiyordu ilaçlarda. bu düzenleme ile o da hallolmuþ oldu
+
+intran, begintran commit rollback'ler aranýp try finally kontrolleri eklendi, ado transaction yönetiminden sql transaction yönetimine geçirildi
+uygulamanýn mevcut kopyalarýný kapatmasýný ve halt komutlarýný, application.terminate'leri kill ve killtask'larý kaldýrýp programýn düzgün kapanmasý saðlandý
+
+kullanýcý kartý silerken foreign key hatasý çýkýnca ekrandan yine de siliyor hatasý düzeltildi
+personel kartýnda zorunlu alan kontrolüne takýlsa bile sonraki sql komutlarý çalýþýyor hatasý düzeltildi
+user kartý silinince usersettings usermenusettings tablolarýný silmiyor hatasý düzeltildi
+personel silerken personel falan firmaya kaydedilecek emin misiniz sorusu soruyor, sadece kaydederken olacak þekilde düzeltildi
+muayene protokol no düzeltme imkaný için muayene düzenle iþleminin hatalarý giderildi
+þifremi deðiþtir ekranýnda yýldýzlama yoktu, eklendi
+dozlar ters gidiyor þikayeti vardý (imes osgb dr. murat ve tek osgb dr. arzu) xml'de alan yerleri deðiþtirildi
+personel eklerken user kartýnýn sahibi ayný zamanda doktorsa "yeni" deðil "aktif" default hale getirildi.
+userGroups gridinden grup silerken beforeDelete'de usergroupsettings ve usergroupmenusettings tablolarýndan data siliyor, fakat users'ta o grupta bir kullanýcý varsa foreign key çakýyor. yetki tanýmlarý silinmiþ olarak kalýyordu. before delete'de transaction baþlatma, afterdelete'de commit, ondeleteerror'da rollback yapmasý eklendi
+diðer veritabanýna güncellenmesi gereken tablolara (formcaption, menuIslem, modulIslem vs) trigger eklenip güncelleme paketi programýna atýlacak sql scriptleri ürettirilmesi saðlandý. güncelleme pakedine atarken ilgili trigger kapatýlýp atýlýr ve gittiði yerde trigger tetiklenmez ise baþka veritabanlarýndan yapýlan müdahaleler de update ile gelenler ile karýþmadan görülmüþ olur.
+program bir bilgisayarda ilk kez çalýþtýrýldýðýnda demo bilgilerinin dolu olmasý onay sorusuna baðlandý. kayýtlý kullanýcýlarýn firma kodunu girmeyi unutup uzman veritabanýna baðlanmalarý sebebiyle firma kodu kutusuna yönlendirmek için yaptýk.
+isg katip excel aktarimina sgk sicil il deðerinden tesis kodu ayarlamasý eklendi. her doktor için o doktorun en fazla sayýda olan ilinin kodundan alýyor. eþit sayýda olanlarýn plaka kodu en yüksek olaný
+personel kategori þeysi gibi özel ilgi isteyen string alanlar için foreign key baðlantýlý deðerler tablosu oluþturup, çevrim deðer deðeri ekleyip, bu deðer üzerinden çalýþtýrma saðlandý. Örnek: iþyeri hekimi, iþ yeri hekimi hepsinin çevrim tipi 1 olup. a sýnýfý iþ güvenliði uzmaný 2, b sýnýfý 3... gibi... ÝSG katip aktarýmý da bu þekilde çalýþmak üzere düzenlendi
+
+foreign key tablolarý valueobjectvalues, personelisegirismuayene, isegirismuayenesorulari tablolarýnda son bir kontrol yapýlarak muayene sorularý ile valueobjectvalues arasýnda foreign key konuldu
+
+bölüm ve birim tablolarýnýn tanýmý alanýna unique index konularak ayný isimde bölüm veya birim açýlmasý engellendi. bunun öncesinde tekrarlayan bölüm veya birim isimlerini teke indirerek personel kartlarýnda kullanýlmýþ olanlarý mevcut olanlarýn en küçük ID'si ile güncelleyip tekrarlayanlarý sildik. ilave olarak personel kartý ile araya foreign keyler ekledik. böylece bölüm ve birim kayýtlarýnýn silinmesini engelledik.
+
+personel hasta listesinde diyabet baþlýklý sütunun adýný kronik hastalýk olarak deðiþtirdik
+sp_frmdoktorpersonellistesi ve sp_frmpersonellistesi sp'lerindeki mantýðýný da, önce bunu view'a taþýyýp, alanýn içinde tek bir tane bile 1 varsa dolu getirecek þekilde deðiþtirdik
+
+02.03.2018 
+SOYYILMAZ OSGB ve ÝÞ TIP OSGB'nin talepleri üzerine, 
+1-) ÝSG Kâtip görevlendirme excel'inde geçen diðer saðlýk personeli için tablo açýlýp (doktor ve iþ güvenliði uzmaný gibi) içine kart eklenebilmesi saðlandý
+2-) ÝSG katip excel aktarýmýnda bunlarýn da otomatik aktarýmý, kullanýcý hesaplarýnýn oluþturulmasý, firma þubelerine baðlanmasý ve dakika bilgilerinin güncellenmesi saðlandý
+3-) programa giriþ ve þirket / þube seçimi yapýlabilen yerlerde giren kullanýcý diðer saðlýk personeli kartlarýndan biri ile iliþkili ise sadece kendi görevli olduðu firmalarý görebilmesi saðlandý
+4-) isg katip excel aktarýmý baðlantý tablolarýndan personel kategori adý tablosuna, o kategorinin hangi kullanýcý grubu altýna kaydedileceðinin ve kullanýcý prefix'inin ne olacaðýnýn seçilebileceði alanlar eklendi
+5-) isg katip excel aktarýmýnda baðlantý tablolarýnýn bilgisi kullanýlacak þekilde düzenleme yapýldý.
+saliha haným'ýn 1 mart 2018 itibari ile gönderdiði alpemix mesajlarýnýn ilgili bölümü aþaðýda
+
+Saliha > HEMÞÝLER ÝÇÝN  KULLANICI ATAN MASI
+Saliha > HEMÞÝRELERÝN FÝRMALARIN HEPSÝNÝ GÖRMESÝNÝ ENGELLEM
+Saliha > DÝPER SAÐLIK PERSONLEÝ KAKRTI ÜZERÝNDEN ÝÞLEMLER
+Saliha > YAPILAAK ÞEKÝDE
+---------
+þube taþý birleþtir iþleminde numaratör bir atlýyordu düzelttik
+
+iþe giriþ m. sorularý tansiyon vs
+
+personel þlirketten þirkete taþýma baðlý tablolardaki þirket kodu alanlarýnýn düzeltilmesi için lazým (bence trigger ile yapabiliriz - trigger ile yaptýk)
+hasta listesindeki otomatik açýk listelenme özelliðini, listele butonuna da ekledik
+erhan erkan:
+1-) anamnez ekranýndan yeni reçete eklerken muayene protokol numarasýný reçeteye atmýyor. boþ kalýyor (düzelttik)
+2-) yeni muayene aç ekranýnda protokol numarasý gözükmüyor (protokol numarasý kutusunu ekledik)
+3-) yeni muayene iþleminde þube kartý protokol numarasý alanýný güncelleyebiliriz (protokol numarasý kutusunun altýna bu numaradan devam et seçeneði ekledik).
+
+merkez bilgisi tablosuna þahýs / osgb / Þirket alaný eklendi, deðer tablosu açýlýp foreign key eklendi
+
+get form class form init'te formcaption usergroup bilgisini alýp user'ýn group bilgisi ile karþýlaþtýrarak geçirmeme özelliði eklendi
+
+eðitimci dýþarýdan eklenebilir hale getirildi. hile yaptýk. Listede olmayan eðitimci diye kutu ekledik. Kayýt yapýlýnca listeye ekleniyor.
+
+merkez bilgisi tablosu için ekran eklendi
+ana ünite þirket kombosu yanýna refresh düðmesi koyduk. datasetlerin bazýlarýný kapatýp açýyor. datalar.doktorkodu bilgisini tazeliyor
+tetkik ekle sýrasýnda KSATISFxx alan hatasý düzeltildi
+eðitim formuna eðitimci 2 alaný eklendi
+þube tablosuna sanayi sitesi veya semt ismi giriþi için alan açýlmasý 
+refresh'te datalar.usergrup gibi þeyleri de yeniden doldurduk. ayrýca veritabaný baðlantýsý kopmuþ ise yeniden saðladýk.
+merkez bilgisi ekranýndaki alttaki paneli gizledik
+eðitimler tablosuna geçerlilik tarihi ekledik
+reçete ekranýnda reçete baþlýðý girilmelidir uyarýsýna nereden nasýl ekleneceði bilgisini ekledik
+merkez bilgisi tablosuna log eklendi
+Hizmet tanýmý ekraný eklendi
+
+kullanýcý grup tanýmlarýna þifre yenileme peryodu gün cinsinden alan eklemiþtik
+kullanýcý kartýnýn son þifre deðiþiklik tarihinden o kadar günden fazla geçmiþse deðiþiklik istemeye baþladýk
+kullanýcý kendisi þifre deðiþtirirse þifre deðiþtirme tarihi güncellenecek, doðrulama alaný 1 olacak
+kullanýcýnýn þifresini baþkasý deðiþtirirse þifre deðiþtirme tarihi 1 sene önceye alýnýp doðrulama alaný 0 olacak.
+programa giriþte doðrulama alaný sýfýr ise þifrenizi deðiþtirmeniz gerekmektedir diyecek ve þifre deðiþtirme ekranýný açacak. iptal ederse programa giremeyecek
+þifre deðiþtirme iþlemini yapýnca 1. madde geçerli olacak
+þifre bazý þartlarý taþýmalý. en az 1 harf en az bir rakam ve en az 6 karakter gibi.
+kullanýcý kendisi þifre deðiþtirince tarihçeye kayýt atacak. 
+gruba baðlý olmayan kullanýcýlar için grup tablosundaki sýfýrdan farklý olan en küçük peryodu alabiliriz.
+
+imes osgb dr Murat: eczacý reçetede çalýþtýðý firma ismi açýklama olarak olmalý demiþ. tabletten girilenlerde de iþlemesi için trigger ekledik
+
+þube kartlarýna aktif / pasif ayarý eklendi
+adoconnection2 kapat aç yapabilir miyiz ? tazele / listeyi yenile düðmesine eklendi
+kalibre osgb 263 þirket koduna ait sgk sicili 34 37 36 ile biten þube pasif olacak
+peryodik muayene seçildiðinde diðer adýmdan yap ikazý (hacý kadir anamnez penceresine taþýdý)
+muayene düzenle'de girilen protokol numarasý, þube kartýna yazýlabilir mi ? onay sorusu ile olabilir. (ekledik)
+Saliha > ÞUBELERÝN PASÝFE ALINMASI
+eðitimci 2 kutusu, listede olmayan eðitimci 1 girilince boþaldý. if'leri kendi içinde ayýrýp düzelttik
+isg saha gözetimi'ne döf no, ilgili bölüm, tarih, uygunsuzluðun tanýmý, yapýlacak faaliyet türü : Düzeltici / önleyici, faaliyet planý, tarihi, takip tyetkik sonucu : uygunsuzluk giderilmiþtir / kýsmen giderilmiþtir / giderilmemiþtir eklendi
+
+kullanýcýnýn giriþte kullanýcý tipinin bilgi olarak gösterilmesi.
+main form'da kullanýcý ve grup bilgisinin alttaki statusbar'da gösterilmesi

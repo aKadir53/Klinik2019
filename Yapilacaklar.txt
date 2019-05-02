@@ -1,0 +1,250 @@
+yapýlacaklar
+---------------------------------
+osgb master tabloya lisans sayýsý bilgisi eklenecek.
+
+recete þablonlarý formunda çalýþmalar...
+cxschedulerstrs unitinde türkçeleþtirme
+kart
+
+-------------
+taný listesi
+ilaç listesi
+nace kodlarý
+
+connection timeout
+
+ek 2 formu
+
+about
+
+giriþ formu ve kadir.pas içinde OSGB'de yapýlanlar diyaliz'e aktarýlacak
+
+drersoy ile girince menü kayboldu. yeni kullanýcý açýlýnca grubuna göre yetki atamasý... (grup yetkilerinden gizli olduðu için gözükmemiþ olabilir)
+kaydet sil düðmeleri alt menüden zor oluyormuþ
+firma tanýmlama tehlike sýnýfý seçilebilir mi ?
+reçete ilaç seçiminde arama kutusu ve boþsa ilaç gelmemesi. sýk kullanýlanlar geliyorsa orayý elleme ama tiki kaldýrýrsa arama kurusunda deðer olana kadar dataseti açmama vs...
+
+gerçek ortam mý test ortamý mý seçeneði kontrol edilecek
+gerçek url / test url adres kontrolü yapýlacak
+doktor bilgileri (tckimlik, parola, þifre, pin, tesis kodu)
+tesis kodu (ornek: 11349903 (istanbul) il koduna göre 34 yerine o ilin kodu yazýlacak)
+bilgisayarýn saati gerçek saatten 2-3 dakikadan fazla geri / ileri olursa reçete gönder al iþlemi hata veriyor.
+sertifika no alaný içindeki "/" karakterlerine kýzýyor. bence sertifika no alanýný yine isg katip programýndan aktaralým, reçeteye sýfýr gönderelim
+reçeteyi kaydederken doktor tesis kodu, reçete silerken kurum þifre bilgilerindeki tesis kodu alýnmýþ, doktorun tesis kodu alýnacak
+
+hasta kartýnda yazdýrma düðmesi ??
+kullanýcý yetki ayarlarýnda kaydet'e basýnca gridde alt üst satýra geçilmemiþse o satýrý kaydetmeden kapatýyor (datasetleri tarayýp post metodunu çaðýrmak lazým)
+------------------------------------------------------------------------------------------------------------------------
+iptal olanlar
+
+eðitimler ekranýnda bir de eðitim seçme için o genel seçilebilir parametreler ekranýný çaðoran düðme eklenecek. seçilince süre ve açýklamayý otomatik doldurabiliriz
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+      --Yeni iþe giriþlerin aylara göre daðýlýmý…
+      --Yapýlan sevklerin departmanlara göre daðýlýmý…
+      --Verilen istirahat raporlarýnýn teþhislere göre daðýlýmý…
+      --Ýþ kazalarýnýn departmanlara göre daðýlýmý…
+      --Yazýlan reçetelerin ilaç isimlerine göre daðýlýmý…
+      --Ve daha bir çok kritere göre alýnan yüzlerce rapor… sayýlabilir.    
+
+acil durum eylem planý
+risk analizi
+
+
+bitlisin önünde daðlar
+bir ay doðar
+karadýr kaþlarýn
+dam üstünde çul serer
+
+
+IMES OSGB Zafer Bey
+Doktorun gidip gitmediðini bakanlýðýn sormasýna karþý,
+1-)Saha gözetim raporu
+iþyeri hekimi saha gözetimi. ayda 1 ya da 2 kez saha gözetimi. en az (en seyrek) aylýk yapýlmalý. Ýsmi saha saðlýk gözetim formu ya da raporu
+onlineisg.imesosgb.com adresinden dosyalarý indirebiliriz
+maruziyet iþ saðlýðýna uygun mu, uygun deðilse tespitler ve eksiklik ve alýnacak önlemler belirtilmeli.
+iþyeri eksik tespit ve öneri defteri bu saha gözetimlerini ihtiva ediyor. bakanlýðýn desteklediði 3 nüshalý tutanakmýþ. Elle yazýlmasý mecburi imiþ. el yazýlý olarak baþka yerde yazmýþsa oradan kesip deftere yapýþtýrabiliyormuþ.
+tarama veya fotoðrafýný çekmek sureti ile sisteme yükleyebilir.
+tablo olarak varchar max, image, tarih ve numara olmalý.
+aylýk deðerlendirme gibi bir zamanlanmýþ rapor gibi þeyle ayda bir yapýlmamýþ saha gözetim raporlarýnýn uyarýsý yapýlmalý.
+bunun için firma ya da þube tablosuna saha gözetim peryodlarýný ve doktor gitme peryodlarý / süreleri tanýmlanmalý. (Vizit tarihi saati süresi sýklýðý, saha gözetim tarihi, sýklýðý vs.)
+gözetim raporu baþlama / bitirme ve bitirilmemiþ gözetim raporlarý sorgularý
+defter doldurulduðu zaman kaðýtta saha gözetim raporu olmasýnýn gereði yok sistemde olmasý (soru ve cevaplarýn) yeterli
+saha gözetim raporunun baþlama - bitiþ zamanlarý mühim deðil 
+
+2-)Ýþe giriþ muayene formu
+göz muayenesi 
+laboratuvar bulgularý sað tarafta AP seçeneði ve altýndakiler hekim isterse yapýlýr seçimlik.
+tedkik istemeden saðlýk raporu verilmez dedi. bu sebeple iþyerinde deðil osgb'de print edilmesi mantýklý
+
+3-)
+doktor iþyerine gitti (vizit, firma ziyareti). ik'ya gidecek
+iþe giriþ var mý
+saðlýk raporlarý var mý
+doktor gördü ve onayladý mý ? 
+raporun eksiklikleri var mý ?
+
+4) peryodik muayene
+az tehlikeli 5 senede 1
+orta tehlikeli 3 senede 1
+çok tehlikeli senede 1
+
+5) göz muayenesi formu. ekranlý araçlarda çaýþanlar ve sürücüler için senede 1 peryodik
+
+6) aþý formu
+tetanoz aþýsý mesela ilk aþý, 1 ay sonra ikinci, 6 ay sora üçüncü, 10 sene sonra yenilenebilir
+hepatit de tetanoz gibi gibi
+grip keyfe keder
+
+liste þeklinde yapacaðýz. personeli tiklerse aþý detayý atacaðýz. aþý detayýndakileri de ekranda göstereceðiz.
+
+personel aþý oldum dediyse doktor aþý kartýný getir diyecek sisteme iþleyecek.
+
+bizim tik yapýldý manasýna gelmeyebilir, yapýlacak, yapýlma isteði manasýna da getirilebilir
+
+
+
+0532 502 77 97 doktor Nigar Haným, Çekmeköy Belediyesi'nde, e-imza, iþyeri hekimliði hususunda bilgilendirilecek.
+
+-------------
+denetimi yapan kullanýcý ile deðiþtiren farklý olabilir mi ?
+yanlýþ þirkete girip saha gözetimi yaptýysa ???
+
+iþyeri hekimi çalýþmalarý grup tablosu
+sorular grup baþlýklý
+
+eðitim, iþ kazasý, saha gözlem gibi ekranlarda tablolara þube kodu alaný eklenecek.
+
+Tablette hiç internet eriþimi olmadan kayýt girme ve sisteme gönderebilme özelliði
+Ýþten çýkanlar exceli
+Hocam kendisi Excel sütunlarýný programýn formatýnda ayarlayacaklarmýþ
+Personel listesi ekranda kalan gün belirgin olsa...
+Firma ya da þube tablosuna tesis kodu ekleyebilir miyiz Kocaeli ve Ýstanbul firmalarýna ayný anda hizmet veren iþyeri hekimleri için doktor kartýndaki tesis kodu yetersiz kaldý.
+Ýþ kazasý bilgisini þirket elemaný girerse... doktor sisteme girdiðinde yeni personel ve iþ kazasý geçiren personel gibi görebilir mi soruldu.
+Personel kartýnda yeni aktif ve pasif gibi bir de aday statüsü ekleyebilir miyiz iþe yarar mý ?
+Çünkü muayeneye gelip iþe baþlatýlmayanlar oluyor. Bunlar aday statüsünde kalýp sonra aktif ya da pasife çevrilebilir.
+Oooo. Eleman güzel yerden yakaladý. Program kabiliyetlerini kullanarak kendi reklamýmý yapabilirim OSGB olarak dedi.
+
+
+
+
+iþ güvenliði uzmaný 1 þirkete
+
+ve hastaneye sevk isteniyormuþ
+
+doktor kartýndan, iþ güvenliði uzman kartýndan "Kullanýcý aç" düðmesi eklenebilir mi ?
+Mobil uygulama Þirket seçim ekraný en alt satýr baþlat menüsü altýnda kalýyor.
+
+muayene giriþi zorunlu yapýlabilir, zorunlu olup olmamasý osgb'nin program ayarlarýndan seçebileceði bir hale getirilebilir mi.
+
+hastalarýn mevcut saðlýk, tahlil vb bilgileri, önceden yapýlmýþ iþe giriþ muayene formlarý (ek-2) sisteme aktarýlabilir mi ?
+admin þifreleri deðiþtir
+formlarýn enabled disabled durumlarý kontrol edilecek
+
+ana menü üstündeki þirket kombosundan þirket seçildiðinde alttaki þube otomatik güncelleniyor gibi ama excel aktarýmý þube seçilmemiþ ikazý yapýyor. galiba deðeri atamýyor. birden çok þubesi olan þirketlere geçiþte hataya sebep oluyor
+kalibre osgb çift personel silinmesi
+kalibre osgb'de geliþlerin çoklandýðý þikayeti var
+firma kartlarýnda override kelimesi kaybolmuþ, hacý kadir ile aradaki whatsapp notlarýndan tarihine bakýlýp logdan incelenecek
+reçete ekraný reçete þifremi deðiþtir düðmesi. form baþlýðý dþlsas asdlaiþl olmuþ
+kullanýcý yetkileri gibi gridli ekranlarda dataset post olmadan çýkma problemi var
+müþteri tablosundaki 4 haneli kodlarýn vergi kimlik numarasý gibi bir þey 
+
+yapýlabilecek otomatik aktarýmlar: 
+sgk sicil numarasýndan firma ünvan ve þube açýklamalarý güncelleme
+
+sorgulama çalýþmamasý
+
+ilaç gruplarý antibiyotik vs
+
+eðitim formunda ilk sekmedeki þirket kombosuna farklý, ikincisine farklý liste geliyor.
+
+
+
+data modul'deki lüzumsuz deðiþkenleri sil
+
+disAktarimParametre gibi bir tablo ile @@spid bazýnda aktif þirket, aktif kullanýcý, aktif þube, aktif doktor gibi bilgileri yaz oku sil yapabiliriz. 
+otomatik excel aktarimi sp'lerinde bu tabloya join ile data alabiliriz. 
+tablodan silmek yerine aktif pasif güncellemesi ile kayýt biriktirilebilir zira ara tablo dolup da sp güncellemesi çalýþmadýðý zaman dýþarýdan çalýþtýrmak için lazým olacaktýr.
+disAktarim_... ile baþlayan tablolara disAktarimParametreID isimli bir alan ekleyip baðlayarak geçmiþ aktarým baðlantýlarýnda bile olsa iliþki kurarýz
+eðer disAktarim_... tablolarýndan hiçbirinde o ID geçmiyorsa silebiliriz.
+özet: dýþ aktarým baþlarken parametre tablosuna o @@spid ile aktif kayýt at, ayný @spid'e ait eski kayýtlarý pasif yap ya da hiçbir tabloda iliþkili kaydý kalmamýþsa sil.
+ilgili dýþ aktarýmýn tablosuna ilk kayýt yazarken disAktarimParametre tablosu ile aktif = 1 olan kaydýn ID'sini yaz. 
+çünkü ayný connection içinde þirket deðiþtirip ikinci aktarýmý yapabilir, bunun için ikinci parametre kaydýný atmasý gerekir.
+dýþ aktarým sp'sinde, ara tablodan data alýp kullanýrken þirket kodu, user vs bilgiler için gidip kendisindeki aktarim parametre id'sindeki parametre kaydýna gidilip data kullanýlabilir.
+iþte bu kadar basit.
+
+isg katip aktarýmýnda nace kodlarý firma kartýna güncelleniyor, þube kartýna da güncellemek lazým
+
+taný dataseti lokalde açýk tutabilir miyiz ?
+adoconnection2 kapat aç yapabilir miyiz ?
+
+çekmeköy'e restore olacak olan master veritabanýný uzak sunucuya baþka isimle tekrar koy. master veritabaný deðiþikliklerini takip et
+
+reçete imzala gönder yaparken reçete doktoru ile user doktoru farklý ise uyarý ver
+
+uzmanlar osgb hülya haným:
+aþý kartlarýna aþý planý ekledik bir personele ileri tarihli aþý girdik, tarih yaklaþýnca uyarý verecek mi, durum alaný ne iþe yarýyor, uygulama tarihi aþýnýn yapýldýðý tarih sanýrým
+kalp, þeker hastasý gibi risk grubu yüksek hastalarýn belirgin gözükmesi.
+peryodik muayene, aþý vb iþlemlerin liste ilaveten programa giriþte alarm þeklinde gözükmesi
+çok tehlikelilerde yýlda 1, tehlikelilerde 2 yýlda 1 az tehlikelilerde 3 yýlda bir verilmesi gereken eðitimlerin de alarm ile bildirilmesi.
+eðitim sertifika baskýsý için taslak gönderecek
+
+kullanýcý kartlarýna kullanýcý adýmý deðiþtir düðmesi eklenebilir.
+
+admin gibi kullanýcýlar bir reçete ya da muayene yazýp doktor olarak girmiþ gibi olunca þirket seçemez hale geliyorlar.
+
+foreign key tablolarý 
+tanýlar anamnez_ICD
+
+reçete þablonu kaydederken sapýtmasý
+
+önemli tablolara log konulmasý lazým
+
+
+Saliha > bide eczaneden firma adý çýkmasý için acil çalýþýlmasý lazým taný ekranýnda aramada çýkmayan
+Saliha > diyabet hiper tansiyon
+
+Ýþ güv. uzm., doktor ve diðer saðlýk personeli gibi kiþiler ve üzerine atanmýþ firmalar raporu
+
+erhan erkan:
+4-) Personel kartýndaki risk grubu kombosundaki dereceler artan mý azalan mý ? mesela yanýklar 1, 2, 3, þiddeti artarken kalitede azalýyor.
+
+
+imes osgb mehmet:
+doktor branþýna göre ilaç kriteri ekleme konusu araþtýrýlacak.
+
+yenihayat osgb emre :
+tablet uygulamasýnda kaydýrma
+
+iþe giriþ möuayenesi
+
+dr.Uz programý
+
+e-imza takýlý mý deðil mi gösteriyormuþ.
+
+medula durumunu gösteriyormuþ
+
+türkçe karakter
+
+
+ana form''daki merkez bilgisinin solundaki sabit OSGB yazýsýný bu duruma göre göster (OSGB dýþýndaki boþ olabilir.)
+loglama için bakýlacak
+
+mobil uygulamada log tablolarýnda hep SRV yazýyor ve sunucu IP'si var. loginlog'da kayýt yok
+eðitimden sonra ölçme deðerlendirme formu, sýnav sonuçlarý giriþ ekraný
+yangýn tüpü, asansör, kompresör gibi peryodik bakým gerektiren cihazlarýn muayene takipleri
+
+eðitim konularýný detay tabloya çevirme çalýþmasý
+bu form bilmemneye özeldir mesajýnýn sonuna ilave bilgi ekle mesela kendinize ikinci bir kullanýcý açtýrabilirsiniz gibi.
+
+eðitimci 2 gibi bazý alanlarýn baskýya eklenmesi
+
+
+
+3 kullanýcý - yetkileri...
+diðer kullanýcýlar silinecek
+son kaç þifre geçerli olamayacak ?
+
+- giriþte logo ve firma ünvaný. iþ yeri hekimliði e-reçete vs
