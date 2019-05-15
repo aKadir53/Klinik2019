@@ -902,6 +902,12 @@ begin
     135 : begin
            PersonelTetkikIstemleri('','');
           end;
+    148 : begin
+                if mrYes = ShowPopupForm('SKS Ýndikatör Sorgula',SKSindikatorSorgu)
+                Then Begin
+
+                End;
+          end;
     5006 : begin
             Try
              GunlereGoreHastaDagilimCizelgesi;
@@ -1197,6 +1203,8 @@ begin
   datalar.YardimciIslemWS.Password := datalar._sifre;
   datalar.FaturaKayitWS.UserName := datalar._username;
   datalar.FaturaKayitWS.Password := datalar._sifre;
+  datalar.RaporIslemWS.UserName := datalar._username;
+  datalar.RaporIslemWS.Password := datalar._sifre;
 
   datalar.QuerySelect(datalar.ADO_aktifSirketLogo,'select * from FirmaLogo where sirketKod = ' +
                       QuotedStr(datalar.AktifSirket));

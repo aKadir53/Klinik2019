@@ -422,6 +422,7 @@ object frmHastaKart: TfrmHastaKart
       ExplicitWidth = 802
       ExplicitHeight = 238
       object GridGelisler: TcxGridDBBandedTableView
+        PopupMenu = PopupMenu1
         OnDblClick = GridGelislerDblClick
         OnFocusedRecordChanged = GridGelislerFocusedRecordChanged
         DataController.Summary.DefaultGroupSummaryItems = <>
@@ -876,6 +877,12 @@ object frmHastaKart: TfrmHastaKart
       ImageIndex = 45
       OnClick = cxButtonCClick
     end
+    object U1: TMenuItem
+      Tag = -38
+      Caption = 'Uzman Muayene'
+      ImageIndex = 56
+      OnClick = cxButtonCClick
+    end
     object N2: TMenuItem
       Caption = '-'
     end
@@ -959,16 +966,19 @@ object frmHastaKart: TfrmHastaKart
       object G1: TMenuItem
         Tag = -31
         Caption = 'Geli'#351' D'#252'zenle'
+        ImageIndex = 35
         OnClick = cxButtonCClick
       end
       object G2: TMenuItem
         Tag = -33
         Caption = 'Geli'#351' Sil'
+        ImageIndex = 43
         OnClick = cxButtonCClick
       end
       object SysTakipNoSGKHizmetSorgula1: TMenuItem
         Tag = -34
         Caption = 'SysTakipNo SGK Hizmet Sorgula'
+        ImageIndex = 118
         OnClick = cxButtonCClick
       end
     end

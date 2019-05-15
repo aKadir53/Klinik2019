@@ -134,13 +134,13 @@ object frmTakipNo: TfrmTakipNo
     StyleFocused.LookAndFeel.NativeStyle = False
     StyleHot.LookAndFeel.NativeStyle = False
     TabOrder = 5
-    Height = 170
-    Width = 361
+    Height = 200
+    Width = 350
     object cxGrid6: TcxGridKadir
       Left = 2
       Top = 35
-      Width = 357
-      Height = 133
+      Width = 346
+      Height = 163
       Align = alClient
       Font.Charset = TURKISH_CHARSET
       Font.Color = clWindowText
@@ -264,7 +264,7 @@ object frmTakipNo: TfrmTakipNo
     object btnYardimHakki: TcxButtonKadir
       Left = 2
       Top = 2
-      Width = 357
+      Width = 346
       Height = 33
       Align = alTop
       Caption = 'Yurt D'#305#351#305' Yard'#305'm Hakk'#305' Getir'

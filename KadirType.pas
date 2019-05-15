@@ -105,17 +105,17 @@ type
 
 type
   THizmetVeriSeti = Record
-    Muayene : MuayeneBilgisiDVO;
-    Tahlil : Array_Of_TahlilBilgisiDVO;
-    Rad : Array_Of_TetkikveRadyolojiBilgisiDVO;
-    Tani : Array_Of_TaniBilgisiDVO;
-    Ameliyat : Array_Of_AmeliyatveGirisimBilgisiDVO;
-    Kons : Array_Of_KonsultasyonBilgisiDVO;
-    Ilac : Array_Of_IlacBilgisiDVO;
-    Malzeme : Array_Of_MalzemeBilgisiDVO;
-    Yatis : Array_Of_HastaYatisBilgisiDVO;
-    Diger : Array_Of_DigerIslemBilgisiDVO;
-    Dis : Array_Of_DisBilgisiDVO;
+    Muayene : hizmetKayitIslemleriWS.MuayeneBilgisiDVO;
+    Tahlil : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
+    Rad : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
+    Tani : hizmetKayitIslemleriWS.Array_Of_TaniBilgisiDVO;
+    Ameliyat : hizmetKayitIslemleriWS.Array_Of_AmeliyatveGirisimBilgisiDVO;
+    Kons : hizmetKayitIslemleriWS.Array_Of_KonsultasyonBilgisiDVO;
+    Ilac : hizmetKayitIslemleriWS.Array_Of_IlacBilgisiDVO;
+    Malzeme : hizmetKayitIslemleriWS.Array_Of_MalzemeBilgisiDVO;
+    Yatis : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
+    Diger : hizmetKayitIslemleriWS.Array_Of_DigerIslemBilgisiDVO;
+    Dis : hizmetKayitIslemleriWS.Array_Of_DisBilgisiDVO;
     KayitliIslem : Array_Of_KayitliIslemBilgisiDVO;
     HataliIslem : Array_Of_HataliIslemBilgisiDVO;
   End;
@@ -961,6 +961,7 @@ Const
   TagfrmGunSonuOzet = 5009;
   TagfrmTopluEpikriz = 5010;
   TagfrmIlacEtkenMaddeSutKural = 5020;
+  TagfrmUzmanMuayene = 5030;
 
 
 
@@ -1064,6 +1065,8 @@ Const
   ilacTedaviIlacEkle = 80;
   ilacTedaviIlacDuzenle = 81;
   ilacTedaviIlacSil = 82;
+  SKSindikatorSorgu = 83;
+  raporAra = 84;
 
   sp_HastaGelis = 'exec sp_HastaGelisleri ';
 

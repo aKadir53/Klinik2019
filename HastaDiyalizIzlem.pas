@@ -61,7 +61,7 @@ type
       Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
       AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
     procedure cxBtnHesapKaydetClick(Sender: TObject);
-    procedure TedaviIzlemGetir;
+    procedure Yukle;override;
     procedure gelisSikayetSec(cL : TcxCheckListBox ; c : string);
     function gelisSikayetSecili(c : TcxCheckListBox) : string;
     procedure cxButtonCClick(Sender: TObject);
@@ -70,9 +70,10 @@ type
     { Private declarations }
   public
     { Public declarations }
+      function Init(Sender: TObject) : Boolean; override;
   end;
 
-const _TableName_ = 'Hareketler';
+const _TableName_ = 'Hasta_Gelisler';
       formGenislik = 600;
       formYukseklik = 600;
 var
@@ -87,7 +88,7 @@ procedure TfrmHastaDiyalizIzlem.Kaydet;
 var
   ado : TADOQuery;
 begin
-  sql := 'update gelisler ' +
+  sql := 'update Hasta_gelisler ' +
          ' set aciklama = ' + ifThen(trimleft(txtAciklama.lines.Text) = '' , 'NULL', QuotedStr(trimleft(txtAciklama.lines.Text))) +
        //  ',OrnekNo = ' + QuotedStr(txtOrnekNo.Text) +
        //  ',CikisOrnekNo = ' + QuotedStr(txtOrnekNoCikis.Text) +
@@ -142,11 +143,12 @@ begin
 
 end;
 
-procedure TfrmHastaDiyalizIzlem.TedaviIzlemGetir;
+procedure TfrmHastaDiyalizIzlem.yukle;
 var
   sql : string;
 begin
-    sql := 'select * from gelisler where dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and  gelisNO = ' + _gelisNo_;
+
+    sql := 'select * from Hasta_gelisler where dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and  gelisNO = ' + QuotedStr(_gelisNo_);
     datalar.ADO_SQL.close;
     datalar.ADO_SQL.SQL.Clear;
     datalar.QuerySelect(datalar.ADO_SQL,sql);
@@ -194,7 +196,7 @@ begin
     datalar.ADO_SQL.close;
 
     ado_tetkikDegerlendir.SQL.Clear;
-    sql := 'select dosyaNo,gelisNo,Uyarý as uyari,Onay from HastaTedaviUyari where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNo_;
+    sql := 'select dosyaNo,gelisNo,Uyarý as uyari,Onay from HastaTedaviUyari where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + QuotedStr(_gelisNo_);
     datalar.QuerySelect(ado_tetkikDegerlendir,sql);
 
 
@@ -206,6 +208,16 @@ procedure TfrmHastaDiyalizIzlem.cxKaydetClick(Sender: TObject);
 begin
   inherited;
   //
+end;
+
+function TfrmHastaDiyalizIzlem.Init(Sender: TObject): Boolean;
+begin
+  Result := False;
+  if not inherited Init(Sender) then exit;
+  _HastaBilgileriniCaptionGoster_ := True;
+  yukle;
+  Result := True;
+
 end;
 
 procedure TfrmHastaDiyalizIzlem.ItemClick(Sender: TObject);

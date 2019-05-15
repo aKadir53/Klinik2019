@@ -13,7 +13,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object cxIlacTedaviPanel: TcxGroupBox
@@ -22,8 +21,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
     Align = alClient
     PanelStyle.Active = True
     TabOrder = 0
-    ExplicitLeft = 0
-    ExplicitWidth = 986
     Height = 571
     Width = 978
     object frmHastaIlacTedavi_cxGroupBox1: TcxGroupBox
@@ -32,7 +29,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       Align = alClient
       PanelStyle.Active = True
       TabOrder = 0
-      ExplicitWidth = 449
       Height = 567
       Width = 974
       object frmHastaIlacTedavi_cxPageControl1: TcxPageControl
@@ -43,9 +39,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
         Align = alClient
         TabOrder = 0
         Properties.ActivePage = cxTabSheet1
-        ExplicitLeft = -46
-        ExplicitTop = 138
-        ExplicitWidth = 445
         ClientRectBottom = 556
         ClientRectLeft = 3
         ClientRectRight = 963
@@ -53,7 +46,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
         object cxTabSheet1: TcxTabSheet
           Caption = #304'la'#231' Tedavi Plan'#305
           ImageIndex = 0
-          ExplicitWidth = 435
           object cxGrid15: TcxGrid
             Left = 0
             Top = 0
@@ -69,8 +61,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
             TabOrder = 0
             LevelTabs.ImageBorder = 2
             LevelTabs.Style = 1
-            ExplicitWidth = 435
-            ExplicitHeight = 417
             object cxGridIlacTedaviPlani: TcxGridDBTableView
               Navigator.Buttons.First.Visible = True
               Navigator.Buttons.PriorPage.Visible = True
@@ -253,9 +243,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
     Top = 0
     Width = 8
     Height = 571
-    ExplicitLeft = 2
-    ExplicitTop = 2
-    ExplicitHeight = 567
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
@@ -285,16 +272,19 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
         Tag = -1
         Caption = #304'la'#231' Tedavi Plan'#305' Yazd'#305'r'
         ImageIndex = 61
+        OnClick = cxButtonCClick
       end
       object T1: TMenuItem
         Tag = -2
         Caption = 'Tetkik '#304'la'#231' De'#287'erlendirme Plan'#305
         ImageIndex = 62
+        OnClick = cxButtonCClick
       end
       object N2: TMenuItem
         Tag = -3
         Caption = #304'la'#231' Kullan'#305'm Kart'#305
         ImageIndex = 64
+        OnClick = cxButtonCClick
       end
     end
     object N3: TMenuItem

@@ -91,16 +91,22 @@ begin
    txtTedaviTuru.EditValue := _TedaviTuru_;
 
 
-  if _DevKurum_ = '99' then
+  if txtYUPASS.EditValue <> '' then
   begin
-    TdxLayoutItem(FindComponent('dxLAtxtYUPASS')).Visible := True;
-    txtYUPASS.Visible := True;
+   // TdxLayoutItem(FindComponent('dxLAtxtYUPASS')).Visible := True;
+   // txtYUPASS.Visible := True;
+     pnlYardimHakki.Visible := True;
+     setDataStringKontrol(self,pnlYardimHakki, 'pnlYardimHakki','',Sayfa3_Kolon1,'',410,220,alClient);
+     SayfaCaption('Provizyon Giriþ','Provizyon Cevap','Yurt Dýþý Yardým Hakký','','');
   end
   else
   begin
-    TdxLayoutItem(FindComponent('dxLAtxtYUPASS')).Visible := false;
-    txtYUPASS.Visible := false;
+    SayfaCaption('Provizyon Giriþ','Provizyon Cevap','','','');
+    pnlYardimHakki.Visible := False;
+   // TdxLayoutItem(FindComponent('dxLAtxtYUPASS')).Visible := false;
+   // txtYUPASS.Visible := false;
   end;
+
 
   FormInputZorunluKontrolPaint(self,$00FCDDD1);
   Result := True;
@@ -253,7 +259,7 @@ end;
 procedure TfrmTakipNo.btnYardimHakkiClick(Sender: TObject);
 begin
   if txtYUPASS.Text <> '' then
-  // YurtDisiYardimHakkiGetirSorgula(txtYUPASS.Text,txtTarih.Text,datalar.yardimciIslem)
+   YurtDisiYardimHakkiGetirSorgula(txtYUPASS.Text,txtTarih.Text)
   else
    ShowMessageSkin('Yupass Bilgisi Girilmemiþ','Lütfen Yupass Bilgisini Girip ,tekrar deneyin','','info');
 end;
@@ -336,13 +342,17 @@ begin
   setDataStringKontrol(self,takipNo, 'takipNo','',Kolon2,'',200);
   setDataStringKontrol(self,basvuruNo, 'basvuruNo','',Kolon2,'',200);
 
-  setDataStringKontrol(self,pnlYardimHakki, 'pnlYardimHakki','',Sayfa3_Kolon1,'',1,1,alClient);
+//  setDataStringKontrol(self,pnlYardimHakki, 'pnlYardimHakki','',Sayfa3_Kolon1,'',1,1,alClient);
 
-  SayfaCaption('Provizyon Giriþ','Provizyon Cevap','Yurt Dýþý Yardým Hakký','','');
+//  SayfaCaption('Provizyon Giriþ','Provizyon Cevap','Yurt Dýþý Yardým Hakký','','');
   //pnlYardimHakki.Align := alBottom;
 
  kolon2.Width := 0;
  Kolon3.Width := 0;
+ Kolon4.Width := 0;
+ Sayfa2_Kolon2.Width := 0;
+ Sayfa2_Kolon2.Width := 0;
+ Sayfa2_Kolon2.Width := 0;
 
 end;
 

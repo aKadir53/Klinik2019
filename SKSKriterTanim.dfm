@@ -3,7 +3,7 @@ object frmSKSKriter: TfrmSKSKriter
   Top = 0
   Caption = 'SKS '#304'statistik Kriterleri'
   ClientHeight = 465
-  ClientWidth = 921
+  ClientWidth = 708
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,12 +18,12 @@ object frmSKSKriter: TfrmSKSKriter
   object Grid_Sks_Tanim: TcxGridKadir
     Left = 0
     Top = 0
-    Width = 921
+    Width = 708
     Height = 465
     Align = alClient
     TabOrder = 0
-    LookAndFeel.SkinName = 'mcskin'
     ExceleGonder = False
+    ExplicitWidth = 669
     object Grid_Sks_TanimDBTableView1: TcxGridDBTableView
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True
@@ -63,38 +63,61 @@ object frmSKSKriter: TfrmSKSKriter
       OptionsView.RowSeparatorColor = clBlack
       object Grid_Sks_TanimDBTableView1sira: TcxGridDBColumn
         DataBinding.FieldName = 'sira'
+        HeaderAlignmentHorz = taCenter
       end
       object Grid_Sks_TanimDBTableView1TetkikKod: TcxGridDBColumn
         DataBinding.FieldName = 'TetkikKod'
+        HeaderAlignmentHorz = taCenter
         Width = 64
       end
       object Grid_Sks_TanimDBTableView1TetkikAdi: TcxGridDBColumn
         DataBinding.FieldName = 'TetkikAdi'
+        HeaderAlignmentHorz = taCenter
         Width = 116
       end
       object Grid_Sks_TanimDBTableView1Ref1: TcxGridDBColumn
         DataBinding.FieldName = 'Ref1'
+        Visible = False
         Width = 137
       end
       object Grid_Sks_TanimDBTableView1Ref2: TcxGridDBColumn
         DataBinding.FieldName = 'Ref2'
+        Visible = False
         Width = 46
       end
       object Grid_Sks_TanimDBTableView1Ref3: TcxGridDBColumn
         DataBinding.FieldName = 'Ref3'
+        Visible = False
         Width = 48
       end
       object Grid_Sks_TanimDBTableView1Ref4: TcxGridDBColumn
         DataBinding.FieldName = 'Ref4'
+        Visible = False
         Width = 246
       end
       object Grid_Sks_TanimDBTableView1Tip: TcxGridDBColumn
         DataBinding.FieldName = 'Tip'
+        HeaderAlignmentHorz = taCenter
         Width = 64
       end
       object Grid_Sks_TanimDBTableView1RefTip: TcxGridDBColumn
         DataBinding.FieldName = 'RefTip'
+        HeaderAlignmentHorz = taCenter
         Width = 49
+      end
+      object Grid_Sks_TanimDBTableView1Column1: TcxGridDBColumn
+        Caption = 'Kriter'
+        DataBinding.FieldName = 'Operator'
+        GroupSummaryAlignment = taCenter
+        HeaderAlignmentHorz = taCenter
+        Width = 249
+      end
+      object Grid_Sks_TanimDBTableView1Column2: TcxGridDBColumn
+        DataBinding.FieldName = 'Hedef'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        HeaderAlignmentHorz = taCenter
+        Width = 39
       end
     end
     object Grid_Sks_TanimLevel1: TcxGridLevel

@@ -465,7 +465,7 @@ function Download(URL, User, Pass, FileName :  string ; FullURL : string = '443'
 procedure DatasetRefresh(DataSet : TDataset ; BookMark : Boolean = False);
 procedure RevOnay(item : string ; Dataset : TDataset);
 
-function CreateGrid(name : string; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil)  : TcxGridKadir;
+function CreateGrid(name : string; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil ; DataEditing : Boolean = True)  : TcxGridKadir;
 procedure SetGrid(cxGrid : TcxGrid ; Colums,ColumnsPropertiesClassName,
                   ColumsCaption,ColumnsWidth,ColumsPropertiesItems,ColumsReadOnly : String);
 function SGKHizmetSorgulama(kullaniciAdi,sifre,sysTakipNo,islemReferansNo,uygulamaKodu : string) : String;
@@ -1051,7 +1051,7 @@ end;
 
 
 
-function CreateGrid(name: string ; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil): TcxGridKadir;
+function CreateGrid(name: string ; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil  ; DataEditing : Boolean = True): TcxGridKadir;
 var
   Grid: TcxGridKadir;
   Level: TcxGridLevel;
@@ -1063,6 +1063,12 @@ begin
   Level.Name := name+'Level';
   View := Grid.CreateView(TcxGridDBTableView) as TcxGridDBTableView;
   View.Name := name+'View';
+
+  View.OptionsData.Editing := DataEditing;
+  View.OptionsData.Deleting := DataEditing;
+  View.OptionsData.Inserting := DataEditing;
+
+
   View.DataController.DataSource := DS;
   Level.GridView := View;
 

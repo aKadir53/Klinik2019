@@ -11,7 +11,7 @@ uses
   cxGridLevel, cxClasses, cxGridCustomView, cxGrid, dxSkinBlue, dxSkinCaramel,
   dxSkinCoffee, dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky,
   dxSkinLondonLiquidSky, dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters,
-  KadirLabel,data_modul;
+  KadirLabel,data_modul, cxTextEdit;
 
 type
   TfrmSKSKriter = class(TGirisForm)
@@ -27,6 +27,8 @@ type
     Grid_Sks_TanimDBTableView1Ref4: TcxGridDBColumn;
     Grid_Sks_TanimDBTableView1Tip: TcxGridDBColumn;
     Grid_Sks_TanimDBTableView1RefTip: TcxGridDBColumn;
+    Grid_Sks_TanimDBTableView1Column1: TcxGridDBColumn;
+    Grid_Sks_TanimDBTableView1Column2: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -53,6 +55,7 @@ begin
   Grid_Sks_Tanim.Dataset.Connection := datalar.ADOConnection2;
   Grid_Sks_Tanim.Dataset.SQL.Text := 'select * from SKS_istatistik_Tanim_Tablosu';
   Grid_Sks_Tanim.Dataset.Active := True;
+  cxPanel.Visible := False;
 end;
 
 end.

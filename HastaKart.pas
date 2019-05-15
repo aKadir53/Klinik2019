@@ -109,6 +109,7 @@ type
     txtDoktor: TcxImageComboKadir;
     H1: TMenuItem;
     SysTakipNoSGKHizmetSorgula1: TMenuItem;
+    U1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxButtonCClick(Sender: TObject);
@@ -1179,7 +1180,7 @@ begin
 // meslekler := ListeAcCreate('MeslekKodlari','kod,tanimi','Meslekler','100,300','Kodu','Meslek Tanýmý','',2);
 
   setDataStringKontrol(self,MESLEK, 'MESLEK','Meslek Kodu  ',Kolon1,'',80);
-  setDataString(self,'MESLEKADI','Meslek Tanimi',Kolon1,'',200,false,'',True);
+  setDataString(self,'MESLEKADI','Meslek Tanimi',Kolon1,'',200,false,'',False);
 //  OrtakEventAta(meslekKod);
 
  // setDataStringBLabel(self,'bosSatir2',Kolon3,'',350);
@@ -1609,7 +1610,10 @@ begin
           if F <> nil then F.ShowModal;
        end;
 
-
+ -38 : begin
+          F := FormINIT(TagfrmUzmanMuayene,GirisFormRecord,ikEvet);
+          if F <> nil then F.ShowModal;
+       end;
 
  -50 : begin
           FotoEkle;

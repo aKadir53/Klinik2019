@@ -2029,6 +2029,7 @@ begin
   cxEditC.OnEnter := cxEditEnter;
   cxEditC.OnExit := cxEditExit;
   cxEditC.OnKeyDown := cxTextEditBKeyDown;
+  cxEditC.Properties.OnEditValueChanged := PropertiesEditValueChanged;
 end;
 
 
@@ -2254,7 +2255,8 @@ begin
   if (obje.ClassName = 'TcxGrid') or
      (obje.ClassName = 'TcxGridKadir') or
      (obje.ClassName = 'TcxPageControl') or
-     (obje.ClassName = 'TcxGroupBox')
+     (obje.ClassName = 'TcxGroupBox') or
+     (obje.ClassName = 'TcxCheckListBox')
   then
   begin
      dxLac.CaptionOptions.Layout := CaptionAling;

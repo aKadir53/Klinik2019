@@ -77,6 +77,8 @@ type
       AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
     procedure cxButtonCClick(Sender: TObject);
     procedure ReceteyeEkle;
+    procedure ilacTedaviPlaniYazdir(_Tarih_ : string);
+    procedure TetkikIlacTedaviYazdir(_Tarih_ : string);
     procedure ilacEkle(islem : integer);
     procedure Yukle;override;
 
@@ -230,6 +232,119 @@ begin
 end;
 
 
+
+
+procedure TfrmHastaIlacTedavi.TetkikIlacTedaviYazdir(_Tarih_ : string);
+var
+  sql : string;
+ // ado,ado0,ado00,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
+  Datasets : TDataSetKadir;
+begin
+    DurumGoster(True);
+
+    sql := 'select * from hastakart where dosyaNo = ' + QuotedStr(_dosyaNo_);
+    Datasets.Dataset0 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaTetkikTakip ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih_) + ',@f=1' ;
+    Datasets.Dataset1 := datalar.QuerySelect(sql);
+
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('OCAK');
+    Datasets.Dataset00 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('SUBAT');
+    Datasets.Dataset2 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('MART');
+    Datasets.Dataset3 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('NISAN');
+    Datasets.Dataset4 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('MAYIS');
+    Datasets.Dataset5 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('HAZIRAN');
+    Datasets.Dataset6 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('TEMMUZ');
+    Datasets.Dataset7 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('AGUSTOS');
+    Datasets.Dataset8 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('EYLUL');
+    Datasets.Dataset9 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('EKIM');
+    Datasets.Dataset10 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('KASIM');
+    Datasets.Dataset11 := datalar.QuerySelect(sql);
+
+    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('ARALIK');
+    Datasets.Dataset12 := datalar.QuerySelect(sql);
+
+    PrintYap('202','Hasta Tetkik Ýlaç Formu',inttostr(TagfrmHastaIlacTedavi),Datasets);
+    DurumGoster(False);
+
+end;
+procedure TfrmHastaIlacTedavi.ilacTedaviPlaniYazdir(_Tarih_ : string);
+var
+ // ado , ado00, ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
+  sql : string;
+  Datasets : TDataSetKadir;
+begin
+
+   sql := 'select * from HastaKart where dosyaNo = ' + QuotedStr(_dosyaNo_);
+   Datasets.Dataset0 := datalar.QuerySelect(sql);
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr('');
+   Datasets.Dataset00 := datalar.QuerySelect(sql);
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'01');
+   Datasets.Dataset1 := datalar.QuerySelect(sql);;
+
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'02');
+   Datasets.Dataset2 := datalar.QuerySelect(sql);;
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'03');
+   Datasets.Dataset3 := datalar.QuerySelect(sql);
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'04');
+   Datasets.Dataset4 := datalar.QuerySelect(sql);
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'05');
+   Datasets.Dataset5 := datalar.QuerySelect(sql);
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'06');
+   Datasets.Dataset6 := datalar.QuerySelect(sql);
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'07');
+   Datasets.Dataset7 :=  datalar.QuerySelect(sql);
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'08');
+   Datasets.Dataset8 := datalar.QuerySelect(sql);
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'09');
+   Datasets.Dataset9 := datalar.QuerySelect(sql);;
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'10');
+   Datasets.Dataset10 := datalar.QuerySelect(sql);;
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'11');
+   Datasets.Dataset11 := datalar.QuerySelect(sql);;
+
+   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'12');
+   Datasets.Dataset12 :=  datalar.QuerySelect(sql);;
+
+
+   PrintYap('051','IlacTedavi',inttostr(TagfrmHastaIlacTedavi),Datasets);
+
+
+end;
+
 procedure TfrmHastaIlacTedavi.ItemClick(Sender: TObject);
 begin
 
@@ -264,7 +379,14 @@ begin
             ADO_GecmisIlacTedavi.Requery();
          end;
 
+   -1 : begin
+          ilacTedaviPlaniYazdir(ADO_GecmisIlacTedavi.FieldByName('donem').AsString);
+        end;
 
+  -2 : begin
+          TetkikIlacTedaviYazdir(ADO_GecmisIlacTedavi.FieldByName('donem').AsString);
+
+       end;
 
     end;
 

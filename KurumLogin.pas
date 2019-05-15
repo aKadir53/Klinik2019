@@ -13,7 +13,7 @@ uses
   cxDBData, Data.Win.ADODB, cxGridCustomView, cxGridCustomTableView,
   cxGridTableView, cxGridBandedTableView, cxGridDBBandedTableView, cxClasses,
   cxGridLevel, cxGrid, KadirLabel,data_modul,GirisUnit, cxTextEdit,
-  cxDropDownEdit,GetFormClass,KadirType;
+  cxDropDownEdit,GetFormClass,KadirType,cxImageComboBox;
 
 
 type
@@ -123,6 +123,11 @@ procedure TfrmKurumBilgi.ADO_WebServisErisimAfterScroll(DataSet: TDataSet);
 var
   ValueCombo,ValueObjeValues : String;
   ValuesCombo : TStringList;
+  i,colswidth : integer;
+  Columns,Baslik,Tips,Edits,IC_Params,IC_Param : TstringList;
+  FItem : TcxImageComboBoxItem;
+  ado : TADOQuery;
+  field1,field2,table,MaskEdit,filter : string;
 begin
   if ADO_WebServisErisim.FieldByName('ValueObje').AsString = 'C'
   then begin
@@ -139,6 +144,53 @@ begin
     finally
       ValuesCombo.Free;
     end;
+  end
+  else
+  if ADO_WebServisErisim.FieldByName('ValueObje').AsString = 'IC'
+  then begin
+        ValueObjeValues := ADO_WebServisErisim.FieldByName('ValueObjeValues').AsString;
+        GridListValue.PropertiesClassName := 'TcxImageComboBoxProperties';
+        TcxImageComboBoxProperties(GridListValue.Properties).Alignment.Vert := taVCenter;
+        TcxImageComboBoxProperties(GridListValue.Properties).Items.Clear;
+        GridListValue.Properties.Alignment.Horz := taLeftJustify;
+        GridListValue.Properties.OnEditValueChanged := PropertiesEditValueChanged;
+        TcxImageComboBoxProperties(GridListValue.Properties).ClearKey := VK_DELETE;
+
+        ado := TADOQuery.Create(nil);
+        ado.Connection := datalar.ADOConnection2;
+    //    IC_Params := TStringList.Create;
+        IC_Param := TStringList.Create;
+        try
+           IC_Param.Clear;
+           ExtractStrings([','],[],pchar(ValueObjeValues),IC_Param);
+           if IC_Param.Count > 0 then
+           begin
+             table := StringReplace(IC_Param[0],'|',',', [rfReplaceAll]);
+             field1 := IC_Param[1];
+             field2 := IC_Param[2];
+
+             if IC_Param.Count = 4
+             then
+              filter := ' where ' + IC_Param[3]
+             else
+              filter := '';
+
+             datalar.QuerySelect(ado,'select * from ' + table + filter);
+             ado.First;
+             while not ado.Eof do
+             begin
+               FItem := TcxImageComboBoxProperties(GridListValue.Properties).Items.add;
+               FItem.Value := ado.FieldByName(field1).AsString;
+               FItem.Description := ado.FieldByName(field2).AsString;
+               ado.Next;
+             end;
+           end;
+        finally
+          ado.free;
+        //  IC_Params.free;
+          IC_Param.free;
+        end;
+
   end
   else
     GridListValue.PropertiesClassName := 'TcxTextEditProperties';

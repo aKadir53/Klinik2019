@@ -8,7 +8,8 @@ uses Windows, forms,Messages, SysUtils,strutils, Variants, Classes, Graphics, Co
 
      kadir ,kadirType, MedulaHizmetKayit,
      hastaKabulIslemleriWS,MedulaYardimciIslem,
-     HizmetKayitIslemleriWS,faturaKayitIslemleriWS;
+     HizmetKayitIslemleriWS,faturaKayitIslemleriWS,
+     MedulaRaporIslem,raporIslemleriWS;
 //     saglikTesisiRaporIslemleriWSIlac,
 //     saglikTesisiRaporislemleriWS,
 //     SaglikTesisiYardimciIslemler1,
@@ -37,17 +38,17 @@ function YatisOku(basvuruNo : String; var YatisBilgileri : Array_Of_BasvuruYatis
 function HastaCikis_3(basvuruNo,cikisTarihi : string ; Http1 : THTTPRIO) : string;
 
 function HizmetKayit_3(basvuruNo , TakipNo : string ; Http1 : THTTPRIO ;
-                       ameliyatveGirisim : Array_Of_AmeliyatveGirisimBilgisiDVO;
-                       digerIslemBilgileri : Array_Of_DigerIslemBilgisiDVO;
-                       disBilgileri : Array_Of_DisBilgisiDVO;
-                       IlacBilgileri : Array_Of_IlacBilgisiDVO;
-                       KonsiltasyonBilgisi :  Array_Of_KonsultasyonBilgisiDVO;
-                       malzemeBilgisi : Array_Of_MalzemeBilgisiDVO;
-                       muayeneBilgisi : MuayeneBilgisiDVO;
-                       tahlilBilgileri : Array_Of_TahlilBilgisiDVO;
-                       tanilar : Array_Of_TaniBilgisiDVO;
-                       tetkikveRadyoloji : Array_Of_TetkikveRadyolojiBilgisiDVO;
-                       yatisBilgisi : Array_Of_HastaYatisBilgisiDVO;
+                       ameliyatveGirisim : hizmetKayitIslemleriWS.Array_Of_AmeliyatveGirisimBilgisiDVO;
+                       digerIslemBilgileri : hizmetKayitIslemleriWS.Array_Of_DigerIslemBilgisiDVO;
+                       disBilgileri : hizmetKayitIslemleriWS.Array_Of_DisBilgisiDVO;
+                       IlacBilgileri : hizmetKayitIslemleriWS.Array_Of_IlacBilgisiDVO;
+                       KonsiltasyonBilgisi :  hizmetKayitIslemleriWS.Array_Of_KonsultasyonBilgisiDVO;
+                       malzemeBilgisi : hizmetKayitIslemleriWS.Array_Of_MalzemeBilgisiDVO;
+                       muayeneBilgisi : hizmetKayitIslemleriWS.MuayeneBilgisiDVO;
+                       tahlilBilgileri : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
+                       tanilar : hizmetKayitIslemleriWS.Array_Of_TaniBilgisiDVO;
+                       tetkikveRadyoloji : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
+                       yatisBilgisi : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
                    // var KayitliIslem : ArrayOf_tns2_nillable_KayitliIslemBilgisiDVO;
                     var HataliIslem : TStringList ; _msg_ : integer ;trajBeyan : string ) : string;
 
@@ -58,8 +59,8 @@ function HizmetKayit_3(basvuruNo , TakipNo : string ; Http1 : THTTPRIO ;
 
 function HizmetKayitVeriSeti(_takip ,_basvuruNo, Modul , tedavi : string) : hizmetKayitGirisDVO;
 function MuayeneM3(_takip : string) : MuayeneBilgisiDVO;
-function YatisM3(_takip : string) : Array_Of_HastaYatisBilgisiDVO;
-function TahlilM3(_takip , Modul , Tedavi : string) : Array_Of_TahlilBilgisiDVO;
+function YatisM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
+function TahlilM3(_takip , Modul , Tedavi : string) : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
 function TahlilM3_satir(_takip : TDigerIslemTalep) : Array_Of_TahlilBilgisiDVO;
 
 
@@ -67,23 +68,23 @@ function TahlilM3_satir(_takip : TDigerIslemTalep) : Array_Of_TahlilBilgisiDVO;
 //---- Yeni----//
 function DigerIslemBilgileriMemData(DataSet : TADOQuery) : DigerIslemBilgisiDVO;
 function TahlilMemData(memData : TADOQuery) : TahlilBilgisiDVO;
-function TaniMemData(memData : TADOQuery) : taniBilgisiDVO;
+function TaniMemData(memData : TADOQuery) : hizmetKayitIslemleriWS.taniBilgisiDVO;
 function HizmetKaydiOku(_takipNo , basvuruNo : string) : string;
 function HizmetKaydiIptal(_TakipNo_ : string) : string;
 procedure HizmetIptalSonucDBYaz;
 
 
 
-function DigerIslemBilgileriM3(_takip ,Modul : string) : Array_Of_DigerIslemBilgisiDVO;
-function DigerIslemBilgileriM3_Satir(_takip : TDigerIslemTalep) : Array_Of_DigerIslemBilgisiDVO;
-function DigerIslemBilgileriYatisM3_Satir(_takip : TDigerIslemTalep) : Array_Of_HastaYatisBilgisiDVO;
-function AmeliyatM3(_takip : string) : Array_Of_AmeliyatveGirisimBilgisiDVO;
-function IlacM3(_takip : string) : Array_Of_IlacBilgisiDVO;
-function MalzemeM3(_takip : string) : Array_Of_MalzemeBilgisiDVO;
-function RadM3(_takip : string) : Array_Of_TetkikveRadyolojiBilgisiDVO;
-function RadM3_satir(_takip : TDigerIslemTalep) : Array_Of_TetkikveRadyolojiBilgisiDVO;
-function TaniM3(_takip : string) : Array_Of_TaniBilgisiDVO;
-function Kons(_takip : string) : Array_Of_KonsultasyonBilgisiDVO;
+function DigerIslemBilgileriM3(_takip ,Modul : string) : hizmetKayitIslemleriWS.Array_Of_DigerIslemBilgisiDVO;
+function DigerIslemBilgileriM3_Satir(_takip : TDigerIslemTalep) : hizmetKayitIslemleriWS.Array_Of_DigerIslemBilgisiDVO;
+function DigerIslemBilgileriYatisM3_Satir(_takip : TDigerIslemTalep) : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
+function AmeliyatM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_AmeliyatveGirisimBilgisiDVO;
+function IlacM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_IlacBilgisiDVO;
+function MalzemeM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_MalzemeBilgisiDVO;
+function RadM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
+function RadM3_satir(_takip : TDigerIslemTalep) : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
+function TaniM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_TaniBilgisiDVO;
+function Kons(_takip : string) : hizmetKayitIslemleriWS.Array_Of_KonsultasyonBilgisiDVO;
 
 
 function HizmetDetay(basvuru : string ; Detay : string) : FaturaKayitIslemleriWS.Array_Of_hizmetDetayDVO;
@@ -98,16 +99,16 @@ procedure DatalariBosalt;
 procedure verisetleriyenile(var Hizmetler : THizmetVeriSeti ; _takip_ , Modul , Tedavi : string);
 
 procedure HttpveriSetiSet(var Http : THizmetKayit ;
-                          Muayene : muayeneBilgisiDVO;
-                          Tahlil : Array_Of_tahlilBilgisiDVO;
-                          TetkikRad : Array_Of_tetkikveRadyolojiBilgisiDVO;
-                          Ameliyat : Array_Of_ameliyatveGirisimBilgisiDVO;
-                          Yatis : Array_Of_hastaYatisBilgisiDVO;
-                          ilac : Array_Of_ilacBilgisiDVO;
-                          malzeme : Array_Of_malzemeBilgisiDVO;
-                          tani : Array_Of_taniBilgisiDVO;
-                          diger : Array_Of_digerIslemBilgisiDVO;
-                          kons : Array_Of_konsultasyonBilgisiDVO;
+                          Muayene : hizmetKayitIslemleriWS.muayeneBilgisiDVO;
+                          Tahlil : hizmetKayitIslemleriWS.Array_Of_tahlilBilgisiDVO;
+                          TetkikRad : hizmetKayitIslemleriWS.Array_Of_tetkikveRadyolojiBilgisiDVO;
+                          Ameliyat : hizmetKayitIslemleriWS.Array_Of_ameliyatveGirisimBilgisiDVO;
+                          Yatis : hizmetKayitIslemleriWS.Array_Of_hastaYatisBilgisiDVO;
+                          ilac : hizmetKayitIslemleriWS.Array_Of_ilacBilgisiDVO;
+                          malzeme : hizmetKayitIslemleriWS.Array_Of_malzemeBilgisiDVO;
+                          tani : hizmetKayitIslemleriWS.Array_Of_taniBilgisiDVO;
+                          diger : hizmetKayitIslemleriWS.Array_Of_digerIslemBilgisiDVO;
+                          kons : hizmetKayitIslemleriWS.Array_Of_konsultasyonBilgisiDVO;
                           TakipNo : string = '';
                           BasvuruNo : string = '');
 procedure verisetleriBosalt;
@@ -153,7 +154,8 @@ procedure HeaderWS(username , pasword: string ;  const Hdr : Security);
 
 function DamarIziDogrulamaSorgula(tc,tarih,tesis,yas : string ; var msj : string;ad : string) : string;
 
-//function YurtDisiYardimHakkiGetirSorgula(kisiNo,pt : string ; Rio : Thttprio) : string;
+procedure YurtDisiYardimHakkiGetirSorgula(kisiNo,pt : string);
+
 //function IlacRaporBasHekimOnay(RaporNo , Tc : string) : string;
 //function IlacRaporBasHekimOnayRed(RaporNo , Tc : string) : string;
 //function IlacRaporHekimOnay(RaporNo , Tc : string) : string;
@@ -161,6 +163,7 @@ function DamarIziDogrulamaSorgula(tc,tarih,tesis,yas : string ; var msj : string
 //function IlacRaporBul(RaporNo,Tc,tip : string) : TStringList;
 //function IlacRaporSil(RaporNo,Tc,tip : string) : string;
 procedure HastaTakipleriBul(tckimlikNo ,tarih1,tarih2 : string);
+procedure HastaRaporlariBul(tckimlikNo,raporTuru : string);
 procedure MedulaSifreUyariDbYaz(tarih,uyari,mesaj : string);
 
 
@@ -241,6 +244,111 @@ begin
       end else
       begin
       end;
+
+end;
+
+
+procedure HastaRaporlariBul(tckimlikNo,raporTuru : string);
+var
+   dizi , i , x,y: integer;
+   ad , _msg , _tanilar_: string;
+   etkinMadde : raporEtkinMaddeDVO;
+begin
+      datalar.RaporIslemWS.RaporAraGiris.saglikTesisKodu := datalar._kurumKod;
+      datalar.RaporIslemWS.RaporAraGiris.tckimlikNo := tckimlikNo;
+      datalar.RaporIslemWS.RaporAraGiris.raporTuru := raporTuru;
+      datalar.RaporIslemWS.RaporAra;
+
+      if datalar.RaporIslemWS.RaporAraCevap.sonucKodu = 0
+      then begin
+
+           if length(datalar.RaporIslemWS.RaporAraCevap.raporlar) = 0
+           then begin
+             showmessage('Bu Hastaya Ait Rapor Bulunamadý','','','info');
+         //    result := '';
+           //  exit;
+           end;
+           datalar.memDataRaporlar.Active := False;
+           datalar.memDataRaporlar.Active := True;
+
+           for i := 0 to length(datalar.RaporIslemWS.RaporAraCevap.raporlar) - 1  do
+           begin
+
+              if  datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru = '10'
+              Then Begin
+                 datalar.memDataRaporlarI.Append;
+                 datalar.memDataRaporlarI.FieldByName('raporTuru').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru;
+                 datalar.memDataRaporlarI.FieldByName('raporTakipNo').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTakipNo);
+                 datalar.memDataRaporlarI.FieldByName('raporTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporDVO.raporBilgisi.tarih;
+                 datalar.memDataRaporlarI.FieldByName('raporNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporDVO.raporBilgisi.no;
+                 datalar.memDataRaporlarI.FieldByName('verenTesis').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporDVO.raporBilgisi.raporTesisKodu);
+                 datalar.memDataRaporlarI.FieldByName('baslangicTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporDVO.baslangicTarihi;
+                 datalar.memDataRaporlarI.FieldByName('bitisTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporDVO.bitisTarihi;
+                 datalar.memDataRaporlarI.FieldByName('protokolNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporDVO.protokolNo;
+                 datalar.memDataRaporlarI.FieldByName('protokolTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporDVO.protokolTarihi;
+                 datalar.memDataRaporlarI.FieldByName('Aciklama').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporDVO.aciklama;
+                 datalar.memDataRaporlarI.Post;
+
+                for etkinMadde in  datalar.RaporIslemWS.RaporAraCevap.raporlar[x].ilacRapor.raporEtkinMaddeler do
+                begin
+                  datalar.SQLMemTable_EtkenMaddeler.Append;
+                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('raporTakipNo').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTakipNo);
+                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('etkinMaddeKodu').AsString := etkinMadde.etkinMaddeKodu;
+                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('etkinMaddeAdi').AsString := '';//EtkinMaddeKodToAdi(etkinMadde.etkinMaddeKodu);
+                  datalar.SQLMemTable_EtkenMaddeler.Post;
+                end;
+
+              End;
+
+
+              if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 1
+              Then Begin
+               datalar.memDataRaporlar.Append;
+               datalar.memDataRaporlar.FieldByName('raporTuru').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru;
+               datalar.memDataRaporlar.FieldByName('raporTakipNo').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTakipNo);
+               datalar.memDataRaporlar.FieldByName('raporTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.tarih;
+               datalar.memDataRaporlar.FieldByName('raporNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.no;
+               datalar.memDataRaporlar.FieldByName('verenTesis').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.raporTesisKodu);
+               datalar.memDataRaporlar.FieldByName('baslangicTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.baslangicTarihi;
+               datalar.memDataRaporlar.FieldByName('bitisTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.bitisTarihi;
+               datalar.memDataRaporlar.FieldByName('tedaviRaporTuru').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru);
+               datalar.memDataRaporlar.FieldByName('protokolNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolNo;
+               datalar.memDataRaporlar.FieldByName('protokolTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolTarihi;
+               datalar.memDataRaporlar.FieldByName('Aciklama').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.aciklama;
+  //            memDataRaporlar.FieldByName('tani').AsString :=
+               datalar.memDataRaporlar.FieldByName('seansGun').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansGun;
+               datalar.memDataRaporlar.FieldByName('seansSayi').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansSayi;
+               datalar.memDataRaporlar.FieldByName('butKodu').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.butKodu;
+               _tanilar_ := '';
+
+               if Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) > 0
+               then begin
+                   for y := 0 to Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) - 1 do
+                   begin
+                     _tanilar_ := _tanilar_ + ',' +
+                     datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar[y].taniKodu;
+                   end;
+
+                   if _tanilar_[1] = ','
+                   then
+                    _tanilar_ := copy(_tanilar_,2,100);
+
+                   if _tanilar_[length(_tanilar_)] = ','
+                   then
+                    _tanilar_ := copy(_tanilar_,1,length(_tanilar_)-1);
+
+                   datalar.memDataRaporlar.FieldByName('tani').AsString := _tanilar_;
+
+                   if pos('N18',UpperCase(_tanilar_)) = 0
+                   Then ShowMessageSkin('Rapor Tanýlarý içinde N18 Tanýsý Yoktur',
+                                        'Lütfen Kontrol Ediniz. !','','info');
+
+               end;
+               datalar.memDataRaporlar.Post;
+
+              End;
+           End;
+      End;
 
 end;
 
@@ -480,62 +588,45 @@ end;
 
    *)
 
-   (*
-function YurtDisiYardimHakkiGetirSorgula(kisiNo,pt : string ; Rio : Thttprio) : string;
+
+procedure YurtDisiYardimHakkiGetirSorgula(kisiNo,pt : string);
 var
-  yDYHG : yurtDisiYardimHakkiGetirGirisDVO;
-  yDYHGCvp : YurtDisiYardimHakkiGetirCevapDVO;
-  id , x : integer;
-  i : TListItem;
+ x : integer;
 begin
 
-  yDYHG := YurtDisiYardimHakkiGetirGirisDVO.Create;
-  yDYHGCvp := YurtDisiYardimHakkiGetirCevapDVO.Create;
+  datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirGiris.kisiNo := kisiNo;
+  datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirGiris.provizyonTarihi := pt;
+  datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirGiris.saglikTesisKodu := datalar._kurumKod;
 
-  datalar.login;
-  Rio.HTTPWebNode.UserName := datalar._username;
-  Rio.HTTPWebNode.Password := datalar._sifre;
+  datalar.YardimciIslemWS.yurtDisiYardimHakkiGetir;
 
-  yDYHG.kisiNo := kisiNo;
-  yDYHG.provizyonTarihi := pt;
-  yDYHG.saglikTesisKodu := datalar._kurumKod;
 
-  Rio.URL := yardimciIslemURL; //'https://medula.sgk.gov.tr:443/medulaws/services/YardimciIslemler';
-
-  try
-    yDYHGCvp := (Rio as YardimciIslemler).yurtDisiYardimHakkiGetir(yDYHG);
-  except on e : SysUtils.Exception do
-   begin
-     ShowMessage(e.Message,'','','info');
-   end;
-  end;
-
-  if yDYHGCvp.sonucKodu = '0000'
+  if datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.sonucKodu = '0000'
   Then Begin
 
      datalar.memData_yurtDisiYardimHakki.Active := false;
      datalar.memData_yurtDisiYardimHakki.Active := true;
 
-     for x := 0 to length(yDYHGCvp.yurtDisiDetay) -1 do
+     for x := 0 to length(datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.yurtDisiDetay) -1 do
      begin
        datalar.memData_yurtDisiYardimHakki.Append;
-       datalar.memData_yurtDisiYardimHakki.FieldByName('id').AsInteger := yDYHGCvp.yurtDisiDetay[x].id;
-       datalar.memData_yurtDisiYardimHakki.FieldByName('formulAdi').AsString := yDYHGCvp.yurtDisiDetay[x].formulAdi;
-       datalar.memData_yurtDisiYardimHakki.FieldByName('odemeTuru').AsString := yDYHGCvp.yurtDisiDetay[x].odemeTuru;
-       datalar.memData_yurtDisiYardimHakki.FieldByName('tedaviKapsami').AsString  := yDYHGCvp.yurtDisiDetay[x].tedaviKapsami;
-       datalar.memData_yurtDisiYardimHakki.FieldByName('Tarih').AsString  := yDYHGCvp.yurtDisiDetay[x].sorguTarihi;
-       datalar.memData_yurtDisiYardimHakki.FieldByName('aciklama').AsString  := yDYHGCvp.yurtDisiDetay[x].aciklama;
+       datalar.memData_yurtDisiYardimHakki.FieldByName('id').AsInteger := datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.yurtDisiDetay[x].id;
+       datalar.memData_yurtDisiYardimHakki.FieldByName('formulAdi').AsString := datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.yurtDisiDetay[x].formulAdi;
+       datalar.memData_yurtDisiYardimHakki.FieldByName('odemeTuru').AsString := datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.yurtDisiDetay[x].odemeTuru;
+       datalar.memData_yurtDisiYardimHakki.FieldByName('tedaviKapsami').AsString  := datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.yurtDisiDetay[x].tedaviKapsami;
+       datalar.memData_yurtDisiYardimHakki.FieldByName('Tarih').AsString  := datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.yurtDisiDetay[x].sorguTarihi;
+       datalar.memData_yurtDisiYardimHakki.FieldByName('aciklama').AsString  := datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.yurtDisiDetay[x].aciklama;
        datalar.memData_yurtDisiYardimHakki.Post;
      end;
 
   End
   Else
-   ShowMessageSkin(yDYHGCvp.sonucKodu,yDYHGCvp.sonucMesaji,'','info');
+   ShowMessageSkin(datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.sonucKodu,datalar.YardimciIslemWS.YurtDisiYardimHakkiGetirCevap.sonucMesaji,'','info');
 
 
 end;
 
-     *)
+
 
 
 function DamarIziDogrulamaSorgula(tc,tarih,tesis,yas : string ; var msj : string;ad : string) : string;
@@ -2902,16 +2993,16 @@ begin
 end;
 
 procedure HttpveriSetiSet(var Http : THizmetKayit ;
-                          Muayene : muayeneBilgisiDVO;
-                          Tahlil : Array_Of_tahlilBilgisiDVO;
-                          TetkikRad : Array_Of_tetkikveRadyolojiBilgisiDVO;
-                          Ameliyat : Array_Of_ameliyatveGirisimBilgisiDVO;
-                          Yatis : Array_Of_hastaYatisBilgisiDVO;
-                          ilac : Array_Of_ilacBilgisiDVO;
-                          malzeme : Array_Of_malzemeBilgisiDVO;
-                          tani : Array_Of_taniBilgisiDVO;
-                          diger : Array_Of_digerIslemBilgisiDVO;
-                          kons : Array_Of_konsultasyonBilgisiDVO;
+                          Muayene : hizmetKayitIslemleriWS.muayeneBilgisiDVO;
+                          Tahlil : hizmetKayitIslemleriWS.Array_Of_tahlilBilgisiDVO;
+                          TetkikRad : hizmetKayitIslemleriWS.Array_Of_tetkikveRadyolojiBilgisiDVO;
+                          Ameliyat : hizmetKayitIslemleriWS.Array_Of_ameliyatveGirisimBilgisiDVO;
+                          Yatis : hizmetKayitIslemleriWS.Array_Of_hastaYatisBilgisiDVO;
+                          ilac : hizmetKayitIslemleriWS.Array_Of_ilacBilgisiDVO;
+                          malzeme : hizmetKayitIslemleriWS.Array_Of_malzemeBilgisiDVO;
+                          tani : hizmetKayitIslemleriWS.Array_Of_taniBilgisiDVO;
+                          diger : hizmetKayitIslemleriWS.Array_Of_digerIslemBilgisiDVO;
+                          kons : hizmetKayitIslemleriWS.Array_Of_konsultasyonBilgisiDVO;
                           TakipNo : string = '';
                           BasvuruNo : string = '');
 
@@ -3825,17 +3916,17 @@ begin
 end;
 
 function HizmetKayit_3(basvuruNo , TakipNo : string ; Http1 : THTTPRIO ;
-                       ameliyatveGirisim : Array_Of_AmeliyatveGirisimBilgisiDVO;
-                       digerIslemBilgileri : Array_Of_DigerIslemBilgisiDVO;
-                       disBilgileri : Array_Of_DisBilgisiDVO;
-                       IlacBilgileri : Array_Of_IlacBilgisiDVO;
-                       KonsiltasyonBilgisi :  Array_Of_KonsultasyonBilgisiDVO;
-                       malzemeBilgisi : Array_Of_MalzemeBilgisiDVO;
-                       muayeneBilgisi : MuayeneBilgisiDVO;
-                       tahlilBilgileri : Array_Of_TahlilBilgisiDVO;
-                       tanilar : Array_Of_TaniBilgisiDVO;
-                       tetkikveRadyoloji : Array_Of_TetkikveRadyolojiBilgisiDVO;
-                       yatisBilgisi : Array_Of_HastaYatisBilgisiDVO;
+                       ameliyatveGirisim : hizmetKayitIslemleriWS.Array_Of_AmeliyatveGirisimBilgisiDVO;
+                       digerIslemBilgileri : hizmetKayitIslemleriWS.Array_Of_DigerIslemBilgisiDVO;
+                       disBilgileri : hizmetKayitIslemleriWS.Array_Of_DisBilgisiDVO;
+                       IlacBilgileri : hizmetKayitIslemleriWS.Array_Of_IlacBilgisiDVO;
+                       KonsiltasyonBilgisi :  hizmetKayitIslemleriWS.Array_Of_KonsultasyonBilgisiDVO;
+                       malzemeBilgisi : hizmetKayitIslemleriWS.Array_Of_MalzemeBilgisiDVO;
+                       muayeneBilgisi : hizmetKayitIslemleriWS.MuayeneBilgisiDVO;
+                       tahlilBilgileri : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
+                       tanilar : hizmetKayitIslemleriWS.Array_Of_TaniBilgisiDVO;
+                       tetkikveRadyoloji : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
+                       yatisBilgisi : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
                     //var KayitliIslem : ArrayOf_tns2_nillable_KayitliIslemBilgisiDVO;
                     var HataliIslem : TStringList ; _msg_ : integer ; trajBeyan : string) : string;
 
@@ -4025,9 +4116,9 @@ var
   Fsonuclar : Array_Of_TahlilSonucDVO;
   hatali : TStringList;
 
-  FdigerIslem : Array_Of_digerIslemBilgisiDVO;
-  Ftahliller : Array_Of_TahlilBilgisiDVO;
-  FTanilar : Array_Of_taniBilgisiDVO;
+  FdigerIslem : hizmetKayitIslemleriWS.Array_Of_digerIslemBilgisiDVO;
+  Ftahliller : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
+  FTanilar : hizmetKayitIslemleriWS.Array_Of_taniBilgisiDVO;
   HizmetVeriSeti : hizmetKayitGirisDVO;
 
   memData : TADOQuery;
@@ -4179,12 +4270,12 @@ end;
 
 
 
-function MalzemeM3(_takip : string) : Array_Of_MalzemeBilgisiDVO;
+function MalzemeM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_MalzemeBilgisiDVO;
 var
   sql : string;
   i ,j, dizi : integer;
-  MalzemeElemanlar : MalzemeBilgisiDVO;
-  FMalzeme : Array_Of_MalzemeBilgisiDVO;
+  MalzemeElemanlar : hizmetKayitIslemleriWS.MalzemeBilgisiDVO;
+  FMalzeme : hizmetKayitIslemleriWS.Array_Of_MalzemeBilgisiDVO;
 begin
       datalar.ADO_SQL2.Close;
       datalar.ADO_SQL2.SQL.Clear;
@@ -4194,11 +4285,11 @@ begin
       if DATALAR.ADO_SQL2.Eof then exit;
       dizi :=  datalar.ADO_SQL2.RecordCount;
       SetLength(FMalzeme,dizi);
-        MalzemeElemanlar := MalzemeBilgisiDVO.Create;
+        MalzemeElemanlar := hizmetKayitIslemleriWS.MalzemeBilgisiDVO.Create;
 
       for i := 0 to dizi - 1 do
       begin
-        MalzemeElemanlar := MalzemeBilgisiDVO.Create;
+        MalzemeElemanlar := hizmetKayitIslemleriWS.MalzemeBilgisiDVO.Create;
         MalzemeElemanlar.malzemeKodu := DATALAR.ADO_SQL2.fieldbyname('malzemeKodu').AsString;
         MalzemeElemanlar.adet:= DATALAR.ADO_SQL2.fieldbyname('adet').AsInteger;
         MalzemeElemanlar.islemTarihi := FormattedTarih(DATALAR.ADO_SQL2.fieldbyname('islemTarihi').AsString);
@@ -4324,12 +4415,12 @@ begin
 end;
 
 
-function YatisM3(_takip : string) : Array_Of_HastaYatisBilgisiDVO;
+function YatisM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
 var
   sql : string;
   i ,j, dizi : integer;
-  YatisElemanlar : HastaYatisBilgisiDVO;
-  FYatis : Array_Of_HastaYatisBilgisiDVO;
+  YatisElemanlar : hizmetKayitIslemleriWS.HastaYatisBilgisiDVO;
+  FYatis : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
 begin
       sql := 'exec sp_MedulaDataset_KL_M3 ' + #39 + _takip + #39 + ',' + #39 + 'Hastayatis' + #39;
       datalar.QuerySelect(datalar.ADO_SQL2,sql);
@@ -4339,7 +4430,7 @@ begin
 
       for i := 0 to dizi - 1 do
       begin
-        YatisElemanlar := HastaYatisBilgisiDVO.Create;
+        YatisElemanlar := hizmetKayitIslemleriWS.HastaYatisBilgisiDVO.Create;
         YatisElemanlar.sutKodu := DATALAR.ADO_SQL2.fieldbyname('butKodu').AsString;
         YatisElemanlar.bransKodu := DATALAR.ADO_SQL2.fieldbyname('bransKodu').AsString;
         YatisElemanlar.drTescilNo := DATALAR.ADO_SQL2.fieldbyname('doktorTescilNo').AsString;
@@ -4391,14 +4482,14 @@ end;
 
 
 
-function TahlilM3(_takip , Modul , tedavi : string) : Array_Of_TahlilBilgisiDVO;
+function TahlilM3(_takip , Modul , tedavi : string) : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
 var
   sql,sql1 , dosyaNo , gelisNo : string;
   i ,j, dizi , dizi1 , r : integer;
   TahlilElemanlar : TahlilBilgisiDVO;
-  Ftahliller : Array_Of_TahlilBilgisiDVO;
+  Ftahliller : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
   Sonuclar : TahlilSonucDVO;
-  Fsonuclar : Array_Of_TahlilSonucDVO;
+  Fsonuclar : hizmetKayitIslemleriWS.Array_Of_TahlilSonucDVO;
   adoS : TADOQuery;
   memData : TdxMemData;
 begin
@@ -4553,13 +4644,13 @@ begin
 end;
 
 
-function TaniMemData(memData : TADOQuery) : TaniBilgisiDVO;
+function TaniMemData(memData : TADOQuery) : hizmetKayitIslemleriWS.TaniBilgisiDVO;
 var
   sql , raporTakipNo : string;
   i ,j, dizi : integer;
-  Tani : TaniBilgisiDVO;
+  Tani : hizmetKayitIslemleriWS.TaniBilgisiDVO;
 Begin
-    tani := TaniBilgisiDVO.Create;
+    tani := hizmetKayitIslemleriWS.TaniBilgisiDVO.Create;
     tani.taniKodu := memData.fieldbyname('code').AsString;
     tani.birincilTani := memData.fieldbyname('birincilTani').AsString;
     tani.taniTipi := memData.fieldbyname('tanitip').AsString;
@@ -4647,12 +4738,12 @@ end;
 
 
 
-function RadM3(_takip : string) : Array_Of_TetkikveRadyolojiBilgisiDVO;
+function RadM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
 var
   sql , raporTakipNo : string;
   i ,j, dizi : integer;
-  Rad : TetkikveRadyolojiBilgisiDVO;
-  FRad : Array_Of_TetkikveRadyolojiBilgisiDVO;
+  Rad : hizmetKayitIslemleriWS.TetkikveRadyolojiBilgisiDVO;
+  FRad : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
 begin
       sql := 'exec sp_MedulaDataset_Kl_M3 ' + #39 + _takip + #39 + ',' + #39 + 'Radyoloji' + #39;
       datalar.QuerySelect(datalar.ADO_SQL2,sql);
@@ -4687,12 +4778,12 @@ begin
 
 end;
 
-function RadM3_satir(_takip : TDigerIslemTalep) : Array_Of_TetkikveRadyolojiBilgisiDVO;
+function RadM3_satir(_takip : TDigerIslemTalep) : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
 var
   sql , raporTakipNo : string;
   i ,j, dizi : integer;
-  Rad : TetkikveRadyolojiBilgisiDVO;
-  FRad : Array_Of_TetkikveRadyolojiBilgisiDVO;
+  Rad : hizmetKayitIslemleriWS.TetkikveRadyolojiBilgisiDVO;
+  FRad : hizmetKayitIslemleriWS.Array_Of_TetkikveRadyolojiBilgisiDVO;
 begin
       dizi :=  1;
       SetLength(FRad ,dizi);
@@ -4715,12 +4806,12 @@ begin
 end;
 
 
-function TaniM3(_takip : string) : Array_Of_TaniBilgisiDVO;
+function TaniM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_TaniBilgisiDVO;
 var
   sql , raporTakipNo : string;
   i ,j, dizi : integer;
-  Tani : TaniBilgisiDVO;
-  FTani : Array_Of_TaniBilgisiDVO;
+  Tani : hizmetKayitIslemleriWS.TaniBilgisiDVO;
+  FTani : hizmetKayitIslemleriWS.Array_Of_TaniBilgisiDVO;
 begin
 
       sql := 'exec sp_MedulaDataset_Kl_M3 ' + #39 + _takip + #39 + ',' + #39 + 'Tani' + #39;
@@ -4736,7 +4827,7 @@ begin
 
       for i := 0 to dizi - 1 do
       begin
-          tani := TaniBilgisiDVO.Create;
+          tani := hizmetKayitIslemleriWS.TaniBilgisiDVO.Create;
           tani.taniKodu := DATALAR.ADO_SQL2.fieldbyname('TaniKodu').AsString;
           tani.birincilTani := DATALAR.ADO_SQL2.fieldbyname('birincilTani').AsString;
           tani.taniTipi := DATALAR.ADO_SQL2.fieldbyname('tanitip').AsString;
@@ -4841,19 +4932,19 @@ end;
 
 
 
-function DigerIslemBilgileriYatisM3_Satir(_takip : TDigerIslemTalep) : Array_Of_HastaYatisBilgisiDVO;
+function DigerIslemBilgileriYatisM3_Satir(_takip : TDigerIslemTalep) : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
 var
   sql , raporTakipNo : string;
   i ,j, dizi : integer;
-  YatisBilgisi : HastaYatisBilgisiDVO;
-  FYatisBilgisi : Array_Of_HastaYatisBilgisiDVO;
+  YatisBilgisi : hizmetKayitIslemleriWS.HastaYatisBilgisiDVO;
+  FYatisBilgisi : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
 begin
       dizi :=  1;
       SetLength(FYatisBilgisi ,dizi);
 
       for i := 0 to dizi - 1 do
       begin
-        YatisBilgisi := HastaYatisBilgisiDVO.Create;
+        YatisBilgisi := hizmetKayitIslemleriWS.HastaYatisBilgisiDVO.Create;
         YatisBilgisi.sutKodu := '510120';
         YatisBilgisi.yatisBaslangicTarihi := _takip.islemTarihi;
         YatisBilgisi.yatisBitisTarihi := _takip.islemTarihi;

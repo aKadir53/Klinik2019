@@ -76,6 +76,7 @@ const _TableName_ = '';
       formGenislik = 500;
       formYukseklik = 500;
 
+
 var
   frmTedaviBilgisi: TfrmTedaviBilgisi;
 //  AdoHastaGelis : TADOQuery;
@@ -84,7 +85,8 @@ var
   sql : String;
 implementation
       uses Data_Modul,AnaUnit,HastaListe,HastaListeD,
-           HastaRecete,HastaTetkikEkle,Anamnez,HastaIlacTedavi;
+           HastaRecete,HastaTetkikEkle,Anamnez,HastaIlacTedavi,
+           HastaDiyalizIzlem,UzmanMuayene;
 
 {$R *.dfm}
 
@@ -95,43 +97,52 @@ begin
   Result := False;
   inherited;
 
-  if Tag in [130,TagfrmHastaIlacTedavi]
-  Then
-  for i := 0 to Screen.FormCount - 1 do
-    if Screen.Forms[i] = frmHastaListeD
-    Then begin
-     if not frmHastaListeD._Dataset.Eof then
-     begin
-        frmHastaListeD._Dataset.Locate('dosyaNo',datalar.Bilgi.dosyaNo,[]);
-        cxGridHastaListesi.DataController.DataSource := frmHastaListeD._DataSource;
-        foto.DataBinding.DataSource :=  frmHastaListeD._DataSource;
-        ad.DataBinding.DataSource :=  frmHastaListeD._DataSource;
-        soyad.DataBinding.DataSource :=  frmHastaListeD._DataSource;
-        yas.DataBinding.DataSource :=  frmHastaListeD._DataSource;
+   case TfrmTedaviBilgisi(self).Tag  of
+     TagfrmHastaRecete,
+     TagfrmHastaTetkikEkle,
+     TagfrmHastaIlacTedavi,
+     TagfrmHastaDiyalizIzlem,
+     TagfrmUzmanMuayene
+      :
+         begin
+              for i := 0 to Screen.FormCount - 1 do
+                if Screen.Forms[i] = frmHastaListeD
+                Then begin
+                 if not frmHastaListeD._Dataset.Eof then
+                 begin
+                    frmHastaListeD._Dataset.Locate('dosyaNo',datalar.Bilgi.dosyaNo,[]);
+                    cxGridHastaListesi.DataController.DataSource := frmHastaListeD._DataSource;
+                    foto.DataBinding.DataSource :=  frmHastaListeD._DataSource;
+                    ad.DataBinding.DataSource :=  frmHastaListeD._DataSource;
+                    soyad.DataBinding.DataSource :=  frmHastaListeD._DataSource;
+                    yas.DataBinding.DataSource :=  frmHastaListeD._DataSource;
 
-        cxTabHastaListe.TabVisible := True;
-     end;
-    end;
+                    cxTabHastaListe.TabVisible := True;
+                 end;
+                end;
 
-  if Tag in [131]
-  Then
-  for i := 0 to Screen.FormCount - 1 do
-    if Screen.Forms[i] = frmHastaListe
-    Then begin
-     if not frmHastaListe._Dataset.Eof then
-     begin
-        frmHastaListe._Dataset.Locate('dosyaNo',datalar.Bilgi.dosyaNo,[]);
-        cxGridHastaListesi.DataController.DataSource := frmHastaListe._DataSource;
-        foto.DataBinding.DataSource :=  frmHastaListe._DataSource;
-        ad.DataBinding.DataSource :=  frmHastaListe._DataSource;
-        soyad.DataBinding.DataSource :=  frmHastaListe._DataSource;
-        yas.DataBinding.DataSource :=  frmHastaListe._DataSource;
+         end;
+   131 :
+         begin
+            for i := 0 to Screen.FormCount - 1 do
+              if Screen.Forms[i] = frmHastaListe
+              Then begin
+               if not frmHastaListe._Dataset.Eof then
+               begin
+                  frmHastaListe._Dataset.Locate('dosyaNo',datalar.Bilgi.dosyaNo,[]);
+                  cxGridHastaListesi.DataController.DataSource := frmHastaListe._DataSource;
+                  foto.DataBinding.DataSource :=  frmHastaListe._DataSource;
+                  ad.DataBinding.DataSource :=  frmHastaListe._DataSource;
+                  soyad.DataBinding.DataSource :=  frmHastaListe._DataSource;
+                  yas.DataBinding.DataSource :=  frmHastaListe._DataSource;
 
-        cxTabHastaListe.TabVisible := True;
-     end;
-    end;
+                  cxTabHastaListe.TabVisible := True;
+               end;
+              end;
 
+         end;
 
+   end;
 
   Result := True;
 end;
@@ -180,8 +191,26 @@ begin
                                     frmHastaIlacTedavi._gelisNO_ := self._gelisNO_;
                                     frmHastaIlacTedavi._provizyonTarihi_ := self._provizyonTarihi_;
                                     yukle;
-                                   // frmHastaRecete.ReceteGetir(self._dosyaNO_,self._gelisNO_);
+                                  end;
+                                end;
 
+        TagfrmUzmanMuayene  : begin
+                                  if Assigned(frmUzmanMuayene ) then
+                                  begin
+                                    frmUzmanMuayene ._dosyaNO_ := self._dosyaNO_;
+                                    frmUzmanMuayene._gelisNO_ := self._gelisNO_;
+                                    frmUzmanMuayene._provizyonTarihi_ := self._provizyonTarihi_;
+                                    yukle;
+                                  end;
+                                end;
+
+        TagfrmHastaDiyalizIzlem : begin
+                                  if Assigned(frmHastaDiyalizIzlem) then
+                                  begin
+                                    frmHastaDiyalizIzlem._dosyaNO_ := self._dosyaNO_;
+                                    frmHastaDiyalizIzlem._gelisNO_ := self._gelisNO_;
+                                    frmHastaDiyalizIzlem._provizyonTarihi_ := self._provizyonTarihi_;
+                                    yukle;
                                   end;
 
 
@@ -348,10 +377,25 @@ begin
 end;
 
 procedure TfrmTedaviBilgisi.FormShow(Sender: TObject);
+var
+ tt : string;
 begin
    inherited;
 
-   HastaGelisSelect(_dosyaNo_,AdoHastaGelis,ifThen(TfrmTedaviBilgisi(self).Tag in [TagfrmHastaRecete,TagfrmHastaTetkikEkle,TagfrmHastaIlacTedavi],'Hasta_gelisler','gelisler'));
+   case TfrmTedaviBilgisi(self).Tag  of
+     TagfrmHastaRecete,
+     TagfrmHastaTetkikEkle,
+     TagfrmHastaIlacTedavi,
+     TagfrmHastaDiyalizIzlem,
+     TagfrmUzmanMuayene
+          :
+       tt := 'Hasta_gelisler'
+     else
+       tt := 'gelisler';
+   end;
+
+
+   HastaGelisSelect(_dosyaNo_,AdoHastaGelis,tt);
    cxTab.Tabs[0].Caption := self._HastaAdSoyad_;// datalar.HastaBil.Adi + ' ' + datalar.HastaBil.SoyAdi;
 end;
 

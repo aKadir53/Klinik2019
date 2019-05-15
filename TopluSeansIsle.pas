@@ -35,7 +35,6 @@ type
     pnlTitle: TPanel;
     pnlOnay: TPanel;
     txtinfo: TLabel;
-    OdemeBilgiTest: THTTPRIO;
     HTTP1: THTTPRIO;
     PopupMenu1: TPopupMenu;
     SeansMEdulayaKaydet1: TMenuItem;
@@ -138,10 +137,7 @@ type
     Listesirano: TcxGridDBBandedColumn;
     Listedurum: TcxGridDBBandedColumn;
     ListeDiyalizorTipi: TcxGridDBBandedColumn;
-    ListeUTarih: TcxGridDBBandedColumn;
-    ListeUTarihDateTime: TcxGridDBBandedColumn;
     ListeDoktorKod: TcxGridDBBandedColumn;
-    Listedoktor: TcxGridDBBandedColumn;
     ListeTalepSira: TcxGridDBBandedColumn;
     ListeislemSiraNoYatak: TcxGridDBBandedColumn;
     ListesiranoYatis: TcxGridDBBandedColumn;
@@ -191,9 +187,7 @@ type
     cxStyle3: TcxStyle;
     ListeColumn1: TcxGridDBBandedColumn;
     S1: TMenuItem;
-    ListeColumn2: TcxGridDBBandedColumn;
     ListeColumn3: TcxGridDBBandedColumn;
-    ListeColumn4: TcxGridDBBandedColumn;
     cxStyleRepository4: TcxStyleRepository;
     cxStyle4: TcxStyle;
     cxStyleRepository5: TcxStyleRepository;
@@ -207,7 +201,6 @@ type
     N4: TMenuItem;
     N5: TMenuItem;
     U1: TMenuItem;
-    ListeColumn5: TcxGridDBBandedColumn;
     H3: TMenuItem;
     P1: TMenuItem;
     P2: TMenuItem;
@@ -351,7 +344,7 @@ begin
              sirano := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('sirano').Index);
          //    kod := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('HemodiyalizTip').Index);
          //    durum := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Durum').Index);
-             talepSira := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('TalepSira').Index);
+             talepSira := vartoStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('islemSiraNo').Index));
 
 
             Datalar.SeansBilgi.hizmetSunucuRefNo := cxGrid_Seans.Dataset.FieldByName('siraNo').AsString;
@@ -359,7 +352,7 @@ begin
             if (talepSira = '')
             then begin
                  sql := 'update hareketler set ' +
-                        'Durum = ' + inttoStr(Durum) +
+                        'Durum = ' + inttoStr(sec) +
                         ' where sirano = ' + Datalar.SeansBilgi.hizmetSunucuRefNo;
                  datalar.QueryExec(sql);
                  cxGrid_Seans.Dataset.Requery();
@@ -405,8 +398,23 @@ begin
 end;
 
 procedure TfrmTopluSeans.TopPanelButonClick(Sender: TObject);
+var
+  sql : string;
 begin
- inherited;
+ //inherited;
+
+  sql := 'exec sp_TopluSeansGetir ' + txtTopPanelTarih1.GetSQLValue   + ',' +
+                                     txtTopPanelTarih2.GetSQLValue + ',' +
+                                 //    QuotedStr('') + ',' +
+                                     QuotedStr(txtSeansTopPanel.Text) + ',' +
+                                //     QuotedStr('') + ',' +
+                                //     copy(chkList.EditValue,1,1) + ',' +
+                                 //    inttoStr(strtoint(copy(chkList.EditValue,3,1))*-1) + ',' +
+                                     QuotedStr(datalar.AktifSirket);
+
+  datalar.QuerySelect(cxGrid_Seans.Dataset,sql);
+
+
   ADO_Detay_toplam.Close;
   ADO_Detay_toplam.Parameters[0].Value :=  copy(txtTopPanelTarih1.GetValue,1,6);
   ADO_Detay_toplam.Parameters[1].Value :=  datalar.AktifSirket;
@@ -416,7 +424,7 @@ end;
 procedure TfrmTopluSeans.TopPanelPropertiesChange(Sender: TObject);
 begin
   inherited;
-  GridComboDoldur;
+//  GridComboDoldur;
 //
 end;
 
@@ -529,7 +537,7 @@ procedure TfrmTopluSeans.GridComboDoldur;
 var
   st : Tstrings;
 begin
-
+(*
    st := TStringList.Create;
    ItemsDoldurName('txtDamarGiris',st);
    TcxComboBoxProperties(ListeGIRISYOLU.Properties).Items.Clear;
@@ -548,7 +556,7 @@ begin
    TcxComboBoxProperties(ListeDC.Properties).Items.AddStrings(st);
 
    st.Free;
-
+  *)
 end;
 
 procedure TfrmTopluSeans.haksahibi(x : integer);
@@ -669,25 +677,17 @@ procedure TfrmTopluSeans.HastaTakipleri;
 var
   satir : integer;
   tc,dosyaNo,hasta : string;
+  GirisFormRecord : TGirisFormRecord;
 begin
     satir := Liste.Controller.SelectedRows[0].RecordIndex;
+    GirisFormRecord.F_dosyaNO_ := vartoStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+    GirisFormRecord.F_TC_  := vartoStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('TCKIMLIKNO').Index));
+    GirisFormRecord.F_HastaAdSoyad_ := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('hastaAdi').Index);
 
-    dosyaNo := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index);
-    tc := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('TCKIMLIKNO').Index);
-    hasta := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('hastaAdi').Index);
-
- (*
-    Application.CreateForm(TfrmHastaTakipleri, frmHastaTakipleri);
-    GorselAyar(frmHastaTakipleri,datalar.global_img_list4);
-    frmHastaTakipleri.txtTcKimlik.Text := tc;
-    frmHastaTakipleri.txtTcKimlik1.Text := tc;
-    frmHastaTakipleri.txtHasta.Text := hasta;
-    frmHastaTakipleri.txtDosya.Text := dosyaNo;
-    datalar.RxHastaTakip.Active := False;
-    datalar.RxHastaTakip.Active := true;
-    frmHastaTakipleri.ShowModal;
-    frmHastaTakipleri := nil;
-   *)
+     if mrYes = ShowPopupForm('Hasta Takipleri Bul',hastaTakipleriGetir,GirisFormRecord.F_TC_)
+     Then Begin
+       //HastaTakipleriBul('66190086354','01.03.2019','30.03.2019');
+     End;
 end;
 
 procedure TfrmTopluSeans.HastaKarti;
@@ -785,7 +785,7 @@ procedure TfrmTopluSeans.btnListClick(Sender: TObject);
 var
  durum : string;
 begin
-     GridComboDoldur;
+   //  GridComboDoldur;
   //   durum := cxRadioGroup1.EditingValue;
      hastalar(durum);
 end;
@@ -1721,7 +1721,7 @@ begin
   Datalar.SeansBilgi.DiyalizorCinsi := Liste.DataController.Dataset.FieldByName('DiyalizorCinsi').AsString;
   Datalar.SeansBilgi.DiyalizorTipi := Liste.DataController.Dataset.FieldByName('DiyalizorTipi').AsString;
   Datalar.SeansBilgi.Diyalizor := Liste.DataController.Dataset.FieldByName('DIYALIZOR').AsString;
-  Datalar.SeansBilgi.Diyalizat := Liste.DataController.Dataset.FieldByName('Diyalizat').AsString;
+  Datalar.SeansBilgi.Diyalizat := Liste.DataController.Dataset.FieldByName('D').AsString;
   Datalar.SeansBilgi.HeparinTip := Liste.DataController.Dataset.FieldByName('HEPARINTIP').AsString;
   Datalar.SeansBilgi.Heparin := Liste.DataController.Dataset.FieldByName('HEPARIN').AsString;
   Datalar.SeansBilgi.YA := Liste.DataController.Dataset.FieldByName('YA').AsString;
@@ -1751,7 +1751,7 @@ begin
                  ',DiyalizorCinsi = ' +  QuotedStr(Datalar.SeansBilgi.DiyalizorCinsi) +
                  ',DiyalizorTipi = ' +  QuotedStr(Datalar.SeansBilgi.DiyalizorTipi) +
                  ',DIYALIZOR = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizor) +
-                 ',Diyalizat = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizat) +
+                 ',D = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizat) +
                  ',HEPARINTIP = ' +  QuotedStr(Datalar.SeansBilgi.HeparinTip) +
                  ',HEPARIN = ' +  QuotedStr(Datalar.SeansBilgi.Heparin) +
                  ',YA = ' +  QuotedStr(Datalar.SeansBilgi.YA) +

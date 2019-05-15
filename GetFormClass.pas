@@ -128,7 +128,9 @@ uses
     GunSonuOzet,
     topluEpikriz,
     HastailacTedavi,
-    IlacEtkenMadde;
+    IlacEtkenMadde,
+    HastaDiyalizIzlem,
+    UzmanMuayene;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -357,6 +359,8 @@ begin
    TagfrmTopluEpikriz : Result := TfrmTopluEpikriz;
    TagfrmHastaIlacTedavi : Result := TfrmHastaIlacTedavi;
    TagfrmIlacEtkenMaddeSutKural : Result := TfrmIlacEtkenMaddeSutKural;
+   TagfrmHastaDiyalizIzlem  : Result := TfrmHastaDiyalizIzlem;
+   TagfrmUzmanMuayene : Result := TfrmUzmanMuayene;
 
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
@@ -456,6 +460,8 @@ begin
    TagfrmTopluEpikriz : Result := frmTopluEpikriz;
    TagfrmHastaIlacTedavi : Result := frmHastaIlacTedavi;
    TagfrmIlacEtkenMaddeSutKural : Result := frmIlacEtkenMaddeSutKural;
+   TagfrmHastaDiyalizIzlem  : Result := frmHastaDiyalizIzlem;
+   TagfrmUzmanMuayene : Result := frmUzmanMuayene;
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
 
   end;
@@ -554,6 +560,9 @@ begin
      TagfrmTopluEpikriz : frmTopluEpikriz := TfrmTopluEpikriz.Create(Tab);
      TagfrmHastaIlacTedavi : frmHastaIlacTedavi := TfrmHastaIlacTedavi.Create(Tab);
      TagfrmIlacEtkenMaddeSutKural : frmIlacEtkenMaddeSutKural := TfrmIlacEtkenMaddeSutKural.Create(Tab);
+     TagfrmHastaDiyalizIzlem  : frmHastaDiyalizIzlem := TfrmHastaDiyalizIzlem.Create(Tab);
+     TagfrmUzmanMuayene   : frmUzmanMuayene := TfrmUzmanMuayene .Create(Tab);
+
   end;
   try
     if not (Form is TGirisForm) then
@@ -720,6 +729,8 @@ begin
      TagfrmTopluEpikriz : frmTopluEpikriz := TfrmTopluEpikriz.Create(Tab);
      TagfrmHastaIlacTedavi : frmHastaIlacTedavi := TfrmHastaIlacTedavi.Create(Tab);
      TagfrmIlacEtkenMaddeSutKural : frmIlacEtkenMaddeSutKural := TfrmIlacEtkenMaddeSutKural.Create(Tab);
+     TagfrmHastaDiyalizIzlem  : frmHastaDiyalizIzlem := TfrmHastaDiyalizIzlem.Create(Tab);
+     TagfrmUzmanMuayene   : frmUzmanMuayene := TfrmUzmanMuayene .Create(Tab);
 
   end;
   try
@@ -861,6 +872,8 @@ begin
     TagfrmGunSonuOzet : Application.CreateForm(TfrmGunSonuOzet,frmGunSonuOzet);
     TagfrmHastaIlacTedavi : Application.CreateForm(TfrmHastaIlacTedavi,frmHastaIlacTedavi);
     TagfrmIlacEtkenMaddeSutKural : Application.CreateForm(TfrmIlacEtkenMaddeSutKural,frmIlacEtkenMaddeSutKural);
+    TagfrmHastaDiyalizIzlem : Application.CreateForm(TfrmHastaDiyalizIzlem,frmHastaDiyalizIzlem);
+    TagfrmUzmanMuayene   : Application.CreateForm(TfrmUzmanMuayene,frmUzmanMuayene);
   end;
   try
     Form := TGirisForm(FormClassType(abs(FormTag)));

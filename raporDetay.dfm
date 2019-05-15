@@ -20,8 +20,8 @@ object frmRaporDetay: TfrmRaporDetay
   PixelsPerInch = 96
   TextHeight = 13
   object Detay: TcxGroupBox
-    Left = 314
-    Top = 238
+    Left = 8
+    Top = 278
     TabOrder = 0
     Visible = False
     Height = 230
@@ -34,8 +34,6 @@ object frmRaporDetay: TfrmRaporDetay
       Align = alClient
       TabOrder = 0
       Properties.ActivePage = SheetDiyalizRaporBilgisi
-      ExplicitLeft = 43
-      ExplicitTop = 14
       ClientRectBottom = 198
       ClientRectLeft = 3
       ClientRectRight = 906
@@ -1080,6 +1078,16 @@ object frmRaporDetay: TfrmRaporDetay
         HeaderAlignmentVert = vaCenter
         Width = 91
       end
+      object ListeRaporlarColumn9: TcxGridDBColumn
+        Caption = 'Rapor Takip No'
+        DataBinding.FieldName = 'raporTakipNo'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 80
+      end
       object ListeRaporlarColumn8: TcxGridDBColumn
         Caption = 'Durum'
         DataBinding.FieldName = 'aktif'
@@ -1137,7 +1145,7 @@ object frmRaporDetay: TfrmRaporDetay
   end
   object PopupMenu1: TPopupMenu
     Left = 32
-    Top = 408
+    Top = 256
     object N1: TMenuItem
       Caption = #304'la'#231' Rapor Te'#351'hi'#351' Ve Etken Maddeleri '#350'ablon Olarak Kaydet'
       OnClick = N1Click
@@ -1205,7 +1213,7 @@ object frmRaporDetay: TfrmRaporDetay
     Top = 414
   end
   object PopupMenu2: TPopupMenu
-    Left = 72
+    Left = 176
     Top = 352
     object E1: TMenuItem
       Caption = 'Eklenen Etken Maddeyi Meduladaki Rapora Ekle'
@@ -1214,8 +1222,8 @@ object frmRaporDetay: TfrmRaporDetay
   end
   object PopupMenu3: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 40
-    Top = 200
+    Left = 176
+    Top = 304
     object Kapat1: TMenuItem
       Tag = -30
       Caption = 'Kapat'
@@ -1302,7 +1310,7 @@ object frmRaporDetay: TfrmRaporDetay
   object cxGridPopupMenu1: TcxGridPopupMenu
     PopupMenus = <>
     Left = 840
-    Top = 96
+    Top = 48
   end
   object cxStyleRepository1: TcxStyleRepository
     PixelsPerInch = 96

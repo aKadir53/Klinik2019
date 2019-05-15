@@ -137,6 +137,7 @@ type
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
     ListeRaporlarColumn8: TcxGridDBColumn;
+    ListeRaporlarColumn9: TcxGridDBColumn;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
@@ -271,31 +272,52 @@ end;
 
 procedure TfrmRaporDetay.RaporAra;
 var
-   rapor : TRapor;
+  sql : string;
 begin
+    if mrYes = ShowPopupForm('Hasta Raporlarýný Bul',84,ifThen(_Yupass_ = '',_TC_,_Yupass_))
+    Then Begin
+         sql := 'select * from raporlar where dosyaNo = ' + QuotedStr(_dosyaNo_) +
+                ' and raporNo = ' + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporNo').AsString);
 
- (*
-    Application.CreateForm(TfrmHastaTakipleri, frmHastaTakipleri);
-    GorselAyar(frmHastaTakipleri,datalar.global_img_list4);
-    frmHastaTakipleri.txtTcKimlik.Text := HastaBilgileri.TcKimlikNo;
-    frmHastaTakipleri.txtTcKimlik1.Text := HastaBilgileri.TcKimlikNo;
-    frmHastaTakipleri.txtHasta.Text := HastaBilgileri.Adi;
-    frmHastaTakipleri.txtDosya.Text := hastaDosyaNo;
-    datalar.RxHastaTakip.Active := False;
-    datalar.RxHastaTakip.Active := True;
-    frmHastaTakipleri.ShowModal;
-    frmHastaTakipleri := nil;
+         if datalar.QuerySelect(sql).Eof
+         Then Begin
+           if  Mryes = ShowMessageSkin('Rapor Sistemde Kayýtlý Deðil , Kaydetmek Ýstermisiniz ?','','','msg')
+           Then Begin
 
-    Raporlar(hastaDosyaNo,hastagelisNo,HastaBilgileri);
-   *)
+               sql := 'insert into raporlar (dosyaNo,raporNo,raporTarihi,verenTesisKodu,raporTakipno,turu,baslangicTarihi,bitisTarihi,' +
+                      'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,tanilar) ' +
+                      ' values ( ' + QuotedStr(_dosyaNo_) + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporNo').AsString) + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTarihi').AsString) + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('verenTesis').AsString)  + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTakipNo').AsString) + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTuru').AsString) + ','
+                                   + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('baslangicTarihi').Asdatetime)) + '  as datetime) ' + ','
+                                   + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('bitisTarihi').AsDateTime)) + '  as datetime) ' + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('protokolNo').AsString) + ','
+                                   + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('protokolTarihi').AsDateTime)) + '  as datetime) ' + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('tedaviRaporTuru').AsString) + ','
+                                   + datalar.memDataRaporlar.fieldbyname('seansGun').AsString + ','
+                                   + datalar.memDataRaporlar.fieldbyname('seansSayi').AsString + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('Tani').AsString) + ')' ;
+                                 //  + memDataRaporlar.fieldbyname('seansSayi').AsString + ','
+                                  // + memDataRaporlar.fieldbyname('Tani').AsString + ')';
 
-(*
-     rapor.raporNo := ADO_RAPORLAR.fieldbyname('raporNo').AsString;
-     rapor.sevkEdenTesis := ADO_RAPORLAR.fieldbyname('verenTesisKodu').AsString;
-     rapor.raporTarihi := ADO_RAPORLAR.fieldbyname('raporTarihi').AsString;
-     rapor.muayeneAcilis := ADO_RAPORLAR.fieldbyname('raporTarihi').AsString;
-   //  frmHastaKarti.raporBilgiDegis(rapor);
-  *)
+               datalar.QueryExec(sql);
+               RaporGrid.Dataset.Requery();
+               RaporGrid.Dataset.Next;
+
+               ShowMessageSkin('Rapor Sisteme Kaydedildi','','','info');
+
+           End;
+         End
+         Else
+           ShowMessageSkin('Rapor Sistemde Kayýtlý','','','info');
+
+
+
+    End;
+
 end;
 
 procedure TfrmRaporDetay.RaporuSistemdenSil;
@@ -1184,6 +1206,8 @@ begin
     datalar.RaporBilgisi.seansGun :=  RaporGrid.Dataset.FieldByName('seansGun').AsString;
     datalar.RaporBilgisi.seansSayi :=  RaporGrid.Dataset.FieldByName('seansSayi').AsString;
 
+    datalar.RaporBilgisi.raporTakipNo := RaporGrid.Dataset.FieldByName('raporTakipNo').AsString;
+
     datalar.RaporBilgisi.raporCaption :=  _HastaAdSoyad_;
 
 
@@ -1202,6 +1226,7 @@ begin
                  ',protokolNo = ' + QuotedStr(datalar.RaporBilgisi.protokolNo) +
                  ',aciklama = ' + QuotedStr(datalar.RaporBilgisi.aciklama) +
                  ',duzenleyenDoktor = ' + QuotedStr(datalar.RaporBilgisi.duzenleyenDoktor) +
+                 ',raporTakipNo = ' + QuotedStr(datalar.RaporBilgisi.raporTakipNo) +
                  'where sira = ' + datalar.RaporBilgisi.sira;
 
           datalar.QueryExec(sql);

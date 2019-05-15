@@ -1303,33 +1303,12 @@
               Styles.Content = cxStyle5
               Width = 40
               Position.BandIndex = 2
-              Position.ColIndex = 6
+              Position.ColIndex = 4
               Position.RowIndex = 0
             end
             object ListeDiyalizorTipi: TcxGridDBBandedColumn
               DataBinding.FieldName = 'DiyalizorTipi'
               Visible = False
-              Position.BandIndex = 2
-              Position.ColIndex = 7
-              Position.RowIndex = 0
-            end
-            object ListeUTarih: TcxGridDBBandedColumn
-              DataBinding.FieldName = 'UTarih'
-              Visible = False
-              Position.BandIndex = 2
-              Position.ColIndex = 8
-              Position.RowIndex = 0
-            end
-            object ListeUTarihDateTime: TcxGridDBBandedColumn
-              Caption = 'Uygulama Tarih'
-              DataBinding.FieldName = 'UTarihDateTime'
-              PropertiesClassName = 'TcxDateEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              Visible = False
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Width = 80
               Position.BandIndex = 2
               Position.ColIndex = 5
               Position.RowIndex = 0
@@ -1350,15 +1329,7 @@
               Styles.Content = cxStyle5
               Width = 156
               Position.BandIndex = 2
-              Position.ColIndex = 9
-              Position.RowIndex = 0
-            end
-            object Listedoktor: TcxGridDBBandedColumn
-              DataBinding.FieldName = 'doktor'
-              Visible = False
-              Width = 119
-              Position.BandIndex = 2
-              Position.ColIndex = 10
+              Position.ColIndex = 6
               Position.RowIndex = 0
             end
             object ListeTalepSira: TcxGridDBBandedColumn
@@ -1376,25 +1347,25 @@
               Styles.Content = cxStyle4
               Width = 111
               Position.BandIndex = 2
-              Position.ColIndex = 11
+              Position.ColIndex = 7
               Position.RowIndex = 0
             end
             object ListeislemSiraNoYatak: TcxGridDBBandedColumn
               DataBinding.FieldName = 'islemSiraNoYatak'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 12
+              Position.ColIndex = 8
               Position.RowIndex = 0
             end
             object ListesiranoYatis: TcxGridDBBandedColumn
               DataBinding.FieldName = 'siranoYatis'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 13
+              Position.ColIndex = 9
               Position.RowIndex = 0
             end
             object ListeTakpNo: TcxGridDBBandedColumn
-              Caption = 'Tak'#305'p No'
+              Caption = 'Takip No'
               DataBinding.FieldName = 'TakipNo'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
@@ -1416,7 +1387,7 @@
               DataBinding.FieldName = 'SERVIS'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 14
+              Position.ColIndex = 10
               Position.RowIndex = 0
             end
             object ListemakinaNo: TcxGridDBBandedColumn
@@ -1437,7 +1408,7 @@
               Styles.Content = cxStyle5
               Width = 49
               Position.BandIndex = 2
-              Position.ColIndex = 15
+              Position.ColIndex = 11
               Position.RowIndex = 0
             end
             object ListebasvuruNo: TcxGridDBBandedColumn
@@ -1480,7 +1451,7 @@
               Styles.Content = cxStyle5
               Width = 81
               Position.BandIndex = 2
-              Position.ColIndex = 24
+              Position.ColIndex = 20
               Position.RowIndex = 0
             end
             object ListeraporNo: TcxGridDBBandedColumn
@@ -1565,7 +1536,7 @@
               Visible = False
               Width = 115
               Position.BandIndex = 2
-              Position.ColIndex = 16
+              Position.ColIndex = 12
               Position.RowIndex = 0
             end
             object Listefoto: TcxGridDBBandedColumn
@@ -1607,7 +1578,7 @@
               Styles.Content = cxStyle5
               Width = 45
               Position.BandIndex = 2
-              Position.ColIndex = 17
+              Position.ColIndex = 13
               Position.RowIndex = 0
             end
             object ListeTCKIMLIKNO: TcxGridDBBandedColumn
@@ -1627,7 +1598,7 @@
               Visible = False
               Width = 172
               Position.BandIndex = 2
-              Position.ColIndex = 18
+              Position.ColIndex = 14
               Position.RowIndex = 0
             end
             object ListeGIRISKILO: TcxGridDBBandedColumn
@@ -1647,7 +1618,7 @@
               Styles.Content = cxStyle5
               Width = 52
               Position.BandIndex = 2
-              Position.ColIndex = 36
+              Position.ColIndex = 32
               Position.RowIndex = 0
             end
             object ListeCIKISKILO: TcxGridDBBandedColumn
@@ -1667,7 +1638,7 @@
               Styles.Content = cxStyle5
               Width = 49
               Position.BandIndex = 2
-              Position.ColIndex = 37
+              Position.ColIndex = 33
               Position.RowIndex = 0
             end
             object ListeIdealKilo: TcxGridDBBandedColumn
@@ -1675,14 +1646,14 @@
               Visible = False
               Options.Editing = False
               Position.BandIndex = 2
-              Position.ColIndex = 19
+              Position.ColIndex = 15
               Position.RowIndex = 0
             end
             object ListeseansKontrol: TcxGridDBBandedColumn
               DataBinding.FieldName = 'seansKontrol'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 20
+              Position.ColIndex = 16
               Position.RowIndex = 0
             end
             object ListeGIRISYOLU: TcxGridDBBandedColumn
@@ -1701,7 +1672,7 @@
               Styles.Content = cxStyle5
               Width = 99
               Position.BandIndex = 2
-              Position.ColIndex = 38
+              Position.ColIndex = 34
               Position.RowIndex = 0
             end
             object ListeDC: TcxGridDBBandedColumn
@@ -1720,7 +1691,7 @@
               Styles.Content = cxStyle5
               Width = 110
               Position.BandIndex = 2
-              Position.ColIndex = 39
+              Position.ColIndex = 35
               Position.RowIndex = 0
             end
             object ListeD: TcxGridDBBandedColumn
@@ -1739,7 +1710,7 @@
               Styles.Content = cxStyle5
               Width = 112
               Position.BandIndex = 2
-              Position.ColIndex = 40
+              Position.ColIndex = 36
               Position.RowIndex = 0
             end
             object ListeYA: TcxGridDBBandedColumn
@@ -1757,7 +1728,7 @@
               Styles.Content = cxStyle5
               Width = 30
               Position.BandIndex = 2
-              Position.ColIndex = 42
+              Position.ColIndex = 38
               Position.RowIndex = 0
             end
             object ListeAPH: TcxGridDBBandedColumn
@@ -1775,7 +1746,7 @@
               Styles.Content = cxStyle5
               Width = 35
               Position.BandIndex = 2
-              Position.ColIndex = 41
+              Position.ColIndex = 37
               Position.RowIndex = 0
             end
             object ListeKanAlindimi: TcxGridDBBandedColumn
@@ -1799,21 +1770,21 @@
               Styles.Content = cxStyle4
               Width = 42
               Position.BandIndex = 2
-              Position.ColIndex = 21
+              Position.ColIndex = 17
               Position.RowIndex = 0
             end
             object ListeVatandasTip: TcxGridDBBandedColumn
               DataBinding.FieldName = 'VatandasTip'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 22
+              Position.ColIndex = 18
               Position.RowIndex = 0
             end
             object Listebhdat: TcxGridDBBandedColumn
               DataBinding.FieldName = 'bhdat'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 23
+              Position.ColIndex = 19
               Position.RowIndex = 0
             end
             object Listesebeb: TcxGridDBBandedColumn
@@ -1833,56 +1804,56 @@
               Styles.Content = cxStyle5
               Width = 212
               Position.BandIndex = 2
-              Position.ColIndex = 26
+              Position.ColIndex = 22
               Position.RowIndex = 0
             end
             object ListeTanG: TcxGridDBBandedColumn
               DataBinding.FieldName = 'TanG'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 27
+              Position.ColIndex = 23
               Position.RowIndex = 0
             end
             object ListeTanC: TcxGridDBBandedColumn
               DataBinding.FieldName = 'TanC'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 28
+              Position.ColIndex = 24
               Position.RowIndex = 0
             end
             object ListeNabizG: TcxGridDBBandedColumn
               DataBinding.FieldName = 'NabizG'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 29
+              Position.ColIndex = 25
               Position.RowIndex = 0
             end
             object ListeNabizC: TcxGridDBBandedColumn
               DataBinding.FieldName = 'NabizC'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 30
+              Position.ColIndex = 26
               Position.RowIndex = 0
             end
             object ListeTanGK: TcxGridDBBandedColumn
               DataBinding.FieldName = 'TanGK'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 31
+              Position.ColIndex = 27
               Position.RowIndex = 0
             end
             object ListeTanCK: TcxGridDBBandedColumn
               DataBinding.FieldName = 'TanCK'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 32
+              Position.ColIndex = 28
               Position.RowIndex = 0
             end
             object ListeHemodiyalizTip: TcxGridDBBandedColumn
               DataBinding.FieldName = 'HemodiyalizTip'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 33
+              Position.ColIndex = 29
               Position.RowIndex = 0
             end
             object ListeCins: TcxGridDBBandedColumn
@@ -1909,7 +1880,7 @@
               DataBinding.FieldName = 'seansRaporKontrol'
               Visible = False
               Position.BandIndex = 2
-              Position.ColIndex = 34
+              Position.ColIndex = 30
               Position.RowIndex = 0
             end
             object Listekod: TcxGridDBBandedColumn
@@ -1933,7 +1904,7 @@
               Styles.Content = cxStyle4
               Width = 85
               Position.BandIndex = 2
-              Position.ColIndex = 25
+              Position.ColIndex = 21
               Position.RowIndex = 0
             end
             object ListeMedulaDonenKod: TcxGridDBBandedColumn
@@ -1951,7 +1922,7 @@
               Styles.Content = cxStyle4
               Width = 47
               Position.BandIndex = 2
-              Position.ColIndex = 35
+              Position.ColIndex = 31
               Position.RowIndex = 0
             end
             object ListeColumn1: TcxGridDBBandedColumn
@@ -1972,13 +1943,6 @@
               Position.ColIndex = 4
               Position.RowIndex = 0
             end
-            object ListeColumn2: TcxGridDBBandedColumn
-              DataBinding.FieldName = 'rTarih'
-              Visible = False
-              Position.BandIndex = 0
-              Position.ColIndex = 5
-              Position.RowIndex = 0
-            end
             object ListeColumn3: TcxGridDBBandedColumn
               DataBinding.FieldName = 'Tarih'
               PropertiesClassName = 'TcxDateEditProperties'
@@ -1991,28 +1955,14 @@
               Styles.Content = cxStyle5
               Width = 107
               Position.BandIndex = 2
-              Position.ColIndex = 4
-              Position.RowIndex = 0
-            end
-            object ListeColumn4: TcxGridDBBandedColumn
-              DataBinding.FieldName = 'rTarih'
-              Visible = False
-              Position.BandIndex = 2
               Position.ColIndex = 3
-              Position.RowIndex = 0
-            end
-            object ListeColumn5: TcxGridDBBandedColumn
-              DataBinding.FieldName = 'obje'
-              Visible = False
-              Position.BandIndex = 0
-              Position.ColIndex = 6
               Position.RowIndex = 0
             end
             object ListeColumn6: TcxGridDBBandedColumn
               DataBinding.FieldName = 'KURUMTIPI'
               Visible = False
               Position.BandIndex = 0
-              Position.ColIndex = 7
+              Position.ColIndex = 5
               Position.RowIndex = 0
             end
           end
@@ -2100,18 +2050,6 @@
       end
     end
   end
-  object OdemeBilgiTest: THTTPRIO
-    WSDLLocation = 'OdemeBilgisiIslemleri.wsdl'
-    Service = 'OdemeBilgisiIslemleriService'
-    Port = 'OdemeBilgisiIslemleri'
-    HTTPWebNode.Agent = 'Borland SOAP 1.2'
-    HTTPWebNode.UseUTF8InHeader = True
-    HTTPWebNode.InvokeOptions = [soIgnoreInvalidCerts, soAutoCheckAccessPointViaUDDI]
-    HTTPWebNode.WebNodeOptions = []
-    Converter.Options = [soSendMultiRefObj, soTryAllSchema, soRootRefNodesToBody, soUTF8InHeader, soCacheMimeResponse, soUTF8EncodeXML]
-    Left = 211
-    Top = 132
-  end
   object HTTP1: THTTPRIO
     WSDLLocation = 'HizmetKayitIslemleri.wsdl'
     Service = 'HizmetKayitIslemleriService'
@@ -2129,8 +2067,8 @@
     Images = DATALAR.imag24png
     MenuAnimation = [maLeftToRight]
     OnPopup = PopupMenu1Popup
-    Left = 348
-    Top = 278
+    Left = 188
+    Top = 166
     object SeansMEdulayaKaydet1: TMenuItem
       Tag = -1
       Caption = 'Seanslar'#305' Medulaya Kaydet'
@@ -2147,6 +2085,7 @@
       Tag = -18
       Caption = 'Medulada Kay'#305'tl'#305' Hizmet Kodu De'#287'i'#351'tir'
       ImageIndex = 34
+      Visible = False
       object P1: TMenuItem
         Tag = -704234
         Caption = 'P704230  >>  P704234'

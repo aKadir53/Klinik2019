@@ -13,7 +13,8 @@ uses
   IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
   hastaKabulIslemleriWS, MedulaHastaKabul, MedulaHizmetKayit,
   MedulaYardimciIslem, hizmetKayitIslemleriWS,
-  faturaKayitIslemleriWS, MedulaFaturaKayit, yardimciIslemlerWS;
+  faturaKayitIslemleriWS, MedulaFaturaKayit, yardimciIslemlerWS,
+  raporIslemleriWS, MedulaRaporIslem;
 
 
   Const
@@ -311,6 +312,48 @@ type
     StringField21: TStringField;
     StringField22: TStringField;
     StringField23: TStringField;
+    RaporIslemWS: TRaporIslem;
+    memDataRaporlar: TdxMemData;
+    memDataRaporlarRaporTuru: TStringField;
+    memDataRaporlarRaporNo: TStringField;
+    memDataRaporlarRaporTarihi: TStringField;
+    memDataRaporlarVerenTesis: TStringField;
+    memDataRaporlarTedaviRaporTuru: TStringField;
+    memDataRaporlarraporTakipNo: TStringField;
+    memDataRaporlarseansGun: TIntegerField;
+    memDataRaporlarseansSayi: TIntegerField;
+    memDataRaporlarbaslangicTarihi: TDateTimeField;
+    memDataRaporlarbitisTarihi: TDateField;
+    memDataRaporlarprotokolNo: TStringField;
+    memDataRaporlarbutKodu: TStringField;
+    memDataRaporlartani: TStringField;
+    memDataRaporlarprotokolTarihi: TDateField;
+    memDataRaporlaraciklama: TStringField;
+    memDataRaporlarI: TdxMemData;
+    StringField24: TStringField;
+    StringField25: TStringField;
+    StringField26: TStringField;
+    StringField27: TStringField;
+    StringField28: TStringField;
+    StringField29: TStringField;
+    IntegerField6: TIntegerField;
+    IntegerField7: TIntegerField;
+    DateTimeField1: TDateTimeField;
+    DateField1: TDateField;
+    StringField30: TStringField;
+    StringField31: TStringField;
+    StringField32: TStringField;
+    DateField2: TDateField;
+    StringField33: TStringField;
+    SQLMemTable_EtkenMaddeler: TSQLMemTable;
+    SQLMemTable_EtkenMaddelerraporTakipNo: TStringField;
+    SQLMemTable_EtkenMaddeleretkinMaddeKodu: TStringField;
+    SQLMemTable_EtkenMaddeleretkinMaddeAdi: TStringField;
+    SQLMemTable_EtkenMaddelerkullanimDoz1: TIntegerField;
+    SQLMemTable_EtkenMaddelerkullanimDoz2: TIntegerField;
+    SQLMemTable_EtkenMaddelerkullanimDozBirim: TStringField;
+    SQLMemTable_EtkenMaddelerkullanimPeriyot: TIntegerField;
+    SQLMemTable_EtkenMaddelerkullanimPeriyotBirim: TStringField;
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
     procedure TakipHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;

@@ -13,7 +13,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object cxIlacTedaviPanel: TcxGroupBox
@@ -22,7 +21,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
     Align = alClient
     PanelStyle.Active = True
     TabOrder = 0
-    ExplicitWidth = 1029
     Height = 571
     Width = 714
     object frmHastaIlacTedavi_cxGroupBox1: TcxGroupBox
@@ -57,10 +55,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
         Properties.MultiLine = True
         Properties.Options = [pcoAlwaysShowGoDialogButton, pcoGoDialog, pcoGradient, pcoGradientClientArea]
         Properties.Style = 11
-        ExplicitLeft = 6
-        ExplicitTop = 121
-        ExplicitWidth = 210
-        ExplicitHeight = 587
         ClientRectBottom = 556
         ClientRectLeft = 3
         ClientRectRight = 340
@@ -68,10 +62,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
         object cxTabSheet2: TcxTabSheet
           Caption = 'Diyaliz '#304'zlem'
           ImageIndex = 1
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object cxGroupBoxAnemi: TcxGroupBox
             Left = 0
             Top = 45
@@ -86,7 +76,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
             Style.TextStyle = [fsBold]
             Style.IsFontAssigned = True
             TabOrder = 0
-            ExplicitWidth = 202
             Height = 96
             Width = 337
             object txtAnemi: TcxCheckListBox
@@ -117,7 +106,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
                   Text = 'Demir Preperat'#305
                 end>
               TabOrder = 0
-              ExplicitWidth = 196
             end
           end
           object cxGroupBoxAciklama: TcxGroupBox
@@ -126,8 +114,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
             Align = alClient
             Caption = 'A'#231#305'klama'
             TabOrder = 1
-            ExplicitWidth = 202
-            ExplicitHeight = 181
             Height = 154
             Width = 337
             object txtDAciklama: TcxMemo
@@ -137,8 +123,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
               Lines.Strings = (
                 '')
               TabOrder = 0
-              ExplicitWidth = 196
-              ExplicitHeight = 156
               Height = 129
               Width = 331
             end
@@ -160,7 +144,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
             Style.TransparentBorder = True
             Style.IsFontAssigned = True
             TabOrder = 2
-            ExplicitWidth = 202
             Height = 45
             Width = 337
             object txtSinekalset: TcxComboBox
@@ -175,7 +158,7 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
               Text = '2 - Kullanm'#305'yor'
               ExplicitLeft = 2
               ExplicitTop = -2
-              ExplicitWidth = 198
+              ExplicitWidth = 333
               Width = 331
             end
           end
@@ -192,7 +175,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
             Style.Font.Style = [fsBold]
             Style.IsFontAssigned = True
             TabOrder = 3
-            ExplicitWidth = 202
             Height = 45
             Width = 337
             object txtAntihipertansif: TcxComboBox
@@ -216,7 +198,7 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
               Text = '1 - Kullanm'#305'yor'
               ExplicitLeft = 2
               ExplicitTop = -2
-              ExplicitWidth = 198
+              ExplicitWidth = 333
               Width = 331
             end
           end
@@ -234,7 +216,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
             Style.TextStyle = [fsBold]
             Style.IsFontAssigned = True
             TabOrder = 4
-            ExplicitWidth = 202
             Height = 45
             Width = 337
             object txtDVitaminKul: TcxComboBox
@@ -251,7 +232,7 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
               Text = '1 - Ihtiyac'#305' Yok'
               ExplicitLeft = 2
               ExplicitTop = -2
-              ExplicitWidth = 198
+              ExplicitWidth = 333
               Width = 331
             end
           end
@@ -268,7 +249,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
             Style.Font.Style = [fsBold]
             Style.IsFontAssigned = True
             TabOrder = 5
-            ExplicitWidth = 202
             Height = 45
             Width = 337
             object txtedaviSeyri: TcxComboBox
@@ -291,7 +271,7 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
               Text = '7 - Diyaliz Tedavisi Devam Ediyor'
               ExplicitLeft = 2
               ExplicitTop = -2
-              ExplicitWidth = 198
+              ExplicitWidth = 333
               Width = 331
             end
           end
@@ -312,7 +292,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
             Style.TransparentBorder = True
             Style.IsFontAssigned = True
             TabOrder = 6
-            ExplicitWidth = 202
             Height = 100
             Width = 337
             object txtFosfor: TcxCheckListBox
@@ -347,17 +326,12 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
                   Text = 'Di'#287'er'
                 end>
               TabOrder = 0
-              ExplicitWidth = 196
             end
           end
         end
         object cxTabSheet1: TcxTabSheet
           Caption = 'Epikriz A'#231#305'klama'
           ImageIndex = 0
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object cxGroupBoxEpikrizAck: TcxGroupBox
             Left = 0
             Top = 0
@@ -372,8 +346,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'UserSkin'
             TabOrder = 0
-            ExplicitWidth = 202
-            ExplicitHeight = 557
             Height = 530
             Width = 337
             object txtAciklama: TAdvMemo
@@ -494,8 +466,6 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
               UseStyler = False
               Version = '3.0.2.0'
               WordWrap = wwClientWidth
-              ExplicitWidth = 196
-              ExplicitHeight = 532
             end
           end
         end
@@ -504,8 +474,8 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 208
-    Top = 160
+    Left = 552
+    Top = 56
     object K1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -533,13 +503,13 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
       '           where dosyaNo = '#39'015099'#39
       '           and gelisNo = '#39'1'#39' and abs(t.tip) = '#39'2'#39
       '          order by kabulno,h.TARIH,sira ')
-    Left = 120
-    Top = 286
+    Left = 424
+    Top = 326
   end
   object DataSource8: TDataSource
     DataSet = ADO_Tetkikler
-    Left = 160
-    Top = 286
+    Left = 496
+    Top = 326
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 456
@@ -589,13 +559,13 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
     Prepared = True
     SQL.Strings = (
       'select * from labsonucdegerlendirme')
-    Left = 120
-    Top = 342
+    Left = 416
+    Top = 414
   end
   object DataSource1: TDataSource
     DataSet = ADO_TetkikDegerlendir
-    Left = 160
-    Top = 342
+    Left = 496
+    Top = 414
   end
   object Tetkikler: TListeAc
     ListeBaslik = 'Tetkik Listesi'
@@ -618,7 +588,8 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
     Calistir = fgEvet
     BiriktirmeliSecim = False
     Grup = False
-    Left = 328
-    Top = 205
+    GrupCol = 0
+    Left = 600
+    Top = 341
   end
 end
