@@ -20,7 +20,7 @@ uses
   dxSkinOffice2010Blue, dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven,
   dxSkinSharp, dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
   dxSkinValentine, dxSkinXmas2008Blue, cxGroupBox, acPNG, cxImage,
-  cxDropDownEdit, cxImageComboBox, cxLabel;
+  cxDropDownEdit, cxImageComboBox, cxLabel, cxCheckBox;
 
 type
   TfrmLogin = class(TForm)
@@ -83,6 +83,8 @@ type
     NoktaImage: TcxImage;
     btnSifreUnuttum: TcxButton;
     Label2: TLabel;
+    imzaIleGir: TcxCheckBox;
+    dxLayoutControl1Item6: TdxLayoutItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -211,6 +213,7 @@ var
   iThermo : Integer;
   g : TBitmap;
   Dataset : TDataset;
+  imzaTc : string;
 begin
   bloginLog := False;
   bOtomatikGiris := False;
@@ -241,6 +244,7 @@ begin
         aSL1.Free;
       end;
     end;
+
     try
       try
         Datalar.ADOConnection2.Connected := false;
@@ -257,31 +261,51 @@ begin
 
       login.Active := true;
 
-      if not login.Locate('Kullanici',edit1.Text,[]) then
-      begin
-        ShowMessageSkin('Kullanýcý Adý Hatalý','','','info');
-        Exit;
-      end;
-      if IsNull (trim(login.FieldValues['password'])) then
-      begin
-        ShowMessageSkin('Kullanýcý Adý Kullanýma Kapalý','','','info');
-        Exit;
-      end;
-      if trim(login.FieldValues['password']) <> edit2.Text then
-      begin
-        ShowMessageSkin('Þifre Hatalý','','','info');
-        Exit;
-      end;
+      if imzaIleGir.Checked
+      then begin
+          imzaTc := ImzaliGirisYap;
+          if imzaTc = '' then exit;
+          if login.Locate('donem',imzaTc,[]) then
+          begin
+            datalar.username := login.FieldValues['kullanici'];
+          end
+          else
+          begin
+            ShowMessageSkin('Kullanýcý Sistemde Bulunamadý','','','info');
+            Exit;
+          end;
 
-      datalar.username := edit1.Text;
-      DATALAR.usersifre := edit2.Text;
-
-      //þifre deðiþtirme gerekliyse...
-      if not bOtomatikGiris and Login.FieldByName ('SifreDegismeli').AsBoolean then
+      end
+      else
       begin
-        ShowMessageSkin('Þifrenizi Deðiþtirmeniz Gerekmektedir...', '', '', 'info');
-        if not SifreDegistir (True) then Exit;
-      end;
+
+          if not login.Locate('Kullanici',edit1.Text,[]) then
+          begin
+            ShowMessageSkin('Kullanýcý Adý Hatalý','','','info');
+            Exit;
+          end;
+          if IsNull (trim(login.FieldValues['password'])) then
+          begin
+            ShowMessageSkin('Kullanýcý Adý Kullanýma Kapalý','','','info');
+            Exit;
+          end;
+          if trim(login.FieldValues['password']) <> edit2.Text then
+          begin
+            ShowMessageSkin('Þifre Hatalý','','','info');
+            Exit;
+          end;
+
+          datalar.username := edit1.Text;
+          DATALAR.usersifre := edit2.Text;
+
+          //þifre deðiþtirme gerekliyse...
+          if not bOtomatikGiris and Login.FieldByName ('SifreDegismeli').AsBoolean then
+          begin
+            ShowMessageSkin('Þifrenizi Deðiþtirmeniz Gerekmektedir...', '', '', 'info');
+            if not SifreDegistir (True) then Exit;
+          end;
+
+     end;
 
       regyazLastLogin;
       bloginLog := True;
@@ -301,60 +325,8 @@ begin
       dxStatusBar1.Panels [1].Width := Length (dxStatusBar1.Panels [1].Text) * 8;
       datalar._database := txtDataBase.Text;
 
-  (*
-      if datalar.UserGroup = '1' then
-      begin
-          datalar.Foto := TJpegImage.Create;
-          g := TBitmap.Create;
-          try
-            g := TBitmap.Create;
-            datalar.FotoImage.GetBitmap(2,g);
-            datalar.Foto.Assign(g);
-          finally
-           g.free;
-          end;
-      end;
 
-      if (datalar.IGU <> '') or (datalar.doktorKodu <> '')
-      then begin
-         if datalar.IGU <> '' then Table := 'IGU' else Table := 'DoktorlarT';
-         if datalar.IGU <> '' then where := datalar.IGU else where := datalar.doktorKodu;
-
-        // datalar.Foto := TPngImage.Create;
-         datalar.Foto := TJpegImage.Create;
-         try
-           try
-              Dataset := datalar.QuerySelect('select tanimi,Foto from ' + Table + ' where kod = ' + QuotedStr(where));
-              datalar.userTanimi := Dataset.FieldByName('tanimi').AsString;
-              if not Dataset.FieldByName('foto').IsNull
-              then
-               datalar.Foto.Assign(Dataset.FieldByName('foto'))
-              else
-               datalar.Foto := nil;
-           except
-            datalar.Foto := nil;
-           end;
-         finally
-         end;
-
-         if datalar.Foto = nil
-         then begin
-          try
-           //datalar.Foto := TPngImage.Create;
-           datalar.Foto := TJpegImage.Create;
-           g := TBitmap.Create;
-
-           if datalar.IGU <> '' then datalar.FotoImage.GetBitmap(0,g);
-           if datalar.doktorKodu <> '' then datalar.FotoImage.GetBitmap(1,g);
-            datalar.Foto.Assign(g);
-          finally
-           g.free;
-          end;
-         end;
-
-      end;
-       *)
-       SetAnaFormFoto;
+      SetAnaFormFoto;
 
       AnaForm.dxSkinController1.SkinName := login.FieldByName('userSkin').AsString;
       FormatSettings.DateSeparator := '.';

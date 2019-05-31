@@ -20,10 +20,6 @@ object frmDamarIzi: TfrmDamarIzi
     Align = alClient
     Caption = 'Tarih'
     TabOrder = 0
-    ExplicitLeft = 8
-    ExplicitTop = 56
-    ExplicitWidth = 888
-    ExplicitHeight = 385
     Height = 489
     Width = 912
     object cxGroupBox2: TcxGroupBox
@@ -32,8 +28,9 @@ object frmDamarIzi: TfrmDamarIzi
       Align = alTop
       PanelStyle.Active = True
       TabOrder = 0
-      ExplicitLeft = -13
-      ExplicitTop = 43
+      ExplicitLeft = 2
+      ExplicitTop = -2
+      ExplicitWidth = 908
       Height = 28
       Width = 906
       object txtDonem: TcxDateEditKadir
@@ -66,8 +63,10 @@ object frmDamarIzi: TfrmDamarIzi
       LookAndFeel.NativeStyle = False
       ExcelFileName = 'DamarIziDogrulananHastaList'
       ExceleGonder = True
-      ExplicitLeft = 179
-      ExplicitTop = 83
+      ExplicitLeft = 2
+      ExplicitTop = 26
+      ExplicitWidth = 908
+      ExplicitHeight = 461
       object gridHastalar: TcxGridDBTableView
         Navigator.Buttons.First.Visible = True
         Navigator.Buttons.PriorPage.Visible = True
@@ -394,6 +393,7 @@ object frmDamarIzi: TfrmDamarIzi
       Tag = -4
       Caption = 'Hastalar'#305'n Seanslar'#305'n'#305' Onayla ve Medulaya G'#246'nder'
       ImageIndex = 76
+      OnClick = cxButtonCClick
     end
   end
 end

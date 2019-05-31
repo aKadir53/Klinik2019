@@ -98,16 +98,19 @@ type
     msjTip: TcxRadioGroup;
     cxGroupBox3: TcxGroupBox;
     cxGroupBox4: TcxGroupBox;
+    S2: TMenuItem;
+    S3: TMenuItem;
+    gridListeColumn8: TcxGridDBColumn;
+    T2: TMenuItem;
+    M1: TMenuItem;
+    M2: TMenuItem;
+    S4: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
 
     function SYSOnlineCvpDBDurumYaz(SiraNo,SysTakipNo,MesajTipi,SONUCKODU,SONUCMESAJ,user : string) : integer;
     procedure MesajGonder(mesaj , islemTipi , HastaneRefNo: string);
     function SendMesajGonder(m,t : PWideChar ; var sonuc : PWideChar ; HastaneRefNo : string) : integer;
-
-    procedure gridListeStylesGetContentStyle(Sender: TcxCustomGridTableView;
-      ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
-      out AStyle: TcxStyle);
     procedure cxButton6Click(Sender: TObject);
     procedure cxPageControl1Change(Sender: TObject);
     procedure msjTipClick(Sender: TObject);
@@ -129,6 +132,7 @@ type
     procedure sysTakipNoSilSorgula(Tip : String);
     procedure btnSilClick(Sender: TObject);
     procedure btnKayitSorgulaListClick(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
   private
     { Private declarations }
   public
@@ -182,7 +186,7 @@ procedure TfrmSaglikNetOnline.cxKaydetClick(Sender: TObject);
 var
   Form : TGirisForm;
   r : integer;
-  dosyaNo,ad,soyad : string;
+  dosyaNo,ad,soyad,sysTakipNo,HastaneRefNo : string;
   GirisFormRecord : TGirisFormRecord;
 begin
   datalar.KontrolUserSet := False;
@@ -191,9 +195,12 @@ begin
 
   r := gridListe.DataController.DataControllerInfo.FocusedRecordIndex;
   dosyaNo := cxGrid1.Dataset.FieldByName('dosyaNo').AsString; //TCtoDosyaNo(gridListe.DataController.Values[r, 0]);
+  sysTakipNo := cxGrid1.Dataset.FieldByName('sysTakipNo').AsString; //TCtoDosyaNo(gridListe.DataController.Values[r, 0]);
+
   GirisFormRecord.F_dosyaNo_ := dosyaNo;
   GirisFormRecord.F_gelisNo_ := cxGrid1.Dataset.FieldByName('gelisNo').AsString;
   GirisFormRecord.F_TC_ := cxGrid1.Dataset.FieldByName('TCKIMLIKNO').AsString;
+
 
   GirisFormRecord.F_HastaAdSoyad_ :=
      cxGrid1.Dataset.FieldByName('HASTAADI').AsString + ' ' +
@@ -234,6 +241,20 @@ begin
    -20 : begin
             KararDestekBrowser;
          end;
+   -21 : begin
+             datalar.Login;
+             ShowMessageSkin(
+               SGKHizmetSorgulama(datalar._userSaglikNet2_,DATALAR._passSaglikNet2_,sysTakipNo,'',ktsHbysKodu),
+             '','','info');
+         end;
+
+  -22 : begin
+          msg := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('SYSTakipNoSorgu').Index);
+          sysTakipNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('SysTakipNo').Index);
+          HastaneRefNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('SIRANO').Index);
+          MesajGonder(msg,'SysTakipNoSorgula',HastaneRefNo);
+          Application.ProcessMessages;
+        end;
 
     end;
 
@@ -442,13 +463,10 @@ var
                 if pos('Sil',islemTipi) > 0 then
                 takip := '' else takip := SS[2];
 
-             //   ado := TADOQuery.Create(nil);
-             //   ado.Connection := datalar.ADOConnection2;
-                sql := 'update gelisler set SYSTakipNo = ' + QuotedStr(takip) +
+                sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr(takip) +
                        ' where SIRANO = ' + HastaneRefNo;
                 datalar.QueryExec(sql);
                 txtLog.Lines.Add(SS[1] + ' - ' + SS[2]);
-             //   ado.Free;
 
                 SYSOnlineCvpDBDurumYaz(HastaneRefNo,SS[2],islemTipi,SS[0],SS[1],datalar.username);
              end
@@ -459,14 +477,21 @@ var
                if SS[0] = 'E2033'
                then begin
                 takip := copy(SS[1],pos('=',SS[1])+1,50);
-             //   ado := TADOQuery.Create(nil);
-             //   ado.Connection := datalar.ADOConnection2;
-                sql := 'update gelisler set SYSTakipNo = ' + QuotedStr(takip) +
+                sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr(takip) +
                        ' where SIRANO = ' + HastaneRefNo;
                 datalar.QueryExec(sql);
-               // ado.Free;
+               end
+               else
+               if SS[0] = 'E2003'
+               then begin
+                takip := '';
+                sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr('') +
+                       ' where gelisID = ' + HastaneRefNo;
+                datalar.QueryExec(sql);
                end;
+
              end;
+
          End
          else
          begin
@@ -509,6 +534,11 @@ begin
   try
    sonuc := '';
    s := SendMesajGonder(pwidechar(mesaj),pwidechar(islemTipi),sonuc,HastaneRefNo);
+   if islemTipi = 'SysTakipNoSorgula'
+   then begin
+     xmlGoster('C:\NoktaV3\' +  islemTipi + 'Cvp');
+   end
+   else
    sonucYaz(s);
   except on e : Exception do
    begin
@@ -549,6 +579,12 @@ end;
 procedure TfrmSaglikNetOnline.msjTipClick(Sender: TObject);
 begin
   btnList.Click;
+end;
+
+procedure TfrmSaglikNetOnline.PopupMenu1Popup(Sender: TObject);
+begin
+  H3.Enabled := (msjTip.ItemIndex = 0);
+  S1.Enabled := (msjTip.ItemIndex = 4);
 end;
 
 function TfrmSaglikNetOnline.SYSOnlineCvpDBDurumYaz(SiraNo,SysTakipNo,MesajTipi,SONUCKODU,SONUCMESAJ,user : string) : integer;
@@ -753,17 +789,6 @@ begin
 
 
 
-end;
-
-procedure TfrmSaglikNetOnline.gridListeStylesGetContentStyle(
-  Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
-  AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
-begin
-(*
-    if ARecord.Values[6] = 'T'
-    Then
-      AStyle := cxStyle1;
-      *)
 end;
 
 procedure TfrmSaglikNetOnline.HTTPRIO1AfterExecute(const MethodName: string;

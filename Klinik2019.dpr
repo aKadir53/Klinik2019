@@ -96,13 +96,13 @@ uses
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 1093;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
-  OSGBDllVersiyon : integer = 5;     //  DLLVersiyon.txt  içine DllVersiyon deðerini yaz ftp at
+  AppalicationVer : integer = 1094;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
+  OSGBDllVersiyon : integer = 6;     //  DLLVersiyon.txt  içine DllVersiyon deðerini yaz ftp at
                                      // isg.exe yapý deðiþikliðinden sonra buna gerek kalmýyor
 
   NoktaURL : string = 'https://www.noktayazilim.net';
-  OSGBVersiyonURL : string = 'http://www.noktayazilim.net/OSGBVersiyon.txt';
-  DLLVersiyonURL : string = 'http://www.noktayazilim.net/OSGBDLLVersiyon.txt';
+  VersiyonURL : string = 'http://www.noktayazilim.net/KlinikVersiyon.txt';
+  DLLVersiyonURL : string = 'http://www.noktayazilim.net/KlinikDLLVersiyon.txt';
 
 {$R *.res}
 {$WEAKLINKRTTI ON}
@@ -112,14 +112,16 @@ const
    versiyon,Dversiyon ,sql,isg,isgOld : string;
   _exe : PAnsiChar;
   dosya : TFileStream;
+  _modal_ : integer;
 
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDATALAR, DATALAR);
+
   Application.CreateForm(TAnaForm, AnaForm);
-  Application.CreateForm(TfrmGunSonuOzet, frmGunSonuOzet);
+ // Application.CreateForm(TfrmGunSonuOzet, frmGunSonuOzet);
 
   // form2.show;
 
@@ -131,29 +133,29 @@ begin
 
   datalar.programTip := copy(ExtractFileName(Application.ExeName),1,1);
 
-  isgOld := 'isg9.exe';
-  isg := 'isg10.exe';
+  isgOld := 'yv.exe';
+  isg := 'yv1.exe';
 
 //  Download('https://www.noktayazilim.net/' + isg,'mavinokta','nokta53Nokta','C:\OSGB\'+isg);
 
   datalar.versiyon := inttostr(AppalicationVer);
-  if ForceDirectories ('C:\OSGB') then
+  if ForceDirectories ('C:\NoktaV4') then
   begin
-      if FileExists('C:\OSGB\' + isg) = False
+      if FileExists('C:\NoktaV4\' + isg) = False
       Then begin
         //dosya := TFileStream.Create('C:\OSGB\' + isg,fmCreate);
         try
-          Download('https://www.noktayazilim.net/isg/'+isg,'mavinokta','nokta53Nokta','C:\OSGB\'+isg);
-          DeleteFile('C:\OSGB\isg.exe');
-          CopyFile(pChar('C:\OSGB\'+isg),pChar('C:\OSGB\isg.exe'),true);
-          DeleteFile('C:\OSGB\'+isgOld);
+          Download('https://www.noktayazilim.net/isg/'+isg,'mavinokta','nokta53Nokta','C:\NoktaV4\'+isg);
+          DeleteFile('C:\NoktaV4\isg.exe');
+          CopyFile(pChar('C:\NoktaV4\'+isg),pChar('C:\NoktaV4\isg.exe'),true);
+          DeleteFile('C:\NoktaV4\'+isgOld);
         finally
          //dosya.Free;
         end;
     end;
 
   try
-    versiyon := (datalar.HTTP1.Get(OSGBVersiyonURL));
+    versiyon := (datalar.HTTP1.Get(VersiyonURL));
     Dversiyon := (datalar.HTTP1.Get(DLLVersiyonURL));
   except
     versiyon := inttostr(AppalicationVer);
@@ -169,12 +171,12 @@ begin
 //      dosya := TFileStream.Create('C:\OSGB\NoktaDLL.dll',fmCreate);
 //      datalar.HTTP1.Get('https://www.noktayazilim.net/NoktaDLL.dll' ,TStream(dosya));
 
-      Download('https://www.noktayazilim.net/NoktaDLL.dll','mavinokta','nokta53Nokta','C:\OSGB\NoktaDLL.dll');
-      Download('https://www.noktayazilim.net/BouncyCastle.Crypto.dll','mavinokta','nokta53Nokta','C:\OSGB\BouncyCastle.Crypto.dll');
-      Download('https://www.noktayazilim.net/EdocLib.dll','mavinokta','nokta53Nokta','C:\OSGB\EdocLib.dll');
-      Download('https://www.noktayazilim.net/Net.Pkcs11.dll','mavinokta','nokta53Nokta','C:\OSGB\Net.Pkcs11.dll');
-      Download('https://www.noktayazilim.net/itextsharp.dll','mavinokta','nokta53Nokta','C:\OSGB\itextsharp.dll');
-      Download('https://www.noktayazilim.net/Microsoft.VisualBasic.PowerPacks.Vs.dll','mavinokta','nokta53Nokta','C:\OSGB\Microsoft.VisualBasic.PowerPacks.Vs.dll');
+      Download('https://www.noktayazilim.net/NoktaDLL.dll','mavinokta','nokta53Nokta','C:\NoktaV4\NoktaDLL.dll');
+      Download('https://www.noktayazilim.net/BouncyCastle.Crypto.dll','mavinokta','nokta53Nokta','C:\NoktaV4\BouncyCastle.Crypto.dll');
+      Download('https://www.noktayazilim.net/EdocLib.dll','mavinokta','nokta53Nokta','C:\NoktaV4\EdocLib.dll');
+      Download('https://www.noktayazilim.net/Net.Pkcs11.dll','mavinokta','nokta53Nokta','C:\NoktaV4\Net.Pkcs11.dll');
+      Download('https://www.noktayazilim.net/itextsharp.dll','mavinokta','nokta53Nokta','C:\NoktaV4\itextsharp.dll');
+      Download('https://www.noktayazilim.net/Microsoft.VisualBasic.PowerPacks.Vs.dll','mavinokta','nokta53Nokta','C:\NoktaV4\Microsoft.VisualBasic.PowerPacks.Vs.dll');
 
   //    dosya.Free;
 
@@ -185,7 +187,7 @@ begin
   if (strtoint(versiyon) > AppalicationVer)
   Then Begin
     try
-     _exe :=  PAnsiChar(AnsiString('C:\OSGB\isg.exe'));
+     _exe :=  PAnsiChar(AnsiString('C:\NoktaV4\yv.exe'));
      WinExec(_exe,SW_SHOW);
     // datalar.KillTask('Diyaliz.exe');
     except on e : exception do
@@ -218,7 +220,7 @@ begin
 
   Application.CreateForm(TfrmLogin, frmLogin);
   try
-    if frmLogin.ShowModal <> mrYes then Exit;
+      if frmLogin.ShowModal <> mrYes then Exit;
   finally
     FreeAndNil (frmLogin);
   end;

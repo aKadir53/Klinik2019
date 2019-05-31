@@ -57,7 +57,7 @@ function HizmetKayit_3(basvuruNo , TakipNo : string ; Http1 : THTTPRIO ;
 //function TakipformuOku(TcNo : string ; var _form_ : TakipFormlari ; Http1 : THTTPRIO) : string;
 
 
-function HizmetKayitVeriSeti(_takip ,_basvuruNo, Modul , tedavi : string) : hizmetKayitGirisDVO;
+function HizmetKayitVeriSeti(_takip ,_basvuruNo, Modul , tedavi , Dataset , islemRefNo : string) : hizmetKayitGirisDVO;
 function MuayeneM3(_takip : string) : MuayeneBilgisiDVO;
 function YatisM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
 function TahlilM3(_takip , Modul , Tedavi : string) : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
@@ -634,6 +634,8 @@ var
   sql , s ,ss : string;
   x,y : integer;
 begin
+    DamarIziDogrulamaSorgula := '';
+    msj := '';
 
     datalar.YardimciIslemWS.DamarIziDogrulamaSorguGiris.islemTarihi := tarih;
     datalar.YardimciIslemWS.DamarIziDogrulamaSorguGiris.tckNo := tc;
@@ -4106,7 +4108,7 @@ begin
 end;
 
 
-function HizmetKayitVeriSeti(_takip ,_basvuruNo , Modul , tedavi : string) : hizmetKayitGirisDVO;
+function HizmetKayitVeriSeti(_takip ,_basvuruNo , Modul , tedavi, Dataset , islemRefNo : string) : hizmetKayitGirisDVO;
 var
   sql,sql1 , dosyaNo , gelisNo : string;
   i ,j, dizi , dizi1 , r : integer;
@@ -4119,6 +4121,7 @@ var
   FdigerIslem : hizmetKayitIslemleriWS.Array_Of_digerIslemBilgisiDVO;
   Ftahliller : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
   FTanilar : hizmetKayitIslemleriWS.Array_Of_taniBilgisiDVO;
+  FMalzemeler : HizmetKayitIslemleriWS.Array_Of_malzemeBilgisiDVO;
   HizmetVeriSeti : hizmetKayitGirisDVO;
 
   memData : TADOQuery;
@@ -4129,7 +4132,7 @@ begin
       memData := TADOQuery.Create(nil);
       memData.Connection := Datalar.ADOConnection2;
       try
-          sql := 'exec sp_MedulaDataset_kl_M3 ' + #39 + _takip + #39 + ',' + #39 + 'Tumu' + #39;
+          sql := 'exec sp_MedulaDataset_kl_M3 ' + QuotedStr(_takip) + ',' + QuotedStr(Dataset) + ',' + QuotedStr(islemRefNo);
           datalar.QuerySelect(memData,sql);
 
 
@@ -4175,7 +4178,7 @@ begin
 
              memData.Next;
 
-             if (i in [20,40,60]) or (memData.Eof)  // 20 adet veri yada dosya sonu ise gönder ve verisetini sýfýrla
+             if (i in [20,40,60,80]) or (memData.Eof)  // 20 adet veri yada dosya sonu ise gönder ve verisetini sýfýrla
              then begin
                  HizmetVeriSeti.takipNo := _takip;
                  HizmetVeriSeti.hastaBasvuruNo := _basvuruNo;

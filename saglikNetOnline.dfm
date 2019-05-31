@@ -58,7 +58,6 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
           OptionsSelection.MultiSelect = True
           OptionsView.Footer = True
           OptionsView.GroupByBox = False
-          Styles.OnGetContentStyle = gridListeStylesGetContentStyle
           object gridListeColumn2: TcxGridDBColumn
             Caption = 'RefNo'
             DataBinding.FieldName = 'SIRANO'
@@ -139,9 +138,7 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
           object gridListeCOLUMN1: TcxGridDBColumn
             Caption = 'Message'
             DataBinding.FieldName = 'SYSMessage'
-            PropertiesClassName = 'TcxTextEditProperties'
-            Properties.Alignment.Horz = taCenter
-            Properties.Alignment.Vert = taVCenter
+            PropertiesClassName = 'TcxRichEditProperties'
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 264
@@ -160,6 +157,10 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
             PropertiesClassName = 'TcxTextEditProperties'
             Properties.Alignment.Horz = taCenter
             Properties.Alignment.Vert = taVCenter
+            Visible = False
+          end
+          object gridListeColumn8: TcxGridDBColumn
+            DataBinding.FieldName = 'SYSTakipNoSorgu'
             Visible = False
           end
         end
@@ -1246,6 +1247,7 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
+    OnPopup = PopupMenu1Popup
     Left = 432
     Top = 280
     object G1: TMenuItem
@@ -1283,6 +1285,28 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
       Caption = 'SysOnline Veri Sil'
       ImageIndex = 43
       Visible = False
+      OnClick = cxKaydetClick
+      object T2: TMenuItem
+        Caption = 'Tetkikleri Sil'
+      end
+      object M1: TMenuItem
+        Caption = 'Malzemeleri Sil'
+      end
+      object M2: TMenuItem
+        Caption = 'Muayene Sil'
+      end
+      object S4: TMenuItem
+        Caption = 'Seanslar'#305' Sil'
+      end
+    end
+    object S2: TMenuItem
+      Tag = -21
+      Caption = 'SysTakipNo SGK Bildirim Sorgula'
+      OnClick = cxKaydetClick
+    end
+    object S3: TMenuItem
+      Tag = -22
+      Caption = 'SysTakipNo Sorgula'
       OnClick = cxKaydetClick
     end
     object N2: TMenuItem

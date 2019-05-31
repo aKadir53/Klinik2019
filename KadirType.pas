@@ -66,6 +66,9 @@ type
                          var durum : integer;
                          uygulamaKodu : pwidechar);stdCall;
 
+  TImzaliGiris = Procedure(var sonucMesaj : PWideChar);stdCall;
+
+
 
 type
    TDataSetKadir = record

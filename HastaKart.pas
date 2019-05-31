@@ -300,7 +300,7 @@ begin
    takipNo := cxGridGelis.Dataset.FieldByName('TakipNo').AsString;
    BasvuruNo := cxGridGelis.Dataset.FieldByName('basvuruNo').AsString;
 
-   HizmetKayitVeriSeti(takipNo,BasvuruNo, 'D','G');
+   HizmetKayitVeriSeti(takipNo,BasvuruNo, 'D','G','Tümü','');
 
   finally
     DurumGoster(False);

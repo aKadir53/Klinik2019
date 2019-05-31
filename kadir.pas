@@ -469,11 +469,16 @@ function CreateGrid(name : string; Form : TForm ; NavigatorButtons : Boolean = T
 procedure SetGrid(cxGrid : TcxGrid ; Colums,ColumnsPropertiesClassName,
                   ColumsCaption,ColumnsWidth,ColumsPropertiesItems,ColumsReadOnly : String);
 function SGKHizmetSorgulama(kullaniciAdi,sifre,sysTakipNo,islemReferansNo,uygulamaKodu : string) : String;
-procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string);
 function SYSOnlineCvpDBDurumYaz(SiraNo,SysTakipNo,MesajTipi,SONUCKODU,SONUCMESAJ,user : string) : integer;
 procedure MesajGonder(mesaj , islemTipi , HastaneRefNo: string ; var _Sonuc_ : string);
 function SendMesajGonder(m,t : PWideChar ; var sonuc : PWideChar ; HastaneRefNo : string) : integer;
+procedure SysTakipNoSorgula(sysTakipNo: string ; var _Sonuc_ : string);
 procedure TakipListGetir(kullaniciAdi,sifre,sksrs,Tarih,uygulamaKodu : string);
+
+procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
+procedure ENabizHizmetSil(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '');
+
+
 procedure GunlereGoreHastaDagilimCizelgesi;
 
 
@@ -481,11 +486,15 @@ procedure GunlereGoreHastaDagilimCizelgesi;
 function findMethod(dllHandle: Cardinal;  methodName: string): FARPROC;
 procedure StrToFile(const FileName, SourceString : string);
 function FileToString(const AFileName: string): AnsiString;
+function ImzaliGirisYap : PWideChar;
 
+function TakipNoMalzemeIslemRefNo(TakipNo : string) : string;
+procedure TakipNoTetkikIslemSiraNo(TakipNo : string);
+procedure TakipNoMalzemeIslemSiraNo(TakipNo : string);
+function TakipNoTetkikIslemRefNo(TakipNo  : string) : string;
+procedure TakipNoHizmetIslemSiraNo(TakipNo , Tip : string);
 
-
-
-
+procedure XMLGoster(filename: string);
 
 
 
@@ -568,6 +577,252 @@ uses message,AnaUnit,message_y,popupForm,rapor,TedaviKart,Son6AylikTetkikSonuc,D
              HastaRecete,sifreDegis,HastaTetkikEkle,GirisUnit,SMS,LisansUzat,Update_G, DBGrids,
              UyumSoftPortal,NThermo, TransUtils;
 
+
+procedure XMLGoster(filename: string);
+begin
+    ShellExecute(0, 'open', PChar('Chrome.exe'), PChar(filename + '.xml'),
+    nil, SW_SHOWNORMAL);
+end;
+
+
+procedure TakipNoHizmetIslemSiraNo(TakipNo , Tip : string);
+var
+  sql : string;
+  ado : TADOQuery;
+  i : integer;
+begin
+   ado := TADOQuery.Create(nil);
+   ado.Connection := datalar.ADOConnection2;
+   try
+     sql := 'select islemSiraNo from hareketler h ' +
+            ' join gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+            ' where g.TakýpNo = ' + QuotedStr(TakipNo) + ' and Tip = ' + QuotedStr(Tip) +
+            ' and isnull(islemSiraNo,'''') <> ''''' ;
+     datalar.QuerySelect(ado,sql);
+     setlength(datalar.islemSiralari,ado.RecordCount);
+     i := 0;
+     while not ado.Eof do
+     begin
+       datalar.islemSiralari[i] := ado.Fields[0].AsString;
+       inc(i);
+       ado.Next;
+     end;
+   finally
+     ado.free;
+   end;
+
+end;
+
+procedure TakipNoTetkikIslemSiraNo(TakipNo : string);
+var
+  sql : string;
+  ado : TADOQuery;
+  i : integer;
+begin
+   ado := TADOQuery.Create(nil);
+   ado.Connection := datalar.ADOConnection2;
+   try
+     sql := 'select islemSiraNo from hareketler h ' +
+            ' join gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+            ' where g.TakýpNo = ' + QuotedStr(TakipNo) + ' and Tip = ''L''' +
+            ' and isnull(islemSiraNo,'''') <> ''''' ;
+     datalar.QuerySelect(ado,sql);
+     setlength(datalar.islemSiralari,ado.RecordCount);
+     i := 0;
+     while not ado.Eof do
+     begin
+       datalar.islemSiralari[i] := ado.Fields[0].AsString;
+       inc(i);
+       ado.Next;
+     end;
+   finally
+     ado.free;
+   end;
+
+end;
+
+
+procedure TakipNoMalzemeIslemSiraNo(TakipNo : string);
+var
+  sql : string;
+  ado : TADOQuery;
+  i : integer;
+begin
+   ado := TADOQuery.Create(nil);
+   ado.Connection := datalar.ADOConnection2;
+   try
+     sql := 'select islemSiraNo from hareketlerIS h ' +
+            ' join gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+            ' where g.TakýpNo = ' + QuotedStr(TakipNo) + ' and Tip = ''M''' +
+            ' and isnull(islemSiraNo,'''') <> ''''' ;
+     datalar.QuerySelect(ado,sql);
+     setlength(datalar.islemSiralari,ado.RecordCount);
+     i := 0;
+     while not ado.Eof do
+     begin
+       datalar.islemSiralari[i] := ado.Fields[0].AsString;
+       inc(i);
+       ado.Next;
+     end;
+   finally
+     ado.free;
+   end;
+
+end;
+
+
+
+function TakipNoTetkikIslemRefNo(TakipNo  : string) : string;
+var
+  sql ,islemSiraNos ,islemSiraNo : string;
+  ado : TADOQuery;
+  i : integer;
+begin
+   ado := TADOQuery.Create(nil);
+   ado.Connection := datalar.ADOConnection2;
+   try
+     sql := 'select h.sirano from hareketler h ' +
+            ' join gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+            ' where g.TakýpNo = ' + QuotedStr(TakipNo) ;
+     datalar.QuerySelect(ado,sql);
+     i := 0;
+     while not ado.Eof do
+     begin
+       islemSiraNo := ado.Fields[0].AsString;
+       islemSiraNos :=  islemSiraNos + ifThen(islemSiraNos = '','',',') + 'T'+islemSiraNo;
+       inc(i);
+       ado.Next;
+     end;
+   finally
+     ado.free;
+   end;
+
+end;
+
+
+function TakipNoMalzemeIslemRefNo(TakipNo : string) : string;
+var
+  sql ,islemSiraNos ,islemSiraNo : string;
+  ado : TADOQuery;
+  i : integer;
+begin
+   ado := TADOQuery.Create(nil);
+   ado.Connection := datalar.ADOConnection2;
+   try
+     sql := 'select h.sirano from hareketlerIS h ' +
+            ' join gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+            ' where g.TakýpNo = ' + QuotedStr(TakipNo);
+     datalar.QuerySelect(ado,sql);
+     i := 0;
+     while not ado.Eof do
+     begin
+       islemSiraNo := ado.Fields[0].AsString;
+       islemSiraNos :=  islemSiraNos + ifThen(islemSiraNos = '','',',') + 'T'+islemSiraNo;
+       inc(i);
+       ado.Next;
+     end;
+   finally
+     ado.free;
+   end;
+
+end;
+
+
+
+function eNabizKayit : integer;
+var
+  sql : string;
+begin
+  eNabizKayit := 0;
+  try
+    sql := 'select SLX from parametreler where SLK = ''33'' and SLB = ''ENABIZ''';
+    eNabizKayit := datalar.QuerySelect(sql).FieldByName('SLX').AsInteger;
+  finally
+  end;
+end;
+
+procedure SysTakipNoSorgula(sysTakipNo: string ; var _Sonuc_ : string);
+var
+  sql : string;
+  ado : TADOQuery;
+begin
+  ado := TADOQuery.Create(nil);
+  ado.Connection := datalar.ADOConnection2;
+  try
+  if sysTakipNo <> '' then
+  begin
+     sql := 'select dbo.fn_sysTakipSorgula(' + QuotedStr(sysTakipNo)+ ')';
+     datalar.QuerySelect(ado,sql);
+     if ado.Fields[0].AsString <> '' then
+     begin
+        MesajGonder(ado.Fields[0].AsString,'SysTakipNoSorgula','',_Sonuc_);
+     end
+     else
+     _Sonuc_ := 'Mesaj Oluþturulamadý';
+  end
+  else
+  _Sonuc_ := 'SysTakipNo Boþ Olmaz';
+  finally
+    ado.Free;
+  end;
+end;
+
+
+procedure ENabizHizmetSil(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '');
+var
+  sql ,msj : string;
+  ado : TADOQuery;
+begin
+  if eNabizKayit = 0 then exit;
+
+  ado := TADOQuery.Create(nil);
+  ado.Connection := datalar.ADOConnection2;
+  try
+    if sysTakipNo <> '' then
+    begin
+       sql := 'select dbo.fn_HIZMET_SIL(' + QuotedStr(sysTakipNo) + ',' + QuotedStr(islemReferansNo) + ')';
+       datalar.QuerySelect(ado,sql);
+       msj := ado.Fields[0].AsString;
+       if msj <> '' then
+       begin
+          MesajGonder(ado.Fields[0].AsString,'Hizmet Sil',HastaneRefNo,_Sonuc_);
+       end
+       else
+       _Sonuc_ := 'Mesaj Oluþturulamadý';
+    end
+  else
+  _Sonuc_ := 'SysTakipNo Boþ Olmaz';
+  finally
+    ado.Free;
+  end;
+end;
+
+
+
+function ImzaliGirisYap : PWideChar;
+var
+  imzaliGiris : TImzaliGiris;
+  dllHandle: Cardinal;
+  tc : PWideChar;
+begin
+  dllHandle := LoadLibrary(NoktaDll);
+  try
+    if dllHandle = 0 then exit;
+
+    @imzaliGiris:= findMethod(dllHandle, 'ImzalaileSistemeGiris');
+    if addr(imzaliGiris) <> nil then
+    imzaliGiris(tc);
+
+    Result := tc;
+
+    if not Assigned(imzaliGiris) then
+      raise Exception.Create(NoktaDll + ' içersinde ImzalaileSistemeGiris bulunamadý!');
+
+  finally
+    FreeLibrary(dllHandle);
+  end;
+
+end;
 
 procedure StrToFile(const FileName, SourceString : string);
 var
@@ -848,7 +1103,7 @@ end;
 
 
 
-procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string);
+procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 var
   sql : string;
   ado : TADOQuery;
@@ -858,7 +1113,7 @@ begin
   try
   if sysTakipNo <> '' then
   begin
-     sql := 'select dbo.fn_HIZMET_BILGISI(' + QuotedStr(sysTakipNo) +')';
+     sql := 'select dbo.fn_HIZMET_BILGISI(' + QuotedStr(sysTakipNo) + ',' + QuotedStr(islemReferansNo) + ',' + QuotedStr(Tip) + ')';
      datalar.QuerySelect(ado,sql);
      if ado.Fields[0].AsString <> '' then
      begin
@@ -4274,9 +4529,9 @@ begin
   try
     ado.Connection := datalar.ADOConnection2;
 
-    sql := 'select count(*) from gelisdetay where UTarih = ' + QuotedStr(Tarih)
+    sql := 'select count(*) from Hareketler where Tarih = ' + QuotedStr(Tarih)
       + ' and doktor = ' + QuotedStr(doktor) + ' and seans = ' + QuotedStr
-      (seans) + ' and durum = 1';
+      (seans) + ' and durum = 1 and Tip = ''S''';
     datalar.QuerySelect(ado, sql);
 
     if ado.Fields[0].Value >= 30 then
