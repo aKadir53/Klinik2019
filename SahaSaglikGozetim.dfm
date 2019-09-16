@@ -18,34 +18,35 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
   TextHeight = 13
   object cxPageControl1: TcxPageControl
     Left = 0
-    Top = 121
+    Top = 129
     Width = 672
-    Height = 476
+    Height = 468
     Align = alClient
     TabOrder = 1
     Properties.ActivePage = cxTabSheet1
     Properties.TabPosition = tpBottom
     LookAndFeel.NativeStyle = False
     LookAndFeel.SkinName = 'McSkin'
-    ClientRectBottom = 451
+    ExplicitTop = 121
+    ExplicitHeight = 476
+    ClientRectBottom = 443
     ClientRectLeft = 4
     ClientRectRight = 668
     ClientRectTop = 5
     object cxTabSheet1: TcxTabSheet
       ImageIndex = 0
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitHeight = 446
       object cxGridKadir1: TcxGridKadir
         Left = 0
         Top = 0
         Width = 664
-        Height = 446
+        Height = 438
         Align = alClient
         TabOrder = 0
         ExceleGonder = False
+        ExplicitHeight = 446
         object gridRapor: TcxGridDBTableView
+          PopupMenu = PopupMenu2
           DataController.DataSource = DataSource2
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
@@ -168,6 +169,15 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
       GridView = gridRaporlar
     end
   end
+  object cxSplitter1: TcxSplitter
+    Left = 0
+    Top = 121
+    Width = 672
+    Height = 8
+    AlignSplitter = salTop
+    ExplicitLeft = -8
+    ExplicitTop = 120
+  end
   object DataSource1: TDataSource
     DataSet = ADO_SahaGozetim
     Left = 104
@@ -267,8 +277,8 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 408
-    Top = 256
+    Left = 304
+    Top = 152
     object miYeniGozetim: TMenuItem
       Tag = -9
       Caption = 'Yeni G'#246'zetim'
@@ -314,7 +324,7 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
   end
   object DataSource2: TDataSource
     DataSet = ADOQuery1
-    Left = 144
+    Left = 160
     Top = 338
   end
   object ADOQuery1: TADOQuery
@@ -332,5 +342,16 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
     Enabled = False
     Interval = 100
     OnTimer = tmr1Timer
+    Left = 16
+    Top = 48
+  end
+  object PopupMenu2: TPopupMenu
+    Left = 488
+    Top = 280
+    object D1: TMenuItem
+      Tag = -50
+      Caption = 'DOF Olu'#351'tur'
+      OnClick = cxButtonCClick
+    end
   end
 end

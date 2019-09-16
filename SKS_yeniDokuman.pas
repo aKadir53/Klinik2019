@@ -644,6 +644,15 @@ begin
           ' where dokumanid = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text) +
           ' and rev = ' + QuotedStr(cxGrid1.Dataset.FieldByName('rev').AsString);
    datalar.QueryExec(sql);
+
+
+   sql := 'delete from SKS_DokumanlarRev ' +
+          ' where dokumanid = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text) +
+          ' and rev = ' + QuotedStr(cxGrid1.Dataset.FieldByName('rev').AsString);
+   datalar.QueryExec(sql);
+
+
+
    cxGrid1.Dataset.Requery();
    cxGrid1.Dataset.Next;
  end;

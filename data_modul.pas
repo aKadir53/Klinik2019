@@ -354,6 +354,7 @@ type
     SQLMemTable_EtkenMaddelerkullanimDozBirim: TStringField;
     SQLMemTable_EtkenMaddelerkullanimPeriyot: TIntegerField;
     SQLMemTable_EtkenMaddelerkullanimPeriyotBirim: TStringField;
+    ADO_RAPORLAR_Q: TADOQuery;
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
     procedure TakipHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;

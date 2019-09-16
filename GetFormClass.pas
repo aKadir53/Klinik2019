@@ -130,7 +130,8 @@ uses
     HastailacTedavi,
     IlacEtkenMadde,
     HastaDiyalizIzlem,
-    UzmanMuayene;
+    UzmanMuayene,
+    OlayBildirim;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -361,6 +362,7 @@ begin
    TagfrmIlacEtkenMaddeSutKural : Result := TfrmIlacEtkenMaddeSutKural;
    TagfrmHastaDiyalizIzlem  : Result := TfrmHastaDiyalizIzlem;
    TagfrmUzmanMuayene : Result := TfrmUzmanMuayene;
+   TagfrmOlayBildirim : Result := TfrmOlayBildirim;
 
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
@@ -462,6 +464,7 @@ begin
    TagfrmIlacEtkenMaddeSutKural : Result := frmIlacEtkenMaddeSutKural;
    TagfrmHastaDiyalizIzlem  : Result := frmHastaDiyalizIzlem;
    TagfrmUzmanMuayene : Result := frmUzmanMuayene;
+   TagfrmOlayBildirim : Result := frmOlayBildirim;
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
 
   end;
@@ -562,6 +565,8 @@ begin
      TagfrmIlacEtkenMaddeSutKural : frmIlacEtkenMaddeSutKural := TfrmIlacEtkenMaddeSutKural.Create(Tab);
      TagfrmHastaDiyalizIzlem  : frmHastaDiyalizIzlem := TfrmHastaDiyalizIzlem.Create(Tab);
      TagfrmUzmanMuayene   : frmUzmanMuayene := TfrmUzmanMuayene .Create(Tab);
+     TagfrmOlayBildirim   : frmOlayBildirim := TfrmOlayBildirim .Create(Tab);
+
 
   end;
   try
@@ -731,6 +736,7 @@ begin
      TagfrmIlacEtkenMaddeSutKural : frmIlacEtkenMaddeSutKural := TfrmIlacEtkenMaddeSutKural.Create(Tab);
      TagfrmHastaDiyalizIzlem  : frmHastaDiyalizIzlem := TfrmHastaDiyalizIzlem.Create(Tab);
      TagfrmUzmanMuayene   : frmUzmanMuayene := TfrmUzmanMuayene .Create(Tab);
+     TagfrmOlayBildirim   : frmOlayBildirim := TfrmOlayBildirim .Create(Tab);
 
   end;
   try
@@ -874,6 +880,9 @@ begin
     TagfrmIlacEtkenMaddeSutKural : Application.CreateForm(TfrmIlacEtkenMaddeSutKural,frmIlacEtkenMaddeSutKural);
     TagfrmHastaDiyalizIzlem : Application.CreateForm(TfrmHastaDiyalizIzlem,frmHastaDiyalizIzlem);
     TagfrmUzmanMuayene   : Application.CreateForm(TfrmUzmanMuayene,frmUzmanMuayene);
+    TagfrmOlayBildirim  : Application.CreateForm(TfrmOlayBildirim,frmOlayBildirim);
+
+
   end;
   try
     Form := TGirisForm(FormClassType(abs(FormTag)));

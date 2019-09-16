@@ -22,7 +22,8 @@ uses
   dxSkinXmas2008Blue, Menus, cxGroupBox, cxRadioGroup, sGauge,
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
-  cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxImage;
+  cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxImage,
+  cxSplitter;
 
 type
   TfrmSahaSaglikGozetim = class(TGirisForm)
@@ -71,6 +72,9 @@ type
     gridRaporlarGozlemGrupTanim: TcxGridDBColumn;
     gridRaporGrupBaslikRakamli: TcxGridDBColumn;
     gridRaporlarSubeTanimi: TcxGridDBColumn;
+    cxSplitter1: TcxSplitter;
+    PopupMenu2: TPopupMenu;
+    D1: TMenuItem;
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Gozlem(islem: Integer);
@@ -97,6 +101,7 @@ type
     function SahaSaglikGozetimFormFotografYukle (const iSahaGozetimID : Integer): Boolean;
     function SahaSaglikGozetimFormFotografSil (const iSahaGozetimID : Integer): Boolean;
     procedure SahaSaglikGozetimFormFotografGoruntule (const iSahaGozetimID : Integer);
+    procedure DOFOlustur(GozlemId : string; _DOF_ : TDOF);
   public
     { Public declarations }
     function Init(Sender: TObject) : Boolean; override;
@@ -268,6 +273,7 @@ procedure TfrmSahaSaglikGozetim.cxButtonCClick(Sender: TObject);
 var
   GirisRecord : TGirisFormRecord;
   aModalResult : TModalResult;
+  dof : TDOF;
 begin
   inherited;
 
@@ -305,7 +311,31 @@ begin
           if ADO_SahaGozetim.RecordCount > 0 then
             GozlemYazdir (ADO_SahaGozetim.FieldByName('ID').AsInteger);
         end;
+
+
+  -50 : begin
+           dof.SSGBolum := 0;
+           dof.SSGTespit := ADOQuery1.FieldByName('Tespitler').AsString;
+           dof.SSGFaliyetPlan := ADOQuery1.FieldByName('Oneriler').AsString;
+           DOFOlustur(ADO_SahaGozetim.FieldByName('ID').AsString,dof);
+        end;
+
   end;
+end;
+
+procedure TfrmSahaSaglikGozetim.DOFOlustur(GozlemId: string; _DOF_: TDOF);
+var
+ sql : string;
+ s,s1 : integer;
+begin
+   s:= datalar.QuerySelect('exec sp_DOF_FormKontrolETOlustur ' + GozlemId + ',' +
+                       QuotedStr(datalar.AktifSirket) + ',' + '00' + ',' +
+                       QuotedStr(datalar.username) + ',' +
+                       QuotedStr(_DOF_.SSGTespit) + ',' +
+                       QuotedStr(inttostr(_DOF_.SSGBolum)) + ',' +
+                       QuotedStr(_DOF_.SSGKokNeden)).Fields[0].AsVariant;
+  s1 := s;
+
 end;
 
 procedure TfrmSahaSaglikGozetim.FormCreate(Sender: TObject);

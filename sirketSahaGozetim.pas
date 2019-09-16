@@ -664,6 +664,8 @@ begin
   TableName := 'SirketSahaGozetim';
  // TopPanel.Visible := true;
 
+
+(*
   if datalar.UserGroup = '1'
   then
     where := ''
@@ -673,9 +675,12 @@ begin
     where := ' sirketKod = ' + QuotedStr(datalar.sirketKodu)
   else
     where := ' hazirlayan = ' + QuotedStr(datalar.IGU);
+  *)
+
+
 
   Faturalar := ListeAcCreate('SirketSahaGozetim_view','id,sirketKod,sirketAdi,date_create,RDS_ID',
-                       'ID,ÞirketKodu,ÞirketAdý,Tarihi,RiskID',
+                       'ID,ÞirketKodu,ÞirketAdý,Tarihi,GozlemID',
                        '40,60,250,80,50','ID','Saha Gözetimleri',where,5,True);
 
   setDataStringB(self,'id','ID',Kolon1,'trh',50,Faturalar,True,nil,'','',True,True,-100);
@@ -698,7 +703,7 @@ begin
 
   sube := ' and IGU = ' + QuotedStr(datalar.IGU);
 
-
+  (*
   Subeler := TcxImageComboKadir.Create(self);
   Subeler.Conn := Datalar.ADOConnection2;
   Subeler.TableName := 'SIRKET_SUBE_TNM';
@@ -706,6 +711,8 @@ begin
   Subeler.DisplayField := 'subeTanim';
   Subeler.Filter := ' SirketKod = ' + QuotedStr(vartostr(TcxImageComboKadir(FindComponent('SirketKod')).EditValue)) + sube + ' and (Pasif = 0 or Pasif is Null)';
   setDataStringKontrol(self,Subeler,'SubeKod','Þube',Kolon1,'trh',80,0,alNone,'');
+    *)
+
 
   IGU := TcxImageComboKadir.Create(self);
   IGU.Conn := Datalar.ADOConnection2;
@@ -726,7 +733,7 @@ begin
   setDataStringKontrol(self,Onay,'Onay','Onay',kolon4,'trh',50);
   OrtakEventAta(Onay);
 
-  setDataString(self,'RDS_ID','Risk ID',Kolon1,'trh',50,false,'',False);
+  setDataString(self,'RDS_ID','Gözlem ID',Kolon1,'trh',50,false,'',False);
 
 (*
   try

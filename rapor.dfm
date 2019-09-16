@@ -3,7 +3,7 @@ object frmRapor: TfrmRapor
   Top = 137
   BorderStyle = bsToolWindow
   Caption = '-'
-  ClientHeight = 70
+  ClientHeight = 72
   ClientWidth = 309
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,10 +19,11 @@ object frmRapor: TfrmRapor
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 51
+    Top = 53
     Width = 309
     Height = 19
     Panels = <>
+    ExplicitTop = 51
   end
   object memo: TDBMemo
     Left = 128
@@ -38,11 +39,14 @@ object frmRapor: TfrmRapor
     Left = 0
     Top = 0
     Width = 309
-    Height = 51
+    Height = 53
     Align = alClient
     BevelInner = bvLowered
     Caption = 'Panel1'
     TabOrder = 2
+    ExplicitTop = 8
+    ExplicitWidth = 639
+    ExplicitHeight = 406
     object btnOnIzle: TcxButton
       Left = 205
       Top = 3
@@ -319,8 +323,8 @@ object frmRapor: TfrmRapor
     UserName = 'frxDBDataset1'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 37
-    Top = 48
+    Left = 509
+    Top = 296
   end
   object frxReport1: TfrxReport
     Version = '4.15.13'
@@ -478,8 +482,8 @@ object frmRapor: TfrmRapor
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 184
-    Top = 32
+    Left = 288
+    Top = 48
   end
   object frxXMLExport1: TfrxXMLExport
     UseFileCache = True
@@ -499,89 +503,91 @@ object frmRapor: TfrmRapor
     UserName = 'frxDBDataset2'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 32
-    Top = 96
+    Left = 264
+    Top = 344
   end
   object frxDBDataset3: TfrxDBDataset
     UserName = 'frxDBDataset3'
     CloseDataSource = False
     BCDToCurrency = False
     Left = 40
-    Top = 48
+    Top = 280
   end
   object frxDBDataset4: TfrxDBDataset
     UserName = 'frxDBDataset4'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 72
-    Top = 48
+    Left = 224
+    Top = 344
   end
   object frxDBDataset5: TfrxDBDataset
     UserName = 'frxDBDataset5'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 104
-    Top = 48
+    Left = 176
+    Top = 344
   end
   object frxDBDataset6: TfrxDBDataset
     UserName = 'frxDBDataset6'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 144
-    Top = 32
+    Left = 80
+    Top = 344
   end
   object frxDBDataset7: TfrxDBDataset
     UserName = 'frxDBDataset7'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 168
-    Top = 32
+    Left = 96
+    Top = 280
   end
   object frxDBDataset8: TfrxDBDataset
     UserName = 'frxDBDataset8'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 192
-    Top = 32
+    Left = 232
+    Top = 288
   end
   object frxDBDataset9: TfrxDBDataset
     UserName = 'frxDBDataset9'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 376
+    Left = 336
+    Top = 288
   end
   object frxDBDataset10: TfrxDBDataset
     UserName = 'frxDBDataset10'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 400
+    Left = 32
+    Top = 336
   end
   object frxDBDataset11: TfrxDBDataset
     UserName = 'frxDBDataset11'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 320
-    Top = 8
+    Left = 352
+    Top = 344
   end
   object frxBarCodeObject1: TfrxBarCodeObject
     Left = 424
     Top = 184
   end
   object frxDialogControls1: TfrxDialogControls
-    Left = 72
-    Top = 168
+    Left = 128
+    Top = 192
   end
   object frxChartObject1: TfrxChartObject
-    Left = 16
-    Top = 168
+    Left = 56
+    Top = 160
   end
   object frxRichObject1: TfrxRichObject
     Left = 432
     Top = 248
   end
   object frxCheckBoxObject1: TfrxCheckBoxObject
-    Left = 8
-    Top = 120
+    Left = 40
+    Top = 104
   end
   object frxDotMatrixExport1: TfrxDotMatrixExport
     UseFileCache = True
@@ -592,8 +598,8 @@ object frmRapor: TfrmRapor
     GraphicFrames = False
     SaveToFile = False
     UseIniSettings = True
-    Left = 64
-    Top = 120
+    Left = 136
+    Top = 104
   end
   object frxGradientObject1: TfrxGradientObject
     Left = 8
@@ -610,25 +616,27 @@ object frmRapor: TfrmRapor
     UserName = 'frxDBDataset12'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 168
-    Top = 64
+    Left = 184
+    Top = 288
   end
   object frxDBDataset0: TfrxDBDataset
     UserName = 'frxDBDataset0'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 168
+    Left = 136
+    Top = 344
   end
   object frxDBDataset00: TfrxDBDataset
     UserName = 'frxDBDataset00'
     CloseDataSource = False
     BCDToCurrency = False
-    Left = 208
-    Top = 72
+    Left = 144
+    Top = 288
   end
   object frxADOComponents1: TfrxADOComponents
     DefaultDatabase = DATALAR.ADOConnection2
-    Left = 8
+    Left = 312
+    Top = 344
   end
   object frxMailExport1: TfrxMailExport
     UseFileCache = True
@@ -646,10 +654,11 @@ object frmRapor: TfrmRapor
   end
   object frxADOComponents2: TfrxADOComponents
     DefaultDatabase = DATALAR.ADOConnection2
-    Left = 72
+    Left = 280
+    Top = 288
   end
   object frxCrossObject1: TfrxCrossObject
-    Left = 136
-    Top = 128
+    Left = 192
+    Top = 120
   end
 end

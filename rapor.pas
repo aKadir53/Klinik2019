@@ -389,31 +389,41 @@ begin
   frxDesigner1.OnShow:= DesignerOnShow;
   frmRapor.Caption := kod + ' - ' + caption;
 
-  datalar.ADO_RAPORLAR.Active := false;
-  datalar.ADO_RAPORLAR.Active := true;
-  datalar.ADO_RAPORLAR.First;
 
-  if datalar.ADO_RAPORLAR.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
-  Then begin
-      datalar.ADO_RAPORLAR.Append;
-      datalar.ADO_RAPORLAR.FieldByName('raporKodu').AsString := kod;
-      datalar.ADO_RAPORLAR.FieldByName('raporAdi').AsString := '';
-      datalar.ADO_RAPORLAR.FieldByName('sirketKod').AsString := datalar.AktifSirket;
-      datalar.ADO_RAPORLAR.FieldByName('rapor').AsString := '<?xml version="1.0" encoding="utf-8"?>';
-      datalar.ADO_RAPORLAR.Post;
-      datalar.ADO_RAPORLAR.Edit;
+  datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod));
 
-      Table := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ''BOS''');
-      if not Table.Eof
-      then begin
-          Table.Edit;
-          template := Table.CreateBlobStream(Table.FieldByName('Rapor'), bmRead);
-          IcerikAl(template,kod);
+  if not datalar.QuerySelect('select * from SKS_Dokumanlar where dokumanNo = ' + QuotedStr(kod)).Eof
+  then begin
+      if datalar.ADO_RAPORLAR_Q.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
+      Then begin
+          datalar.ADO_RAPORLAR_Q.Append;
+          datalar.ADO_RAPORLAR_Q.FieldByName('raporKodu').AsString := kod;
+          datalar.ADO_RAPORLAR_Q.FieldByName('raporAdi').AsString := '';
+          datalar.ADO_RAPORLAR_Q.FieldByName('sirketKod').AsString := datalar.AktifSirket;
+          datalar.ADO_RAPORLAR_Q.FieldByName('rapor').AsString := '<?xml version="1.0" encoding="utf-8"?>';
+          datalar.ADO_RAPORLAR_Q.Post;
+          datalar.ADO_RAPORLAR_Q.Edit;
+
+          Table := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ''BOS''');
+          if not Table.Eof
+          then begin
+              Table.Edit;
+              template := Table.CreateBlobStream(Table.FieldByName('Rapor'), bmRead);
+              IcerikAl(template,kod);
+          end;
+
+      end
+      else
+      begin
+
       end;
 
-  end
-  else
-   template := datalar.ADO_RAPORLAR.CreateBlobStream(datalar.ADO_RAPORLAR.FieldByName('Rapor'), bmRead);
+  end;
+
+//   datalar.ADO_RAPORLAR_Q.Locate('raporkodu',kod,[]);
+  template := datalar.ADO_RAPORLAR_Q.CreateBlobStream(datalar.ADO_RAPORLAR_Q.FieldByName('Rapor'), bmRead);
+  frmRapor.Caption := kod;
+
 
   try
     template.Position := 0;
@@ -539,17 +549,17 @@ begin
     template.Position := 0;
     Report.SaveToStream(template);
 
-    if datalar.ADO_RAPORLAR.Active = true
+    if datalar.ADO_RAPORLAR_Q.Active = true
     Then Begin
-      datalar.ADO_RAPORLAR.Edit;
+      datalar.ADO_RAPORLAR_Q.Edit;
       try
-         datalar.ADO_RAPORLAR.DisableControls;
-         datalar.ADO_RAPORLAR.FieldByName('raporAdi').AsString := d;
-         (datalar.ADO_RAPORLAR.FieldByName('rapor') as TBlobField).LoadFromStream(template);
-         datalar.ADO_RAPORLAR.Post;
+         datalar.ADO_RAPORLAR_Q.DisableControls;
+         datalar.ADO_RAPORLAR_Q.FieldByName('raporAdi').AsString := d;
+         (datalar.ADO_RAPORLAR_Q.FieldByName('rapor') as TBlobField).LoadFromStream(template);
+         datalar.ADO_RAPORLAR_Q.Post;
          Result := True;
       finally
-        datalar.ADO_RAPORLAR.EnableControls;
+        datalar.ADO_RAPORLAR_Q.EnableControls;
       end;
     End
     Else
