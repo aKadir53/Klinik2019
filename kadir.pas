@@ -2983,6 +2983,8 @@ begin
   end;
 end;
 
+
+
 function GridCellToString(Grid : TcxGridDBBandedTableView; ColonName : string ; Row : integer) : Variant;
 begin
   GridCellToString := '';

@@ -956,6 +956,8 @@ Const
   TagfrmSKS_Dokumanlar = 1050;
   TagfrmSKS_YeniDokuman = 1060;
   TagfrmOlayBildirim = 1070;
+  TagfrmKlorOlcum = 1080;
+
 
   TagfrmHastaKart = 5001;
   TagfrmTopluSeans = 5003;

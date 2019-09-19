@@ -91,7 +91,8 @@ uses
   hizmetKayitIslemleriWS in 'hizmetKayitIslemleriWS.pas',
   yardimciIslemlerWS in 'yardimciIslemlerWS.pas',
   GunSonuOzet in 'GunSonuOzet.pas' {frmGunSonuOzet},
-  IlacEtkenMadde in 'IlacEtkenMadde.pas' {frmIlacEtkenMaddeSutKural};
+  IlacEtkenMadde in 'IlacEtkenMadde.pas' {frmIlacEtkenMaddeSutKural},
+  klorOlcum in 'klorOlcum.pas' {frmKlorOlcum};
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
@@ -119,9 +120,9 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDATALAR, DATALAR);
-
   Application.CreateForm(TAnaForm, AnaForm);
- // Application.CreateForm(TfrmGunSonuOzet, frmGunSonuOzet);
+  Application.CreateForm(TfrmKlorOlcum, frmKlorOlcum);
+  // Application.CreateForm(TfrmGunSonuOzet, frmGunSonuOzet);
 
   // form2.show;
 

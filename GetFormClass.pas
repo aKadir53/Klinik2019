@@ -131,7 +131,8 @@ uses
     IlacEtkenMadde,
     HastaDiyalizIzlem,
     UzmanMuayene,
-    OlayBildirim;
+    OlayBildirim,
+    klorOlcum;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -363,7 +364,7 @@ begin
    TagfrmHastaDiyalizIzlem  : Result := TfrmHastaDiyalizIzlem;
    TagfrmUzmanMuayene : Result := TfrmUzmanMuayene;
    TagfrmOlayBildirim : Result := TfrmOlayBildirim;
-
+   TagfrmKlorOlcum : Result := TfrmKlorOlcum;
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
 end;
@@ -465,6 +466,7 @@ begin
    TagfrmHastaDiyalizIzlem  : Result := frmHastaDiyalizIzlem;
    TagfrmUzmanMuayene : Result := frmUzmanMuayene;
    TagfrmOlayBildirim : Result := frmOlayBildirim;
+   TagfrmKlorOlcum : Result := frmKlorOlcum;
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
 
   end;
@@ -566,7 +568,7 @@ begin
      TagfrmHastaDiyalizIzlem  : frmHastaDiyalizIzlem := TfrmHastaDiyalizIzlem.Create(Tab);
      TagfrmUzmanMuayene   : frmUzmanMuayene := TfrmUzmanMuayene .Create(Tab);
      TagfrmOlayBildirim   : frmOlayBildirim := TfrmOlayBildirim .Create(Tab);
-
+     TagfrmKlorOlcum   : frmKlorOlcum := TfrmKlorOlcum .Create(Tab);
 
   end;
   try
@@ -737,6 +739,7 @@ begin
      TagfrmHastaDiyalizIzlem  : frmHastaDiyalizIzlem := TfrmHastaDiyalizIzlem.Create(Tab);
      TagfrmUzmanMuayene   : frmUzmanMuayene := TfrmUzmanMuayene .Create(Tab);
      TagfrmOlayBildirim   : frmOlayBildirim := TfrmOlayBildirim .Create(Tab);
+     TagfrmKlorOlcum   : frmKlorOlcum := TfrmKlorOlcum .Create(Tab);
 
   end;
   try
@@ -881,6 +884,7 @@ begin
     TagfrmHastaDiyalizIzlem : Application.CreateForm(TfrmHastaDiyalizIzlem,frmHastaDiyalizIzlem);
     TagfrmUzmanMuayene   : Application.CreateForm(TfrmUzmanMuayene,frmUzmanMuayene);
     TagfrmOlayBildirim  : Application.CreateForm(TfrmOlayBildirim,frmOlayBildirim);
+    TagfrmKlorOlcum  : Application.CreateForm(TfrmKlorOlcum,frmKlorOlcum);
 
 
   end;

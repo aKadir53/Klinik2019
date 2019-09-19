@@ -1767,7 +1767,7 @@ begin
         cxEditMask.Properties.ReadOnly := ReadOnly;
         cxEditMask.Properties.ValidateOnEnter := True;
         cxEditMask.Properties.CharCase := EditCharCase;
-      //  cxEditMask.BosOlamaz := Zorunlu;//KontrolZorunlumu(TForm(sender).Tag,fieldName); //Zorunlu;
+      // cxEditMask.BosOlamaz := Zorunlu;//KontrolZorunlumu(TForm(sender).Tag,fieldName); //Zorunlu;
         cxEditMask.Width := uzunluk;
         cxEditMask.Properties.EditMask := EditMask;
         control := cxEditMask;
