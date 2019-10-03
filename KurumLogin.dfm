@@ -26,6 +26,7 @@ object frmKurumBilgi: TfrmKurumBilgi
     Align = alClient
     TabOrder = 0
     ExceleGonder = False
+    PopupForm = False
     object GridList: TcxGridDBBandedTableView
       DataController.DataSource = DataSource1
       DataController.Summary.DefaultGroupSummaryItems = <>
@@ -143,8 +144,8 @@ object frmKurumBilgi: TfrmKurumBilgi
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 80
-    Top = 168
+    Left = 144
+    Top = 128
     object HastaKabulifreBilgileriniDeitir1: TMenuItem
       Tag = -1
       Caption = 'Hasta Kabul '#350'ifre Bilgilerini De'#287'i'#351'tir'

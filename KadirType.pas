@@ -969,6 +969,7 @@ Const
   TagfrmTopluEpikriz = 5010;
   TagfrmIlacEtkenMaddeSutKural = 5020;
   TagfrmUzmanMuayene = 5030;
+  TagfrmLabEntegrasyon = 5040;
 
 
 
@@ -1074,6 +1075,8 @@ Const
   ilacTedaviIlacSil = 82;
   SKSindikatorSorgu = 83;
   raporAra = 84;
+  LabHastaGonder = 1;
+  LabSonucAl = 2;
 
   sp_HastaGelis = 'exec sp_HastaGelisleri ';
 

@@ -309,8 +309,6 @@ object frmLogin: TfrmLogin
     Properties.ActivePage = SayfaLogin
     OnChange = LoginSayfalarChange
     OnPageChanging = LoginSayfalarPageChanging
-    ExplicitWidth = 309
-    ExplicitHeight = 217
     ClientRectBottom = 253
     ClientRectLeft = 3
     ClientRectRight = 338
@@ -318,8 +316,6 @@ object frmLogin: TfrmLogin
     object SayfaLogin: TcxTabSheet
       Caption = 'Kullan'#305'c'#305' Giri'#351'i   '
       ImageIndex = 17
-      ExplicitWidth = 299
-      ExplicitHeight = 184
       object dxLayoutControl1: TdxLayoutControl
         Left = 0
         Top = 0
@@ -328,8 +324,6 @@ object frmLogin: TfrmLogin
         Align = alClient
         TabOrder = 0
         LayoutLookAndFeel = dxLayoutSkinLookAndFeel1
-        ExplicitWidth = 299
-        ExplicitHeight = 184
         object Image3: TImage
           Left = 20
           Top = 23
@@ -696,6 +690,7 @@ object frmLogin: TfrmLogin
           Style.TextStyle = [fsBold]
           TabOrder = 4
           BosOlamaz = False
+          FilterSet = fsNone
           Width = 121
         end
         object imzaIleGir: TcxCheckBox
@@ -785,16 +780,12 @@ object frmLogin: TfrmLogin
     object SayfaConTest: TcxTabSheet
       Caption = 'Server Test'
       ImageIndex = 1
-      ExplicitWidth = 299
-      ExplicitHeight = 184
       object cxGroupBox1: TcxGroupBox
         Left = 0
         Top = 0
         Align = alClient
         Caption = 'Server Bilgisi'
         TabOrder = 0
-        ExplicitWidth = 299
-        ExplicitHeight = 184
         Height = 227
         Width = 335
         object dxLayoutControl2: TdxLayoutControl
@@ -804,8 +795,6 @@ object frmLogin: TfrmLogin
           Height = 202
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 293
-          ExplicitHeight = 159
           object txtServerName: TcxTextEditKadir
             Left = 104
             Top = 10
@@ -963,8 +952,6 @@ object frmLogin: TfrmLogin
       Caption = 'cxTabSheet1'
       ImageIndex = 2
       TabVisible = False
-      ExplicitWidth = 299
-      ExplicitHeight = 184
       object Label1: TLabel
         Left = 154
         Top = 62
@@ -2081,8 +2068,6 @@ object frmLogin: TfrmLogin
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
-    ExplicitTop = 253
-    ExplicitWidth = 309
   end
   object pnlBottom: TcxGroupBox
     Left = 0
@@ -2092,8 +2077,6 @@ object frmLogin: TfrmLogin
     ParentShowHint = False
     ShowHint = False
     TabOrder = 2
-    ExplicitTop = 217
-    ExplicitWidth = 309
     Height = 36
     Width = 345
     object btnGiris: TcxButton
@@ -2113,7 +2096,6 @@ object frmLogin: TfrmLogin
       Font.Style = [fsBold]
       ParentFont = False
       OnClick = Image1Click
-      ExplicitLeft = 107
     end
     object btnVazgec: TcxButton
       Left = 243
@@ -2132,7 +2114,6 @@ object frmLogin: TfrmLogin
       Font.Style = [fsBold]
       ParentFont = False
       OnClick = btnVazgecClick
-      ExplicitLeft = 207
     end
     object btnSifreUnuttum: TcxButton
       Left = 2

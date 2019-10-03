@@ -23,6 +23,7 @@ object frmSirketSahaGozetim: TfrmSirketSahaGozetim
     Height = 169
     TabOrder = 0
     ExceleGonder = False
+    PopupForm = False
     object cxGridDBTableView1: TcxGridDBTableView
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>

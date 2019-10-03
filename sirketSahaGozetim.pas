@@ -419,6 +419,8 @@ end;
 
 begin
 
+
+
   case AButtonIndex of
    6 : begin
         datalar.Risk.RiskID := '';

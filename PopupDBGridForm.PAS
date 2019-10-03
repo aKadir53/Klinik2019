@@ -604,12 +604,13 @@ end;
 procedure TfrmPopupDBGridForm.SetGrid;
 var
  i,colswidth : integer;
- Columns,Baslik,Tips,Edits,IC_Params,IC_Param : TstringList;
+ Columns,Baslik,Tips,Edits,IC_Params,IC_Param,ReadOnly : TstringList;
  FItem : TcxImageComboBoxItem;
  ado : TADOQuery;
  field1,field2,table,MaskEdit,filter : string;
 begin
   Columns := TStringList.Create;
+  ReadOnly := TStringList.Create;
   try
     Baslik := TStringList.Create;
     try
@@ -626,12 +627,20 @@ begin
 
           Split(',',_fieldTips_,Tips);
           Split(',',_fieldsEdit_,Edits);
+          Split(',',_fieldReadOnly_,ReadOnly);
+
           ExtractStrings([';'],[],PChar(_ICParams_),IC_Params);
 
 
           for i := 0 to Columns.Count - 1 do
           begin
             DBGrid.Columns[i].Caption := Baslik[i];
+            if ReadOnly.Count = 0
+            then
+              DBGrid.Columns[i].Options.Editing := True
+            else
+              DBGrid.Columns[i].Options.Editing := StrToBool(ifThen(ReadOnly[i]='','0',ReadOnly[i]));
+
             if IsNull (Baslik[i]) then
             begin
               DBgrid.Columns[i].Editing := False;
@@ -639,6 +648,13 @@ begin
             end;
             DBgrid.Columns[i].HeaderAlignmentHorz := taCenter;
             if SameText (Tips[i], 'int') then
+             begin
+              DBgrid.Columns[i].PropertiesClassName := 'TcxCurrencyEditProperties';
+              DBgrid.Columns[i].Properties.Alignment.Horz := taRightJustify;
+              TcxCurrencyEditProperties(DBgrid.Columns[i].Properties).DisplayFormat := '#';
+             // DBgrid.Columns[i].Width := DBgrid.Columns[i].BestFitMaxWidth;
+             end;
+            if SameText (Tips[i], 'intF') then
              begin
               DBgrid.Columns[i].PropertiesClassName := 'TcxCurrencyEditProperties';
               DBgrid.Columns[i].Properties.Alignment.Horz := taRightJustify;
@@ -834,6 +850,7 @@ begin
     end;
   finally
     Columns.Free;
+    ReadOnly.Free;
   end;
   DBgrid.ApplyBestFit;
   colswidth := 0;
@@ -903,7 +920,7 @@ begin
     _fieldBaslik_ := ado.FieldByName('_fieldBaslik_').AsString;
     _fieldTips_ := ado.FieldByName('_fieldTips_').AsString;
     _ICParams_ :=  ado.FieldByName('IC_Params').AsString;
-
+    _fieldReadOnly_  := ado.FieldByName('_fieldReadOnly_').AsString;
 
 
   (*

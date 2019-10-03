@@ -630,17 +630,7 @@ object GirisForm: TGirisForm
       Left = 288
       Top = 6
       Properties.ClearKey = 46
-      Properties.Items = <
-        item
-          Description = 'Bay'
-          ImageIndex = 3
-          Value = '0'
-        end
-        item
-          Description = 'Bayan'
-          ImageIndex = 2
-          Value = '1'
-        end>
+      Properties.Items = <>
       Style.LookAndFeel.NativeStyle = False
       StyleDisabled.LookAndFeel.NativeStyle = False
       StyleFocused.LookAndFeel.NativeStyle = False
@@ -648,6 +638,7 @@ object GirisForm: TGirisForm
       TabOrder = 9
       Visible = False
       BosOlamaz = False
+      FilterSet = fsNone
       Width = 121
     end
   end
@@ -681,10 +672,6 @@ object GirisForm: TGirisForm
     object sayfa1: TcxTabSheet
       Caption = 'sayfa1'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Sayfa1_dxLayoutControl1: TdxLayoutControl
         Left = 0
         Top = 0
@@ -783,10 +770,6 @@ object GirisForm: TGirisForm
     object sayfa2: TcxTabSheet
       Caption = 'sayfa2'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object sayfa2_dxLayoutControl3: TdxLayoutControl
         Left = 0
         Top = 0
@@ -833,10 +816,6 @@ object GirisForm: TGirisForm
     object sayfa3: TcxTabSheet
       Caption = 'sayfa3'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object sayfa3_dxLayoutControl2: TdxLayoutControl
         Left = 0
         Top = 0
@@ -889,10 +868,6 @@ object GirisForm: TGirisForm
     object sayfa4: TcxTabSheet
       Caption = 'sayfa4'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object dxLayoutControl1: TdxLayoutControl
         Left = 0
         Top = 0
@@ -945,10 +920,6 @@ object GirisForm: TGirisForm
     object sayfa5: TcxTabSheet
       Caption = 'sayfa5'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object dxLayoutControl2: TdxLayoutControl
         Left = 0
         Top = 0
@@ -1002,10 +973,6 @@ object GirisForm: TGirisForm
       Caption = 'sayfaList'
       ImageIndex = 3
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object cxGridGiris: TcxGrid
         Left = 58
         Top = 29
@@ -1513,11 +1480,10 @@ object GirisForm: TGirisForm
       Width = 436
       object pBar: TcxProgressBar
         Left = 2
-        Top = 49
+        Top = 46
         Align = alBottom
         TabOrder = 0
         Visible = False
-        ExplicitTop = 46
         Width = 432
       end
     end
@@ -1551,7 +1517,6 @@ object GirisForm: TGirisForm
       OnExit = cxEditExit
       BosOlamaz = False
       ValueTip = tvString
-      ExplicitHeight = 21
       Width = 98
     end
     object txtTopPanelTarih2: TcxDateEditKadir
@@ -1574,7 +1539,6 @@ object GirisForm: TGirisForm
       OnExit = cxEditExit
       BosOlamaz = False
       ValueTip = tvString
-      ExplicitHeight = 21
       Width = 98
     end
     object btnListTopPanel: TcxButtonKadir
@@ -1617,7 +1581,6 @@ object GirisForm: TGirisForm
       TabOrder = 3
       OnEnter = cxEditEnter
       OnExit = cxEditExit
-      ExplicitHeight = 21
       Width = 30
     end
     object txtSeansTopPanel: TcxComboBox
@@ -1648,7 +1611,6 @@ object GirisForm: TGirisForm
       TabOrder = 4
       OnEnter = cxEditEnter
       OnExit = cxEditExit
-      ExplicitHeight = 21
       Width = 50
     end
     object SysTakipNoVar: TcxImageComboKadir
@@ -1661,16 +1623,7 @@ object GirisForm: TGirisForm
       Properties.Alignment.Horz = taCenter
       Properties.Alignment.Vert = taVCenter
       Properties.ClearKey = 46
-      Properties.Items = <
-        item
-          Description = 'SysTakipNo Olmayanlar'
-          ImageIndex = 0
-          Value = '1'
-        end
-        item
-          Description = 'T'#252'm'#252
-          Value = '100'
-        end>
+      Properties.Items = <>
       Properties.OnChange = TopPanelPropertiesChange
       Style.Font.Charset = DEFAULT_CHARSET
       Style.Font.Color = clWindowText
@@ -1682,7 +1635,7 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       BosOlamaz = False
-      ExplicitHeight = 21
+      FilterSet = fsNone
       Width = 45
     end
     object ENabizMesajTipi: TcxImageComboKadir
@@ -1695,20 +1648,7 @@ object GirisForm: TGirisForm
       Properties.Alignment.Horz = taCenter
       Properties.Alignment.Vert = taVCenter
       Properties.ClearKey = 46
-      Properties.Items = <
-        item
-          Description = 'Hasta Kay'#305't'
-          ImageIndex = 0
-          Value = 'sp_SaglikNetOnlineHastaKayitListXML'
-        end
-        item
-          Description = 'Diyaliz Bildirim'
-          Value = 'sp_SaglikNetOnlineDiyalizBildirimXML'
-        end
-        item
-          Description = 'Diyali '#304'zlem'
-          Value = 'sp_SaglikNetOnlineDiyalizIzlemXML'
-        end>
+      Properties.Items = <>
       Properties.OnChange = TopPanelPropertiesChange
       Style.Font.Charset = DEFAULT_CHARSET
       Style.Font.Color = clWindowText
@@ -1720,7 +1660,7 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       BosOlamaz = False
-      ExplicitHeight = 21
+      FilterSet = fsNone
       Width = 35
     end
     object AktifPasifTopPanel: TcxImageComboKadir
@@ -1735,7 +1675,6 @@ object GirisForm: TGirisForm
       Properties.Items = <
         item
           Description = 'Aktif'
-          ImageIndex = 0
           Value = '1'
         end
         item
@@ -1745,6 +1684,10 @@ object GirisForm: TGirisForm
         item
           Description = 'Yeni'
           Value = '2'
+        end
+        item
+          Description = 'T'#252'm'#252
+          Value = '-1'
         end>
       Properties.OnChange = TopPanelPropertiesChange
       Style.Font.Charset = DEFAULT_CHARSET
@@ -1757,7 +1700,8 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       BosOlamaz = False
-      ExplicitHeight = 21
+      ItemList = '1;Aktif,0;Pasif,2;Yeni,-1;T'#252'm'#252
+      FilterSet = fsAktifPasif
       Width = 88
     end
     object DiyalizTipTopPanel: TcxImageComboKadir
@@ -1770,20 +1714,7 @@ object GirisForm: TGirisForm
       Properties.Alignment.Horz = taCenter
       Properties.Alignment.Vert = taVCenter
       Properties.ClearKey = 46
-      Properties.Items = <
-        item
-          Description = 'Hemodiyaliz'
-          ImageIndex = 0
-          Value = 'H'
-        end
-        item
-          Description = 'Periton Ayaktan'
-          Value = 'P'
-        end
-        item
-          Description = 'Periton Aletli'
-          Value = 'A'
-        end>
+      Properties.Items = <>
       Properties.OnChange = TopPanelPropertiesChange
       Style.Font.Charset = DEFAULT_CHARSET
       Style.Font.Color = clWindowText
@@ -1796,7 +1727,7 @@ object GirisForm: TGirisForm
       OnExit = cxEditExit
       OnKeyDown = cxTextEditKeyDown
       BosOlamaz = False
-      ExplicitHeight = 21
+      FilterSet = fsNone
       Width = 139
     end
     object txtDonemTopPanel: TcxDonemComboKadir
@@ -1821,7 +1752,6 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       BosOlamaz = False
-      ExplicitHeight = 21
       Width = 109
     end
     object KurumTipTopPanel: TcxImageComboKadir
@@ -1835,13 +1765,12 @@ object GirisForm: TGirisForm
       Properties.ClearKey = 46
       Properties.Items = <
         item
-          Description = 'Aktif '#350'irket'
-          ImageIndex = 0
+          Description = 'SGK'
           Value = '1'
         end
         item
-          Description = 'T'#252'm '#350'irketler'
-          Value = '0'
+          Description = 'Yurt D'#305#351#305
+          Value = '99'
         end>
       Properties.OnChange = TopPanelPropertiesChange
       Style.Font.Charset = DEFAULT_CHARSET
@@ -1854,15 +1783,16 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       BosOlamaz = False
-      ExplicitHeight = 21
+      ItemList = '1;SGK,99;Yurt D'#305#351#305
+      FilterSet = fsNone
       Width = 115
     end
     object chkList: TcxCheckGroup
       Tag = -100
-      Left = 1081
+      Left = 993
       Top = 2
       Cursor = crHandPoint
-      Align = alClient
+      Align = alLeft
       Alignment = alCenterCenter
       EditValue = '000'
       ParentFont = False
@@ -1891,7 +1821,7 @@ object GirisForm: TGirisForm
       Style.IsFontAssigned = True
       TabOrder = 11
       Height = 29
-      Width = 283
+      Width = 80
     end
     object SeansKriter: TcxTextEdit
       Tag = -100
@@ -1913,8 +1843,33 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       OnKeyDown = cxTextEditKeyDown
-      ExplicitHeight = 21
-      Width = 205
+      Width = 117
+    end
+    object RdGroup: TcxRadioGroup
+      Left = 1073
+      Top = 2
+      Align = alLeft
+      Alignment = alCenterCenter
+      Properties.Columns = 3
+      Properties.Items = <
+        item
+          Caption = 'Yeni Kay'#305't'
+          Value = 'Yeni Kay'#305't'
+        end
+        item
+          Caption = 'G'#246'nderildi'
+          Value = 'G'#246'nderildi'
+        end
+        item
+          Caption = 'Sonu'#231' Al'#305'nd'#305
+          Value = 'Sonu'#231' Al'#305'nd'#305
+        end>
+      Properties.OnChange = TopPanelPropertiesChange
+      ItemIndex = 0
+      TabOrder = 13
+      Visible = False
+      Height = 29
+      Width = 251
     end
   end
   object DataTableSource: TDataSource

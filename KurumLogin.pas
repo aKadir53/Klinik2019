@@ -47,6 +47,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+     SLK : string;
     function Init(Sender: TObject) : Boolean; override;
   end;
 
@@ -55,7 +56,7 @@ const
         'select WF.id,WF.Value,W.Erisim_Tanimi,W.SLK,W.SLB,W.Sira,W.SLB_Tanimi,W.ValueTip,W.ValueObje,W.ValueObjeValues '+
         'from WebServisErisimBilgileri_Firma WF ' +
         'join WebServisErisimBilgileri W on W.id = WF.id ' +
-        'where WF.sirketKod =:@sirketKod ' +
+        'where WF.sirketKod =:@sirketKod and W.SLK like :@SLK ' +
         'order by Sira ';
       ServisOrtak =
         'select id,Value,Erisim_Tanimi,SLK,SLB,Sira,SLB_Tanimi,ValueTip,ValueObje,ValueObjeValues ' +
@@ -84,19 +85,22 @@ function TfrmKurumBilgi.Init(Sender : TObject) : Boolean;
 var
   sql : string;
 begin
+  SLK := _kod_;
+
 
   case Tag of
     TagfrmKurumBilgi
        : begin
             sql := 'insert into WebServisErisimBilgileri_Firma (id,sirketKod,value) ' +
-                   ' select W.id,' + QuotedStr(_firmaKod_) + ',W.value from WebServisErisimBilgileri W ' +
-                   ' left join WebServisErisimBilgileri_Firma WF on W.id = WF.id and WF.sirketKod = ' + QuotedStr(_firmaKod_) +
+                   ' select W.id,' + QuotedStr(datalar.AktifSirket) + ',W.value from WebServisErisimBilgileri W ' +
+                   ' left join WebServisErisimBilgileri_Firma WF on W.id = WF.id and WF.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
                    ' where WF.id is null ';
             datalar.QueryExec(sql);
 
             ADO_WebServisErisim.close;
             ADO_WebServisErisim.SQL.Text := ServisSirket;
-            ADO_WebServisErisim.Parameters[0].Value := _firmaKod_;
+            ADO_WebServisErisim.Parameters[0].Value := datalar.AktifSirket;
+            ADO_WebServisErisim.Parameters[1].Value := '%'+ SLK +'%';
             ADO_WebServisErisim.Active := True;
        end;
 
@@ -258,6 +262,13 @@ end;
 
 procedure TfrmKurumBilgi.FormShow(Sender: TObject);
 begin
+
+  if SLK = 'LA' then
+  begin
+    HastaKabulifreBilgileriniDeitir1.Visible := False;
+    DnemSonlandrmaifremiDei1.Visible := False;
+  end;
+
  inherited;
  (*
   mevcutSifre := txtSifre.Text;

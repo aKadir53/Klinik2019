@@ -402,6 +402,8 @@ function VeritabaniAlanindanFotografYukle(const sTableName, sKeyField, sImageFie
 function FotografGoruntule (const aPicture: TPicture) : TModalResult;
 function CombodanSectir (const sFormCaption, sComboCaption, sItemsList: String; var iItemIndex : Integer): Boolean;
 procedure AdSoyadAyir (const pAdSoyad: String; var pAd, pSoyad : String);
+function WebErisimBilgileriFirma(sirketKod : string) : string;
+function WebErisimBilgiFirma(id : string) : string;
 function WebErisimBilgi(slk,slb : string) : string;
 function WebErisimBilgiOrtak(slk,slb : string) : string;
 
@@ -2802,6 +2804,27 @@ begin
    end;
 end;
 
+
+function WebErisimBilgileriFirma(sirketKod : string) : string;
+var
+  sql : string;
+begin
+   sql := 'select  WF.id,WF.Value,W.Erisim_Tanimi,W.SLK,W.SLB,W.Sira,W.SLB_Tanimi,W.ValueTip,W.ValueObje,W.ValueObjeValues ' +
+          'from WebServisErisimBilgileri_Firma WF ' +
+          'join WebServisErisimBilgileri W on W.id = WF.id ' +
+          'where WF.sirketKod = ' + QuotedStr(sirketKod);
+
+    Datalar.ServisErisimBilgileriFirma.Active := False;
+    Datalar.ServisErisimBilgileriFirma.Active := True;
+    Datalar.ServisErisimBilgileriFirma.LoadFromDataSet(datalar.QuerySelect(sql));
+end;
+
+function WebErisimBilgiFirma(id : string) : string;
+begin
+   WebErisimBilgiFirma := '';
+   Datalar.ServisErisimBilgileriFirma.Locate('id',VarArrayOf([id]),[]);
+   WebErisimBilgiFirma := Datalar.ServisErisimBilgileriFirma.Fieldbyname('Value').AsString;
+end;
 
 function WebErisimBilgi(slk,slb : string) : string;
 begin
@@ -6519,31 +6542,32 @@ end;
 function KodEslestirNormalDeger(kod: string; turId: string;
   var minD, maxD, Tip: string): string;
 var
-  sql: string;
+  sql , where : string;
   ado: TADOQuery;
 begin
   if turId = '147' then
     turId := '0';
 
+  where := ' and sirketKodu = ' + QuotedStr(datalar.aktifSirket);
+
   ado := TADOQuery.Create(nil);
   try
     ado.Connection := datalar.ADOConnection2;
 
-    sql := 'select TurId from Labtestler where islemkodu = ' + QuotedStr(kod);
+    sql := 'select TurId from Labtestler where islemkodu = ' + QuotedStr(kod) + where;
     datalar.QuerySelect(ado, sql);
 
     if ado.FieldByName('TurId').AsString <> '' then
     begin
       sql :=
         'select butKodu,minD,maxD from Labtestler where islemkodu = ' + QuotedStr
-        (kod) + ' and TurId = ' + turId;
+        (kod) + ' and TurId = ' + turId + where;
       datalar.QuerySelect(ado, sql);
 
       if ado.eof Then
       Begin
         sql :=
-          'select butKodu,minD,maxD from Labtestler where islemkoduC = '
-          + QuotedStr(kod);
+          'select butKodu,minD,maxD from Labtestler where islemkoduC = '+ QuotedStr(kod) + where;
         // + ' and TurId = ' + turId;
         datalar.QuerySelect(ado, sql);
         if not ado.eof Then
@@ -6551,7 +6575,7 @@ begin
           Result := ado.Fields[0].AsString;
           minD := ado.Fields[1].AsString;
           maxD := ado.Fields[2].AsString;
-          Tip := 'Cd';
+          Tip := 'C';
         End
         Else
           Result := '';
@@ -6561,21 +6585,19 @@ begin
         Result := ado.Fields[0].AsString;
         minD := ado.Fields[1].AsString;
         maxD := ado.Fields[2].AsString;
-        Tip := 'Gd';
+        Tip := 'G';
       End;
     end
     else
     begin
       sql :=
-        'select butKodu,minD,maxD from Labtestler where islemkodu = ' + QuotedStr
-        (kod);
+        'select butKodu,minD,maxD from Labtestler where islemkodu = ' + QuotedStr(kod) + where;
       datalar.QuerySelect(ado, sql);
 
       if ado.eof Then
       Begin
         sql :=
-          'select butKodu,minD,maxD from Labtestler where islemkoduC = '
-          + QuotedStr(kod);
+          'select butKodu,minD,maxD from Labtestler where islemkoduC = '+ QuotedStr(kod) + where;
         // + ' and TurId = ' + turId;
         datalar.QuerySelect(ado, sql);
         if not ado.eof Then
@@ -6583,7 +6605,7 @@ begin
           Result := ado.Fields[0].AsString;
           minD := ado.Fields[1].AsString;
           maxD := ado.Fields[2].AsString;
-          Tip := 'Cd';
+          Tip := 'C';
         End
         Else
           Result := '';
@@ -6593,7 +6615,7 @@ begin
         Result := ado.Fields[0].AsString;
         minD := ado.Fields[1].AsString;
         maxD := ado.Fields[2].AsString;
-        Tip := 'Gd';
+        Tip := 'G';
       End;
     end;
   finally

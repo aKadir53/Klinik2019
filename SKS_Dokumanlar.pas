@@ -93,6 +93,9 @@ type
     R1: TMenuItem;
     N5: TMenuItem;
     gridDokumanlarColumn2: TcxGridDBColumn;
+    N6: TMenuItem;
+    L1: TMenuItem;
+    cxStyle2: TcxStyle;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnListClick(Sender: TObject);

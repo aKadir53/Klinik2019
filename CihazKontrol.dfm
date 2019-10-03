@@ -17,10 +17,10 @@ object frmCihazKontrol: TfrmCihazKontrol
   PixelsPerInch = 96
   TextHeight = 13
   object CihazGrid: TcxGridKadir
-    Left = 204
-    Top = -8
-    Width = 430
-    Height = 200
+    Left = 100
+    Top = 16
+    Width = 305
+    Height = 129
     TabOrder = 0
     ExcelFileName = 'RiskDegerlendirme'
     ExceleGonder = True
@@ -199,10 +199,10 @@ object frmCihazKontrol: TfrmCihazKontrol
       OptionsView.GroupByBox = False
       Bands = <
         item
-          Caption = 'Ekipman Bilgileri'
+          Caption = 'Cihaz Bilgileri'
           FixedKind = fkLeft
           Styles.Header = cxStyle8
-          Width = 404
+          Width = 282
         end>
       object CihazSatirlartanimi: TcxGridDBBandedColumn
         DataBinding.FieldName = 'tanimi'
@@ -244,13 +244,13 @@ object frmCihazKontrol: TfrmCihazKontrol
         Options.Editing = False
         Styles.Content = cxStyle8
         Styles.Header = cxStyle3
-        Width = 100
+        Width = 134
         Position.BandIndex = 0
         Position.ColIndex = 4
         Position.RowIndex = 0
       end
       object CihazSatirlarOzellikDeger: TcxGridDBBandedColumn
-        Caption = 'Bilgisi'
+        Caption = #214'zellik Verisi'
         DataBinding.FieldName = 'OzellikDeger'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
@@ -259,7 +259,7 @@ object frmCihazKontrol: TfrmCihazKontrol
         Options.Editing = False
         Styles.Content = cxStyle2
         Styles.Header = cxStyle3
-        Width = 98
+        Width = 270
         Position.BandIndex = 0
         Position.ColIndex = 5
         Position.RowIndex = 0
@@ -270,8 +270,8 @@ object frmCihazKontrol: TfrmCihazKontrol
     end
   end
   object CihazSoruGrid: TcxGridKadir
-    Left = 20
-    Top = 198
+    Left = 76
+    Top = 182
     Width = 500
     Height = 321
     TabOrder = 1
@@ -452,7 +452,7 @@ object frmCihazKontrol: TfrmCihazKontrol
       OptionsView.GroupByBox = False
       Bands = <
         item
-          Caption = #304#351' Ekipman Kontrol Sorular'#305
+          Caption = 'Cihaz Kontrol'
           FixedKind = fkLeft
           Styles.Header = cxStyle8
           Width = 476
@@ -603,6 +603,15 @@ object frmCihazKontrol: TfrmCihazKontrol
       Tag = -27
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
+      OnClick = cxButtonCClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object Y1: TMenuItem
+      Tag = -10
+      Caption = 'Yeni Cihaz Tan'#305'mla'
+      ImageIndex = 93
       OnClick = cxButtonCClick
     end
   end

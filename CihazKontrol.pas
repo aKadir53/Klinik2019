@@ -99,6 +99,8 @@ type
     CihazSoruSatirKontrolSoru: TcxGridDBBandedColumn;
     CihazSoruSatirKontrolSoruCvp: TcxGridDBBandedColumn;
     CihazSoruSatirKontrolSoruCvpAciklama: TcxGridDBBandedColumn;
+    N1: TMenuItem;
+    Y1: TMenuItem;
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure gridRaporCustomDrawGroupCell(Sender: TcxCustomGridTableView;
@@ -143,36 +145,12 @@ begin
     inherited;
     if TcxButtonEditKadir(FindComponent('id')).Text = '' then exit;
 
-    if (vartostr(TcxTextEditKadir(FindComponent('IGU')).EditValue) <>
-       datalar.IGU)
-       //and TcxImageComboKadir(FindComponent('Onay')).EditValue = 1
-    then begin
-       CihazSoruSatir.OptionsData.Editing := False;
-       CihazSoruSatir.OptionsData.Inserting := False;
-       CihazSoruSatir.OptionsData.Deleting := False;
-
-       TcxImageComboKadir(FindComponent('SirketKod')).Enabled := False;
-       TcxTextEditKadir(FindComponent('IGU')).Enabled := False;
-       TcxImageComboKadir(FindComponent('KontrolCihaz')).Enabled := False;
-       TcxImageComboKadir(FindComponent('KontrolTip')).Enabled := False;
-       TcxDateEditKadir(FindComponent('Tarih')).Enabled := False;
-       TcxTextEditKadir(FindComponent('FaaliyetAlani')).Enabled := False;
-       TcxTextEditKadir(FindComponent('CihazServisVeren')).Enabled := False;
-       TcxTextEditKadir(FindComponent('CihazServisTel')).Enabled := False;
-       TcxTextEditKadir(FindComponent('sorumluYonetici')).Enabled := False;
-       TcxTextEditKadir(FindComponent('sorumlu')).Enabled := False;
-
-      // TcxImageComboKadir(FindComponent('Onay')).Enabled := False;
-
-    end
-    else
-    begin
        CihazSoruSatir.OptionsData.Editing := True;
        CihazSoruSatir.OptionsData.Inserting := True;
        CihazSoruSatir.OptionsData.Deleting := True;
 
        TcxImageComboKadir(FindComponent('SirketKod')).Enabled := True;
-       TcxTextEditKadir(FindComponent('IGU')).Enabled := True;
+     //  TcxTextEditKadir(FindComponent('IGU')).Enabled := True;
        TcxImageComboKadir(FindComponent('KontrolCihaz')).Enabled := True;
        TcxImageComboKadir(FindComponent('KontrolTip')).Enabled := True;
        TcxDateEditKadir(FindComponent('Tarih')).Enabled := True;
@@ -183,8 +161,6 @@ begin
        TcxTextEditKadir(FindComponent('sorumlu')).Enabled := True;
 
 
-    //   TcxImageComboKadir(FindComponent('Onay')).Enabled := True;
-    end;
 
 
 end;
@@ -291,6 +267,9 @@ begin
 end;
 
 procedure TfrmCihazKontrol.cxButtonCClick(Sender: TObject);
+var
+  F : TGirisForm;
+  GirisRecord : TGirisFormRecord;
 begin
   inherited;
 
@@ -298,9 +277,16 @@ begin
   -9 : begin
 
        end;
-  -11 : begin
+  -10 : begin
+         // yeni cihaz
+          GirisRecord.F_firmaKod_ := datalar.AktifSirket;
+          GirisRecord.F_HastaAdSoyad_ := datalar.AktifSirketAdi;
+          F := nil;
+          F := FormINIT(TagfrmSirketEkipmanList,GirisRecord,ikHayir,'');
 
-       end;
+          if F <> nil then F.ShowModal;
+          TcxImageComboKadir(FindComponent('KontrolCihaz')).Filter := '';
+        end;
   -18 : begin
 
         end;
@@ -330,7 +316,7 @@ begin
   // TcxImageComboKadir(FindComponent('IGU')).Filter := ' durum = ''Aktif''';
 
   end;
-
+ (*
   if TcxImageComboKadir(Sender).Name = 'KontrolTip'
   Then begin
    if TcxImageComboKadir(FindComponent('KontrolTip')).EditingValue = 1
@@ -346,6 +332,7 @@ begin
 
 
   end;
+   *)
 
   if TcxImageComboKadir(Sender).Name = 'KontrolCihaz'
   Then begin
@@ -404,7 +391,7 @@ begin
   indexFieldName := 'id';
   TableName := 'CihazKontrol';
 
-
+  (*
     if datalar.UserGroup = '1'
     then
       where := ''
@@ -415,10 +402,11 @@ begin
     else begin
       where := ' IGU = ' + QuotedStr(datalar.IGU);
     end;
+    *)
 
-  Kontroler := ListeAcCreate('CihazKontrol_view','id,sirket,Tarih,CihazAciklamasi,CihazTuru',
-                       'ID,ÞirketAdý,HazýrlamaTarihi,Cihaz Aciklamasi,Cihaz Turu',
-                       '40,250,80,120,80','CihazKontrolList','Cihaz Kontrolleri',where,7,True,self);
+  Kontroler := ListeAcCreate('CihazKontrol_view','id,sirket,Tarih,KontrolCihaz,CihazAciklamasi,CihazTuru',
+                       'ID,ÞirketAdý,KontrolTarihi,CihazKodu,CihazTanimi,CihazTuru',
+                       '40,150,80,50,120,200','CihazKontrolList','Cihaz Kontrolleri',where,7,True,self);
 
 
   setDataStringB(self,'id','Cihaz Kontrol ID',Kolon1,'',50,Kontroler,True,nil,'','',True,True,-100);
@@ -426,13 +414,13 @@ begin
 
   FaturaTarihi := TcxDateEditKadir.Create(Self);
   FaturaTarihi.ValueTip := tvDate;
-  setDataStringKontrol(self,FaturaTarihi,'Tarih','Hazýrlama Tarihi',Kolon1,'',80);
+  setDataStringKontrol(self,FaturaTarihi,'Tarih','Kontrol Tarihi',Kolon1,'',100);
 
 
   sirketlerx := TcxImageComboKadir.Create(self);
   sirketlerx.Name := 'KontrolTip';
   sirketlerx.Conn := nil;
-  sirketlerx.ItemList := '1;Ýlk Kontrol,2;Periyodik Kontrol';
+  sirketlerx.ItemList := '1;Ýç Kontrol,2;Dýþ Kontrol,3;Kalibrasyon';
   sirketlerx.Filter := '';
   setDataStringKontrol(self,sirketlerx,'KontrolTip','Kontrol Tipi',kolon1,'',100);
   OrtakEventAta(sirketlerx);
@@ -441,16 +429,16 @@ begin
 
   sirketlerx := TcxImageComboKadir.Create(self);
   sirketlerx.Conn := Datalar.ADOConnection2;
-  sirketlerx.TableName := 'SIRKETLER_TNM_view';
+  sirketlerx.TableName := 'KullaniciSirketleri_View';
   sirketlerx.ValueField := 'SirketKod';
   sirketlerx.DisplayField := 'Tanimi';
   sirketlerx.BosOlamaz := False;
   sirketlerx.Filter := datalar.sirketlerUserFilter;
-  setDataStringKontrol(self,sirketlerx,'SirketKod','Þirket',Kolon1,'',250,0,alNone,'');
+  setDataStringKontrol(self,sirketlerx,'SirketKod','Þirket',Kolon1,'',200,0,alNone,'');
 
   TcxImageComboKadir(FindComponent('SirketKod')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
 
-
+ (*
   sirketlerx := TcxImageComboKadir.Create(self);
   sirketlerx.Conn := Datalar.ADOConnection2;
   sirketlerx.TableName := 'IGU';
@@ -460,46 +448,49 @@ begin
   sirketlerx.Enabled := False;
   sirketlerx.Filter := ' durum = ''Aktif''';
   setDataStringKontrol(self,sirketlerx,'IGU','Ýþ Güvenlik Uzm',Kolon1,'',120,0,alNone,'');
-
+   *)
+ (*
   if datalar.UserGroup = '11' then TcxImageComboKadir(FindComponent('IGU')).Filter := ' kod = ' + QuotedStr(datalar.IGU)
   else
   TcxImageComboKadir(FindComponent('IGU')).Filter := ' durum = ''Aktif''';
+   *)
 
 
 
 
-
-  setDataString(self,'FaaliyetAlani','Faaliyet Alani' ,Kolon1,'',100);
-  setDataString(self,'CihazServisVeren','Ekipmana Servis Veren',Kolon1,'',200);
-  setDataString(self,'CihazServisTel','Ekipmana Servis Veren Tel',Kolon1,'',100);
-  setDataString(self,'sorumluYonetici','Sorumlu Yönetici',Kolon1,'',200);
-  setDataString(self,'sorumlu','Sorumlu',Kolon1,'',100);
+  setDataString(self,'FaaliyetAlani','Faaliyet Alani' ,Kolon1,'',200);
+  setDataString(self,'CihazServisVeren','Servis Veren',Kolon1,'',200);
+  setDataString(self,'CihazServisTel','Servis Veren Tel',Kolon1,'',200);
+  setDataString(self,'sorumluYonetici','Sorumlu',Kolon1,'',200);
+  setDataString(self,'sorumlu','Sorumlu',Kolon1,'',200);
 
 
   sirketlerx := TcxImageComboKadir.Create(self);
   sirketlerx.Conn := Datalar.ADOConnection2;
-  sirketlerx.TableName := 'Cihaz';
+  sirketlerx.TableName := 'Cihaz_View';
   sirketlerx.ValueField := 'Kod';
-  sirketlerx.DisplayField := 'tanimi';
+  sirketlerx.DisplayField := 'Cihaztanimi';
   sirketlerx.BosOlamaz := False;
-  setDataStringKontrol(self,sirketlerx,'KontrolCihaz','Kontrol Yapýlan Ekipman',Kolon1,'cihaz',200,0,alNone,'',clTop,False);
+  setDataStringKontrol(self,sirketlerx,'KontrolCihaz','Kontrol Yapýlan Cihaz',Kolon1,'cihaz',200,0,alNone,'',clTop,False);
   TcxImageComboKadir(FindComponent('KontrolCihaz')).Properties.PostPopupValueOnTab := True;
   TcxImageComboKadir(FindComponent('KontrolCihaz')).Properties.ImmediatePost := False;
   TcxImageComboKadir(FindComponent('KontrolCihaz')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
-    TcxImageComboKadir(FindComponent('KontrolCihaz')).Properties.OnPopup := cxImageComboBox1PropertiesPopup;
-  addButton(self,nil,'btnEkipmanEkle','','Ekipman Ekle',Kolon3,'cihaz',100,ButtonClick);
+  TcxImageComboKadir(FindComponent('KontrolCihaz')).Properties.OnPopup := cxImageComboBox1PropertiesPopup;
+
+ // addButton(self,nil,'btnEkipmanEkle','','Ekle',Kolon3,'cihaz',50,ButtonClick);
 
 
-  setDataStringKontrol(self,CihazGrid,'CihazGrid','',Kolon1,'',430,200,alNone,'');
+  setDataStringKontrol(self,CihazGrid,'CihazGrid','',Kolon1,'',305,260,alNone,'');
 
-  setDataStringMemo(self,'ServisSonucDurum','Servis Sonuç' ,Kolon2,'',500,460);
-  setDataStringKontrol(self,CihazSoruGrid,'CihazSoruGrid','',Kolon2,'',500,460,alNone,'');
+  setDataStringKontrol(self,CihazSoruGrid,'CihazSoruGrid','',Kolon2,'',500,260,alNone,'');
 
-  TdxLayoutItem(FindComponent('dxLaServisSonucDurum')).Visible := False;
-  TdxLayoutItem(FindComponent('dxLaCihazSoruGrid')).Visible := False;
+  setDataStringBLabel(self,'bosSatir1',Kolon2,'',500,'Servis Sonuç');
+  setDataStringMemo(self,'ServisSonucDurum','' ,Kolon2,'',500,190);
+ // TdxLayoutItem(FindComponent('dxLaServisSonucDurum')).Visible := False;
+ // TdxLayoutItem(FindComponent('dxLaCihazSoruGrid')).Visible := False;
 
 
-  SayfaCaption('Ekipman Kontrol','','','','');
+  SayfaCaption('Cihaz Kontrol','','','','');
 end;
 
 
@@ -512,10 +503,12 @@ begin
 
   case TControl(sender).Tag  of
   Kaydet : begin
-            TcxImageComboKadir(FindComponent('KontrolCihaz')).Enabled := True;
+             TcxImageComboKadir(FindComponent('KontrolCihaz')).Enabled := True;
+             TcxButtonEditKadir(FindComponent('id')).EditValue := F_IDENTITY;
            end;
   Yeni : begin
-           TcxImageComboKadir(FindComponent('KontrolCihaz')).Enabled := False;
+          // TcxImageComboKadir(FindComponent('KontrolCihaz')).Enabled := False;
+          (*
            if datalar.IGU <> ''
            then begin
              TcxImageComboKadir(FindComponent('IGU')).EditValue := datalar.IGU;
@@ -523,6 +516,7 @@ begin
            end
            else
              TcxImageComboKadir(FindComponent('IGU')).Enabled := True;
+             *)
          end;
   end;
 end;

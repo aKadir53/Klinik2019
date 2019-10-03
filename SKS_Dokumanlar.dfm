@@ -52,7 +52,8 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     LookAndFeel.Kind = lfOffice11
     LookAndFeel.NativeStyle = False
     LookAndFeel.SkinName = 'McSkin'
-    ExceleGonder = False
+    ExcelFileName = 'SKS_DokumanListesi'
+    ExceleGonder = True
     object gridDokumanlar: TcxGridDBTableView
       PopupMenu = PopupMenu1
       OnDblClick = gridDokumanlarDblClick
@@ -165,6 +166,8 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Styles.Content = cxStyle2
+        Styles.Header = cxStyle2
         Width = 249
       end
       object KapsamAdi: TcxGridDBColumn
@@ -292,16 +295,16 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         PropertiesClassName = 'TcxImageComboBoxProperties'
         Properties.Alignment.Horz = taLeftJustify
         Properties.Alignment.Vert = taVCenter
-        Properties.Images = DATALAR.ImageList1
+        Properties.Images = DATALAR.imag24png
         Properties.Items = <
           item
             Description = 'Kontrol Edildi'
-            ImageIndex = 153
+            ImageIndex = 0
             Value = 1
           end
           item
             Description = 'Kontrol Bekliyor...'
-            ImageIndex = 38
+            ImageIndex = 41
             Value = 0
           end>
         HeaderAlignmentHorz = taCenter
@@ -314,21 +317,21 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         PropertiesClassName = 'TcxImageComboBoxProperties'
         Properties.Alignment.Horz = taLeftJustify
         Properties.Alignment.Vert = taVCenter
-        Properties.Images = DATALAR.ImageList1
+        Properties.Images = DATALAR.imag24png
         Properties.Items = <
           item
             Description = 'Onayland'#305
-            ImageIndex = 132
+            ImageIndex = 7
             Value = 1
           end
           item
             Description = 'Onay Bekliyor'
-            ImageIndex = 38
+            ImageIndex = 41
             Value = 0
           end
           item
             Description = 'Red'
-            ImageIndex = 133
+            ImageIndex = 1
             Value = 2
           end>
         HeaderAlignmentHorz = taCenter
@@ -611,18 +614,18 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     Top = 416
   end
   object PopupMenu1: TPopupMenu
-    Images = DATALAR.global_img_list4
+    Images = DATALAR.imag24png
     Left = 288
     Top = 320
     object T1: TMenuItem
       Tag = 1
       Caption = 'T'#252'm K'#305'r'#305'l'#305'mlar'#305' A'#231
-      ImageIndex = 147
+      ImageIndex = 16
       OnClick = T2Click
     end
     object T2: TMenuItem
       Caption = 'T'#252'm K'#305'r'#305'l'#305'mlar'#305' Kapat'
-      ImageIndex = 148
+      ImageIndex = 14
       OnClick = T2Click
     end
     object N1: TMenuItem
@@ -631,16 +634,18 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     object E1: TMenuItem
       Tag = -1
       Caption = 'Ekle'
-      ImageIndex = 5
+      ImageIndex = 30
       OnClick = cxButtonCClick
     end
     object D1: TMenuItem
       Caption = 'D'#252'zenle'
+      ImageIndex = 32
       Visible = False
       OnClick = cxButtonCClick
     end
     object S1: TMenuItem
       Caption = 'Sil'
+      ImageIndex = 43
       Visible = False
     end
     object N2: TMenuItem
@@ -649,13 +654,13 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     object onayDurum: TMenuItem
       Tag = -5
       Caption = 'Onay'
-      ImageIndex = 154
+      ImageIndex = 7
       OnClick = cxButtonCClick
     end
     object kontrolDurum: TMenuItem
       Tag = -6
       Caption = 'Kontrol'
-      ImageIndex = 61
+      ImageIndex = 0
       OnClick = cxButtonCClick
     end
     object N3: TMenuItem
@@ -664,7 +669,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     object D2: TMenuItem
       Tag = -10
       Caption = 'Dokuman'#305' A'#231
-      ImageIndex = 46
+      ImageIndex = 101
       OnClick = cxButtonCClick
     end
     object N4: TMenuItem
@@ -678,6 +683,15 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     object N5: TMenuItem
       Tag = -12
       Caption = #350'ablon'
+      OnClick = cxButtonCClick
+    end
+    object N6: TMenuItem
+      Caption = '-'
+    end
+    object L1: TMenuItem
+      Tag = 9997
+      Caption = 'Listeyi Excele At'
+      ImageIndex = 75
       OnClick = cxButtonCClick
     end
   end
@@ -694,6 +708,14 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       TextColor = clBlack
+    end
+    object cxStyle2: TcxStyle
+      AssignedValues = [svFont]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
     end
   end
 end

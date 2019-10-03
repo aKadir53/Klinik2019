@@ -202,7 +202,7 @@ object frmFirmaEkipmanList: TfrmFirmaEkipmanList
       Styles.NewItemRowInfoText = cxStyle9
       Bands = <
         item
-          Caption = 'Firma Ekipman Listesi'
+          Caption = 'Firma Cihaz Listesi'
           FixedKind = fkLeft
           Options.Sizing = False
           Styles.Header = cxStyle8
@@ -444,7 +444,7 @@ object frmFirmaEkipmanList: TfrmFirmaEkipmanList
       OptionsView.GroupByBox = False
       Bands = <
         item
-          Caption = #304#351' Ekipman '#214'zellik'
+          Caption = 'Cihaz '#214'zellikleri'
           FixedKind = fkLeft
           Styles.Header = cxStyle8
           Width = 349

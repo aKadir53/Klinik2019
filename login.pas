@@ -328,6 +328,9 @@ begin
 
       SetAnaFormFoto;
 
+
+
+
       AnaForm.dxSkinController1.SkinName := login.FieldByName('userSkin').AsString;
       FormatSettings.DateSeparator := '.';
       LoginSayfalar.ActivePageIndex := 2;

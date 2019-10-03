@@ -645,7 +645,6 @@ begin
   begin
     where := '';
     sube := ' IGU = ' + QuotedStr(datalar.IGU);
-
   end
   else
   if datalar.DSPers <> '' then
@@ -666,7 +665,7 @@ begin
   Where := ' kullanici = ' + QuotedStr(datalar.username) + ' and FirmaTip = 1';
   datalar.sirketlerUserFilter := Where;
   Sirketler.Conn := Datalar.ADOConnection2;
-  Sirketler.TableName := 'SIRKETLER_TNM_view';
+  Sirketler.TableName := 'KullaniciSirketleri_View';
   Sirketler.ValueField := 'SirketKod';
   Sirketler.DisplayField := 'Tanimi';
   Sirketler.BosOlamaz := False;
@@ -1166,6 +1165,20 @@ begin
     Datalar.ServisErisimBilgileri.Active := False;
     Datalar.ServisErisimBilgileri.Active := True;
     Datalar.ServisErisimBilgileri.LoadFromDataSet(datalar.QuerySelect(sql));
+
+
+    WebErisimBilgileriFirma(datalar.AktifSirket);
+    datalar._labusername := WebErisimBilgiFirma('811');
+    datalar._labsifre := WebErisimBilgiFirma('812');
+    datalar._labkurumkod := WebErisimBilgiFirma('813');
+    datalar._labkurumkodText := WebErisimBilgiFirma('814');
+    datalar._labID := WebErisimBilgiFirma('15');
+    datalar._labSonucIcinGozArdiEt := WebErisimBilgiFirma('817');
+
+    datalar._laburl := datalar.QuerySelect('select WebserviceURL from LabFirmalar where kod = ' +
+                                   QuotedStr(datalar._labID)).FieldByName('WebserviceURL').AsString;
+
+
 
 
   if WebErisimBilgi('98','00') = 'Gerçek'

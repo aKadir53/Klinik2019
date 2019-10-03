@@ -338,6 +338,7 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
       TabOrder = 1
       Visible = False
       BosOlamaz = False
+      FilterSet = fsNone
       Width = 763
     end
     object GrpAciklama: TcxGroupBox

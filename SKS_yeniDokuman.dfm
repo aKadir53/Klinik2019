@@ -1197,5 +1197,8 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       ImageIndex = 114
       OnClick = cxButtonCClick
     end
+    object N3: TMenuItem
+      Caption = '-'
+    end
   end
 end

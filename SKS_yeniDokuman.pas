@@ -116,6 +116,7 @@ type
     GrupRevizyonlar: TcxGroupBox;
     GrupGG: TcxGroupBox;
     GrupOkuma: TcxGroupBox;
+    N3: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure PropertiesEditValueChanged(Sender: TObject);override;
     procedure cxButtonEditPropertiesButtonClick(Sender: TObject;
@@ -154,7 +155,7 @@ implementation
 
 {$R *.dfm}
 
-uses data_modul,Rapor;
+uses data_modul,Rapor,AnaUnit;
 
 procedure TfrmSKS_YeniDokuman.RevAfterScroll(DataSet: TDataSet);
 var
@@ -302,6 +303,8 @@ begin
     if datalar.KontrolUserSet = True then exit;
     if not cxKaydetResult then Exit;
 
+    TcxImageComboKadir(FindComponent('id')).EditValue := F_IDENTITY;
+
     case TControl(sender).Tag  of
        Kaydet : begin
                   ilkRev;
@@ -403,6 +406,10 @@ begin
   setDataStringKontrol(self,_IC_,'dokumanTip','Döküman Tip',kolon1,'',100);
   OrtakEventAta(_IC_);
 
+
+  _IC_ := TcxImageComboKadir.Create(self);
+  _IC_.Properties.Items := AnaForm.Sirketler.Properties.Items;
+  setDataStringKontrol(self,_IC_,'sirketKod','Þirket',kolon1,'',100);
 
 //  cxPanel.Visible := True;
   Sayfa3_Kolon3.Width := 0;

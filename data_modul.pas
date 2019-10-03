@@ -355,6 +355,18 @@ type
     SQLMemTable_EtkenMaddelerkullanimPeriyot: TIntegerField;
     SQLMemTable_EtkenMaddelerkullanimPeriyotBirim: TStringField;
     ADO_RAPORLAR_Q: TADOQuery;
+    ServisErisimBilgileriFirma: TdxMemData;
+    StringField34: TStringField;
+    StringField35: TStringField;
+    IntegerField8: TIntegerField;
+    StringField36: TStringField;
+    StringField37: TStringField;
+    IntegerField9: TIntegerField;
+    StringField38: TStringField;
+    StringField39: TStringField;
+    StringField40: TStringField;
+    StringField41: TStringField;
+    Lab: THTTPRIO;
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
     procedure TakipHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;
@@ -376,6 +388,8 @@ type
       var ExecuteOptions: TExecuteOptions; var EventStatus: TEventStatus;
       const Command: _Command; const Recordset: _Recordset);
     procedure DataModuleDestroy(Sender: TObject);
+    procedure LabAfterExecute(const MethodName: string; SOAPResponse: TStream);
+    procedure LabBeforeExecute(const MethodName: string; SOAPRequest: TStream);
   private
 
     { Private declarations }
@@ -383,7 +397,7 @@ type
    servername,username, usersifre , _username , _sifre , _donemuser , _donemsifre , usernameAdi ,
    _tesisKodu , _labusername , _labsifre , doktor ,doktorKodu,doktorTC, doktorAdi , SonReceteDoktorKodu,SonImzaDoktorKodu,sirketKodu,
    IGU, DSPers, _dosyaNo_,_gelisNo_,kontrolKod,RiskTanimBilgiEkle,
-   _labkurumkod , _labkurumkodText, _laburl , _labfirma ,  _SKRS , _saglikNetUser ,
+   _labkurumkod , _labkurumkodText, _laburl , _labfirma ,  _SKRS , _saglikNetUser , _labID,_labSonucIcinGozArdiEt : string;
    _saglikNetPass , _firmaSKRS , _usermernis , _passmernis, UserGroup, UserGroupName : string;
    _doktorReceteUser,_doktorRecetePas,_KurumSKRS_, _userSaglikNet_ , _passSaglikNet_ , _userSaglikNet2_ , _passSaglikNet2_ , itsGLN , itsUser , itsPass: string;
    _merkezAdi , _DyobKurumKodu_,_DyobSifre_,_DyobServiceKodu_ , doktorTip , bashekimKodu,hekimKodu,ImajFTPServer : string;
@@ -459,6 +473,9 @@ type
    userTanimi : String;
    DokumanGG : TDokumanGG;
    KurulToplantiMadde : TKurulToplantiMadde;
+   HTTP_XMLDosya_Name : string;
+
+
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
     function MasterBaglan : Boolean; overload;
 
@@ -690,7 +707,6 @@ begin
            CSGBUrl := WebErisimBilgiOrtak('CSG','00');
 
         CSGBImza := WebErisimBilgiOrtak('CSG','03');
-
 
 
         if not UpdateThermo (10, iThermo, 'Doktor bilgileri') then Exit;
@@ -930,6 +946,51 @@ begin
       Pointer(@TimeOut),
       SizeOf(TimeOut));
 
+end;
+
+procedure TDATALAR.LabAfterExecute(const MethodName: string;
+  SOAPResponse: TStream);
+var
+  memo : Tmemo;
+  m : TStringList;
+  R: UTF8String;
+begin
+   SetLength(R, SOAPResponse.Size);
+   SOAPResponse.Position := 0;
+   SOAPResponse.Read(R[1], Length(R));
+   memo := Tmemo.Create(nil);
+   try
+    memo.Parent := AnaForm;
+    memo.Lines.Add(FormatXMLData(R));
+    memo.Lines.SaveToFile(HTTP_XMLDosya_Name +'Cevap.XML');
+    TenayMNTRequest := memo.Lines.Text;
+   finally
+     memo.Free;
+   end;
+
+end;
+
+procedure TDATALAR.LabBeforeExecute(const MethodName: string;
+  SOAPRequest: TStream);
+var
+  memo : Tmemo;
+  m : TStringList;
+  R: UTF8String;
+  met : string;
+begin
+   met := MethodName;
+   SetLength(R, SOAPRequest.Size);
+   SOAPRequest.Position := 0;
+   SOAPRequest.Read(R[1], Length(R));
+
+   memo := Tmemo.Create(nil);
+   try
+     memo.Parent := AnaForm;
+     memo.Lines.Add(FormatXMLData(R));
+     memo.Lines.SaveToFile(HTTP_XMLDosya_Name+'.XML');
+   finally
+     memo.Free;
+   end;
 end;
 
 procedure TDATALAR.LabVBeforeExecute(const MethodName: String;

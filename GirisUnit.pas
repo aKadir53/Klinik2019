@@ -24,7 +24,7 @@ uses
   dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver,
   dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008, dxSkinValentine,
   dxSkinXmas2008Blue, cxRadioGroup, cxCheckComboBox, cxCheckGroup, Vcl.ImgList,
-  JvExControls, JvAnimatedImage, JvGIFCtrl;
+  JvExControls, JvAnimatedImage, JvGIFCtrl,ShellApi;
 type
   TControlAccess = class(TControl);
   TcxLookAndFeelAccess = class(TcxLookAndFeel);
@@ -121,6 +121,7 @@ type
     ListeNaceKodlari: TListeAc;
     _CINSIYET_: TcxImageComboKadir;
     Timer1: TTimer;
+    RdGroup: TcxRadioGroup;
 
     procedure cxKaydetClick(Sender: TObject);virtual;
     procedure cxButtonCClick(Sender: TObject);
@@ -216,6 +217,8 @@ type
     F_TedaviTuru_ : String;
     F_SeansBilgi : TDigerIslemTalep;
     F_sysTakipNo_ : string;
+    F_DescFieldKontrol : Boolean;
+    F_FormDiseabled : Boolean;
 
   protected
     F_IDENTITY : Integer;
@@ -229,7 +232,7 @@ type
     function IsDisableControl (const aComponent : TComponent) : Boolean;
   public
     indexFieldName,TableName,_SqlInsert_,_SqlUpdate_,_SqlDelete_ : string;
-    _fieldsEdit_,_fields_ ,_fieldBaslik_,_fieldTips_,_fieldFormats_,_spSQL_,_ICParams_ : string;
+    _fieldsEdit_,_fields_ ,_fieldBaslik_,_fieldTips_,_fieldFormats_,_spSQL_,_ICParams_,_fieldReadOnly_ : string;
     indexFieldValue : string;
     sqlTip : sqlType;
    // _dosyaNo_,_gelisNo_,TakipNo,BasvuruNo : string;
@@ -339,6 +342,8 @@ type
     property _TedaviTuru_ : string read F_TedaviTuru_ write F_TedaviTuru_;
     property _SeansBilgi : TDigerIslemTalep read F_SeansBilgi write F_SeansBilgi;
     property _sysTakipNo_ : string read F_sysTakipNo_ write F_sysTakipNo_;
+    property _DescFieldKontrol : Boolean read F_DescFieldKontrol write F_DescFieldKontrol;
+    property _FormDiseabled : Boolean read F_FormDiseabled write F_FormDiseabled;
   end;
 
 const
@@ -426,6 +431,17 @@ begin
    DurumGoster;
    try
      case formTag of
+
+      TagfrmLabEntegrasyon :
+          begin
+             sql := 'exec sp_LabListesi ' + txtTopPanelTarih1.GetSQLValue + ',' +
+                                            txtTopPanelTarih2.GetSQLValue + ',' +
+                                            QuotedStr(datalar.AktifSirket) + ',' +
+                                            QuotedStr(RdGroup.EditValue);
+
+          end;
+
+
        TagfrmHastaListe :
            begin
               sql := 'exec sp_frmPersonelListesi ' + QuotedStr(datalar.AktifSirket) + ',' +
@@ -690,6 +706,10 @@ begin
   cxTab.PopupMenu := menu;
 
 //  pnlDurum.Alignment := alCenterCenter;
+
+
+  if _DescFieldKontrol
+  then tableColumnDescCreate;
 
   pnlDurum.left := (width div 2) - pnlDurum.width div 2;
   pnlDurum.Top := (Height div 2) - pnlDurum.Height div 2;
@@ -1108,7 +1128,7 @@ var
 begin
   _say := self.ComponentCount - 1;
   cxTopPanel.Enabled := True;
-
+   _FormDiseabled := True;
   for x := 0 to _say do
   begin
        _obje_ := TcxCustomEdit(self.Components[x]);
@@ -1129,7 +1149,7 @@ begin
   //ÜÖ 20180413 hacý kadir'in 5 nisan'daki push'unda eklenmiþ.
   //            firma, personel, kullanýcý kartý gibi ekranlarda [Yeni] menüsü seçilemiyor diye geri kapattým
   //cxTopPanel.Enabled := false;
-
+   _FormDiseabled := False;
   for x := 0 to _say do
   begin
    _obje_ := TcxCustomEdit(_form.Components[x]);
@@ -2442,6 +2462,10 @@ begin
            else
            if TcxDateEdit(_Obje_).EditValue <> Null
            then
+             if TcxDateEditKadir(_Obje_).ValueTip = tvTime
+             then
+               sqlRun.FieldByName(_Obje_.Name).AsVariant :=  FormatDateTime('hh:mm', TcxDateEditKadir(_Obje_).EditValue)
+             else
              if TcxDateEditKadir(_Obje_).ValueTip = tvDate
              then
                sqlRun.FieldByName(_Obje_.Name).AsVariant :=  TcxDateEditKadir(_Obje_).GetValue('YYYY-MM-DD hh:mm') //tarihal(TcxDateEdit(_Obje_).Date)
@@ -2517,7 +2541,7 @@ var
 begin
 // tablonun kolonlarýnda description özelliði tanýmlanmýþ kolonlarý bulup burdaki
 // tanýmlamaya göre forma kontrol koyar.
-// Caption,fieldname,kolon,grup,uzunluk
+// Caption,kolon,grup,uzunluk
 
   sql := Format(selectTableDescColumn,[#39+TableName+#39]);
   ado := TADOQuery.Create(nil);
@@ -2533,6 +2557,7 @@ begin
         Split(',',desc,prm);
         grup := TdxLayoutGroup(FindComponent(prm[1]));
         setDataString(self,col,prm[0], grup, prm[2],strtoint(prm[3]));
+        TcxTextEdit(FindComponent(col)).Enabled := _FormDiseabled;
         ado.Next;
       end;
     finally
@@ -2708,8 +2733,12 @@ begin
               close;
             end;
 
-      9998 : ShowMessage(Tform(self).Name + ' Yardým','','','info'); // formun kullanýmý ile igili yardým
+      9998 : begin
+               ShellExecute(0, 'open', PChar('Chrome.exe'), PChar('https://www.noktayazilim.net/KlinikKlavuz/'+ Tform(self).Name + '.html'),
+               nil, SW_SHOWNORMAL);
 
+               //ShowMessage(Tform(self).Name + ' Yardým','','','info'); // formun kullanýmý ile igili yardým
+             end;
      end;
   finally
     DurumGoster(False);

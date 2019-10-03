@@ -12,6 +12,7 @@ object frmTestAyarlari: TfrmTestAyarlari
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object cxGrid1: TcxGrid
@@ -68,7 +69,8 @@ object frmTestAyarlari: TfrmTestAyarlari
         Caption = 'Sut Kodu'
         DataBinding.FieldName = 'butKodu'
         HeaderAlignmentHorz = taCenter
-        Width = 43
+        HeaderAlignmentVert = vaCenter
+        Width = 57
       end
       object cxGrid1DBTableView1tanimi: TcxGridDBColumn
         Caption = 'Tan'#305'm'#305
@@ -101,8 +103,11 @@ object frmTestAyarlari: TfrmTestAyarlari
         HeaderAlignmentHorz = taCenter
       end
       object cxGrid1DBTableView1uygulamaAdet: TcxGridDBColumn
-        Caption = 'Adet'
+        Caption = 'GC'
         DataBinding.FieldName = 'uygulamaAdet'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         Width = 27
       end
@@ -127,21 +132,27 @@ object frmTestAyarlari: TfrmTestAyarlari
       end
       object cxGrid1DBTableView1Column1: TcxGridDBColumn
         DataBinding.FieldName = 'SGKTip'
-        Width = 47
+        Width = 52
       end
       object cxGrid1DBTableView1Column2: TcxGridDBColumn
         Caption = 'Birim'
         DataBinding.FieldName = 'birim'
-        Width = 27
+        Width = 32
       end
       object cxGrid1DBTableView1Column3: TcxGridDBColumn
         Caption = 'Lab.Kodu'
         DataBinding.FieldName = 'islemKodu'
-        Width = 51
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        GroupSummaryAlignment = taCenter
+        HeaderAlignmentHorz = taCenter
+        Width = 112
       end
       object cxGrid1DBTableView1Column4: TcxGridDBColumn
         Caption = 'islemKodu '#199#305'k'#305#351
         DataBinding.FieldName = 'islemKoduC'
+        Visible = False
         Width = 78
       end
       object cxGrid1DBTableView1Column5: TcxGridDBColumn
@@ -158,13 +169,17 @@ object frmTestAyarlari: TfrmTestAyarlari
         Caption = 'Hepatit'
         DataBinding.FieldName = 'hepatitMarker'
         PropertiesClassName = 'TcxComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         Properties.Items.Strings = (
           'Evet')
-        Width = 40
+        Width = 45
       end
       object cxGrid1DBTableView1Column9: TcxGridDBColumn
         DataBinding.FieldName = 'SonucTip'
         PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         Properties.Items = <
           item
             Description = 'STRING'
@@ -179,7 +194,9 @@ object frmTestAyarlari: TfrmTestAyarlari
             Description = 'BOOLEAN'
             Value = 'B'
           end>
-        Width = 53
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 72
       end
       object cxGrid1DBTableView1Column10: TcxGridDBColumn
         DataBinding.FieldName = 'TurId'
@@ -189,6 +206,8 @@ object frmTestAyarlari: TfrmTestAyarlari
         Caption = 'Grubu'
         DataBinding.FieldName = 'grupKodu'
         PropertiesClassName = 'TcxLookupComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         Properties.KeyFieldNames = 'SLB'
         Properties.ListColumns = <
           item
@@ -196,7 +215,9 @@ object frmTestAyarlari: TfrmTestAyarlari
           end>
         Properties.ListOptions.ShowHeader = False
         Properties.ListSource = DataSource2
-        Width = 87
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 119
       end
     end
     object cxGrid1Level1: TcxGridLevel
@@ -252,6 +273,7 @@ object frmTestAyarlari: TfrmTestAyarlari
     Height = 143
     Align = alBottom
     TabOrder = 2
+    Visible = False
     object cxGrid2: TcxGrid
       Left = 529
       Top = 1
@@ -410,6 +432,7 @@ object frmTestAyarlari: TfrmTestAyarlari
   object ADOTable1: TADOTable
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
+    Filtered = True
     TableName = 'LabTestler'
     Left = 40
     Top = 120
@@ -593,13 +616,13 @@ object frmTestAyarlari: TfrmTestAyarlari
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
     TableName = 'lab_gruplari'
-    Left = 232
-    Top = 72
+    Left = 160
+    Top = 64
   end
   object DataSource2: TDataSource
     DataSet = ADOTable2
-    Left = 232
-    Top = 120
+    Left = 160
+    Top = 112
   end
   object ADOTable3: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -629,5 +652,16 @@ object frmTestAyarlari: TfrmTestAyarlari
     TableName = 'LabSonucOtoDeger'
     Left = 664
     Top = 184
+  end
+  object PopupMenu1: TPopupMenu
+    Images = DATALAR.imag24png
+    Left = 376
+    Top = 200
+    object L1: TMenuItem
+      Tag = -1
+      Caption = 'LebTest Entegrasyon Parametrelerini '#199'ek'
+      ImageIndex = 9
+      OnClick = L1Click
+    end
   end
 end
