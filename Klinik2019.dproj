@@ -310,11 +310,17 @@
 				<Form>frmIlacEtkenMaddeSutKural</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
+<<<<<<< HEAD
 			<DCCReference Include="Centro.pas"/>
 			<DCCReference Include="ENA.pas"/>
 			<DCCReference Include="WebReferans\TenayENA.pas"/>
 			<DCCReference Include="WebReferans\tenayserviceCENTRO.pas"/>
 			<DCCReference Include="WebReferans\LabTestlerService.pas"/>
+=======
+			<DCCReference Include="klorOlcum.pas">
+				<Form>frmKlorOlcum</Form>
+			</DCCReference>
+>>>>>>> ce15250ea04a3c0e561316554254c688b69c59a0
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
