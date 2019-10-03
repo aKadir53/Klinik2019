@@ -132,8 +132,7 @@ uses
     HastaDiyalizIzlem,
     UzmanMuayene,
     OlayBildirim,
-    klorOlcum;
-    OlayBildirim,
+    klorOlcum,
     LabEntegrasyon;
 
 
@@ -366,13 +365,10 @@ begin
    TagfrmHastaDiyalizIzlem  : Result := TfrmHastaDiyalizIzlem;
    TagfrmUzmanMuayene : Result := TfrmUzmanMuayene;
    TagfrmOlayBildirim : Result := TfrmOlayBildirim;
-<<<<<<< .mine
+   TagfrmKlorOlcum : Result := TfrmKlorOlcum;
    TagfrmLabEntegrasyon : Result := TfrmLabEntegrasyon;
 
-=======
-   TagfrmKlorOlcum : Result := TfrmKlorOlcum;
 
->>>>>>> .theirs
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
 end;
@@ -474,11 +470,9 @@ begin
    TagfrmHastaDiyalizIzlem  : Result := frmHastaDiyalizIzlem;
    TagfrmUzmanMuayene : Result := frmUzmanMuayene;
    TagfrmOlayBildirim : Result := frmOlayBildirim;
-<<<<<<< .mine
    TagfrmLabEntegrasyon : Result := frmLabEntegrasyon;
-=======
    TagfrmKlorOlcum : Result := frmKlorOlcum;
->>>>>>> .theirs
+
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
 
   end;
@@ -580,11 +574,9 @@ begin
      TagfrmHastaDiyalizIzlem  : frmHastaDiyalizIzlem := TfrmHastaDiyalizIzlem.Create(Tab);
      TagfrmUzmanMuayene   : frmUzmanMuayene := TfrmUzmanMuayene .Create(Tab);
      TagfrmOlayBildirim   : frmOlayBildirim := TfrmOlayBildirim .Create(Tab);
-<<<<<<< .mine
      TagfrmLabEntegrasyon  : frmLabEntegrasyon := TfrmLabEntegrasyon.Create(Tab);
-=======
      TagfrmKlorOlcum   : frmKlorOlcum := TfrmKlorOlcum .Create(Tab);
->>>>>>> .theirs
+
 
   end;
   try
@@ -755,11 +747,9 @@ begin
      TagfrmHastaDiyalizIzlem  : frmHastaDiyalizIzlem := TfrmHastaDiyalizIzlem.Create(Tab);
      TagfrmUzmanMuayene   : frmUzmanMuayene := TfrmUzmanMuayene .Create(Tab);
      TagfrmOlayBildirim   : frmOlayBildirim := TfrmOlayBildirim .Create(Tab);
-<<<<<<< .mine
      TagfrmLabEntegrasyon  : frmLabEntegrasyon := TfrmLabEntegrasyon.Create(Tab);
-=======
      TagfrmKlorOlcum   : frmKlorOlcum := TfrmKlorOlcum .Create(Tab);
->>>>>>> .theirs
+
 
   end;
   try
@@ -904,11 +894,9 @@ begin
     TagfrmHastaDiyalizIzlem : Application.CreateForm(TfrmHastaDiyalizIzlem,frmHastaDiyalizIzlem);
     TagfrmUzmanMuayene   : Application.CreateForm(TfrmUzmanMuayene,frmUzmanMuayene);
     TagfrmOlayBildirim  : Application.CreateForm(TfrmOlayBildirim,frmOlayBildirim);
-<<<<<<< .mine
     TagfrmLabEntegrasyon : Application.CreateForm(TfrmLabEntegrasyon,frmLabEntegrasyon);
-=======
     TagfrmKlorOlcum  : Application.CreateForm(TfrmKlorOlcum,frmKlorOlcum);
->>>>>>> .theirs
+
 
   end;
   try
