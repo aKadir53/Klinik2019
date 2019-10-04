@@ -1145,6 +1145,7 @@ end;
 procedure TAnaForm.SirketlerPropertiesChange(Sender: TObject);
 var
   sube , sql : string;
+  _LabDataset_ : TDataset;
 begin
 
   datalar.AktifSirket := TcxImageComboKadir(sender).EditValue;
@@ -1166,20 +1167,24 @@ begin
     Datalar.ServisErisimBilgileri.Active := True;
     Datalar.ServisErisimBilgileri.LoadFromDataSet(datalar.QuerySelect(sql));
 
+    try
+      WebErisimBilgileriFirma(datalar.AktifSirket);
 
-    WebErisimBilgileriFirma(datalar.AktifSirket);
-    datalar._labusername := WebErisimBilgiFirma('811');
-    datalar._labsifre := WebErisimBilgiFirma('812');
-    datalar._labkurumkod := WebErisimBilgiFirma('813');
-    datalar._labkurumkodText := WebErisimBilgiFirma('814');
-    datalar._labID := WebErisimBilgiFirma('15');
-    datalar._labSonucIcinGozArdiEt := WebErisimBilgiFirma('817');
+      datalar._labusername := WebErisimBilgiFirma('811');
+      datalar._labsifre := WebErisimBilgiFirma('812');
+      datalar._labkurumkod := WebErisimBilgiFirma('813');
+      datalar._labkurumkodText := WebErisimBilgiFirma('814');
+      datalar._labID := WebErisimBilgiFirma('15');
+      datalar._labSonucIcinGozArdiEt := WebErisimBilgiFirma('817');
 
-    datalar._laburl := datalar.QuerySelect('select WebserviceURL from LabFirmalar where kod = ' +
-                                   QuotedStr(datalar._labID)).FieldByName('WebserviceURL').AsString;
+      _LabDataset_ := datalar.QuerySelect('select WebserviceURL,CalismaTipi,BarkodBasim from LabFirmalar where kod = ' +
+                                     QuotedStr(datalar._labID));
 
-
-
+       datalar._laburl := _LabDataset_.FieldByName('WebserviceURL').AsString;
+       datalar._LabCalismaYon := _LabDataset_.FieldByName('CalismaTipi').AsString;
+       datalar._LabBarkodBasim := _LabDataset_.FieldByName('BarkodBasim').AsString;
+    except
+    end;
 
   if WebErisimBilgi('98','00') = 'Gerçek'
   Then BEgin

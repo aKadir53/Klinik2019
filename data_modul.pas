@@ -394,10 +394,12 @@ type
 
     { Private declarations }
   public
+   LabEntegrasyonBilgileri : TLabEntegrasyonBilgileri;
    servername,username, usersifre , _username , _sifre , _donemuser , _donemsifre , usernameAdi ,
    _tesisKodu , _labusername , _labsifre , doktor ,doktorKodu,doktorTC, doktorAdi , SonReceteDoktorKodu,SonImzaDoktorKodu,sirketKodu,
    IGU, DSPers, _dosyaNo_,_gelisNo_,kontrolKod,RiskTanimBilgiEkle,
-   _labkurumkod , _labkurumkodText, _laburl , _labfirma ,  _SKRS , _saglikNetUser , _labID,_labSonucIcinGozArdiEt : string;
+   _labkurumkod , _labkurumkodText, _laburl , _labfirma , _LabCalismaYon,_LabBarkodBasim,
+   _SKRS , _saglikNetUser , _labID,_labSonucIcinGozArdiEt : string;
    _saglikNetPass , _firmaSKRS , _usermernis , _passmernis, UserGroup, UserGroupName : string;
    _doktorReceteUser,_doktorRecetePas,_KurumSKRS_, _userSaglikNet_ , _passSaglikNet_ , _userSaglikNet2_ , _passSaglikNet2_ , itsGLN , itsUser , itsPass: string;
    _merkezAdi , _DyobKurumKodu_,_DyobSifre_,_DyobServiceKodu_ , doktorTip , bashekimKodu,hekimKodu,ImajFTPServer : string;

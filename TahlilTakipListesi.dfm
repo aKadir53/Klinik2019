@@ -386,6 +386,8 @@ object frmTahliltakip: TfrmTahliltakip
         TabOrder = 2
         ExcelFileName = 'TahlilSonuclar'#305
         ExceleGonder = True
+        PopupForm = False
+        ExplicitTop = 37
         object Liste: TcxGridDBBandedTableView
           OnDblClick = ListeDblClick
           OnCustomDrawCell = ListeCustomDrawCell
@@ -404,7 +406,15 @@ object frmTahliltakip: TfrmTahliltakip
               FixedKind = fkLeft
               Styles.Content = cxStyle8
               Styles.Header = cxStyle3
-              Width = 388
+              Width = 300
+            end
+            item
+              Caption = 'Potasyum'
+              Options.Sizing = False
+              Position.BandIndex = 2
+              Position.ColIndex = 2
+              Styles.Header = cxStyle1
+              Width = 70
             end
             item
               Caption = 'Biyokimya'
@@ -425,6 +435,27 @@ object frmTahliltakip: TfrmTahliltakip
             end
             item
               Caption = 'Medula Bilgileri'
+            end
+            item
+              Position.BandIndex = 2
+              Position.ColIndex = 3
+              Width = 1270
+            end
+            item
+              Caption = #220're'
+              Options.Sizing = False
+              Position.BandIndex = 2
+              Position.ColIndex = 0
+              Styles.Header = cxStyle1
+              Width = 70
+            end
+            item
+              Caption = 'Kreatinin'
+              Options.Sizing = False
+              Position.BandIndex = 2
+              Position.ColIndex = 1
+              Styles.Header = cxStyle1
+              Width = 70
             end>
           object Listetc: TcxGridDBBandedColumn
             Caption = 'T.C. Kimlik No'
@@ -489,8 +520,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 1
-            Position.ColIndex = 6
+            Position.BandIndex = 7
+            Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object ListetakpNo: TcxGridDBBandedColumn
@@ -529,8 +560,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 43
-            Position.BandIndex = 1
-            Position.ColIndex = 20
+            Position.BandIndex = 7
+            Position.ColIndex = 14
             Position.RowIndex = 0
           end
           object Listeurr: TcxGridDBBandedColumn
@@ -539,8 +570,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 1
-            Position.ColIndex = 7
+            Position.BandIndex = 7
+            Position.ColIndex = 1
             Position.RowIndex = 0
           end
           object ListeduzCa: TcxGridDBBandedColumn
@@ -551,8 +582,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 41
-            Position.BandIndex = 1
-            Position.ColIndex = 10
+            Position.BandIndex = 7
+            Position.ColIndex = 4
             Position.RowIndex = 0
           end
           object ListeCaxp: TcxGridDBBandedColumn
@@ -564,8 +595,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 38
-            Position.BandIndex = 1
-            Position.ColIndex = 12
+            Position.BandIndex = 7
+            Position.ColIndex = 6
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn530100: TcxGridDBBandedColumn
@@ -573,7 +604,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = '530100'
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 4
+            Position.BandIndex = 5
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
@@ -594,7 +625,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = '801840'
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 4
+            Position.BandIndex = 5
             Position.ColIndex = 1
             Position.RowIndex = 0
           end
@@ -604,8 +635,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 33
-            Position.BandIndex = 1
-            Position.ColIndex = 13
+            Position.BandIndex = 7
+            Position.ColIndex = 7
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn900210: TcxGridDBBandedColumn
@@ -617,8 +648,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 46
-            Position.BandIndex = 1
-            Position.ColIndex = 16
+            Position.BandIndex = 7
+            Position.ColIndex = 10
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn900340: TcxGridDBBandedColumn
@@ -631,8 +662,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 39
-            Position.BandIndex = 1
-            Position.ColIndex = 24
+            Position.BandIndex = 7
+            Position.ColIndex = 18
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn900681: TcxGridDBBandedColumn
@@ -644,8 +675,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 56
-            Position.BandIndex = 1
-            Position.ColIndex = 23
+            Position.BandIndex = 7
+            Position.ColIndex = 17
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn900900: TcxGridDBBandedColumn
@@ -657,8 +688,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 37
-            Position.BandIndex = 1
-            Position.ColIndex = 22
+            Position.BandIndex = 7
+            Position.ColIndex = 16
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901020: TcxGridDBBandedColumn
@@ -670,8 +701,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 1
-            Position.ColIndex = 17
+            Position.BandIndex = 7
+            Position.ColIndex = 11
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901040: TcxGridDBBandedColumn
@@ -683,8 +714,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 42
-            Position.BandIndex = 1
-            Position.ColIndex = 18
+            Position.BandIndex = 7
+            Position.ColIndex = 12
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901220: TcxGridDBBandedColumn
@@ -696,8 +727,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 1
-            Position.ColIndex = 19
+            Position.BandIndex = 7
+            Position.ColIndex = 13
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901910: TcxGridDBBandedColumn
@@ -709,17 +740,21 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 34
-            Position.BandIndex = 1
-            Position.ColIndex = 9
+            Position.BandIndex = 7
+            Position.ColIndex = 3
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901940: TcxGridDBBandedColumn
-            Caption = #220're'
+            Caption = 'Giri'#351
             DataBinding.FieldName = '901940'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 1
+            Position.BandIndex = 8
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
@@ -731,18 +766,22 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 52
-            Position.BandIndex = 1
-            Position.ColIndex = 26
+            Position.BandIndex = 7
+            Position.ColIndex = 20
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn902210: TcxGridDBBandedColumn
-            Caption = 'Kreatinin'
+            Caption = 'Giri'#351
             DataBinding.FieldName = '902210'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 1
-            Position.ColIndex = 2
+            Position.BandIndex = 9
+            Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn902290: TcxGridDBBandedColumn
@@ -754,8 +793,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 53
-            Position.BandIndex = 1
-            Position.ColIndex = 27
+            Position.BandIndex = 7
+            Position.ColIndex = 21
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn902980: TcxGridDBBandedColumn
@@ -767,18 +806,22 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 39
-            Position.BandIndex = 1
-            Position.ColIndex = 25
+            Position.BandIndex = 7
+            Position.ColIndex = 19
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn903130: TcxGridDBBandedColumn
-            Caption = 'K'
+            Caption = 'Giri'#351
             DataBinding.FieldName = '903130'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
             Position.BandIndex = 1
-            Position.ColIndex = 4
+            Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn903240: TcxGridDBBandedColumn
@@ -790,8 +833,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 1
-            Position.ColIndex = 15
+            Position.BandIndex = 7
+            Position.ColIndex = 9
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn903670: TcxGridDBBandedColumn
@@ -803,8 +846,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 32
-            Position.BandIndex = 1
-            Position.ColIndex = 8
+            Position.BandIndex = 7
+            Position.ColIndex = 2
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn903990: TcxGridDBBandedColumn
@@ -816,8 +859,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 1
-            Position.ColIndex = 29
+            Position.BandIndex = 7
+            Position.ColIndex = 23
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn904120: TcxGridDBBandedColumn
@@ -829,8 +872,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 1
-            Position.ColIndex = 21
+            Position.BandIndex = 7
+            Position.ColIndex = 15
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn906610: TcxGridDBBandedColumn
@@ -838,7 +881,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = '906610'
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 3
+            Position.BandIndex = 4
             Position.ColIndex = 2
             Position.RowIndex = 0
           end
@@ -847,7 +890,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = '906630'
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 3
+            Position.BandIndex = 4
             Position.ColIndex = 3
             Position.RowIndex = 0
           end
@@ -856,7 +899,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = '906660'
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 3
+            Position.BandIndex = 4
             Position.ColIndex = 4
             Position.RowIndex = 0
           end
@@ -865,7 +908,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = '907440'
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 3
+            Position.BandIndex = 4
             Position.ColIndex = 1
             Position.RowIndex = 0
           end
@@ -878,8 +921,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 31
-            Position.BandIndex = 1
-            Position.ColIndex = 11
+            Position.BandIndex = 7
+            Position.ColIndex = 5
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901500: TcxGridDBBandedColumn
@@ -891,8 +934,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 39
-            Position.BandIndex = 1
-            Position.ColIndex = 14
+            Position.BandIndex = 7
+            Position.ColIndex = 8
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901460: TcxGridDBBandedColumn
@@ -900,7 +943,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = '901460'
             HeaderAlignmentVert = vaCenter
             Width = 50
-            Position.BandIndex = 3
+            Position.BandIndex = 4
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
@@ -913,7 +956,7 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 2
+            Position.BandIndex = 3
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
@@ -926,7 +969,7 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 2
+            Position.BandIndex = 3
             Position.ColIndex = 1
             Position.RowIndex = 0
           end
@@ -939,7 +982,7 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 2
+            Position.BandIndex = 3
             Position.ColIndex = 2
             Position.RowIndex = 0
           end
@@ -952,7 +995,7 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 2
+            Position.BandIndex = 3
             Position.ColIndex = 3
             Position.RowIndex = 0
           end
@@ -965,7 +1008,7 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 2
+            Position.BandIndex = 3
             Position.ColIndex = 4
             Position.RowIndex = 0
           end
@@ -978,7 +1021,7 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 2
+            Position.BandIndex = 3
             Position.ColIndex = 5
             Position.RowIndex = 0
           end
@@ -991,7 +1034,7 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 2
+            Position.BandIndex = 3
             Position.ColIndex = 6
             Position.RowIndex = 0
           end
@@ -1004,41 +1047,53 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 40
-            Position.BandIndex = 2
+            Position.BandIndex = 3
             Position.ColIndex = 7
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901940C: TcxGridDBBandedColumn
-            Caption = #220're '#199#305'k'#305#351
+            Caption = #199#305'k'#305#351
             DataBinding.FieldName = '901940C'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Styles.Content = cxStyle8
             Width = 50
-            Position.BandIndex = 1
+            Position.BandIndex = 8
             Position.ColIndex = 1
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn902210C: TcxGridDBBandedColumn
-            Caption = 'Kreatinin '#199#305'k'#305#351
+            Caption = #199#305'k'#305#351
             DataBinding.FieldName = '902210C'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Styles.Content = cxStyle8
             Width = 48
-            Position.BandIndex = 1
-            Position.ColIndex = 3
+            Position.BandIndex = 9
+            Position.ColIndex = 1
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn903130C: TcxGridDBBandedColumn
-            Caption = 'K '#199#305'k'#305#351
+            Caption = #199#305'k'#305#351
             DataBinding.FieldName = '903130C'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Styles.Content = cxStyle8
             Width = 40
             Position.BandIndex = 1
-            Position.ColIndex = 5
+            Position.ColIndex = 1
             Position.RowIndex = 0
           end
           object ListeColumn1: TcxGridDBBandedColumn
@@ -1046,7 +1101,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = 'tak'#305'pNo'
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Position.BandIndex = 5
+            Position.BandIndex = 6
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
@@ -1055,7 +1110,7 @@ object frmTahliltakip: TfrmTahliltakip
             DataBinding.FieldName = 'basvuruNo'
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Position.BandIndex = 5
+            Position.BandIndex = 6
             Position.ColIndex = 1
             Position.RowIndex = 0
           end
@@ -1069,8 +1124,8 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentVert = vaCenter
             HeaderGlyphAlignmentHorz = taCenter
             Width = 52
-            Position.BandIndex = 1
-            Position.ColIndex = 28
+            Position.BandIndex = 7
+            Position.ColIndex = 22
             Position.RowIndex = 0
           end
         end

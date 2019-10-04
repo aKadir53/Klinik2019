@@ -15,6 +15,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
   OldCreateOrder = False
   Position = poDesigned
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object cxListPanel: TcxGroupBox
@@ -247,7 +248,17 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Caption = 'Serum '#199#305'k'#305#351
               DataBinding.FieldName = 'CikisOrnekNo'
               PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taLeftJustify
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Width = 100
+            end
+            object ListeColumn13: TcxGridDBColumn
+              Caption = 'OrnekNo TamKan'
+              DataBinding.FieldName = 'OrnekNo_TamKan'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
@@ -267,21 +278,11 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Caption = 'Serum(Anaerob)'
               DataBinding.FieldName = 'OrnekNo_Serum'
               PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taLeftJustify
-              Properties.Alignment.Vert = taVCenter
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Options.Editing = False
-              Width = 100
-            end
-            object ListeColumn13: TcxGridDBColumn
-              Caption = 'OrnekNo TamKan'
-              DataBinding.FieldName = 'OrnekNo_TamKan'
-              PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 100
             end
             object ListeColumn3: TcxGridDBColumn
@@ -479,7 +480,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
     Images = DATALAR.imag24png
     Left = 104
     Top = 270
-    object Muayene: TMenuItem
+    object KaydetItem: TMenuItem
       Tag = 1
       Caption = 'Hasta Kaydet'
       ImageIndex = 15
@@ -532,6 +533,26 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
       ImageIndex = 45
       OnClick = cxButtonCClick
     end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object B1: TMenuItem
+      Caption = 'Barkod '#304#351'lemleri'
+      ImageIndex = 119
+      Visible = False
+      object O1: TMenuItem
+        Tag = -21
+        Caption = 'Olu'#351'tur'
+        ImageIndex = 81
+        OnClick = cxButtonCClick
+      end
+      object Y2: TMenuItem
+        Tag = -22
+        Caption = 'Yazd'#305'r'
+        ImageIndex = 28
+        OnClick = cxButtonCClick
+      end
+    end
   end
   object popupYil: TPopupMenu
     OnPopup = popupYilPopup
@@ -544,5 +565,68 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
       Tag = 1
       Caption = 'Gruplar'#305' Kapat'
     end
+  end
+  object memData: TSQLMemTable
+    CurrentVersion = '13.00 '
+    StoreDefs = True
+    DatabaseName = 'MEMORY'
+    ReadOnly = False
+    Active = True
+    CaseInsensitive = False
+    FieldDefs = <
+      item
+        Name = 'dosyaNo'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'gelisNo'
+        DataType = ftInteger
+      end
+      item
+        Name = 'ornekNo'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'CikisOrnekNo'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'SIRANO'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'TC'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'hasta'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'OrnekNo_Plazma'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'OrnekNo_Serum'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'OrnekNo_TamKan'
+        DataType = ftString
+        Size = 20
+      end>
+    TableName = 'Table828602379_1400'
+    Exclusive = False
+    MemoryTableAllocBy = 1000
+    Left = 24
+    Top = 288
   end
 end

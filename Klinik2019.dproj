@@ -1,6 +1,6 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
-			<ProjectGuid>{D6B1F51F-80AE-41B8-B1E5-BB8930DDFD02}</ProjectGuid>
+			<ProjectGuid>{5B6239C9-A684-4AFC-ABE0-BA4B0897B111}</ProjectGuid>
 			<MainSource>Klinik2019.dpr</MainSource>
 			<Base>True</Base>
 			<Config Condition="'$(Config)'==''">Debug</Config>
@@ -45,13 +45,13 @@
 			<DCC_K>false</DCC_K>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win64)'!=''">
-			<Icon_MainIcon>OSGB_Icon5.ico</Icon_MainIcon>
+			<Icon_MainIcon>Klinik2019_Icon.ico</Icon_MainIcon>
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<Icon_MainIcon>OSGB_Icon5.ico</Icon_MainIcon>
-			<DCC_Namespace>Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+			<Icon_MainIcon>Klinik2019_Icon.ico</Icon_MainIcon>
+			<DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -295,7 +295,6 @@
 			</DCCReference>
 			<DCCReference Include="yeniDokuman.pas">
 				<Form>frmSKS_YeniDokuman</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="KadirMedula3.pas"/>
 			<DCCReference Include="HastaSeansIsle.pas">
@@ -308,19 +307,15 @@
 			</DCCReference>
 			<DCCReference Include="IlacEtkenMadde.pas">
 				<Form>frmIlacEtkenMaddeSutKural</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
-<<<<<<< HEAD
 			<DCCReference Include="Centro.pas"/>
 			<DCCReference Include="ENA.pas"/>
 			<DCCReference Include="WebReferans\TenayENA.pas"/>
 			<DCCReference Include="WebReferans\tenayserviceCENTRO.pas"/>
 			<DCCReference Include="WebReferans\LabTestlerService.pas"/>
-=======
 			<DCCReference Include="klorOlcum.pas">
 				<Form>frmKlorOlcum</Form>
 			</DCCReference>
->>>>>>> ce15250ea04a3c0e561316554254c688b69c59a0
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>

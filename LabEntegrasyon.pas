@@ -22,7 +22,7 @@ uses
   dxSkinOffice2007Silver, dxSkinOffice2010Black, dxSkinOffice2010Blue,
   dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver,
   dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008, dxSkinValentine,
-  dxSkinXmas2008Blue, cxCalendar, cxCurrencyEdit,cxCheckGroup;
+  dxSkinXmas2008Blue, cxCalendar, cxCurrencyEdit,cxCheckGroup, SQLMemMain;
 
 type
   TfrmLabEntegrasyon = class(TGirisForm)
@@ -46,7 +46,7 @@ type
     K1: TMenuItem;
     ikazRed: TcxStyle;
     ikazYellow: TcxStyle;
-    Muayene: TMenuItem;
+    KaydetItem: TMenuItem;
     PeryodikMuayeneOlutur1: TMenuItem;
     f1: TMenuItem;
     cxPageControl1: TcxPageControl;
@@ -76,6 +76,11 @@ type
     H1: TMenuItem;
     E1: TMenuItem;
     L1: TMenuItem;
+    N2: TMenuItem;
+    B1: TMenuItem;
+    O1: TMenuItem;
+    Y2: TMenuItem;
+    memData: TSQLMemTable;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -92,7 +97,9 @@ type
     procedure TopPanelButonClick(Sender: TObject);
     procedure Gonder;
     procedure AL;
+
     procedure S1Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
 
 
   private
@@ -128,6 +135,8 @@ begin
 
 end;
 
+
+
 procedure TfrmLabEntegrasyon.Gonder;
 begin
   case strToint(datalar._labID) of
@@ -149,6 +158,7 @@ begin
          End;
   end;
 end;
+
 
 procedure TfrmLabEntegrasyon.btnVazgecClick(Sender: TObject);
 begin
@@ -205,6 +215,17 @@ begin
           if F <> nil then F.showModal;
        end;
 
+ -21 : begin
+          DurumGoster(True,True);
+          BarkodOlustur(Liste,txtLog,pBar);
+          DurumGoster(False);
+       end;
+
+ -22 : begin
+          DurumGoster(True,True);
+          BarkodYazdir(Liste,memData,txtLog,pBar);
+          DurumGoster(False);
+       end;
 
   end;
 end;
@@ -234,6 +255,15 @@ begin
  // AktifPasifTopPanel.EditValue := '0';
 
   SayfaCaption('','','','','');
+end;
+
+procedure TfrmLabEntegrasyon.FormShow(Sender: TObject);
+begin
+   if datalar._LabBarkodBasim = 'E' Then B1.Visible := True;
+   if datalar._LabCalismaYon = '1' Then KaydetItem.Visible := False;
+
+   inherited;
+
 end;
 
 procedure TfrmLabEntegrasyon.ListeDblClick(Sender: TObject);

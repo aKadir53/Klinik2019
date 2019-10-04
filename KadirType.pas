@@ -69,6 +69,16 @@ type
   TImzaliGiris = Procedure(var sonucMesaj : PWideChar);stdCall;
 
 
+type
+  TLabEntegrasyonBilgileri = record
+    kullanici : string;
+    sifre : string;
+    labId : string;
+    url : string;
+    calismaYon : integer;
+    BarkodBasim : string;
+  end;
+
 
 type
    TDataSetKadir = record

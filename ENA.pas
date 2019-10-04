@@ -3,10 +3,10 @@ unit ENA;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,kadir,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,kadir,kadirType,
   adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,AdvGrid,DateUtils,cxProgressBar,
   Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,sGauge,TenayENA,cxGridDBTableView, cxMemo,
-  data_modul;
+  data_modul,SQLMemMain;
 
 
   procedure TenaySonucAlENA(_dosyaNo,_gelisNo,_RefId : string ;
@@ -19,6 +19,8 @@ uses
   procedure TenayOrderKaydetENA(gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar);
   procedure ornekdurumyaz(durum,id,refId : string);
   function ReferansKontrolToField(Referans : String; gridAktif : TAdvStringGrid ; Row : integer) : String;
+  procedure BarkodOlustur(Liste : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar);
+  procedure BarkodYazdir(Liste : TcxGridDBTableView ; memData: TSQLMemTable ; txtLog : Tcxmemo ; progres :TcxProgressBar);
 
 implementation
 
@@ -47,6 +49,149 @@ begin
 
    ado.Free;
 end;
+
+
+procedure BarkodYazdir(Liste : TcxGridDBTableView ; memData: TSQLMemTable ; txtLog : Tcxmemo ; progres :TcxProgressBar);
+var
+ I , x  : integer;
+ t : boolean;
+ dosyaNo,gelisNo,ornekNo ,CikisornekNo,OrnekNo_Plazma,OrnekNo_Serum,OrnekNo_TamKan ,Hasta ,id: string;
+ DatasetKadir : TDataSetKadir;
+begin
+   memData.Active := false;
+   memData.EmptyTable;
+   memData.Active := True;
+
+   for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+   begin
+      Application.ProcessMessages;
+
+      dosyaNo := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('dosyaNo').Index);
+      gelisNo := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('gelisNo').Index);
+      ornekNo := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('ornekNo').Index);
+      CikisornekNo := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('CikisornekNo').Index);
+      OrnekNo_Plazma := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_Plazma').Index);
+      OrnekNo_Serum := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_Serum').Index);
+      OrnekNo_TamKan := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_TamKan').Index);
+      Hasta := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('ADSOYAD').Index);
+      id := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('SIRANO').Index);
+
+
+      memData.Append;
+      memData.FieldByName('dosyaNo').AsString := dosyaNo;
+      memData.FieldByName('gelisNo').AsString := gelisNo;
+      memData.FieldByName('ornekNo').AsString :=
+            ifThen(ornekNo = '',dosyaNo + gelisNo,ornekNo);
+
+      memData.FieldByName('CikisornekNo').AsString := CikisornekNo;
+      memData.FieldByName('SIRANO').AsString := id;
+      memData.FieldByName('TC').AsString := OrnekNo_Plazma;
+      memData.FieldByName('hasta').AsString := Hasta;
+      memData.FieldByName('OrnekNo_Plazma').AsString := OrnekNo_Plazma;
+      memData.FieldByName('OrnekNo_Serum').AsString := OrnekNo_Serum;
+      memData.FieldByName('OrnekNo_TamKan').AsString := OrnekNo_TamKan;
+      memData.Post
+
+  End;
+
+    DatasetKadir.Dataset0 := memData;
+    PrintYap('230','\Barkod Bas',intTostr(TagfrmLabEntegrasyon),DatasetKadir);
+
+end;
+
+procedure BarkodOlustur(Liste : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar);
+var
+  i , j , r , x ,barkod: integer;
+  p : TPoint;
+  dosyaNo,gelisNo,sql,GC,ss,ornekNo ,CikisornekNo,OrnekNo_Plazma,OrnekNo_Serum,OrnekNo_TamKan ,
+   id,_F_,testKod,min,max,sonuc,sonucA,sm,Hasta,kayitTip : string;
+  ado,adoB : TADOQuery;
+  t : boolean;
+  Ornekler : array of string;
+begin
+    ado := TADOQuery.Create(nil);
+    ado.Connection := datalar.ADOConnection2;
+    adoB := TADOQuery.Create(nil);
+    adoB.Connection := datalar.ADOConnection2;
+
+    progres.Properties.Max := Liste.Controller.SelectedRowCount;
+    progres.Position := 0;
+
+  try
+   for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+   begin
+      Application.ProcessMessages;
+
+      dosyaNo := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('dosyaNo').Index);
+      gelisNo := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('gelisNo').Index);
+      ornekNo := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('ornekNo').Index));
+      CikisornekNo := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('CikisornekNo').Index));
+      OrnekNo_Plazma := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_Plazma').Index));
+      OrnekNo_Serum := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_Serum').Index));
+      OrnekNo_TamKan := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_TamKan').Index));
+      Hasta := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('ADSOYAD').Index);
+      id := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('SIRANO').Index);
+
+      kayitTip := varToStr(Liste.DataController.GetValue(
+                                      Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('LabornekDurum').Index));
+
+
+      if  (ornekNo = '') and (CikisornekNo = '') and (OrnekNo_TamKan = '')
+          and (kayitTip = 'Yeni Kayýt')
+      Then Begin
+         sql := 'select top 1 barkodNo from Centro_barkodlar where durum = 0 order by barkodNo';
+         datalar.QuerySelect(adoB,sql);
+         i := 0;
+         barkod := adoB.Fields[0].AsInteger;
+
+         ornekNo := intToStr(barkod); // giris
+         CikisornekNo := intToStr(barkod + 1); // Cýkýs
+         OrnekNo_TamKan := intToStr(barkod + 2);  // tam kan
+         OrnekNo_Plazma := intToStr(barkod + 4);  // plazma
+         OrnekNo_Serum := intToStr(barkod + 3);  // biakarbonat
+
+
+         sql := 'update Hasta_gelisler set OrnekNo_Serum = ' + QuotedStr(OrnekNo_Serum) +
+                ', OrnekNo_TamKan = ' + QuotedStr(OrnekNo_TamKan) +
+                ', OrnekNo_Plazma = ' + QuotedStr(OrnekNo_Plazma) +
+                ', OrnekNo = ' + QuotedStr(ornekNo) +
+                ', CikisOrnekNo = ' + QuotedStr(CikisornekNo) +
+                ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
+         datalar.QueryExec(sql);
+
+         sql := 'update Centro_barkodlar set durum = 1,dosyaNo = ' + QuotedStr(dosyaNo) + ',gelisNo = ' + QuotedStr(gelisNo) +
+                ' where barkodNo = ' + QuotedStr(intToStr(barkod));
+         datalar.QueryExec(sql);
+
+      End;
+       progres.Position :=progres.Position + 1;
+
+    End;
+  finally
+    ado.Free;
+    adoB.Free;
+  end;
+
+end;
+
 
 procedure TenayOrderKaydetENA(gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar);
 var

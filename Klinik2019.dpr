@@ -92,15 +92,12 @@ uses
   yardimciIslemlerWS in 'yardimciIslemlerWS.pas',
   GunSonuOzet in 'GunSonuOzet.pas' {frmGunSonuOzet},
   IlacEtkenMadde in 'IlacEtkenMadde.pas' {frmIlacEtkenMaddeSutKural},
-<<<<<<< HEAD
   Centro in 'Centro.pas',
   ENA in 'ENA.pas',
   TenayENA in 'WebReferans\TenayENA.pas',
   tenayserviceCENTRO in 'WebReferans\tenayserviceCENTRO.pas',
-  LabTestlerService in 'WebReferans\LabTestlerService.pas';
-=======
+  LabTestlerService in 'WebReferans\LabTestlerService.pas',
   klorOlcum in 'klorOlcum.pas' {frmKlorOlcum};
->>>>>>> ce15250ea04a3c0e561316554254c688b69c59a0
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
@@ -129,10 +126,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDATALAR, DATALAR);
   Application.CreateForm(TAnaForm, AnaForm);
-<<<<<<< HEAD
-=======
-  Application.CreateForm(TfrmKlorOlcum, frmKlorOlcum);
->>>>>>> ce15250ea04a3c0e561316554254c688b69c59a0
+
   // Application.CreateForm(TfrmGunSonuOzet, frmGunSonuOzet);
 
   // form2.show;
