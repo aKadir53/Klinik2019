@@ -378,6 +378,7 @@ procedure TfrmTahliltakip.T3Click(Sender: TObject);
 var
   sql , _dosyaNo_ , _gelisNo_ , _Tarih : string;
   ado,ado0,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
+   DatasetKadir : TDataSetKadir;
 begin
 
   _dosyaNo_ := ADO_TetkiklerHastaList.FieldByName('dosyaNo').AsString;
@@ -387,7 +388,7 @@ begin
 
   if TMenuItem(sender).Tag = 9
   Then Begin
-       sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',@f=-1,@marker=''H''';
+       sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',@f=-1,@marker=''H'' ';
   End
   Else
   Begin
@@ -397,31 +398,36 @@ begin
     sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',@f=-1,@marker=''E''';
   end;
 
-  datalar.QuerySelect(ADO_Tet,sql);
+(*
+    sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = '''' , @yil = ' + QuotedStr(ay1) +
+                  ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket);
+  *)
 
+  datalar.QuerySelect(ADO_Tet,sql+ ' , @sirketKod = ' + QuotedStr(datalar.AktifSirket));
 
+  try
     ado := TADOQuery.Create(nil);
     ado.Connection := datalar.ADOConnection2;
     sql := 'select * from hastakart where dosyaNo = ' + QuotedStr(_dosyaNo_);
     datalar.QuerySelect(ado,sql);
-    frmRapor.topluset.Dataset0 := ado;
-    frmRapor.topluset.Dataset1 := ADO_Tet;
-    frmRapor.topluset.Dataset2 := ADO_Tele;
+    DatasetKadir.Dataset0 := ado;
+    DatasetKadir.Dataset1 := ADO_Tet;
+    DatasetKadir.Dataset2 := ADO_Tele;
 
 
     if TMenuItem(sender).Tag = 9
     Then Begin
-      frmRapor.raporData1(frmRapor.topluset ,'201','\Hasta Tetkik Takip');
-      frmRapor.ShowModal;
+      PrintYap('201','\Hasta Tetkik Takip',intTostr(TagfrmTahliltakip),DatasetKadir);
     End
     Else
     Begin
-      frmRapor.raporData1(frmRapor.topluset ,'203','\Hasta Tetkik Takip Hepatit');
-      frmRapor.ShowModal;
+      PrintYap('203','\Hasta Tetkik Takip Hepatit',intTostr(TagfrmTahliltakip),DatasetKadir);
     End;
 
 
+  finally
     ado.Free;
+  end;
 
 
 end;

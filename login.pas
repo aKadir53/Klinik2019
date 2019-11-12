@@ -469,12 +469,14 @@ var
 begin
  if txtOsgbKodu.EditingText <> ''
  Then begin
+     if txtServerName.Text = '' then txtServerName.Text := 'TWpFekxqRTFPUzR6TUM0Mg==';
+
    try
      if datalar.MasterBaglan(txtOsgbKodu.EditingValue,db, OSGBDesc, iYazilimGelistirici, txtServerName.Text, txtServerUserName.Text, txtServerPassword.Text)
      Then begin
-         Regyaz('OSGB_servername',Encode64(txtServerName.Text));
-         Regyaz('OSGB_serverUserName',Encode64(txtServerUserName.Text));
-         Regyaz('OSGB_serverPassword',Encode64(txtServerPassword.Text));
+         Regyaz('OSGB_servername',txtServerName.Text);
+         //Regyaz('OSGB_serverUserName',Encode64(txtServerUserName.Text));
+        // Regyaz('OSGB_serverPassword',Encode64(txtServerPassword.Text));
          if datalar.Baglan(db,txtServerName.Text, '',txtServerUserName.Text, txtServerPassword.Text)
          then begin
            Regyaz('OSGB_db_name',Encode64(db));
@@ -543,9 +545,7 @@ end;
 
 procedure TfrmLogin.btnVazgecClick(Sender: TObject);
 begin
- datalar.KillTaskw('OSGB.exe');
  datalar.KillTaskw('Klinik2019.exe');
-
 end;
 
 procedure TfrmLogin.cxButtonEditKadir1PropertiesButtonClick(Sender: TObject;
@@ -608,9 +608,9 @@ var
 begin
  //  Height := dxLayoutControl1Group2. btnGiris.Top + btnGiris.Height + 10;
 
-   txtServerName.EditValue := Decode64(regOku('OSGB_servername'));
-   txtServerUserName.EditValue := Decode64(regOku('OSGB_serverUserName'));
-   txtServerPassword.EditValue := Decode64(regOku('OSGB_serverPassWord'));
+   txtServerName.EditValue := regOku('OSGB_servername');
+   txtServerUserName.EditValue :=  Decode64(copy(Decode64(DBUserName),4,100));   //Decode64(regOku('OSGB_serverUserName'));
+   txtServerPassword.EditValue := Decode64(copy(Decode64(DBPasword),4,100));//Decode64(regOku('OSGB_serverPassWord'));
    if Trim (txtServerName.EditValue) = '' then
    begin
      txtServerName.Text := '213.159.30.6';
@@ -630,14 +630,15 @@ begin
    end;
    if Trim (txtServerName.EditValue) = '213.159.30.6' then
    begin
-     if IsNull (txtServerUserName.EditValue) then txtServerUserName.EditValue := 'Nokta';
-     if IsNull (txtServerPassword.EditValue) then txtServerPassword.EditValue := '5353';
+     txtServerUserName.EditValue := Decode64(copy(Decode64(DBUserName),4,100));
+     txtServerPassword.EditValue := Decode64(copy(Decode64(DBPasword),4,100));
    end;
 
    txtDataBase.EditValue := Decode64(regOku('OSGB_db_name'));
    Labelx.Caption := regOku('OSGB_description');
  //  iYazGel := StrToIntDef (regOku('OSGB_YazilimGelistirici'), -1);
 
+   (*
    if pos('UYUM',paramStr(0)) > 0  then Datalar.YazilimFirma := 'UYUM'
    Else Datalar.YazilimFirma := 'Nokta';
    DATALAR._YazilimGelistirici := iYazGel;
@@ -651,6 +652,7 @@ begin
      //UYUMImage.Visible := False;
      NoktaImage.Visible := True;
    End;
+   *)
   // Image1abx.Visible := iYazGel = 1;
  //  cxImagebcd.Visible := iYazGel = 2;
  //  cxImage1.Visible := (iYazGel <> 2) and (iYazGel <> 1);

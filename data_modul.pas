@@ -14,7 +14,7 @@ uses
   hastaKabulIslemleriWS, MedulaHastaKabul, MedulaHizmetKayit,
   MedulaYardimciIslem, hizmetKayitIslemleriWS,
   faturaKayitIslemleriWS, MedulaFaturaKayit, yardimciIslemlerWS,
-  raporIslemleriWS, MedulaRaporIslem;
+  raporIslemleriWS, MedulaRaporIslem, Xml.Win.msxmldom;
 
 
   Const
@@ -38,9 +38,10 @@ uses
     raporURL = 'https://medula.sgk.gov.tr/medula/hastane/raporIslemleriWS';
     DyopURL = 'https://wsdis.saglik.gov.tr/KRIZMA.DIS.TREATMENTSERVICE.asmx';
     DonemSonlandir = 'https://medula.sgk.gov.tr/hastane/login.jsf';
-    AppalicationVer : integer = 2201;
     ktsHbysKodu : string = 'C740D0288EFAC45FE0407C0A04162BDD';
-
+    DBUserName : string = 'LyotVG05cmRHRT0==';
+    DBPasword : string = 'LyotTlRNMU13PT0=';
+    AppalicationVer : integer = 2201;
 
 type
   TDATALAR = class(TDataModule)
@@ -253,8 +254,6 @@ type
     memData_yurtDisiYardimHakkitedaviKapsami: TStringField;
     memData_yurtDisiYardimHakkiformulAdi: TStringField;
     DataSource1: TDataSource;
-    ClientDataSet1: TClientDataSet;
-    XMLTransformProvider1: TXMLTransformProvider;
     Ado_Guncellemeler: TADOQuery;
     Master: TADOConnection;
     RxHastaTakipbasvuruNo: TStringField;
@@ -367,6 +366,12 @@ type
     StringField40: TStringField;
     StringField41: TStringField;
     Lab: THTTPRIO;
+    DataSetProvider1: TDataSetProvider;
+    ClientDataSet1: TClientDataSet;
+    XMLDocument1: TXMLDocument;
+    XMLTransformProvider1: TXMLTransformProvider;
+    DYOB: THTTPRIO;
+    RxTaniBilgisitakipNo: TStringField;
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
     procedure TakipHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;
@@ -476,6 +481,10 @@ type
    DokumanGG : TDokumanGG;
    KurulToplantiMadde : TKurulToplantiMadde;
    HTTP_XMLDosya_Name : string;
+   DefaultTedaviTuru : string;
+   DefaultTedaviTipi : string;
+   KurumBransi : string;
+   eNabizKayit : string;
 
 
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
@@ -510,9 +519,9 @@ var
   pSQLPassword,pSQLUserName : string;
 begin
  try
-  servername := Decode64(RegOku('OSGB_servername'));
-  pSQLUserName := Decode64(regOku('OSGB_serverUserName'));
-  pSQLPassword := Decode64(regOku('OSGB_serverPassWord'));
+  servername := Decode64(Decode64(RegOku('OSGB_servername')));
+  pSQLUserName := Decode64(copy(Decode64(DBUserName),4,100));//Decode64(regOku('OSGB_serverUserName'));
+  pSQLPassword := Decode64(copy(Decode64(DBPasword),4,100));//Decode64(regOku('OSGB_serverPassWord'));
   Master.Connected := false;
   Master.ConnectionString :=
   'Provider=SQLOLEDB.1;Password='+pSQLPassword+';Persist Security Info=True;User ID='+pSQLUserName+';Initial Catalog=OSGB_MASTER;Data Source='+servername;
@@ -528,9 +537,12 @@ var
   ado : TADOQuery;
 begin
   servername := Server;
+  pSQLUserName := Decode64(copy(Decode64(DBUserName),4,100));
+  pSQLPassword := Decode64(copy(Decode64(DBPasword),4,100));
+
   Master.Connected := false;
   Master.ConnectionString :=
-  'Provider=SQLOLEDB.1;Password='+pSQLPassword+';Persist Security Info=True;User ID='+pSQLUserName+';Initial Catalog=OSGB_MASTER;Data Source='+servername+';Application Name=' + UygulamaBaglantiTanimi;
+  'Provider=SQLOLEDB.1;Password='+pSQLPassword+';Persist Security Info=True;User ID='+pSQLUserName+';Initial Catalog=OSGB_MASTER;Data Source='+ decode64(decode64(servername))+';Application Name=' + UygulamaBaglantiTanimi;
   Master.Connected := True;
 
   if Master.Connected = True then
@@ -563,8 +575,9 @@ begin
   try
     _db_ := RegOku('OSGB_db_name');
     _db_ := Decode64(_db_);
-    servername := ifThen(Server = '', Decode64(RegOku('OSGB_servername')),Server);
+    servername := ifThen(Server = '', Decode64(Decode64(RegOku('OSGB_servername'))),Decode64(Decode64(Server)));
     _db_ := ifThen(db = '', Decode64(RegOku('OSGB_db_name')),db);
+
 
     if username = 'demo' then begin
       _db_ := 'OSGB_UZMAN';
@@ -574,6 +587,9 @@ begin
     end;
       pSQLPassword := 'nokta53Nokta';
       pSQLUserName := 'noktaosgB';
+
+    pSQLUserName := Decode64(copy(Decode64(DBUserName),4,100));
+    pSQLPassword := Decode64(copy(Decode64(DBPasword),4,100));
 
     if (_db_ <> '')
     Then Begin
@@ -956,7 +972,22 @@ var
   memo : Tmemo;
   m : TStringList;
   R: UTF8String;
+  XMLDoc: IXMLDocument;
 begin
+
+   if MethodName = 'ReLabSonucListesi'
+   then begin
+      ClientDataset1.Active := FALSE;
+      SOAPResponse.Position := 0;
+      XMLDoc := NewXMLDocument;
+      XMLDoc.Encoding := 'UTF8';
+      SOAPResponse.Position := 0;
+      XMLDoc.LoadFromStream(SOAPResponse);
+      XMLTransformProvider1.TransformRead.TransformationFile := 'Referans.xtr';
+      XMLTransformProvider1.TransformRead.SourceXmlDocument := XMLDoc.GetDOMDocument;
+      ClientDataset1.Active := TRUE;
+   end;
+
    SetLength(R, SOAPResponse.Size);
    SOAPResponse.Position := 0;
    SOAPResponse.Read(R[1], Length(R));

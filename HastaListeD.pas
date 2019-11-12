@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, ADODB, Grids, StdCtrls,dxLayoutControl,
+  Dialogs, DB, ADODB, Grids, StdCtrls,dxLayoutControl, jpeg,
   Buttons,  ExtCtrls, DBGrids,  KadirLabel,Kadir,KadirType,GetFormClass,
   DBGridEh, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
   cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit,
@@ -69,6 +69,7 @@ type
     cxGridLevel1: TcxGridLevel;
     N2: TMenuItem;
     ListeColumn2: TcxGridDBColumn;
+    E2: TMenuItem;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -147,18 +148,6 @@ begin
   datalar.KontrolUserSet := False;
   inherited;
   if datalar.KontrolUserSet = True then exit;
-  (*
-  GirisFormRecord.F_dosyaNo_ := ado_BransKodlari.FieldByName('dosyaNo').AsString;
-  GirisFormRecord.F_gelisNo_ := ado_BransKodlari.FieldByName('gelisNo').AsString;
-  GirisFormRecord.F_provizyonTarihi_ := ado_BransKodlari.FieldByName('BHDAT').AsString;
-  GirisFormRecord.F_HastaAdSoyad_ := ado_BransKodlari.FieldByName('HASTAADI').AsString + ' ' +
-                                     ado_BransKodlari.FieldByName('HASTASOYADI').AsString;
-  GirisFormRecord.F_TakipNo_ := ado_BransKodlari.FieldByName('TakýpNO').AsString;
-  GirisFormRecord.F_TC_ := ado_BransKodlari.FieldByName('TCKimlikNo').AsString;
-  GirisFormRecord.F_Doktor_ := ado_BransKodlari.FieldByName('doktor').AsString;
-  GirisFormRecord.F_Makina_ := ado_BransKodlari.FieldByName('MakinaNo').AsString;
-  GirisFormRecord.F_Seans_ := ado_BransKodlari.FieldByName('Seans').AsString;
-  *)
 
   GirisFormRecord.F_dosyaNo_ := _Dataset.FieldByName('dosyaNo').AsString;
   GirisFormRecord.F_gelisNo_ := _Dataset.FieldByName('gelisNo').AsString;
@@ -170,18 +159,26 @@ begin
   GirisFormRecord.F_Doktor_ := _Dataset.FieldByName('doktor').AsString;
   GirisFormRecord.F_Makina_ := _Dataset.FieldByName('MakinaNo').AsString;
   GirisFormRecord.F_Seans_ := _Dataset.FieldByName('Seans').AsString;
+
+
+
   case Tcontrol(sender).tag of
  -1 : begin
-          F := FormINIT(TagfrmHastaIlacTedavi,GirisFormRecord,ikEvet,'Giriþ');
+          F := FormINIT(TagfrmHastaIlacTedavi,GirisFormRecord,ikEvet,'');
+          F._foto_ := _foto_;
           if F <> nil then F.ShowModal;
       end;
  -2 : begin
-        //  F := FormINIT(TagfrmHastaSeans,GirisFormRecord,ikEvet);
-      //   if F <> nil then F.ShowModal;
+          F := FormINIT(TagfrmHastaSeans,GirisFormRecord,ikHayir,'');
+          if F <> nil then F.ShowModal;
       end;
+ -3  : begin
+          EpikrizYaz(_Dataset.FieldByName('dosyaNo').AsString,_Dataset.FieldByName('gelisNo').AsString,false);
+       end;
 
  -7 : begin
           F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet);
+          F._foto_ := _foto_;
           if F <> nil then F.ShowModal;
        // ReceteForm(ado_BransKodlari.FieldByName('dosyaNo').AsString,ado_BransKodlari.FieldByName('gelisNo').AsString);
       end;
@@ -190,6 +187,7 @@ begin
         //
         DurumGoster(True,False,'Ýmza Föyleri Yükleniyor, Lütfen Bekleyiniz');
         try
+          Datasets.Dataset0 := datalar.ADO_aktifSirketLogo;
           Datasets.Dataset1 := DataSource.Dataset;
           Datasets.Dataset2 := datalar.ADO_AktifSirket;
           PrintYap('039','Ýmza Föyü',intTostr(TagfrmHastaListeD),Datasets);
@@ -282,7 +280,7 @@ begin
    else begin
     ado := TADOQuery.Create(nil);
     sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = '''' , @yil = ' + QuotedStr(ay1) +
-                  ',@marker = ' + QuotedStr(m) + ',@f= -1';
+                  ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket);
     datalar.QuerySelect(ado,sql);
     topluset.Dataset0 := ado;
     PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),topluset);
@@ -294,7 +292,7 @@ end;
 
 function TfrmHastaListeD.Init(Sender: TObject): Boolean;
 begin
-   TapPanelElemanVisible(False,false,false,false,false,false,True,false,False,True,True,True);
+   TapPanelElemanVisible(True,false,false,false,false,false,True,false,False,True,True,True);
    AktifPasifTopPanel.EditValue := '1';
    DiyalizTipTopPanel.EditValue := 'H';
    KurumTipTopPanel.EditValue := '1';
@@ -487,8 +485,24 @@ procedure TfrmHastaListeD.ListeFocusedRecordChanged(
 var
   Hadi,HSadi,HTc : string;
   index : integer;
+  g : TGraphic;
 begin
   inherited;
+
+   g := TJpegimage.Create;
+
+   try
+    if _Dataset.FieldByName('foto').AsVariant <> Null
+    Then begin
+      g.Assign(_Dataset.FieldByName('foto'));
+      _foto_ := TcxImage.Create(self);
+      _foto_.Visible := False;
+      _foto_.Picture.Assign(g);
+    end;
+
+   finally
+     g.Free;
+   end;
 
   //index := AFocusedRecord.Index;
   Hadi := _Dataset.FieldByName('HASTAADI').AsString; //Liste.DataController.GetValue(index,HastaAdi.Index);

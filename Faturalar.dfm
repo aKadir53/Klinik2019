@@ -33,10 +33,6 @@ object frmFaturalar: TfrmFaturalar
     object cxTabSheet1: TcxTabSheet
       Caption = 'Faturalar'
       ImageIndex = 0
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object cxGrid1: TcxGridKadir
         Left = 0
         Top = 0
@@ -58,6 +54,7 @@ object frmFaturalar: TfrmFaturalar
         LookAndFeel.SkinName = 'UserSkin'
         ExcelFileName = 'FaturaListesi'
         ExceleGonder = True
+        PopupForm = False
         object GridFaturalar: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -320,6 +317,7 @@ object frmFaturalar: TfrmFaturalar
         Align = alBottom
         TabOrder = 1
         ExceleGonder = False
+        PopupForm = False
         object FaturaDetaySatirlar: TcxGridDBTableView
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
@@ -403,10 +401,6 @@ object frmFaturalar: TfrmFaturalar
     object cxTabSheet2: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object txtLog: TcxMemo
         Left = 0
         Top = 0

@@ -57,7 +57,7 @@ function HizmetKayit_3(basvuruNo , TakipNo : string ; Http1 : THTTPRIO ;
 //function TakipformuOku(TcNo : string ; var _form_ : TakipFormlari ; Http1 : THTTPRIO) : string;
 
 
-function HizmetKayitVeriSeti(_takip ,_basvuruNo, Modul , tedavi , Dataset , islemRefNo : string) : hizmetKayitGirisDVO;
+function HizmetKayitVeriSeti(_takip ,_basvuruNo, Modul , tedavi , Dataset , islemRefNo : string ; var Sonuc : string) : hizmetKayitGirisDVO;
 function MuayeneM3(_takip : string) : MuayeneBilgisiDVO;
 function YatisM3(_takip : string) : hizmetKayitIslemleriWS.Array_Of_HastaYatisBilgisiDVO;
 function TahlilM3(_takip , Modul , Tedavi : string) : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
@@ -72,8 +72,8 @@ function TaniMemData(memData : TADOQuery) : hizmetKayitIslemleriWS.taniBilgisiDV
 function HizmetKaydiOku(_takipNo , basvuruNo : string) : string;
 function HizmetKaydiIptal(_TakipNo_ : string) : string;
 procedure HizmetIptalSonucDBYaz;
-
-
+function TetkikveRadyolojiBilgileriMemData(DataSet : TADOQuery) : TetkikveRadyolojiBilgisiDVO;
+function MalzemeMemData(DataSet : TADOQuery) : hizmetKayitIslemleriWS.MalzemeBilgisiDVO;
 
 function DigerIslemBilgileriM3(_takip ,Modul : string) : hizmetKayitIslemleriWS.Array_Of_DigerIslemBilgisiDVO;
 function DigerIslemBilgileriM3_Satir(_takip : TDigerIslemTalep) : hizmetKayitIslemleriWS.Array_Of_DigerIslemBilgisiDVO;
@@ -254,9 +254,15 @@ var
    ad , _msg , _tanilar_: string;
    etkinMadde : raporEtkinMaddeDVO;
 begin
+
       datalar.RaporIslemWS.RaporAraGiris.saglikTesisKodu := datalar._kurumKod;
       datalar.RaporIslemWS.RaporAraGiris.tckimlikNo := tckimlikNo;
       datalar.RaporIslemWS.RaporAraGiris.raporTuru := raporTuru;
+
+   //   datalar.RaporIslemWS.UserName := datalar._doktorReceteUser;
+    //  datalar.RaporIslemWS.Password := datalar._doktorRecetePas;
+
+     // datalar.RaporIslemWS.
       datalar.RaporIslemWS.RaporAra;
 
       if datalar.RaporIslemWS.RaporAraCevap.sonucKodu = 0
@@ -270,8 +276,10 @@ begin
            end;
            datalar.memDataRaporlar.Active := False;
            datalar.memDataRaporlar.Active := True;
+           datalar.memDataRaporlarI.Active := False;
+           datalar.memDataRaporlarI.Active := True;
 
-           for i := 0 to length(datalar.RaporIslemWS.RaporAraCevap.raporlar) - 1  do
+           for x := 0 to length(datalar.RaporIslemWS.RaporAraCevap.raporlar) - 1  do
            begin
 
               if  datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru = '10'
@@ -301,7 +309,8 @@ begin
               End;
 
 
-              if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 1
+
+              if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru = '1'
               Then Begin
                datalar.memDataRaporlar.Append;
                datalar.memDataRaporlar.FieldByName('raporTuru').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru;
@@ -678,7 +687,7 @@ begin
   Else
   begin
      msj := 'TC :' + tc + ' - ' + ad + ' - ' + yas + ' - Tarih :' + tarih + ' - ' + datalar.YardimciIslemWS.DamarIziDogrulamaSorguCevap.sonucMesaji;
-     ShowMessageSkin(msj,'','','info');
+   //  ShowMessageSkin(msj,'','','info');
   end;
 end;
 
@@ -3410,6 +3419,7 @@ begin
          for i := 0 to j - 1 do
          Begin
              datalar.RxTaniBilgisi.Append;
+             datalar.RxTaniBilgisi.FieldByName('takipNo').AsString := _takipNo;
              datalar.RxTaniBilgisi.FieldByName('taniKodu').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tanilar[i].taniKodu;
              datalar.RxTaniBilgisi.FieldByName('taniTipi').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tanilar[i].taniTipi;
              datalar.RxTaniBilgisi.FieldByName('birincilTani').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tanilar[i].birincilTani;
@@ -3449,82 +3459,34 @@ var
    Ts_Cvp1 : HastaKabulIslemleriWS.TakipDVO;
    sql : string;
 begin
+      datalar.HastaKabulWS.TakipOkuGiris.takipNo := _Takip;
+      datalar.HastaKabulWS.TakipOkuGiris.saglikTesisKodu := datalar._kurumKod;
+      datalar.HastaKabulWS.KabulOku;
+//      Ts_Gon1.yeniTedaviTipi := 0;
 
-   //   if _Takip = ''
-   //   Then ShowMessageSkin('Takip Bilgisi','','','info');
-
-      datalar.Login;
-
-
-    //  http1.HTTPWebNode.UserName := datalar._username;
-    //  http1.HTTPWebNode.Password := datalar._sifre;
-    //  http1.URL := 'https://medula.sgk.gov.tr:443/medulaws/services/HastaKabulIslemleri';
-      http1.URL := hastaKabulURL; //'https://medula.sgk.gov.tr/medula/hastane/hastaKabulIslemleriWS';
-      Ts_gon1 := TakipOkuGirisDVO.Create;
-      Ts_cvp1 := HastaKabulIslemleriWS.TakipDVO.Create;
-
-      Ts_gon1.saglikTesisKodu := datalar._kurumKod;
-      Ts_gon1.ktsHbysKodu := ktsHbysKodu;
-      Ts_Gon1.takipNo := _Takip;
-      Ts_Gon1.yeniTedaviTipi := 0;
-
-
-      try
-        Ts_Cvp1 := (http1 as HastaKabulIslemleri).hastaKabulOku(Ts_Gon1);
-      except
-        on E: SysUtils.Exception do
-          begin
-            if _msg = 1 then Showmessage(E.Message,'','','info');
-            result := e.Message;
-            hasta.Takip := '';
-            hasta.ilkTakip := '';
-            hasta.MuayeneTarihi := '';
-            hasta.KayitTarihi := '';
-            hasta.TesisKodu := '0';
-            hasta.bransKodu := '';
-            hasta.donerTcKimlik := '';
-            hasta.BasvuruNo := '';
-            hasta.TakipTipi := '';
-            hasta.tedaviTuru := '';
-            hasta.TalipDurumu := '';
-            hasta.provizyonTipi := '';
-            hasta.tedaviTipi := '';
-            hasta.HastaAdi := '';
-            hasta.TcKimlik := '';
-            hasta.faturaTeslimNo := '';
-            hasta.bransKodu := '';
-            exit;
-          end;
-
-      end;
-
-      if Ts_Cvp1.sonucKodu = '0000'
+      if datalar.HastaKabulWS.Takip.sonucKodu = '0000'
       then begin
-            result := Ts_Cvp1.sonucKodu;
-            hasta.Takip := Ts_Cvp1.takipNo;
-            hasta.ilkTakip := Ts_Cvp1.ilkTakipNo;
-            hasta.MuayeneTarihi := Ts_Cvp1.takipTarihi;
-            hasta.KayitTarihi := Ts_Cvp1.kayitTarihi;
-            hasta.TesisKodu := inttostr(Ts_Cvp1.tesisKodu);
-            hasta.bransKodu := Ts_Cvp1.bransKodu;
-            hasta.donerTcKimlik := Ts_Cvp1.donorTCKimlikNo;
-            hasta.BasvuruNo := Ts_Cvp1.hastaBasvuruNo;
-            hasta.TakipTipi := Ts_Cvp1.takipTipi;
-            hasta.tedaviTuru := Ts_Cvp1.tedaviTuru;
-            hasta.TalipDurumu := Ts_Cvp1.takipDurumu;
-            hasta.provizyonTipi := Ts_Cvp1.provizyonTipi;
-            hasta.tedaviTipi := Ts_Cvp1.tedaviTipi;
-            hasta.HastaAdi := Ts_Cvp1.hastaBilgileri.ad + ' ' + Ts_Cvp1.hastaBilgileri.soyad;
+            result := datalar.HastaKabulWS.Takip.sonucKodu;
+            hasta.Takip := datalar.HastaKabulWS.Takip.takipNo;
+            hasta.ilkTakip := datalar.HastaKabulWS.Takip.ilkTakipNo;
+            hasta.MuayeneTarihi := datalar.HastaKabulWS.Takip.takipTarihi;
+            hasta.KayitTarihi := datalar.HastaKabulWS.Takip.kayitTarihi;
+            hasta.TesisKodu := inttostr(datalar.HastaKabulWS.Takip.tesisKodu);
+            hasta.bransKodu := datalar.HastaKabulWS.Takip.bransKodu;
+            hasta.donerTcKimlik := datalar.HastaKabulWS.Takip.donorTCKimlikNo;
+            hasta.BasvuruNo := datalar.HastaKabulWS.Takip.hastaBasvuruNo;
+            hasta.TakipTipi := datalar.HastaKabulWS.Takip.takipTipi;
+            hasta.tedaviTuru := datalar.HastaKabulWS.Takip.tedaviTuru;
+            hasta.TalipDurumu := datalar.HastaKabulWS.Takip.takipDurumu;
+            hasta.provizyonTipi := datalar.HastaKabulWS.Takip.provizyonTipi;
+            hasta.tedaviTipi := datalar.HastaKabulWS.Takip.tedaviTipi;
+            hasta.HastaAdi := datalar.HastaKabulWS.Takip.hastaBilgileri.ad + ' ' + datalar.HastaKabulWS.Takip.hastaBilgileri.soyad;
             hasta.TcKimlik := Ts_Cvp1.hastaBilgileri.tcKimlikNo;
-            hasta.faturaTeslimNo := Ts_Cvp1.faturaTeslimNo;
-            hasta.bransKodu := Ts_Cvp1.bransKodu;
-
-            
-
+            hasta.faturaTeslimNo := datalar.HastaKabulWS.Takip.faturaTeslimNo;
+            hasta.bransKodu := datalar.HastaKabulWS.Takip.bransKodu;
       end
       else begin
-            result := Ts_Cvp1.sonucMesaji;
-
+            result := datalar.HastaKabulWS.Takip.sonucMesaji;
             hasta.Takip := '';
             hasta.ilkTakip := '';
             hasta.MuayeneTarihi := '';
@@ -3542,13 +3504,8 @@ begin
             hasta.TcKimlik := '';
             hasta.faturaTeslimNo := '';
             hasta.bransKodu := '';
-            if _msg = 1 then ShowMessageSkin(Ts_Cvp1.sonucMesaji , '' ,'' ,'info');
-
+            if _msg = 1 then ShowMessageSkin(datalar.HastaKabulWS.Takip.sonucMesaji , '' ,'' ,'info');
       end;
-
-     Ts_Gon1.Free;
-     Ts_Cvp1.Free;
-
 
 end;
 
@@ -4108,11 +4065,11 @@ begin
 end;
 
 
-function HizmetKayitVeriSeti(_takip ,_basvuruNo , Modul , tedavi, Dataset , islemRefNo : string) : hizmetKayitGirisDVO;
+function HizmetKayitVeriSeti(_takip ,_basvuruNo , Modul , tedavi, Dataset , islemRefNo : string ; var Sonuc : string) : hizmetKayitGirisDVO;
 var
   sql,sql1 , dosyaNo , gelisNo : string;
   i ,j, dizi , dizi1 , r : integer;
-  TahlilDizi,DigerDizi,TaniDizi : integer;
+  TahlilDizi,DigerDizi,TaniDizi,RadDizi,MalzemeDizi : integer;
   TahlilElemanlar : TahlilBilgisiDVO;
   Sonuclar : TahlilSonucDVO;
   Fsonuclar : Array_Of_TahlilSonucDVO;
@@ -4121,6 +4078,7 @@ var
   FdigerIslem : hizmetKayitIslemleriWS.Array_Of_digerIslemBilgisiDVO;
   Ftahliller : hizmetKayitIslemleriWS.Array_Of_TahlilBilgisiDVO;
   FTanilar : hizmetKayitIslemleriWS.Array_Of_taniBilgisiDVO;
+  FtetkikveRadyoloji : Array_Of_TetkikveRadyolojiBilgisiDVO;
   FMalzemeler : HizmetKayitIslemleriWS.Array_Of_malzemeBilgisiDVO;
   HizmetVeriSeti : hizmetKayitGirisDVO;
 
@@ -4147,6 +4105,8 @@ begin
           Tahlildizi := 1;
           DigerDizi := 1;
           TaniDizi := 1;
+          RadDizi := 1;
+          MalzemeDizi := 1;
 
           for i := 1 to memData.RecordCount  do
           begin
@@ -4157,6 +4117,14 @@ begin
                 Ftahliller[Tahlildizi-1] := TahlilmemData(memData);
                 HizmetVeriSeti.tahlilBilgileri := Ftahliller;
                 inc(Tahlildizi);
+             end;
+
+             if memData.fieldbyname('veriSeti').AsString = 'R'
+             then begin
+                SetLength(FtetkikveRadyoloji,RadDizi);
+                FtetkikveRadyoloji[RadDizi-1] := TetkikveRadyolojiBilgileriMemData(memData);
+                HizmetVeriSeti.tetkikveRadyolojiBilgileri := FtetkikveRadyoloji;
+                inc(Raddizi);
              end;
 
 
@@ -4176,6 +4144,13 @@ begin
                 inc(Tahlildizi);
              end;
 
+             if memData.fieldbyname('veriSeti').AsString = 'MLZM'
+             then begin
+                SetLength(FMalzemeler,MalzemeDizi);
+                FMalzemeler[MalzemeDizi-1] := MalzemememData(memData);
+                HizmetVeriSeti.malzemeBilgileri := FMalzemeler;
+                inc(MalzemeDizi);
+             end;
              memData.Next;
 
              if (i in [20,40,60,80]) or (memData.Eof)  // 20 adet veri yada dosya sonu ise gönder ve verisetini sýfýrla
@@ -4187,17 +4162,31 @@ begin
 
                  datalar.HizmetKayitWS.HizmetKaydet(hatali,datalar.RxKayitliIslem);
                  Sonucyaz(datalar.HizmetKayitWS);
+
                  if datalar.HizmetKayitWS.Cevap.sonucKodu = '0000'
                  Then Begin
-                  //Sonucyaz(datalar.HizmetKayitWS);
-                  ShowMessageSkin('Ýþlemler Baþarý ile Kaydedildi','','','info');
+                  sonuc := '0000 - ' + 'Hizmetler Baþarý ile Kaydedildi';
+    //              --ShowMessageSkin('Ýþlemler Baþarý ile Kaydedildi','','','info');
                  End
                  else
-                  ShowMessageSkin(datalar.HizmetKayitWS.Cevap.sonucMesaji,'','','info');
+                 begin
+                   sonuc := '';
+                   for r := 0 to hatali.Count - 1 do
+                       begin
+                         sonuc := sonuc + hatali[r] + #13;
+                       end;
+
+                 end;
+
+
+  //                ShowMessageSkin(datalar.HizmetKayitWS.Cevap.sonucMesaji,'','','info');
 
 
                  TahlilDizi := 1;
                  DigerDizi := 1;
+                 MalzemeDizi := 1;
+                 RadDizi := 1;
+
                  HizmetVeriSeti := hizmetKayitGirisDVO.Create;
              end;
 
@@ -4329,6 +4318,38 @@ begin
       datalar.ADO_SQL2.Close;
 
     //  MalzemeElemanlar.Free;
+end;
+
+
+function MalzemeMemData(DataSet : TADOQuery) : hizmetKayitIslemleriWS.MalzemeBilgisiDVO;
+var
+  sql , raporTakipNo : string;
+  i ,j : integer;
+  MalzemeElemanlar : hizmetKayitIslemleriWS.MalzemeBilgisiDVO;
+begin
+        MalzemeElemanlar := hizmetKayitIslemleriWS.MalzemeBilgisiDVO.Create;
+        MalzemeElemanlar.malzemeKodu := DataSet.fieldbyname('malzemeKodu').AsString;
+        MalzemeElemanlar.adet:= DataSet.fieldbyname('adet').AsInteger;
+        MalzemeElemanlar.islemTarihi := FormattedTarih(DataSet.fieldbyname('islemTarihi').AsString);
+        MalzemeElemanlar.malzemeTuru := DataSet.fieldbyname('malzemeTuru').AsString;
+        MalzemeElemanlar.kodsuzMalzemeFiyati := DataSet.fieldbyname('kodsuzMalzemeFiyati').AsFloat;
+        MalzemeElemanlar.kodsuzMalzemeAdi := DataSet.fieldbyname('kodsuzMalzemeAdi').AsString;
+        MalzemeElemanlar.hizmetSunucuRefNo := DataSet.fieldbyname('hizmetSunucuRefNo').AsString;
+        MalzemeElemanlar.barkod := DataSet.fieldbyname('UBB').AsString;
+        MalzemeElemanlar.paketHaric := DataSet.fieldbyname('PaketHaric').AsString;
+        MalzemeElemanlar.katkiPayi := DataSet.fieldbyname('katkiPayi').AsString;
+        MalzemeElemanlar.ozelDurum := DataSet.fieldbyname('ozeldurum').AsString;
+        MalzemeElemanlar.bransKodu := DataSet.fieldbyname('Brans').AsString;
+        MalzemeElemanlar.drTescilNo := DataSet.fieldbyname('TescilNo').AsString;
+        MalzemeElemanlar.kdv := DataSet.fieldbyname('kdv').AsInteger;
+        MalzemeElemanlar.firmaTanimlayiciNo := DataSet.fieldbyname('firmaTanimlayiciNo').AsString;
+        MalzemeElemanlar.malzemeSatinAlisTarihi  := FormattedTarih(DataSet.fieldbyname('malzemeSatinAlisTarihi').AsString);
+        MalzemeElemanlar.donorId := '';
+        MalzemeElemanlar.ihaleKesinlesmeTarihi := '';
+        MalzemeElemanlar.ikNoAlimNo := '';
+        MalzemeElemanlar.islemSiraNo := '';
+
+        MalzemeMemData := MalzemeElemanlar;
 end;
 
 
@@ -4736,7 +4757,28 @@ begin
 end;
 
 
+function TetkikveRadyolojiBilgileriMemData(DataSet : TADOQuery) : TetkikveRadyolojiBilgisiDVO;
+var
+  sql , raporTakipNo : string;
+  i ,j : integer;
+  Rad : TetkikveRadyolojiBilgisiDVO;
+begin
+          Rad := TetkikveRadyolojiBilgisiDVO.Create;
+          Rad.sutKodu := DATALAR.ADO_SQL2.fieldbyname('butKodu').AsString;
+          Rad.adet := DATALAR.ADO_SQL2.fieldbyname('adet').AsInteger;
+          Rad.islemTarihi := FormattedTarih(DATALAR.ADO_SQL2.fieldbyname('islemTarihi').AsString);
+          Rad.drTescilNo := DATALAR.ADO_SQL2.fieldbyname('drTescilNo').AsString;
+          Rad.bransKodu := DATALAR.ADO_SQL2.fieldbyname('bransKodu').AsString;
+          Rad.hizmetSunucuRefNo := DATALAR.ADO_SQL2.fieldbyname('hizmetSunucuRefNo').AsString;
+          Rad.ozelDurum := DATALAR.ADO_SQL2.fieldbyname('ozeldurum').AsString;
+          Rad.sonuc := DATALAR.ADO_SQL2.fieldbyname('sonuc').AsString;
+          Rad.birim := DATALAR.ADO_SQL2.fieldbyname('birim').AsString;
+          Rad.aciklama := DATALAR.ADO_SQL2.fieldbyname('aciklama').AsString;
+          Rad.modality := DATALAR.ADO_SQL2.fieldbyname('modality').AsString;
+          Rad.accession := DATALAR.ADO_SQL2.fieldbyname('accession').AsString;
 
+          TetkikveRadyolojiBilgileriMemData := Rad;
+end;
 
 
 

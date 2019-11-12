@@ -36,6 +36,17 @@ type
     DnemSonlandrmaifremiDei1: TMenuItem;
     cxStyleRepository2: TcxStyleRepository;
     cxStyle2: TcxStyle;
+    cxGridKadir2: TcxGridKadir;
+    GridListOratk: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn1: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn2: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn3: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn4: TcxGridDBBandedColumn;
+    GridListOrtakSLB_Tanimi: TcxGridDBBandedColumn;
+    GridListOrtakValue: TcxGridDBBandedColumn;
+    cxGridLevel1: TcxGridLevel;
+    DataSource2: TDataSource;
+    ADO_WebServisErisim_Ortak: TADOQuery;
     procedure sBitBtn1Click(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -76,9 +87,13 @@ begin
   Menu := PopupMenu1;
  // Olustur(self,_TableName_,'Kimlik Doðrula',71,sqlInsert);
   cxPanel.Visible := false;
-  Sayfa3_Kolon3.Width := 0;
-  Sayfa3_Kolon2.Width := 0;
-  SayfaCaption('','','','','');
+
+
+  cxGridKadir1.Parent := sayfa1;
+  cxGridKadir1.Align := alClient;
+  cxGridKadir2.Parent := sayfa2;
+  cxGridKadir2.Align := alClient;
+  SayfaCaption('Firma Parametreleri','Ortak Parametreler','','','');
 end;
 
 function TfrmKurumBilgi.Init(Sender : TObject) : Boolean;
@@ -89,12 +104,12 @@ begin
 
 
   case Tag of
-    TagfrmKurumBilgi
+    TagfrmKurumBilgi ,TagfrmParametreler
        : begin
             sql := 'insert into WebServisErisimBilgileri_Firma (id,sirketKod,value) ' +
                    ' select W.id,' + QuotedStr(datalar.AktifSirket) + ',W.value from WebServisErisimBilgileri W ' +
                    ' left join WebServisErisimBilgileri_Firma WF on W.id = WF.id and WF.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-                   ' where WF.id is null ';
+                   ' where WF.id is null and Ozel is null';
             datalar.QueryExec(sql);
 
             ADO_WebServisErisim.close;
@@ -102,18 +117,27 @@ begin
             ADO_WebServisErisim.Parameters[0].Value := datalar.AktifSirket;
             ADO_WebServisErisim.Parameters[1].Value := '%'+ SLK +'%';
             ADO_WebServisErisim.Active := True;
-       end;
 
+            ADO_WebServisErisim_Ortak.close;
+            ADO_WebServisErisim_Ortak.SQL.Text := ServisOrtak;
+            ADO_WebServisErisim_Ortak.Active := True;
+            Datalar.ServisErisimBilgileriOrtak.LoadFromDataSet(ADO_WebServisErisim_Ortak);
+       end;
+     (*
     TagfrmParametreler
        : begin
             ADO_WebServisErisim.close;
             ADO_WebServisErisim.SQL.Text := ServisOrtak;
             ADO_WebServisErisim.Active := True;
             Datalar.ServisErisimBilgileriOrtak.LoadFromDataSet(ADO_WebServisErisim);
-         end;
+         end;*)
   end;
 
   GridList.ViewData.Expand(true);
+  GridListOratk.ViewData.Expand(true);
+
+  cxTab.Tabs[0].Caption := datalar.AktifSirketAdi;
+
   Result := True;
 end;
 
@@ -131,34 +155,47 @@ var
   Columns,Baslik,Tips,Edits,IC_Params,IC_Param : TstringList;
   FItem : TcxImageComboBoxItem;
   ado : TADOQuery;
-  field1,field2,table,MaskEdit,filter : string;
+  field1,field2,table,MaskEdit,filter , colName : string;
+  Grid : TcxGridDBBandedTableView;
+  Col : TcxGridDBBandedColumn;
 begin
-  if ADO_WebServisErisim.FieldByName('ValueObje').AsString = 'C'
+  if Dataset.Name  = 'ADO_WebServisErisim'
+  then begin
+   Grid := GridList;
+   Col := GridListValue;
+  end
+  else
+  begin
+   Grid := GridListOratk;
+   Col := GridListOrtakValue;
+  end;
+
+  if DataSet.FieldByName('ValueObje').AsString = 'C'
   then begin
     ValuesCombo := TStringList.Create;
     try
-      ValueObjeValues := ADO_WebServisErisim.FieldByName('ValueObjeValues').AsString;
-      GridListValue.PropertiesClassName := 'TcxComboBoxProperties';
-      TcxComboBoxProperties(GridListValue.Properties).Items.Clear;
+      ValueObjeValues := DataSet.FieldByName('ValueObjeValues').AsString;
+      Col.PropertiesClassName := 'TcxComboBoxProperties';
+      TcxComboBoxProperties(Col.Properties).Items.Clear;
       Split(',',ValueObjeValues,ValuesCombo);
       for ValueCombo in  ValuesCombo  do
       begin
-        TcxComboBoxProperties(GridListValue.Properties).Items.Add(ValueCombo);
+        TcxComboBoxProperties(Col.Properties).Items.Add(ValueCombo);
       end;
     finally
       ValuesCombo.Free;
     end;
   end
   else
-  if ADO_WebServisErisim.FieldByName('ValueObje').AsString = 'IC'
+  if DataSet.FieldByName('ValueObje').AsString = 'IC'
   then begin
-        ValueObjeValues := ADO_WebServisErisim.FieldByName('ValueObjeValues').AsString;
-        GridListValue.PropertiesClassName := 'TcxImageComboBoxProperties';
-        TcxImageComboBoxProperties(GridListValue.Properties).Alignment.Vert := taVCenter;
-        TcxImageComboBoxProperties(GridListValue.Properties).Items.Clear;
-        GridListValue.Properties.Alignment.Horz := taLeftJustify;
-        GridListValue.Properties.OnEditValueChanged := PropertiesEditValueChanged;
-        TcxImageComboBoxProperties(GridListValue.Properties).ClearKey := VK_DELETE;
+        ValueObjeValues := DataSet.FieldByName('ValueObjeValues').AsString;
+        Col.PropertiesClassName := 'TcxImageComboBoxProperties';
+        TcxImageComboBoxProperties(Col.Properties).Alignment.Vert := taVCenter;
+        TcxImageComboBoxProperties(Col.Properties).Items.Clear;
+        Col.Properties.Alignment.Horz := taLeftJustify;
+        Col.Properties.OnEditValueChanged := PropertiesEditValueChanged;
+        TcxImageComboBoxProperties(Col.Properties).ClearKey := VK_DELETE;
 
         ado := TADOQuery.Create(nil);
         ado.Connection := datalar.ADOConnection2;
@@ -183,7 +220,7 @@ begin
              ado.First;
              while not ado.Eof do
              begin
-               FItem := TcxImageComboBoxProperties(GridListValue.Properties).Items.add;
+               FItem := TcxImageComboBoxProperties(Col.Properties).Items.add;
                FItem.Value := ado.FieldByName(field1).AsString;
                FItem.Description := ado.FieldByName(field2).AsString;
                ado.Next;
@@ -197,7 +234,7 @@ begin
 
   end
   else
-    GridListValue.PropertiesClassName := 'TcxTextEditProperties';
+    Col.PropertiesClassName := 'TcxTextEditProperties';
 
 end;
 

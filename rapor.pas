@@ -9,7 +9,7 @@ uses
   frxExportXML, frxExportHTML, frxBarcode, frxDCtrl, ExtCtrls,
   frxDMPExport, frxChBox, frxRich, frxChart, frxGradient,frxRes,
   cxGraphics, cxLookAndFeels, cxLookAndFeelPainters, Menus,
-  cxButtons, frxADOComponents,
+  cxButtons, frxADOComponents, strUtils,
   frxExportMail, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
   dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
   dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters, frxCross, frxCtrls;
@@ -85,6 +85,8 @@ type
   public
        topluset : TDataSetKadir;
        procedure raporData1(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
+       procedure raporDataDokuman(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
+
        procedure raporData2(dataset : TDataSetKadir ; kod , dosya : string ; SablonLoad : sablonTip = stHayir; Expo : Boolean = True);
        procedure raporDataIcerikYukle(kod : string);
     { Public declarations }
@@ -380,7 +382,7 @@ begin
 end;
 
 
-procedure TfrmRapor.raporData1(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
+procedure TfrmRapor.raporDataDokuman(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
 var
   template : TStream;
   Table : TADOQuery;
@@ -396,14 +398,19 @@ begin
   then begin
       if datalar.ADO_RAPORLAR_Q.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
       Then begin
+
+          Table := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ''BOS''');
+
           datalar.ADO_RAPORLAR_Q.Append;
           datalar.ADO_RAPORLAR_Q.FieldByName('raporKodu').AsString := kod;
           datalar.ADO_RAPORLAR_Q.FieldByName('raporAdi').AsString := '';
           datalar.ADO_RAPORLAR_Q.FieldByName('sirketKod').AsString := datalar.AktifSirket;
-          datalar.ADO_RAPORLAR_Q.FieldByName('rapor').AsString := '<?xml version="1.0" encoding="utf-8"?>';
+          datalar.ADO_RAPORLAR_Q.FieldByName('rapor').AsString :=
+          ifThen(Table.FieldByName('rapor').AsString = '','<?xml version="1.0" encoding="utf-8"?>',Table.FieldByName('rapor').AsString);
           datalar.ADO_RAPORLAR_Q.Post;
-          datalar.ADO_RAPORLAR_Q.Edit;
 
+        //  datalar.ADO_RAPORLAR_Q.Edit;
+         (*
           Table := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ''BOS''');
           if not Table.Eof
           then begin
@@ -411,7 +418,7 @@ begin
               template := Table.CreateBlobStream(Table.FieldByName('Rapor'), bmRead);
               IcerikAl(template,kod);
           end;
-
+           *)
       end
       else
       begin
@@ -421,6 +428,83 @@ begin
   end;
 
 //   datalar.ADO_RAPORLAR_Q.Locate('raporkodu',kod,[]);
+  template := datalar.ADO_RAPORLAR_Q.CreateBlobStream(datalar.ADO_RAPORLAR_Q.FieldByName('Rapor'), bmRead);
+  frmRapor.Caption := kod;
+
+
+  try
+    template.Position := 0;
+    frxReport1.LoadFromStream(template);
+    frxDBDataset0.DataSet := dataset.Dataset0;
+    frxDBDataset00.DataSet := dataset.Dataset00;
+    frxDBDataset1.DataSet := dataset.Dataset1;
+    frxDBDataset2.DataSet := dataset.Dataset2;
+    frxDBDataset3.DataSet := dataset.Dataset3;
+    frxDBDataset4.DataSet := dataset.Dataset4;
+    frxDBDataset5.DataSet := dataset.Dataset5;
+    frxDBDataset6.DataSet := dataset.Dataset6;
+    frxDBDataset7.DataSet := dataset.Dataset7;
+    frxDBDataset8.DataSet := dataset.Dataset8;
+    frxDBDataset9.DataSet := dataset.Dataset9;
+    frxDBDataset10.DataSet := dataset.Dataset10;
+    frxDBDataset11.DataSet := dataset.Dataset11;
+    frxDBDataset12.DataSet := dataset.Dataset12;
+  finally
+    template.Free;
+  end;
+
+  frxReport1.ReportOptions.Name := frmRapor.Caption;
+  frxReport1.PrepareReport(True);
+
+
+  if printTip = pTYazdir
+  then begin
+   frxReport1.PrepareReport;
+   frxReport1.PrintOptions.ShowDialog := false;
+   frxReport1.Print;
+  end
+  else
+  if printTip in [pTOnIzle,pTDizayn] then
+  begin
+    frxReport1.PreviewOptions.Buttons := [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator];
+    frxReport1.PrintOptions.ShowDialog := True;
+    if printer <> ''
+    Then begin
+      frxReport1.PrintOptions.Printer := printer;
+      frxReport1.SelectPrinter;
+    End;
+    if printTip = pTOnIzle then frxReport1.ShowReport else frxReport1.DesignReport;
+  end;
+
+end;
+
+
+procedure TfrmRapor.raporData1(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
+var
+  template : TStream;
+  Table : TADOQuery;
+begin
+
+  frxDesigner1.OnShow:= DesignerOnShow;
+  frmRapor.Caption := kod + ' - ' + caption;
+
+
+  datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod));
+
+  if datalar.ADO_RAPORLAR_Q.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
+  Then begin
+      datalar.ADO_RAPORLAR_Q.Append;
+      datalar.ADO_RAPORLAR_Q.FieldByName('raporKodu').AsString := kod;
+      datalar.ADO_RAPORLAR_Q.FieldByName('raporAdi').AsString := '';
+      datalar.ADO_RAPORLAR_Q.FieldByName('sirketKod').AsString := datalar.AktifSirket;
+      datalar.ADO_RAPORLAR_Q.FieldByName('rapor').AsString := '<?xml version="1.0" encoding="utf-8"?>';
+      datalar.ADO_RAPORLAR_Q.Post;
+  end
+  else
+  begin
+
+  end;
+
   template := datalar.ADO_RAPORLAR_Q.CreateBlobStream(datalar.ADO_RAPORLAR_Q.FieldByName('Rapor'), bmRead);
   frmRapor.Caption := kod;
 

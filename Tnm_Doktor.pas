@@ -130,6 +130,7 @@ begin
 
         _CINSIYET_.Visible := True;
         _CINSIYET_.tag := 0;
+        _CINSIYET_.FilterSet := fsCinsiyet;
         OrtakEventAta(_CINSIYET_);
         setDataStringKontrol(self,_CINSIYET_,'cinsiyet','Cinsiyeti',kolon1,'',200);
 

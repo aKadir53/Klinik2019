@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,Kadir,TedaviKart,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,Kadir,TedaviKart,GetFormClass,
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxContainer,
   cxEdit, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
@@ -35,6 +35,7 @@ type
     N3: TMenuItem;
     cxSplitter1: TcxSplitter;
     chkSistemSorgu: TcxCheckListBox;
+    T2: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure gelisSikayetSec(cL : TcxCheckListBox ; c : string);
     function gelisSikayetSecili(c : TcxCheckListBox) : string;
@@ -103,15 +104,15 @@ end;
 
 procedure TfrmUzmanMuayene.Yukle;
 begin
-  inherited;
+ // inherited;
    sql := 'select * from uzmanGozlem ug left join DoktorlarT d on d.kod = substring(ug.doktor,1,4) ' +
           ' where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + QuotedStr(_gelisNo_);
    datalar.QuerySelect(ADO_UzmanMuayene,sql);
 
+
+   TcxTextEdit(FindComponent('Tarih')).EditValue := ADO_UzmanMuayene.fieldbyname('Tarih').AsString;
    TcxTextEdit(FindComponent('id')).Text := ADO_UzmanMuayene.fieldbyname('id').AsString;
-
    gelisSikayetSec(chkSistemSorgu,ADO_UzmanMuayene.fieldbyname('sistemSorgusu').AsString);
-
    TcxMemo(FindComponent('basboyun')).EditValue := ADO_UzmanMuayene.fieldbyname('basboyun').AsString;
    TcxMemo(FindComponent('akciger')).EditValue := ADO_UzmanMuayene.fieldbyname('akciger').AsString;
    TcxMemo(FindComponent('kalp')).EditValue := ADO_UzmanMuayene.fieldbyname('kalp').AsString;
@@ -153,6 +154,18 @@ begin
  //  txtISI.Text := ADO_UzmanMuayene.fieldbyname('ISI').AsString;
 
 
+
+
+   if not ADO_UzmanMuayene.Eof
+   then begin
+       cxKaydet.Enabled := True;
+      cxIptal.Enabled := True;
+   end
+   else begin
+    cxIptal.Enabled := False;
+   end;
+
+
 end;
 
 
@@ -178,6 +191,8 @@ procedure TfrmUzmanMuayene.cxButtonCClick(Sender: TObject);
 var
   sql : string;
   Datasets : TDataSetKadir;
+  Form : TGirisForm;
+  GirisFormRecord : TGirisFormRecord;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -187,16 +202,20 @@ begin
 
        -1 : begin
               DurumGoster(True,False,'Uzman Muayene Tutanaðý Hazýrlanýyor...');
-              sql := 'select ug.Tarih,h.*, ' + QuotedStr(datalar.AktifSirketAdi) + ' merkezAd' +
-                     ' from Hastakart h ' +
-                     ' left JOIN UzmanGozlem ug ON ug.dosyaNo = h.dosyaNo AND ug.gelisNo = ' + _gelisNo_ +
-                     ' where h.dosyaNo = ' + QuotedStr(_dosyaNo_);
+              try
+                sql := 'select ug.Tarih,h.*, ' + QuotedStr(datalar.AktifSirketAdi) + ' merkezAd' +
+                       ' from Hastakart h ' +
+                       ' left JOIN UzmanGozlem ug ON ug.dosyaNo = h.dosyaNo AND ug.gelisNo = ' + _gelisNo_ +
+                       ' where h.dosyaNo = ' + QuotedStr(_dosyaNo_);
 
-              Datasets.Dataset0 := ADO_UzmanMuayene;
-              Datasets.Dataset1 := datalar.QuerySelect(sql);
+                Datasets.Dataset0 := ADO_UzmanMuayene;
+                Datasets.Dataset1 := datalar.QuerySelect(sql);
 
-              PrintYap('200','Uzman Muayene Tutanak','',Datasets,pTNone,frmUzmanMuayene);
+                PrintYap('200','Uzman Muayene Tutanak','',Datasets,pTNone,frmUzmanMuayene);
 
+              finally
+                DurumGoster(False);
+              end;
             end;
 
        -2 : begin
@@ -227,6 +246,16 @@ begin
                 PrintYap('210','Uzman Muayene Form','',Datasets,pTNone,frmUzmanMuayene);
 
             end;
+       -5 : begin
+                GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
+                GirisFormRecord.F_dosyaNO_ := _dosyaNO_;
+                GirisFormRecord.F_provizyonTarihi_ := _provizyonTarihi_;
+
+                Form := FormINIT(TagfrmSon6AylikTetkikSonuc,GirisFormRecord);
+                if Form <> nil then Form.showModal;
+              //  Son6AylikTetkikSonuc(_dosyaNO_,_provizyonTarihi_);
+
+            end;
 
     end;
 
@@ -238,87 +267,96 @@ procedure TfrmUzmanMuayene.cxKaydetClick(Sender: TObject);
 var
   sql : string;
 begin
-//  inherited;
-//
 
-  DurumGoster(True);
-  try
-     try
-      if TcxTextEdit(FindComponent('id')).Text <> ''
-      then begin
-        sql := 'update UzmanGozlem ' +
-                'set Tarih =  ' + TcxDateEditKadir(FindComponent('Tarih')).GetSQLValue +
-                ',doktor =  ' + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('doktor')).EditValue)) +
-                ',basboyun = ' + QuotedStr(varTostr(TcxMemo(FindComponent('basboyun')).EditValue)) +
-                ',akciger = ' + QuotedStr(varTostr(TcxMemo(FindComponent('akciger')).EditValue)) +
-                ',kalp = ' +  QuotedStr(varTostr(TcxMemo(FindComponent('kalp')).EditValue)) +
-                ',abdomen = ' + QuotedStr(varTostr(TcxMemo(FindComponent('abdomen')).EditValue)) +
-                ',Ekst = ' + QuotedStr(varTostr(TcxMemo(FindComponent('Ekst')).EditValue)) +
-                ',sistemSorgusu = ' + QuotedStr(gelisSikayetSecili(chkSistemSorgu)) +
-                ',psiko = ' + QuotedStr(varTostr(TcxMemo(FindComponent('psiko')).EditValue)) +
-                ',digerNot = ' + QuotedStr(varTostr(TcxMemo(FindComponent('digerNot')).EditValue)) +
-                ',kurukilo = ' + QuotedStr(TcxCurrencyEdit(FindComponent('kurukilo')).Text) +
-                ',D = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('D')).EditValue)) +
-                ',Diyalizor = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('Diyalizor')).EditValue)) +
-                ',GIRISYOLU = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('GIRISYOLU')).EditValue)) +
-                ',HEPARIN = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARIN')).Text)) +
-                ',HEPARINUYG = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARINUYG')).Text)) +
-                ',HEPARINTIP = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARINTIP')).Text)) +
-                ',YA = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('YA')).Text)) +
-                ',DiyalizorCinsi = ' +  QuotedStr(varTostr(TcxImageComboKadir(FindComponent('DiyalizorCinsi')).EditValue)) +
-                ',DiyalizorTipi = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('DiyalizorTipi')).EditValue)) +
-                ',HCOOO = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HCOOO')).Text)) +
-                ',APH = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('APH')).Text)) +
-                ',Na = ' +  QuotedStr(varTostr(TcxTextEdit(FindComponent('Na')).Text)) +
-                ',Igne = ' +  QuotedStr(varTostr(TcxTextEdit(FindComponent('Igne')).Text)) +
-                ',IgneV = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('IgneV')).Text)) +
+case TControl(sender).Tag  of
+ Kaydet : begin
+               try
+                if TcxTextEdit(FindComponent('id')).Text <> ''
+                then begin
+                  sql := 'update UzmanGozlem ' +
+                          'set Tarih =  ' + TcxDateEditKadir(FindComponent('Tarih')).GetSQLValue +
+                          ',doktor =  ' + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('doktor')).EditValue)) +
+                          ',basboyun = ' + QuotedStr(varTostr(TcxMemo(FindComponent('basboyun')).EditValue)) +
+                          ',akciger = ' + QuotedStr(varTostr(TcxMemo(FindComponent('akciger')).EditValue)) +
+                          ',kalp = ' +  QuotedStr(varTostr(TcxMemo(FindComponent('kalp')).EditValue)) +
+                          ',abdomen = ' + QuotedStr(varTostr(TcxMemo(FindComponent('abdomen')).EditValue)) +
+                          ',Ekst = ' + QuotedStr(varTostr(TcxMemo(FindComponent('Ekst')).EditValue)) +
+                          ',sistemSorgusu = ' + QuotedStr(gelisSikayetSecili(chkSistemSorgu)) +
+                          ',psiko = ' + QuotedStr(varTostr(TcxMemo(FindComponent('psiko')).EditValue)) +
+                          ',digerNot = ' + QuotedStr(varTostr(TcxMemo(FindComponent('digerNot')).EditValue)) +
+                          ',kurukilo = ' + QuotedStr(TcxCurrencyEdit(FindComponent('kurukilo')).Text) +
+                          ',D = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('D')).EditValue)) +
+                          ',Diyalizor = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('Diyalizor')).EditValue)) +
+                          ',GIRISYOLU = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('GIRISYOLU')).EditValue)) +
+                          ',HEPARIN = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARIN')).Text)) +
+                          ',HEPARINUYG = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARINUYG')).Text)) +
+                          ',HEPARINTIP = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARINTIP')).Text)) +
+                          ',YA = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('YA')).Text)) +
+                          ',DiyalizorCinsi = ' +  QuotedStr(varTostr(TcxImageComboKadir(FindComponent('DiyalizorCinsi')).EditValue)) +
+                          ',DiyalizorTipi = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('DiyalizorTipi')).EditValue)) +
+                          ',HCOOO = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HCOOO')).Text)) +
+                          ',APH = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('APH')).Text)) +
+                          ',Na = ' +  QuotedStr(varTostr(TcxTextEdit(FindComponent('Na')).Text)) +
+                          ',Igne = ' +  QuotedStr(varTostr(TcxTextEdit(FindComponent('Igne')).Text)) +
+                          ',IgneV = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('IgneV')).Text)) +
 
-                ' where id = ' + TcxTextEdit(FindComponent('id')).Text;
+                          ' where id = ' + TcxTextEdit(FindComponent('id')).Text;
 
 
-        datalar.QueryExec(sql);
-      end
-      else
-      begin
-        sql := 'insert into UzmanGozlem (dosyaNo,gelisNo,gelisSIRANO,Tarih,doktor,basboyun,sistemSorgusu,psiko,digerNot, ' +
-                 'kurukilo,D,Diyalizor,GIRISYOLU,HEPARIN,HEPARINUYG,HEPARINTIP,YA,DiyalizorCinsi,DiyalizorTipi,HCOOO,APH,Na,Igne,IgneV  ) ' +
-               'values(' + QuotedStr(_dosyaNo_) + ','
-                         + QuotedStr(_gelisNo_) + ','
-                         + QuotedStr(_gelisSiraNo_) + ','
-                         + TcxDateEditKadir(FindComponent('Tarih')).GetSQLValue + ','
-                         + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('doktor')).EditValue)) + ','
-                         + QuotedStr(varTostr(TcxMemo(FindComponent('basboyun')).EditValue)) + ','
-                         + QuotedStr(gelisSikayetSecili(chkSistemSorgu)) + ','
-                         + QuotedStr(varTostr(TcxMemo(FindComponent('psiko')).EditValue)) + ','
-                         + QuotedStr(varTostr(TcxMemo(FindComponent('digerNot')).EditValue)) + ','
-                         + QuotedStr(TcxCurrencyEdit(FindComponent('kurukilo')).Text) + ','
-                         + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('D')).EditValue)) + ','
-                         + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('Diyalizor')).EditValue)) + ','
-                         + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('GIRISYOLU')).EditValue)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARIN')).Text)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARINUYG')).Text)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARINTIP')).Text)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('YA')).Text)) + ','
-                         + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('DiyalizorCinsi')).EditValue)) + ','
-                         + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('DiyalizorTipi')).EditValue)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('HCOOO')).Text)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('APH')).Text)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('Na')).Text)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('Igne')).Text)) + ','
-                         + QuotedStr(varTostr(TcxTextEdit(FindComponent('IgneV')).Text)) +
+                  datalar.QueryExec(sql);
+                end
+                else
+                begin
+                  sql := 'insert into UzmanGozlem (dosyaNo,gelisNo,gelisSIRANO,Tarih,doktor,basboyun,sistemSorgusu,psiko,digerNot, ' +
+                           'kurukilo,D,Diyalizor,GIRISYOLU,HEPARIN,HEPARINUYG,HEPARINTIP,YA,DiyalizorCinsi,DiyalizorTipi,HCOOO,APH,Na,Igne,IgneV  ) ' +
+                         'values(' + QuotedStr(_dosyaNo_) + ','
+                                   + QuotedStr(_gelisNo_) + ','
+                                   + QuotedStr(_gelisSiraNo_) + ','
+                                   + TcxDateEditKadir(FindComponent('Tarih')).GetSQLValue + ','
+                                   + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('doktor')).EditValue)) + ','
+                                   + QuotedStr(varTostr(TcxMemo(FindComponent('basboyun')).EditValue)) + ','
+                                   + QuotedStr(gelisSikayetSecili(chkSistemSorgu)) + ','
+                                   + QuotedStr(varTostr(TcxMemo(FindComponent('psiko')).EditValue)) + ','
+                                   + QuotedStr(varTostr(TcxMemo(FindComponent('digerNot')).EditValue)) + ','
+                                   + QuotedStr(TcxCurrencyEdit(FindComponent('kurukilo')).Text) + ','
+                                   + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('D')).EditValue)) + ','
+                                   + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('Diyalizor')).EditValue)) + ','
+                                   + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('GIRISYOLU')).EditValue)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARIN')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARINUYG')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('HEPARINTIP')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('YA')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('DiyalizorCinsi')).EditValue)) + ','
+                                   + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('DiyalizorTipi')).EditValue)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('HCOOO')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('APH')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('Na')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('Igne')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('IgneV')).Text)) +
 
-                          ') select SCOPE_IDENTITY() id';
-        TcxTextEdit(FindComponent('id')).Text := datalar.QuerySelect(sql).FieldByName('id').AsString;
-      end;
-     except on e : exception do
-      begin
-          ShowMessageSkin('Kayýt Ýþleminde Hata : ' + e.Message,'','','info');
-      end;
-     end;
+                                    ') select SCOPE_IDENTITY() id';
+                  TcxTextEdit(FindComponent('id')).Text := datalar.QuerySelect(sql).FieldByName('id').AsString;
+                end;
 
-  finally
-    DurumGoster(False);
+                ShowMessageskin('Kayýt Yapýldý','','','info');
+               except on e : exception do
+                begin
+                    ShowMessageSkin('Kayýt Ýþleminde Hata : ' + e.Message,'','','info');
+                end;
+               end;
+          end;
+    Sil : begin
+            if MrYes = ShowMessageSkin('Uzman Muayene Silinecek Emin misiniz?','','','msg')
+            then
+                if TcxTextEdit(FindComponent('id')).Text <> ''
+                then begin
+                  datalar.QueryExec('delete from UzmanGozlem where id = ' + TcxTextEdit(FindComponent('id')).Text);
+                end;
+          end;
   end;
+
+  ADO_UzmanMuayene.Requery();
+
 end;
 
 function TfrmUzmanMuayene.Init(Sender : TObject) : Boolean;
@@ -355,13 +393,13 @@ begin
   _Tarih_ := TcxDateEditKadir.Create(self);
   Tarih.Name := '_Tarih_';
   setDataStringKontrol(self,_Tarih_, 'Tarih','Uzman Muayene Tarih',Kolon1,'bb',100);
-  TcxTextEdit(FindComponent('Tarih')).EditValue := date;
+ // TcxTextEdit(FindComponent('Tarih')).EditValue := date;
 
   setDataStringIC(self,'doktor','Doktor',Kolon1,'bb',120,'DoktorlarT','kod','tanimi',' sirketKod = ' + QuotedStr(datalar.AktifSirket));
   setDataString(self,'id','',Kolon1,'bb',40,False,'',True,-100);
 
   setDataStringKontrol(self,chkSistemSorgu, 'chkSistemSorgu','Sistem Sorgularý',Kolon1,'',660,250);
-  setDataStringMemo(self,'digerNot','Diðer',Kolon1,'',550,50);
+  setDataStringMemo(self,'digerNot','Uzman Not',Kolon1,'',550,50);
   setDataStringBLabel(self,'lblBostatir1',Kolon1,'',660,'Fiziki Muayene','','',True,255,taCenter);
   setDataStringMemo(self,'basboyun','Baþ Boyun',Kolon1,'',550,50);
   setDataStringMemo(self,'akciger','Akciðer',Kolon1,'',550,50);

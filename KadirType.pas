@@ -12,6 +12,7 @@ type showDialog = (OFShow,OFShowModal);
 type userGroup = (ugUser,ugGroup);
 type izinKontrol = (ikEvet,ikHayir);
 type CheckTip = (ctBol,ctint);
+type  TMethods = (mTest,mGercek);
 
 
 
@@ -65,6 +66,57 @@ type
                          var sonucMesaj : string;
                          var durum : integer;
                          uygulamaKodu : pwidechar);stdCall;
+  TReceteImzala = procedure(Id : integer;
+                      recete : PWideChar;
+                      doktorkullanici : PWideChar;
+                      doktrsifre : PWideChar;
+                      pin : PWideChar;
+                      doktorTc : PWideChar;
+                      TesisKodu : integer;
+                       var sonuc : PWideChar;
+                      url : string;
+                      cardType : PWideChar); stdcall;
+
+  TReceteGonder = procedure(Id : integer;
+                      recete : string;
+                      doktorkullanici : string;
+                      doktrsifre : string;
+                      doktorTc : string;
+                      TesisKodu : integer;
+                       var sonuc : PWideChar;
+                      url : string); stdcall;
+
+  TReceteImzalaDelete = procedure(Id : PWideChar;
+                      recete : PWideChar;
+                      doktorkullanici : PWideChar;
+                      doktrsifre : PWideChar;
+                      pin : PWideChar;
+                      doktorTc : PWideChar;
+                      TesisKodu : PWideChar;
+                       var sonuc : PWideChar;
+                       url : PWideChar;
+                       cardType : PWideChar); stdcall;
+
+  TReceteDelete = procedure(Id : PWideChar;
+                      recete : PWideChar;
+                      doktorkullanici : PWideChar;
+                      doktrsifre : PWideChar;
+                      doktorTc : PWideChar;
+                      TesisKodu : integer;
+                       var sonuc : PWideChar;
+                       url : PWideChar); stdcall;
+
+
+  TRaporImzala = procedure(Id : integer;
+                      rapor : PWideChar;
+                      doktorkullanici : PWideChar;
+                      doktrsifre : PWideChar;
+                      pin : PWideChar;
+                      doktorTc : PWideChar;
+                      TesisKodu : integer;
+                       var sonuc : PWideChar;
+                      url : string;
+                      cardType : PWideChar); stdcall;
 
   TImzaliGiris = Procedure(var sonucMesaj : PWideChar);stdCall;
 
@@ -236,6 +288,8 @@ type
     VerilecekSivi : variant;
     UF : variant;
     SeansCaption : variant;
+    doktorNot : string;
+    hemsireNot : string;
    end;
 
 type
@@ -319,6 +373,7 @@ type
       Yupass : string;
       IdealKilo : string;
       SIRANO : string;
+      sysTakipNo : string;
     end;
 
 
@@ -889,6 +944,7 @@ Const
   TagfrmTaniKarti = 330;
   TagfrmTakipKontrol = 340;
   TagfrmHastaDiyalizIzlem = 350;
+  TagfrmHastaDiyalizIzlemListesi = 351;
   TagfrmTopluGelis = 360;
   TagfrmDamarIzi = 370;
   TagfrmKurumBilgi = 380;
@@ -941,6 +997,7 @@ Const
   TagfrmSirketSozlesmeler = 810;
   TagfrmCariHareketGiris = 820;
   TagfrmCariHesapEkstre = 830;
+  TagfrmStokKart = 831;
   TagfrmRDS = 840;
   TagfrmAjandaOzet = 850;
   TagfrmSirketSahaGozetim = 860;
@@ -969,6 +1026,7 @@ Const
   TagfrmKlorOlcum = 1080;
 
 
+
   TagfrmHastaKart = 5001;
   TagfrmTopluSeans = 5003;
   TagfrmHastaListeD = 5002;
@@ -982,6 +1040,7 @@ Const
   TagfrmIlacEtkenMaddeSutKural = 5020;
   TagfrmUzmanMuayene = 5030;
   TagfrmLabEntegrasyon = 5040;
+  TagfrmHizliKayit = 5050;
 
 
 
@@ -989,6 +1048,12 @@ Const
   Sil = 1;
   Yeni = 2;
   islemYapiliyor = 'Ýþleminiz Yapýlýyor , lütfen bekleyiniz...';
+
+  ENALAB = 23;
+  BIYOTIP = 15;
+  SYNEVO = 11;
+  REFERANSLAB = 21;
+  SYNLAB = 2;
 
   ExceleGonder = 9997;
   SeansTarihiUpdate = 0;
@@ -1006,6 +1071,10 @@ Const
   ReceteMedulaKaydet = 11;
   ReceteMedulaSil = 12;
   ReceteMedulaOnay = 13;
+  RaporMedulaKaydet = 11;
+  RaporMedulaSil = 12;
+  RaporBasHekimOnay = 13;
+  RaporBasHekimOnayRed = 14;
   TeleEkgDuzenle = 14;
   ReceteSifre = 15;
   PrgSifre = 16;
@@ -1089,6 +1158,13 @@ Const
   raporAra = 84;
   LabHastaGonder = 1;
   LabSonucAl = 2;
+  DiyalizIzlemDVitamin = 1;
+  DiyalizIzlemAnemi = 3;
+  DiyalizIzlemCinacalset = 15;
+
+
+
+
 
   sp_HastaGelis = 'exec sp_HastaGelisleri ';
 

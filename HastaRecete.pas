@@ -15,7 +15,7 @@ uses
   cxGridTableView, cxGridDBTableView, cxGrid, cxTextEdit, cxMaskEdit,
   cxDropDownEdit, cxPC, cxGroupBox, cxImageComboBox,strUtils,Registry,
   cxDBLookupComboBox, cxLabel, cxMemo, cxLookupEdit, cxDBLookupEdit,
-  cxCurrencyEdit, Vcl.StdCtrls, Vcl.Buttons, cxCheckBox,
+  cxCurrencyEdit, Vcl.StdCtrls, Vcl.Buttons, cxCheckBox,jpeg,
   Vcl.ExtCtrls, sButton, sBitBtn, cxButtons, Menus, cxSplitter, cxListBox,
   cxCalendar, dxSkinBlack, dxSkinDarkRoom, dxSkinDarkSide, dxSkinFoggy,
   dxSkinGlassOceans, dxSkinOffice2007Black, dxSkinOffice2007Blue,
@@ -182,45 +182,6 @@ type
 
 
 
-  TReceteImzala = procedure(Id : integer;
-                      recete : PWideChar;
-                      doktorkullanici : PWideChar;
-                      doktrsifre : PWideChar;
-                      pin : PWideChar;
-                      doktorTc : PWideChar;
-                      TesisKodu : integer;
-                       var sonuc : PWideChar;
-                      url : string;
-                      cardType : PWideChar); stdcall;
-
-  TReceteGonder = procedure(Id : integer;
-                      recete : string;
-                      doktorkullanici : string;
-                      doktrsifre : string;
-                      doktorTc : string;
-                      TesisKodu : integer;
-                       var sonuc : PWideChar;
-                      url : string); stdcall;
-
-  TReceteImzalaDelete = procedure(Id : PWideChar;
-                      recete : PWideChar;
-                      doktorkullanici : PWideChar;
-                      doktrsifre : PWideChar;
-                      pin : PWideChar;
-                      doktorTc : PWideChar;
-                      TesisKodu : PWideChar;
-                       var sonuc : PWideChar;
-                       url : PWideChar;
-                       cardType : PWideChar); stdcall;
-
-  TReceteDelete = procedure(Id : PWideChar;
-                      recete : PWideChar;
-                      doktorkullanici : PWideChar;
-                      doktrsifre : PWideChar;
-                      doktorTc : PWideChar;
-                      TesisKodu : integer;
-                       var sonuc : PWideChar;
-                       url : PWideChar); stdcall;
 
 const
       formGenislik = 1100;
@@ -255,7 +216,7 @@ var
   imzala : TReceteImzala;
   dllHandle: Cardinal;
   receteId,TesisKodu: integer;
-  recete,doktorKullanici,doktorsifre,pin,url,cardType: string;
+  recete,doktorKullanici,doktorsifre,pin,url,cardType : string;
   doktorTc : string;
   ss : PWideChar;
   sql : string;
@@ -609,7 +570,7 @@ procedure TfrmHastaRecete.EreceteNoSmsSend;
 var
  tel,msj : string;
 begin
-  if not CheckReceteStatus (True, True, False, False, False) then Exit;
+  if not CheckReceteStatus (True, False, False, False, False) then Exit;
 
   if mrYes = ShowMessageSkin('E-Reçete Numaranýz SMS ile Bildirilecek','','','msg')
   then begin
@@ -1237,14 +1198,17 @@ begin
    Then
      if MrYes = ShowMessageSkin('Ýlaç Reçeteden Çýkartýlýyor Emin misiniz ?','','','msg')
      Then Begin
-        ado := TADOQuery.Create(nil);
         try
-          sql := 'delete from ReceteDetay where id = ' + ADO_RECETE_DETAY.fieldbyname('id').AsString;
-          datalar.QueryExec(ado,sql);
-          ADO_RECETE_DETAY.Active := false;
-          ADO_RECETE_DETAY.Active := True;
+          try
+            sql := 'delete from ReceteDetay where id = ' + ADO_RECETE_DETAY.fieldbyname('id').AsString;
+            datalar.QueryExec(sql);
+            ADO_RECETE_DETAY.Requery();
+          except on e : exception do
+            begin
+              ShowMessageSkin('Ýlaç Açýklamasý Silinmeden Ýlaç Silinmez','','','info');
+            end;
+          end;
         finally
-          ado.Free;
         end;
      End Else Begin end
    Else ShowMessageSkin('E-ReçeteNo su olan Reçeteden Ýlaç Çýkartýlamaz','','','info');
@@ -1308,6 +1272,9 @@ begin
   inherited;
   if datalar.KontrolUserSet = True then exit;
 
+  GirisFormRecord.F_dosyaNO_ := _dosyaNO_;
+
+
   case Tcontrol(sender).Tag of
   -4 : begin
          Yazdir;
@@ -1347,7 +1314,8 @@ begin
          SifreDegistir('',ReceteSifre);
        end;
  -16 : begin
-         HastaRapor(_dosyaNo_,_gelisNO_);
+            Form := FormINIT(TagfrmRaporDetay,GirisFormRecord,ikHayir,'');
+            if Form <> nil then Form.ShowModal;
        end;
  -30 : begin
           Form := FormINIT(TagfrmReceteSablon,GirisFormRecord);
@@ -1408,13 +1376,13 @@ end;
 
 procedure TfrmHastaRecete.cxButtonKadirAckSilClick(Sender: TObject);
 begin
-  if MrYes = ShowMessageSkin('Açýklama Reçeteden Çýkartýlýyor Emin misiniz ?','','','msg')
+     if MrYes = ShowMessageSkin('Açýklama Reçeteden Çýkartýlýyor Emin misiniz ?','','','msg')
      Then Begin
-  inherited;
-  if not CheckReceteStatus (True, False, True, True, True) then Exit;
-  ADO_receteAcikla.Delete;
-  ADO_receteAcikla.Close;
-  ADO_receteAcikla.Open;
+          inherited;
+          if not CheckReceteStatus (True, False, True, True, True) then Exit;
+          ADO_receteAcikla.Delete;
+          ADO_receteAcikla.Close;
+          ADO_receteAcikla.Open;
      End;
 end;
 
@@ -1559,10 +1527,11 @@ var
 begin
   Result := False;
   if not inherited Init(Sender) then exit;
-  db := Decode64(RegOku('OSGB_db_name'));
-  _TableName_ := ifThen(TfrmHastaRecete(self).Tag = TagfrmPersonelRecete,'Recete_Personel','Recete');
-   TableName := _TableName_;
-   _p_ := ifThen(pos('Personel',_TableName_)>0,'_Personel','');
+
+    db := Decode64(RegOku('OSGB_db_name'));
+    _TableName_ := ifThen(TfrmHastaRecete(self).Tag = TagfrmPersonelRecete,'Recete_Personel','Recete');
+    TableName := _TableName_;
+    _p_ := ifThen(pos('Personel',_TableName_)>0,'_Personel','');
 
     ADO_RECETE_DETAY.TableName := 'ReceteDetay' + _p_;
     ADO_RECETE_DETAY.Open;
@@ -1572,8 +1541,11 @@ begin
     ADO_receteAcikla.Open;
     ADO_ReceteIlacAciklama.TableName := 'ReceteIlacAciklama' + _p_;
     ADO_ReceteIlacAciklama.Open;
-  ReceteGetir(_dosyaNO_,_gelisNO_);
-  Result := True;
+    ReceteGetir(_dosyaNO_,_gelisNO_);
+
+
+
+    Result := True;
 end;
 
 
@@ -1591,6 +1563,7 @@ begin
   SayfaCaption('Reçete','','','','');
   Olustur(self,_TableName_,'Reçete',23);
   Menu := PopupMenu1;
+
 
   _HastaBilgileriniCaptionGoster_ := True;
  // cxGridReceteTani.PopupMenu := PopupMenuEkleSil;

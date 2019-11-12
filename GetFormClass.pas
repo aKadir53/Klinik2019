@@ -57,7 +57,6 @@ uses
     CariHesapExtresi,
     PersonelKart,
     FirmaKart,
-    hizliKayit,
     receteSablonlari,
     RDS,
     KKD,
@@ -133,7 +132,14 @@ uses
     UzmanMuayene,
     OlayBildirim,
     klorOlcum,
-    LabEntegrasyon;
+    LabEntegrasyon,
+    SeansDetayKarti,
+    KanTetkikleriDegerlendir,
+    KiloOrder,
+    StokKarti,
+    HizliKayit,
+    HastaIzlemListesi,
+    TakipKontrol;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -367,7 +373,13 @@ begin
    TagfrmOlayBildirim : Result := TfrmOlayBildirim;
    TagfrmKlorOlcum : Result := TfrmKlorOlcum;
    TagfrmLabEntegrasyon : Result := TfrmLabEntegrasyon;
-
+   TagfrmSeansDetayKart : Result := TfrmSeansDetayKart;
+   TagfrmKanTetkikTakipDegerlendir : Result := TfrmKanTetkikTakipDegerlendir;
+   TagfrmKiloOrder : Result := TfrmKiloOrder;
+   TagfrmStokKart : Result := TfrmStokKarti;
+   TagfrmHizliKayit : Result := TfrmHizliKayit;
+   TagfrmHastaDiyalizIzlemListesi : Result := TfrmIzlem;
+   TagfrmTakipKontrol : Result := TfrmTakipKontrol;
 
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
@@ -472,6 +484,14 @@ begin
    TagfrmOlayBildirim : Result := frmOlayBildirim;
    TagfrmLabEntegrasyon : Result := frmLabEntegrasyon;
    TagfrmKlorOlcum : Result := frmKlorOlcum;
+   TagfrmSeansDetayKart : Result := frmSeansDetayKart;
+   TagfrmKanTetkikTakipDegerlendir : Result := frmKanTetkikTakipDegerlendir;
+   TagfrmKiloOrder : Result := frmKiloOrder;
+   TagfrmStokKart : Result := frmStokKarti;
+   TagfrmHizliKayit : Result := frmHizliKayit;
+   TagfrmHastaDiyalizIzlemListesi : Result := frmIzlem;
+   TagfrmTakipKontrol : Result := frmTakipKontrol;
+
 
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
 
@@ -576,7 +596,10 @@ begin
      TagfrmOlayBildirim   : frmOlayBildirim := TfrmOlayBildirim .Create(Tab);
      TagfrmLabEntegrasyon  : frmLabEntegrasyon := TfrmLabEntegrasyon.Create(Tab);
      TagfrmKlorOlcum   : frmKlorOlcum := TfrmKlorOlcum .Create(Tab);
-
+     TagfrmKiloOrder   : frmKiloOrder := TfrmKiloOrder .Create(Tab);
+     TagfrmStokKart   : frmStokKarti := TfrmStokKarti.Create(Tab);
+     TagfrmHastaDiyalizIzlemListesi : frmIzlem := TfrmIzlem.Create(Tab);
+     TagfrmTakipKontrol : frmTakipKontrol := TfrmTakipKontrol.Create(Tab);
 
   end;
   try
@@ -749,7 +772,10 @@ begin
      TagfrmOlayBildirim   : frmOlayBildirim := TfrmOlayBildirim .Create(Tab);
      TagfrmLabEntegrasyon  : frmLabEntegrasyon := TfrmLabEntegrasyon.Create(Tab);
      TagfrmKlorOlcum   : frmKlorOlcum := TfrmKlorOlcum .Create(Tab);
-
+     TagfrmKiloOrder   : frmKiloOrder := TfrmKiloOrder .Create(Tab);
+     TagfrmStokKart   : frmStokKarti := TfrmStokKarti.Create(Tab);
+     TagfrmHastaDiyalizIzlemListesi : frmIzlem := TfrmIzlem.Create(Tab);
+     TagfrmTakipKontrol : frmTakipKontrol := TfrmTakipKontrol.Create(Tab);
 
   end;
   try
@@ -896,7 +922,11 @@ begin
     TagfrmOlayBildirim  : Application.CreateForm(TfrmOlayBildirim,frmOlayBildirim);
     TagfrmLabEntegrasyon : Application.CreateForm(TfrmLabEntegrasyon,frmLabEntegrasyon);
     TagfrmKlorOlcum  : Application.CreateForm(TfrmKlorOlcum,frmKlorOlcum);
-
+    TagfrmSeansDetayKart : Application.CreateForm(TfrmSeansDetayKart,frmSeansDetayKart);
+    TagfrmKanTetkikTakipDegerlendir : Application.CreateForm(TfrmKanTetkikTakipDegerlendir,frmKanTetkikTakipDegerlendir);
+    TagfrmKiloOrder : Application.CreateForm(TfrmKiloOrder,frmKiloOrder);
+    TagfrmHizliKayit : Application.CreateForm(TfrmHizliKayit,frmHizliKayit);
+    TagfrmHastaDiyalizIzlemListesi : Application.CreateForm(TfrmIzlem,frmIzlem);
 
   end;
   try
@@ -910,7 +940,7 @@ begin
       Result := Form;
       Exit;
     end;
-
+  try
     TGirisForm(Form)._dosyaNO_ := Value.F_dosyaNO_;//datalar.Bilgi.dosyaNo;
     TGirisForm(Form)._gelisNO_ := Value.F_gelisNO_;//datalar.Bilgi.gelisNo;
     TGirisForm(Form)._gelisSiraNO_ := Value.F_GelisSIRANO;
@@ -942,7 +972,8 @@ begin
     TGirisForm(Form)._TedaviTuru_ := Value.F_TedaviTuru_;
     TGirisForm(Form)._SeansBilgi := Value.F_SeansBilgi;
     TGirisForm(Form)._sysTakipNo_ := Value.F_sysTakipNo;
-
+  except
+  end;
 
     TgirisForm(Form).Caption := sFormCaption + ' - ' + sFormAltCaption;
     if ik = ikEvet

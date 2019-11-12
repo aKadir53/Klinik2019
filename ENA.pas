@@ -5,13 +5,13 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,kadir,kadirType,
   adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,AdvGrid,DateUtils,cxProgressBar,
-  Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,sGauge,TenayENA,cxGridDBTableView, cxMemo,
+  Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,TenayENA,cxGridDBTableView, cxMemo,
   data_modul,SQLMemMain;
 
-
+ (*
   procedure TenaySonucAlENA(_dosyaNo,_gelisNo,_RefId : string ;
                             gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
-
+   *)
   procedure TenaySonucAlTCdenENA(_dosyaNo,_gelisNo,Trh1,Trh2 : string ;
                             gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar ; Ref : boolean);
 
@@ -70,16 +70,16 @@ begin
                                   Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('dosyaNo').Index);
       gelisNo := Liste.DataController.GetValue(
                                   Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('gelisNo').Index);
-      ornekNo := Liste.DataController.GetValue(
-                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('ornekNo').Index);
-      CikisornekNo := Liste.DataController.GetValue(
-                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('CikisornekNo').Index);
-      OrnekNo_Plazma := Liste.DataController.GetValue(
-                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_Plazma').Index);
-      OrnekNo_Serum := Liste.DataController.GetValue(
-                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_Serum').Index);
-      OrnekNo_TamKan := Liste.DataController.GetValue(
-                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_TamKan').Index);
+      ornekNo := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('ornekNo').Index));
+      CikisornekNo := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('CikisornekNo').Index));
+      OrnekNo_Plazma := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_Plazma').Index));
+      OrnekNo_Serum := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_Serum').Index));
+      OrnekNo_TamKan := varToStr(Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('OrnekNo_TamKan').Index));
       Hasta := Liste.DataController.GetValue(
                                   Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('ADSOYAD').Index);
       id := Liste.DataController.GetValue(
@@ -289,8 +289,9 @@ Begin
 
 End;
 
+(*
 procedure TenaySonucAlENA(_dosyaNo,_gelisNo,_RefId : string ;
-                            gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
+                            gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TcxProgressBar ; Ref : boolean);
 var
  // Service : TenayENA.TenayWebServiceSoapMNT;
   HTSO : TenayENA.OrderQuery;
@@ -468,7 +469,7 @@ begin
 
 end;
 
-
+*)
 
 function ReferansKontrolToField(Referans : String; gridAktif : TAdvStringGrid ; Row : integer) : String;
 begin
@@ -541,7 +542,7 @@ begin
            gelisNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
            id := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('GELISID').Index);
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
 
            _Tc_ := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('TCKIMLIKNO').Index));
@@ -647,7 +648,7 @@ begin
                          else
                          begin
                             try
-                             sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + sonucA + ')' +
+                             sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _tetkikSonuc_.Sonuc + ')' +
                                       ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
                                       ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
 
@@ -711,50 +712,59 @@ begin
       HastaTenay.BabaAdi := ado.fieldbyname('BABAADI').AsString;
       HastaTenay.AnneAdi := ado.fieldbyname('ANAADI').AsString;
 
+
       if (ado.fieldbyname('CINSIYETI').AsString = '0')
       Then HastaTenay.Cinsiyeti := TenayENA.Cinsiyet.Erkek
       else HastaTenay.Cinsiyeti := TenayENA.Cinsiyet.Kadin;
 
       DTarih := TXSDateTime.Create;
+     // DateToXsdate(DTarih,ado.fieldbyname('DOGUMTARIHI').Value);
       Dtarih.Year := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,1,4));
       Dtarih.Month := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,5,2));
       Dtarih.Day := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,7,2));
       HastaTenay.DogumTarihi := DTarih;
 
 
-      sql := 'select BHDAT,ornekNo,KanAlimZamani from gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
+      sql := 'select BHDAT,ornekNo,SIRANO ,' +
+             ' (select Tarih from hareketlerSeans ' +
+                ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis + ' and KanAlindimi = 1) KanAlimZamani ' +
+             ' from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
       datalar.QuerySelect(ado,sql);
 
       KanAlimZamani := ado.fieldbyname('KanAlimZamani').AsDateTime;
 
       HastaTenay.OrnekNo := 0;
 
-      if ado.FieldByName(Field).AsString <> ''
+      if 1 = 1
       then  begin
           GelisMNT := TenayENA.Gelis.Create;
-          GelisMNT.ReferansNo := ado.fieldbyname('ornekNo').AsString;
+          GelisMNT.ReferansNo := ado.fieldbyname('SIRANO').AsString;
           GelisMNT.OrnekNo := 0;
 
 
-
           TTarih := TXSDateTime.Create;
-          TTarih.Year := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,1,4));
-          TTarih.Month := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,5,2));
-          TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
+          DateToXsdate(TTarih,KanAlimZamani);
+         // TTarih.Year := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,1,4));
+         // TTarih.Month := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,5,2));
+         // TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
 
           GelisMNT.Tarih := TTarih;
-
-
-
 
 
           if Field = '' then Field := 'OrnekNo';
 
 
-          sql := 'select h.name1,h.TarIh,l.islemKodu from hareketler h ' +
-                 ' join labtestler l on l.butKodu = h.code ' +
+          sql := 'select h.name1,h.Tarih,l.islemKodu from hareketlerLab h ' +
+                 ' join labtestler_Firma l on l.butKodu = h.code and h.tip1 = uygulamaAdet and l.LabID = ' + QuotedStr(datalar._labID) +
                  ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis +
-                 ' and l.tip = 2 and onay = 1 and charindex(''.'',h.code) = 0' +
+                 ' and l.tip = 2 and charindex(''.'',h.code) = 0';
+
+                (*
+                 ' union all ' +
+                 'select l.tanimi,'''',l.islemKodu from labtestler l ' +
+                 ' where isnull(l.islemKodu,'''') <> '''' and l.grupKodu = 5';
+
+                (*
                  ' union all ' +
                  'select h.name1,h.TarIh,l.islemKoduC from hareketler h ' +
                  ' join labtestler l on l.butKodu = h.code ' +
@@ -763,7 +773,7 @@ begin
                  ' union all ' +
                  'select l.tanimi,'''',l.islemKodu from labtestler l ' +
                  ' where isnull(l.islemKodu,'''') <> '''' and  l.tip is NULL and l.grupKodu = 5';
-
+                  *)
 
           datalar.QuerySelect(ado,sql);
           j := ado.RecordCount;
@@ -779,7 +789,7 @@ begin
           //  istek.OrnekTurId := ifThen(TurId = '','0',TurId);
             ATarih := TXSDateTime.Create;
 
-            DecodeDateTime(KanAlimZamani, yil, ay, gun, saat, dakika, saniye, salise);
+            DecodeDateTime(ado.fieldbyname('Tarih').AsDateTime, yil, ay, gun, saat, dakika, saniye, salise);
 
 
             ATarih.Year := yil;
@@ -794,24 +804,6 @@ begin
             istekler[i] := istek;
             i := i + 1;
 
-
-
-            (*
-            if ckod <> ''
-            Then begin
-              j := j +1;
-              SetLength(istekler,j);
-              istek := TenayENA.Tetkik.Create;
-             // istek.LogId := ado.fieldbyname('SIRANO').AsInteger+1000;
-              istek.Kodu := ckod;
-              istek.Adi := ado.fieldbyname('NAME1').AsString;
-              istek.KapId := 0;
-            //  istek.OrnekTurId := '147';
-              istek.AlindigiTarih := ATarih;
-              istekler[i] := istek;
-              i := i + 1;
-            end;
-            *)
             ado.Next;
           end;
 

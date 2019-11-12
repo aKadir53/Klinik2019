@@ -63,11 +63,13 @@ object frmDamarIzi: TfrmDamarIzi
       LookAndFeel.NativeStyle = False
       ExcelFileName = 'DamarIziDogrulananHastaList'
       ExceleGonder = True
+      PopupForm = False
       ExplicitLeft = 2
       ExplicitTop = 26
       ExplicitWidth = 908
       ExplicitHeight = 461
       object gridHastalar: TcxGridDBTableView
+        PopupMenu = PopupMenu1
         Navigator.Buttons.First.Visible = True
         Navigator.Buttons.PriorPage.Visible = True
         Navigator.Buttons.Prior.Visible = True
@@ -393,6 +395,12 @@ object frmDamarIzi: TfrmDamarIzi
       Tag = -4
       Caption = 'Hastalar'#305'n Seanslar'#305'n'#305' Onayla ve Medulaya G'#246'nder'
       ImageIndex = 76
+      OnClick = cxButtonCClick
+    end
+    object E1: TMenuItem
+      Tag = 9997
+      Caption = 'Excel G'#246'nder'
+      ImageIndex = 75
       OnClick = cxButtonCClick
     end
   end

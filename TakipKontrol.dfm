@@ -14,411 +14,36 @@ object frmTakipKontrol: TfrmTakipKontrol
   Position = poMainFormCenter
   WindowState = wsMaximized
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Progres: TsGauge
-    Left = 0
-    Top = 629
-    Width = 1292
-    Height = 14
-    Align = alBottom
-    Visible = False
-    SkinData.SkinSection = 'GAUGE'
-    ForeColor = clBlack
-    Progress = 10
-    Suffix = '%'
-    ExplicitTop = 591
-    ExplicitWidth = 1154
-  end
-  object pnlToolBar: TPanel
+  object Panel3: TPanel
     Left = 0
     Top = 0
     Width = 1292
-    Height = 32
-    Align = alTop
-    Color = clBackground
-    Font.Charset = TURKISH_CHARSET
-    Font.Color = clBlue
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 0
-    Visible = False
-    object txtTarih: TcxDateEdit
-      Left = 41
-      Top = 4
-      ParentFont = False
-      Properties.DateOnError = deToday
-      Style.BorderStyle = ebsFlat
-      Style.Font.Charset = TURKISH_CHARSET
-      Style.Font.Color = clBlue
-      Style.Font.Height = -13
-      Style.Font.Name = 'Tahoma'
-      Style.Font.Style = [fsBold]
-      Style.LookAndFeel.NativeStyle = False
-      Style.IsFontAssigned = True
-      StyleDisabled.LookAndFeel.NativeStyle = False
-      StyleFocused.LookAndFeel.NativeStyle = False
-      StyleHot.LookAndFeel.NativeStyle = False
-      TabOrder = 0
-      Width = 121
-    end
-    object txttarih1: TcxDateEdit
-      Left = 164
-      Top = 4
-      ParentFont = False
-      Properties.DateOnError = deToday
-      Style.BorderStyle = ebsFlat
-      Style.Font.Charset = TURKISH_CHARSET
-      Style.Font.Color = clBlue
-      Style.Font.Height = -13
-      Style.Font.Name = 'Tahoma'
-      Style.Font.Style = [fsBold]
-      Style.LookAndFeel.NativeStyle = False
-      Style.IsFontAssigned = True
-      StyleDisabled.LookAndFeel.NativeStyle = False
-      StyleFocused.LookAndFeel.NativeStyle = False
-      StyleHot.LookAndFeel.NativeStyle = False
-      TabOrder = 1
-      Width = 121
-    end
-    object hastaTip: TcxRadioGroup
-      Left = 289
-      Top = 4
-      Alignment = alCenterCenter
-      Properties.Columns = 2
-      Properties.Items = <
-        item
-          Caption = 'Hemodiyaliz'
-          Value = '0'
-        end
-        item
-          Caption = 'Periton'
-          Value = '1'
-        end>
-      ItemIndex = 0
-      Style.LookAndFeel.NativeStyle = False
-      Style.TextColor = clBlack
-      StyleDisabled.LookAndFeel.NativeStyle = False
-      StyleFocused.LookAndFeel.NativeStyle = False
-      StyleHot.LookAndFeel.NativeStyle = False
-      TabOrder = 2
-      Height = 24
-      Width = 206
-    end
-    object chkTakip: TCheckBox
-      Left = 625
-      Top = 9
-      Width = 190
-      Height = 17
-      Caption = 'Takibi Olmayanlar'#305' G'#246'sterme'
-      Color = clBtnFace
-      Ctl3D = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentCtl3D = False
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = False
-      TabOrder = 3
-    end
-    object ktip: TcxComboBox
-      Left = 499
-      Top = 4
-      ParentFont = False
-      Properties.DropDownListStyle = lsFixedList
-      Properties.DropDownRows = 12
-      Properties.Items.Strings = (
-        '1 - SGK'
-        '99 - Yurt D'#305#351#305' Sigortal'#305'lar'
-        '8 - '#220'cretli'
-        '98 - '#214'zel Kurum - Sigorta'
-        'T'#252'm'#252)
-      Style.Font.Charset = TURKISH_CHARSET
-      Style.Font.Color = clWhite
-      Style.Font.Height = -12
-      Style.Font.Name = 'Tahoma'
-      Style.Font.Style = [fsBold]
-      Style.LookAndFeel.NativeStyle = False
-      Style.TextColor = clBlack
-      Style.IsFontAssigned = True
-      StyleDisabled.LookAndFeel.NativeStyle = False
-      StyleFocused.LookAndFeel.NativeStyle = False
-      StyleHot.LookAndFeel.NativeStyle = False
-      TabOrder = 4
-      Text = '1 - SGK'
-      Width = 120
-    end
-    object btnList: TcxButton
-      Left = 2
-      Top = 3
-      Width = 37
-      Height = 25
-      Glyph.Data = {
-        36090000424D3609000000000000360000002800000018000000180000000100
-        2000000000000009000000000000000000000000000000000000FFFFFF000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        000000000000000000060000001E000000020000000000000000FFFFFF000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        0000000000000C0B0D722D1B23E0020304730000000200000000FFFFFF000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        000005080A6E785361FDA5465CFF612F3EFF0507096E00000010FFFFFF000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        0000000000000000000000000000000000000000000000000000000000000408
-        086A774F5DFCA4465BFF983B4FFFA34055FF412734B404080A2EFFFFFF000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        000000000000000000000000000000000000000000000000000003070767744E
-        5CFBA4465BFF973A4EFF9C3C50FF8F3F53FF24212B5B00050704FFFFFF000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        00000000000000000000000000000000000000000000070A0C78734F5DFCA446
-        5BFF973A4EFF9C3C50FF913E52FF2C27336D0000000000000000FFFFFF000000
-        0000000000000000000000000000000000000000000000000000000000000000
-        000000000000000000000000000000000000070A0C757D5160FFA4465BFF973A
-        4EFF9B3C50FF933E52FF3328357B000101000000000000000000FFFFFF000000
-        0000000000000000000000000000000000000000000000000011000000330000
-        003C000000310000000E000000000306072E7B5261F9A34459FF973A4EFF9B3C
-        50FF923E52FF312A377A00010100000000000000000000000000FFFFFF000000
-        000000000000000000000A0B0B0E2025244B14090B98330809D9632929F76D32
-        32FB602627F62D0607D40000007B2D353571A96778FF973449FF9B3C50FF953E
-        53FF3429367D0001000000000000000000000000000000000000FFFFFF000000
-        000000000000060707063B3B3B81795558F3C8918FFFF9D0C0FFFFEAD4FFFFEC
-        D5FFFFE8D2FFF5C9B8FFB26C66FF68383AF5AA9CA2FF9C475BFF953A4FFF3B2B
-        388C000102000000000000000000000000000000000000000000FFFFFF000000
-        00000000000022222256A37A7CFBFFEAE4FFFFFDEEFFFFE8CEFFFCDDBFFFFCDB
-        BDFFFCDDBEFFFFE4C8FFFFF5DBFFF0C1B1FFA76A6BFF747274CA695F666C0509
-        0A02000000000000000000000000000000000000000000000000FFFFFF000000
-        0000000000096E484BCAFFEDEBFFFFFFFDFFFEECDBFFFBD8B8FFFAD4B3FFFAD6
-        B6FFFAD6B5FFFBD7B7FFFCDDC1FFFFF3DBFFECBAADFF3004059F000807000202
-        0200000000000000000000000000000000000000000000000000FFFFFF000000
-        00000B000144D1A09FFFFFFFFFFFFFFBF7FFFDE5CFFFFCDBBEFFFDE2C8FFFDE4
-        CDFFFDE2CAFFFDE0C6FFFCE2C8FFFDE6D1FFFFFBE6FFB06B66FB010000440102
-        0200000000000000000000000000000000000000000000000000FFFFFF000000
-        000D3D121685FEE1D7FFFFFAF3FFFEEFE1FFFDE4CDFFFDEAD6FFFDF2E6FFFEF4
-        EBFFFEF3E9FFFEEFE2FFFDECDBFFFDECDAFFFFF2E0FFF3C9BDFF59282D9D282E
-        2D07000000000000000000000000000000000000000000000000FFFFFF000100
-        001F682C2EA8FFF3E4FFFEE9D4FFFCDFC5FFFDE6D0FFFEF3E8FFFFFAF6FFFFFC
-        FAFFFFFBF8FFFEF7EFFFFEF4E9FFFEF2E6FFFEF2E5FFFFF1E4FF996568C96267
-        661F060606000000000000000000000000000000000000000000FFFFFF000400
-        0021703333ACFFF0DBFFFBD6B7FFFAD4B2FFFDE9D5FFFEF7EFFFFFFDFBFFFFFF
-        FFFFFFFDFBFFFEFAF5FFFEF9F3FFFEF9F3FFFEF8F1FFFFF9F0FFAE8283D27C80
-        80270B0B0B000000000000000000000000000000000000000000FFFFFF000200
-        001267272996FFEAD2FFFAD4B1FFFAD6B6FFFEECDBFFFEF7F0FFFFFBF8FFFFFC
-        FAFFFFFCF9FFFFFBF8FFFFFCFAFFFFFDFCFFFFFDFAFFFFF7F1FFB08789C59093
-        931B242424001C1C1C001D1D1D001D1D1D001D1D1D001D1D1D00FFFFFF000000
-        00003C050957FAD0BEFFFEE2C5FFFCE0C6FFFEEEDEFFFEF5EBFFFEF7F0FFFEF9
-        F3FFFFFBF6FFFFFDFBFFFFFFFEFFFFFFFFFFFFFFFFFFF7E1DEFFA98B8E9E8B8F
-        8E076B6B6B006E6E6E006E6E6E006E6E6E006E6E6E006E6E6E00FFFFFF000000
-        00000700000DC57B75E5FFF8E0FFFDE7D2FFFDEDDCFFFEF1E3FFFEF2E7FFFEF5
-        EBFFFFFAF5FFFFFDFCFFFFFFFFFFFFFFFFFFFFFFFFFFDEBDBEF5A8A3A45D2020
-        2000000000000000000000000000000000000000000000000000FFFFFF000000
-        0000000000004F0B0D66F7CBBDFFFFF7E2FFFDEBD8FFFDEDDCFFFDEEDEFFFDF1
-        E4FFFEF8F0FFFFFDFAFFFFFEFDFFFFFFFFFFF7E4E3FFC0ACAEACA4A6A6222020
-        20001A1A1A001B1B1B001B1B1B001B1B1B001B1B1B001B1B1B00FFFFFF000000
-        000000000000000000007E212592F0C4B6FFFFFAE5FFFFF1DDFFFEECDAFFFEEF
-        DEFFFFF6EAFFFFFEF8FFFFFFFCFFF4DDDBFFCBAEB0C2C4C6C73AE2E2E203E2E2
-        E200E1E1E100E1E1E100E1E1E100E1E1E100E1E1E100E1E1E100FFFFFF000000
-        000000000000020000001F00010080071059C86D6BDDEDC9B9FFFBE8D5FFFAE5
-        D4FFF9E1D4FFEBC8C1FFD8A8A7E6D1B3B68AE0E2E227F6F7F703FFFFFF00FFFF
-        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF000000
-        000000000000020000001E01040078010C009600070797051048A3202780C072
-        748CC0878A84CFAAAD54E2DBDC1AFAFEFD00FFFFFF00FFFFFF00FFFFFF00FFFF
-        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
-      TabOrder = 5
-    end
-  end
-  object Panel3: TPanel
-    Left = 0
-    Top = 32
-    Width = 1292
-    Height = 597
+    Height = 643
     Align = alClient
-    TabOrder = 1
+    TabOrder = 0
     object cxPageControl2: TcxPageControl
       Left = 1
       Top = 1
-      Width = 689
-      Height = 595
+      Width = 667
+      Height = 641
       Align = alLeft
       TabOrder = 0
       Properties.ActivePage = cxTabSheetTakipler
-      ClientRectBottom = 588
+      ClientRectBottom = 634
       ClientRectLeft = 3
-      ClientRectRight = 682
+      ClientRectRight = 660
       ClientRectTop = 26
       object cxTabSheetTakipler: TcxTabSheet
         Caption = 'Takipler'
         ImageIndex = 0
-        object Panel1: TPanel
-          Left = 0
-          Top = 540
-          Width = 679
-          Height = 22
-          Align = alBottom
-          TabOrder = 0
-          object cxLabel14: TcxLabel
-            Left = 1
-            Top = 1
-            Align = alLeft
-            Caption = 'D'#246'nem S.  (704230)'
-            ParentFont = False
-            Style.Font.Charset = DEFAULT_CHARSET
-            Style.Font.Color = clWindowText
-            Style.Font.Height = -11
-            Style.Font.Name = 'MS Sans Serif'
-            Style.Font.Style = [fsBold]
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
-            Style.IsFontAssigned = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
-            Properties.Alignment.Vert = taVCenter
-            Transparent = True
-            AnchorY = 11
-          end
-          object cxLabel15: TcxLabel
-            Left = 162
-            Top = 1
-            Align = alLeft
-            Caption = 'Donem S. (704234)'
-            ParentFont = False
-            Style.Font.Charset = DEFAULT_CHARSET
-            Style.Font.Color = clWindowText
-            Style.Font.Height = -11
-            Style.Font.Name = 'MS Sans Serif'
-            Style.Font.Style = [fsBold]
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
-            Style.IsFontAssigned = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
-            Properties.Alignment.Vert = taVCenter
-            Transparent = True
-            AnchorY = 11
-          end
-          object cxLabel16: TcxLabel
-            Left = 319
-            Top = 1
-            Align = alLeft
-            Caption = 'Donem S. (704233)'
-            ParentFont = False
-            Style.Font.Charset = DEFAULT_CHARSET
-            Style.Font.Color = clWindowText
-            Style.Font.Height = -11
-            Style.Font.Name = 'MS Sans Serif'
-            Style.Font.Style = [fsBold]
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
-            Style.IsFontAssigned = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
-            Properties.Alignment.Vert = taVCenter
-            Transparent = True
-            AnchorY = 11
-          end
-          object txt230Donem: TcxTextEdit
-            Left = 119
-            Top = 1
-            Align = alLeft
-            ParentFont = False
-            Properties.Alignment.Horz = taCenter
-            Properties.ReadOnly = True
-            Style.Font.Charset = DEFAULT_CHARSET
-            Style.Font.Color = clWindowText
-            Style.Font.Height = -11
-            Style.Font.Name = 'MS Sans Serif'
-            Style.Font.Style = [fsBold]
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
-            Style.IsFontAssigned = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 3
-            Text = '0'
-            Width = 43
-          end
-          object txt233Donem: TcxTextEdit
-            Left = 433
-            Top = 1
-            Align = alLeft
-            ParentFont = False
-            Properties.Alignment.Horz = taCenter
-            Properties.ReadOnly = True
-            Style.Font.Charset = DEFAULT_CHARSET
-            Style.Font.Color = clWindowText
-            Style.Font.Height = -11
-            Style.Font.Name = 'MS Sans Serif'
-            Style.Font.Style = [fsBold]
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
-            Style.IsFontAssigned = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 4
-            Text = '0'
-            Width = 43
-          end
-          object txt234Donem: TcxTextEdit
-            Left = 276
-            Top = 1
-            Align = alLeft
-            ParentFont = False
-            Properties.Alignment.Horz = taCenter
-            Properties.ReadOnly = True
-            Style.Font.Charset = DEFAULT_CHARSET
-            Style.Font.Color = clWindowText
-            Style.Font.Height = -11
-            Style.Font.Name = 'MS Sans Serif'
-            Style.Font.Style = [fsBold]
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
-            Style.IsFontAssigned = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 5
-            Text = '0'
-            Width = 43
-          end
-        end
         object cxGrid4: TcxGrid
           Left = 0
           Top = 0
-          Width = 679
-          Height = 540
+          Width = 657
+          Height = 608
           Align = alClient
           Font.Charset = TURKISH_CHARSET
           Font.Color = clWindowText
@@ -427,7 +52,7 @@ object frmTakipKontrol: TfrmTakipKontrol
           Font.Style = []
           Images = DATALAR.imag24png
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 0
           LevelTabs.ImageBorder = 2
           LevelTabs.Style = 1
           LookAndFeel.Kind = lfOffice11
@@ -701,10 +326,6 @@ object frmTakipKontrol: TfrmTakipKontrol
               item
                 Kind = skCount
                 Column = TakipNo
-              end
-              item
-                Kind = skSum
-                Column = TakiplerColumn2
               end>
             DataController.Summary.SummaryGroups = <>
             Filtering.MRUItemsList = False
@@ -712,6 +333,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             OptionsCustomize.ColumnFiltering = False
             OptionsCustomize.ColumnSorting = False
             OptionsSelection.MultiSelect = True
+            OptionsView.CellAutoHeight = True
             OptionsView.Footer = True
             OptionsView.GroupByBox = False
             OptionsView.HeaderHeight = 35
@@ -723,12 +345,18 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object TakipNo: TcxGridColumn
               Caption = 'TakipNo'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
             end
             object HastaNo: TcxGridColumn
               Caption = 'Hasta No'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
@@ -736,6 +364,9 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object gelisNo: TcxGridColumn
               Caption = 'Geli'#351
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
@@ -743,13 +374,18 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object Hasta: TcxGridColumn
               Caption = 'Hasta Ad'#305' Soyad'#305
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
-              Width = 134
+              Width = 123
             end
             object TakipTarih: TcxGridColumn
               Caption = 'Tarih'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
@@ -779,6 +415,7 @@ object frmTakipKontrol: TfrmTakipKontrol
                   ImageIndex = 115
                   Value = 1
                 end>
+              Visible = False
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               HeaderGlyphAlignmentHorz = taCenter
@@ -790,81 +427,115 @@ object frmTakipKontrol: TfrmTakipKontrol
               DataBinding.ValueType = 'Integer'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               FooterAlignmentHorz = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Styles.Content = cxStyle3
-              Width = 40
+              Width = 39
             end
             object TakiplerColumn2: TcxGridColumn
               Caption = 'Medula Seans'
               DataBinding.ValueType = 'Integer'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               FooterAlignmentHorz = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaBottom
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Styles.Content = cxStyle3
-              Width = 40
+              Width = 39
             end
             object TakiplerColumn3: TcxGridColumn
               Caption = 'Tahlil Adet'
               DataBinding.ValueType = 'Integer'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               FooterAlignmentHorz = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Styles.Content = cxStyle3
-              Width = 40
+              Width = 39
             end
             object TakiplerColumn4: TcxGridColumn
               Caption = 'Medula Tahlil'
               DataBinding.ValueType = 'Integer'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               FooterAlignmentHorz = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Styles.Content = cxStyle3
-              Width = 40
+              Width = 39
             end
             object TakiplerColumn5: TcxGridColumn
               Caption = 'Rad Adet'
               DataBinding.ValueType = 'Integer'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               FooterAlignmentHorz = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Styles.Content = cxStyle3
-              Width = 40
+              Width = 39
             end
             object TakiplerColumn6: TcxGridColumn
               Caption = 'Medula Rad'
               DataBinding.ValueType = 'Integer'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               FooterAlignmentHorz = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Styles.Content = cxStyle3
-              Width = 40
+              Width = 39
             end
             object TakiplerColumn7: TcxGridColumn
               Visible = False
+            end
+            object TakiplerColumn8: TcxGridColumn
+              Caption = 'Durum'
+              PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.Images = DATALAR.imag24png
+              Properties.Items = <
+                item
+                  ImageIndex = 11
+                  Value = 1
+                end
+                item
+                  Value = 0
+                end>
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 37
+            end
+            object TakiplerColumn9: TcxGridColumn
+              Caption = 'Durum Detay'
+              PropertiesClassName = 'TcxMemoProperties'
+              Properties.Alignment = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 150
             end
           end
           object cxGrid4Level1: TcxGridLevel
@@ -890,7 +561,7 @@ object frmTakipKontrol: TfrmTakipKontrol
           StyleHot.LookAndFeel.SkinName = 'Mcskin'
           TabOrder = 0
           Height = 137
-          Width = 679
+          Width = 657
           object cxMemo1: TcxMemo
             Left = 3
             Top = 15
@@ -898,9 +569,9 @@ object frmTakipKontrol: TfrmTakipKontrol
             TabOrder = 0
             ExplicitLeft = 2
             ExplicitTop = -3
-            ExplicitWidth = 675
+            ExplicitWidth = 653
             Height = 74
-            Width = 673
+            Width = 651
           end
           object cxButton1_kaydet: TcxButton
             Left = 6
@@ -923,25 +594,25 @@ object frmTakipKontrol: TfrmTakipKontrol
           Lines.Strings = (
             '')
           TabOrder = 0
-          Height = 562
-          Width = 679
+          Height = 608
+          Width = 657
         end
       end
     end
     object cxPageControl1: TcxPageControl
-      Left = 690
+      Left = 668
       Top = 1
-      Width = 601
-      Height = 595
+      Width = 623
+      Height = 641
       Align = alClient
       Color = 16315635
       ParentBackground = False
       ParentColor = False
       TabOrder = 1
       Properties.ActivePage = cxTabSheetMedula
-      ClientRectBottom = 588
+      ClientRectBottom = 634
       ClientRectLeft = 3
-      ClientRectRight = 594
+      ClientRectRight = 616
       ClientRectTop = 26
       object cxTabSheetMedula: TcxTabSheet
         Caption = 'Medula'
@@ -959,13 +630,13 @@ object frmTakipKontrol: TfrmTakipKontrol
           Style.Font.Style = [fsBold]
           Style.IsFontAssigned = True
           TabOrder = 0
-          Height = 562
-          Width = 591
+          Height = 608
+          Width = 613
           object cxGrid8: TcxGrid
             Left = 3
             Top = 15
-            Width = 585
-            Height = 537
+            Width = 607
+            Height = 583
             Align = alClient
             Font.Charset = TURKISH_CHARSET
             Font.Color = clWindowText
@@ -980,8 +651,8 @@ object frmTakipKontrol: TfrmTakipKontrol
             LookAndFeel.NativeStyle = False
             ExplicitLeft = 2
             ExplicitTop = -2
-            ExplicitWidth = 587
-            ExplicitHeight = 562
+            ExplicitWidth = 609
+            ExplicitHeight = 608
             object GridHizmetler: TcxGridDBTableView
               PopupMenu = PopupMenu2
               Navigator.Buttons.First.Visible = True
@@ -1005,11 +676,18 @@ object frmTakipKontrol: TfrmTakipKontrol
               DataController.Filter.Active = True
               DataController.Filter.TranslateBetween = True
               DataController.Filter.TranslateLike = True
-              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.DefaultGroupSummaryItems = <
+                item
+                  Format = 'Hizmet Adet : ##'
+                  Kind = skCount
+                  Column = GridHizmetlerTanm
+                end>
               DataController.Summary.FooterSummaryItems = <
                 item
+                  Format = 'Toplam '#304#351'lem Say'#305's'#305':##'
                   Kind = skCount
                   FieldName = 'sutKodu'
+                  Column = GridHizmetlerTanm
                 end>
               DataController.Summary.SummaryGroups = <>
               Filtering.MRUItemsList = False
@@ -1028,12 +706,12 @@ object frmTakipKontrol: TfrmTakipKontrol
               OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
               OptionsView.Footer = True
               OptionsView.GroupByBox = False
-              OptionsView.GroupRowHeight = 30
-              OptionsView.HeaderHeight = 20
+              OptionsView.GroupFooterMultiSummaries = True
+              OptionsView.GroupRowHeight = 25
+              OptionsView.HeaderHeight = 32
               OptionsView.Indicator = True
               OptionsView.RowSeparatorColor = clBlack
-              Styles.Inactive = cxStyle1
-              Styles.Group = cxStyle4
+              Styles.Group = AnaForm.cxStyle1
               Styles.Indicator = cxStyle4
               object GridHizmetlertakipNo: TcxGridDBColumn
                 DataBinding.FieldName = 'takipNo'
@@ -1052,7 +730,7 @@ object frmTakipKontrol: TfrmTakipKontrol
                   end
                   item
                     Description = 'Seans'
-                    ImageIndex = 80
+                    ImageIndex = 1
                     Value = 'Diyaliz Seans'
                   end
                   item
@@ -1061,26 +739,34 @@ object frmTakipKontrol: TfrmTakipKontrol
                     Value = 'Rad'
                   end
                   item
+                    Description = 'Tan'#305
+                    ImageIndex = 3
+                    Value = 'Tan'#305
+                  end
+                  item
                     Description = 'Malzeme'
-                    ImageIndex = 72
+                    ImageIndex = 55
                     Value = 'Malzeme'
                   end>
                 Properties.LargeImages = DATALAR.imag24png
+                Visible = False
                 GroupIndex = 0
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
                 HeaderImageIndex = 20
+                Options.Editing = False
                 Width = 30
                 IsCaptionAssigned = True
               end
               object GridHizmetlersutKodu: TcxGridDBColumn
+                Caption = 'SutKodu'
                 DataBinding.FieldName = 'sutKodu'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
                 Properties.Alignment.Vert = taVCenter
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
-                Width = 57
+                Width = 55
               end
               object GridHizmetlerTanm: TcxGridDBColumn
                 DataBinding.FieldName = 'Tanim'
@@ -1089,7 +775,7 @@ object frmTakipKontrol: TfrmTakipKontrol
                 Properties.Alignment.Vert = taVCenter
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
-                Width = 56
+                Width = 148
               end
               object GridHizmetlerSonuc: TcxGridDBColumn
                 DataBinding.FieldName = 'Sonuc'
@@ -1098,9 +784,10 @@ object frmTakipKontrol: TfrmTakipKontrol
                 Properties.Alignment.Vert = taVCenter
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
-                Width = 68
+                Width = 40
               end
               object GridHizmetlerislemTarihi: TcxGridDBColumn
+                Caption = #304'slemTarihi'
                 DataBinding.FieldName = 'islemTarihi'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
@@ -1109,22 +796,27 @@ object frmTakipKontrol: TfrmTakipKontrol
                 HeaderAlignmentVert = vaCenter
               end
               object GridHizmetlerbransKodu: TcxGridDBColumn
+                Caption = 'BransKodu'
                 DataBinding.FieldName = 'bransKodu'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
                 Properties.Alignment.Vert = taVCenter
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
+                Width = 34
               end
               object GridHizmetlerdrTescilNo: TcxGridDBColumn
+                Caption = 'TescilNo'
                 DataBinding.FieldName = 'drTescilNo'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
                 Properties.Alignment.Vert = taVCenter
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
+                Width = 50
               end
               object GridHizmetlerraporTakipno: TcxGridDBColumn
+                Caption = 'Rapor Takipno'
                 DataBinding.FieldName = 'raporTakipno'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
@@ -1134,13 +826,14 @@ object frmTakipKontrol: TfrmTakipKontrol
                 Width = 69
               end
               object GridHizmetlerhizmetSunucuRefNo: TcxGridDBColumn
+                Caption = 'HizmetSunucu RefNo'
                 DataBinding.FieldName = 'hizmetSunucuRefNo'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
                 Properties.Alignment.Vert = taVCenter
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
-                Width = 106
+                Width = 75
               end
               object GridHizmetlerislemSiraNo: TcxGridDBColumn
                 DataBinding.FieldName = 'islemSiraNo'
@@ -1370,7 +1063,7 @@ object frmTakipKontrol: TfrmTakipKontrol
     SimplePanel = True
   end
   object PopupMenu1: TPopupMenu
-    Images = DATALAR.global_img_list4
+    Images = DATALAR.imag24png
     OnPopup = PopupMenu1Popup
     Left = 36
     Top = 166
@@ -1390,16 +1083,19 @@ object frmTakipKontrol: TfrmTakipKontrol
     object akipDetayFormu1: TMenuItem
       Tag = -3
       Caption = 'Takip Detay Formu'
+      Visible = False
       OnClick = akipDetayFormu1Click
     end
     object T1: TMenuItem
       Tag = -4
       Caption = 'Tedavi Kart'#305
+      Visible = False
       OnClick = T1Click
     end
     object S1: TMenuItem
       Tag = -5
       Caption = 'Seans Kart'#305
+      Visible = False
       OnClick = S1Click
     end
     object H1: TMenuItem
@@ -1421,17 +1117,20 @@ object frmTakipKontrol: TfrmTakipKontrol
     object ahlilleriptalEt1: TMenuItem
       Tag = -8
       Caption = 'Tahlilleri '#304'ptal Et'
-      ImageIndex = -8
+      ImageIndex = 100
+      Visible = False
       OnClick = HizmetleriptalEt1Click
     end
     object MalzemeptalEt1: TMenuItem
       Tag = -9
       Caption = 'Malzeme '#304'ptal Et'
+      Visible = False
       OnClick = HizmetleriptalEt1Click
     end
     object R1: TMenuItem
       Tag = -10
       Caption = 'Radyoloji '#304'ptal'
+      Visible = False
       OnClick = HizmetleriptalEt1Click
     end
     object mHizmetleriptalEt1: TMenuItem
@@ -1448,7 +1147,7 @@ object frmTakipKontrol: TfrmTakipKontrol
     object SeanslarSistemeYaz1: TMenuItem
       Tag = -12
       Caption = 'Okunan Seanslar'#305' Sisteme Yaz'
-      Visible = False
+      ImageIndex = 35
       OnClick = SeanslarSistemeYaz1Click
     end
     object N4: TMenuItem
@@ -1457,7 +1156,8 @@ object frmTakipKontrol: TfrmTakipKontrol
     object mHizmetleriKaydet1: TMenuItem
       Tag = -13
       Caption = 'T'#252'm Hizmetleri Kaydet'
-      ImageIndex = 49
+      ImageIndex = 76
+      Visible = False
       OnClick = mHizmetleriKaydet1Click
     end
     object N5: TMenuItem
@@ -1466,7 +1166,7 @@ object frmTakipKontrol: TfrmTakipKontrol
     object FaturayaAt1: TMenuItem
       Tag = -14
       Caption = 'Faturaya At'
-      ImageIndex = 50
+      ImageIndex = 9
       OnClick = FaturayaAt1Click
     end
     object N6: TMenuItem
@@ -1480,16 +1180,19 @@ object frmTakipKontrol: TfrmTakipKontrol
     object M1: TMenuItem
       Tag = -16
       Caption = 'Medula <-> Sistem Kontrol'#252'   [Hizmet Kod Toplam'#305'n'#305' Do'#287'rula]'
+      Visible = False
       OnClick = M1Click
     end
     object H2: TMenuItem
       Tag = -17
       Caption = 'Hizmetleri Oku'
+      ImageIndex = 36
       OnClick = H2Click
     end
     object S3: TMenuItem
       Tag = -18
       Caption = 'Seans Hakedi'#351' '#304'cmali'
+      Visible = False
       OnClick = S3Click
     end
     object L1: TMenuItem
@@ -1505,8 +1208,8 @@ object frmTakipKontrol: TfrmTakipKontrol
   end
   object DataSource1: TDataSource
     DataSet = ADO_TahlillSQL
-    Left = 348
-    Top = 188
+    Left = 396
+    Top = 132
   end
   object ADO_SQL: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1514,14 +1217,15 @@ object frmTakipKontrol: TfrmTakipKontrol
     Parameters = <>
     Prepared = True
     SQL.Strings = (
-      'select * from gelisler')
-    Left = 284
-    Top = 132
+      ''
+      'exec sp_TakipKontrolListesi '#39'20191001'#39','#39'20191130'#39','#39'000005'#39)
+    Left = 372
+    Top = 236
   end
   object DataSource2: TDataSource
     DataSet = ADO_SQL
-    Left = 284
-    Top = 180
+    Left = 444
+    Top = 228
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 184
@@ -1555,10 +1259,12 @@ object frmTakipKontrol: TfrmTakipKontrol
     end
   end
   object PopupMenu2: TPopupMenu
-    Left = 32
-    Top = 216
+    Images = DATALAR.imag24png
+    Left = 752
+    Top = 184
     object S2: TMenuItem
       Caption = 'Hizmet '#304'ptal Et'
+      ImageIndex = 43
       OnClick = S2Click
     end
   end
@@ -1579,104 +1285,12 @@ object frmTakipKontrol: TfrmTakipKontrol
         NumericScale = 255
         Precision = 255
         Size = 10
-        Value = '1B8QR7F'
+        Value = '31UC15N'
       end>
     Prepared = True
     SQL.Strings = (
       'sp_TakipKontrolTakipNoDetay :@tn')
     Left = 352
     Top = 136
-  end
-  object ADO_Malzeme: TADOTable
-    Connection = DATALAR.ADOConnection2
-    CursorType = ctStatic
-    IndexFieldNames = 'takipNo'
-    MasterFields = 'Tak'#305'pNo'
-    MasterSource = DataSource2
-    TableName = 'gssTakipOkuMalzeme'
-    Left = 628
-    Top = 116
-  end
-  object ADO_Diger: TADOTable
-    Connection = DATALAR.ADOConnection2
-    CursorType = ctStatic
-    IndexFieldNames = 'takipNo;siraNo'
-    MasterFields = 'Tak'#305'pNo'
-    MasterSource = DataSource2
-    TableName = 'gssTakipOkuDiger'
-    Left = 588
-    Top = 116
-  end
-  object ADO_TetkikveRad: TADOTable
-    Connection = DATALAR.ADOConnection2
-    CursorType = ctStatic
-    IndexFieldNames = 'takipNo'
-    MasterFields = 'Tak'#305'pNo'
-    MasterSource = DataSource2
-    TableName = 'gssTakipOkuTetkikvdRadyoloji'
-    Left = 548
-    Top = 116
-  end
-  object ADO_Tahlil: TADOTable
-    Connection = DATALAR.ADOConnection2
-    CursorType = ctStatic
-    IndexFieldNames = 'takipNo'
-    MasterFields = 'Tak'#305'pNo'
-    MasterSource = DataSource2
-    TableName = 'gssTakipOkuTahlil'
-    Left = 508
-    Top = 116
-    object ADO_TahliltakipNo: TStringField
-      FieldName = 'takipNo'
-      Size = 50
-    end
-    object ADO_TahlilsutKodu: TStringField
-      FieldName = 'sutKodu'
-    end
-    object ADO_TahlilislemTarihi: TStringField
-      FieldName = 'islemTarihi'
-      Size = 15
-    end
-    object ADO_TahlilbransKodu: TStringField
-      FieldName = 'bransKodu'
-      Size = 4
-    end
-    object ADO_TahlilhizmetSunucuRefNo: TStringField
-      FieldName = 'hizmetSunucuRefNo'
-    end
-    object ADO_TahlilislemSiraNo: TStringField
-      FieldName = 'islemSiraNo'
-      Size = 15
-    end
-    object ADO_TahlildrTescilNo: TStringField
-      FieldName = 'drTescilNo'
-      Size = 10
-    end
-    object ADO_TahlilAdet: TIntegerField
-      FieldName = 'Adet'
-    end
-    object ADO_TahlilsiraNo: TIntegerField
-      FieldName = 'siraNo'
-    end
-    object ADO_Tahlilname: TStringField
-      FieldName = 'name'
-      Size = 50
-    end
-    object ADO_TahlilozelDurum: TStringField
-      FieldName = 'ozelDurum'
-    end
-    object ADO_Tahlilbirim: TStringField
-      FieldName = 'birim'
-    end
-  end
-  object ADO_TahlilSonuc: TADOTable
-    Connection = DATALAR.ADOConnection2
-    CursorType = ctStatic
-    IndexFieldNames = 'takipNo'
-    MasterFields = 'Tak'#305'pNo'
-    MasterSource = DataSource2
-    TableName = 'gssTakipOkuTahlilSonuc'
-    Left = 468
-    Top = 116
   end
 end

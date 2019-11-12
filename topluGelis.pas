@@ -21,7 +21,7 @@ uses
   cxLabel, cxStyles, dxSkinscxPCPainter, cxCustomData, cxFilter, cxData,
   cxDataStorage, DB, cxDBData, cxGridLevel, cxClasses, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid, KadirLabel,
-  cxImageComboBox;
+  cxImageComboBox, cxPCdxBarPopupMenu, cxMemo, cxPC;
 
 type
   TfrmTopluGelis = class(TGirisForm)
@@ -52,9 +52,6 @@ type
     sBitBtn5: TsBitBtn;
     sBitBtn6: TsBitBtn;
     PopupMenu1: TPopupMenu;
-    mnSe1: TMenuItem;
-    mptal1: TMenuItem;
-    N1: TMenuItem;
     H1: TMenuItem;
     L1: TMenuItem;
     T1: TMenuItem;
@@ -69,48 +66,57 @@ type
     cxLabel1: TcxLabel;
     cxLabel2: TcxLabel;
     cxLabel3: TcxLabel;
+    Sayfa: TcxPageControl;
+    SayfaListe: TcxTabSheet;
+    SayfaLog: TcxTabSheet;
     cxGrid2: TcxGridKadir;
     Liste: TcxGridDBTableView;
-    cxGridLevel1: TcxGridLevel;
+    ListeADSOYAD: TcxGridDBColumn;
+    ListeTCKIMLIKNO: TcxGridDBColumn;
     ListedosyaNo: TcxGridDBColumn;
+    ListesonGelisno: TcxGridDBColumn;
+    ListeGno: TcxGridDBColumn;
+    ListeprovizyonTarihi: TcxGridDBColumn;
     ListeSIGORTANO: TcxGridDBColumn;
     ListeBABAADI: TcxGridDBColumn;
-    ListeEV_TEL1: TcxGridDBColumn;
-    ListeTCKIMLIKNO: TcxGridDBColumn;
     ListeKarneNo: TcxGridDBColumn;
+    ListeColumn1: TcxGridDBColumn;
+    ListeCINS: TcxGridDBColumn;
+    ListeKurum: TcxGridDBColumn;
+    ListeColumn2: TcxGridDBColumn;
+    ListeDurumS: TcxGridDBColumn;
+    ListeGunler: TcxGridDBColumn;
     ListeSeans: TcxGridDBColumn;
     Listedtar: TcxGridDBColumn;
     Listedrapor: TcxGridDBColumn;
     Listedrapgec: TcxGridDBColumn;
-    ListeADSOYAD: TcxGridDBColumn;
-    ListeCINS: TcxGridDBColumn;
-    ListeKurum: TcxGridDBColumn;
     ListeKurumTip: TcxGridDBColumn;
-    ListeDurumS: TcxGridDBColumn;
     ListeDurum: TcxGridDBColumn;
     ListeKANG: TcxGridDBColumn;
-    ListeGunler: TcxGridDBColumn;
     ListeSeansGunleri: TcxGridDBColumn;
     ListeYAKINLIK: TcxGridDBColumn;
     Listeyaz3: TcxGridDBColumn;
     ListeBRANS: TcxGridDBColumn;
-    ListeGno: TcxGridDBColumn;
-    ListesonGelisno: TcxGridDBColumn;
     ListeornekNo: TcxGridDBColumn;
     ListeCikisOrnekNO: TcxGridDBColumn;
     Listedoktor: TcxGridDBColumn;
-    ListeprovizyonTarihi: TcxGridDBColumn;
     ListemakinaNo: TcxGridDBColumn;
     ListeSeans_1: TcxGridDBColumn;
     ListebitisTarihi: TcxGridDBColumn;
     ListeseansSayi: TcxGridDBColumn;
     ListeraporTakipNo: TcxGridDBColumn;
-    Listesira: TcxGridDBColumn;
-    ListeEV_ADRES: TcxGridDBColumn;
-    ListeSIRANO: TcxGridDBColumn;
-    ListeColumn1: TcxGridDBColumn;
-    ListeColumn2: TcxGridDBColumn;
     ListeColumn3: TcxGridDBColumn;
+    ListeEV_ADRES: TcxGridDBColumn;
+    ListeEV_TEL1: TcxGridDBColumn;
+    ListeSIRANO: TcxGridDBColumn;
+    Listesira: TcxGridDBColumn;
+    cxGridLevel1: TcxGridLevel;
+    txtLog: TcxMemo;
+    E1: TMenuItem;
+    P1: TMenuItem;
+    ListeColumn4: TcxGridDBColumn;
+    ListeColumn5: TcxGridDBColumn;
+    K1: TMenuItem;
     procedure gridAktifCheckBoxClick(Sender: TObject; ACol, ARow: Integer;
       State: Boolean);
     procedure mnSe1Click(Sender: TObject);
@@ -143,7 +149,9 @@ type
     procedure Listele(Tag : integer);
     procedure TakipAl;
     procedure SeansOlustur;
+    procedure KanAlimTarihiSet;
     procedure GelisAc;
+    procedure PasifYap;
     procedure SetData(x : integer);
     procedure SetDataFocused(x: integer);
     procedure ListeFocusedRecordChanged(Sender: TcxCustomGridTableView;
@@ -160,7 +168,7 @@ type
 var
   frmTopluGelis: TfrmTopluGelis;
   sonSeansTarihi : Tdate;
-  dosyaNo,gelisNo,GelisSiraNo,raporTakipNo,AD,doktor,provizyonTarihi,brans,mNo : string;
+  dosyaNo,gelisNo,GelisSiraNo,raporTakipNo,AD,doktor,provizyonTarihi,brans,mNo,kanAlimTarihi : string;
   seansGunleri,seansNo,sutKodu : string;
   ilkS,sonS : string;
 implementation
@@ -174,6 +182,7 @@ begin
   Result := False;
   txtProvizyonTarihi.Date := date;
   sonSeansTarihi := ayliktarih(date);
+  cxGrid2.Dataset.Connection := DATALAR.ADOConnection2;
   if not inherited Init(Sender) then exit;
   Result := True;
 end;
@@ -197,28 +206,39 @@ inherited;
   -8,-9 : begin
              Listele(Tcontrol(sender).Tag);
           end;
+  -10 : begin
+          KanAlimTarihiSet;
+        end;
+
+  -50 : begin
+          PasifYap;
+        end;
 
   end;
 end;
 
 procedure TfrmTopluGelis.GelisAc;
 var
-  sql , sonuc,Takip,gelis,error : string;
+  sql , sonuc,Takip,gelis,error , SonucMesaj , Hata , takipNo,basvuruNo : string;
   x ,satir : integer;
   ado : TADOQuery;
 begin
-       Takipsor.Enabled := false;
+       Hata := '';
+      // Takipsor.Enabled := false;
        DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
   try
-      datalar.ADOConnection2.BeginTrans;
-      try
-            for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+    //  datalar.ADOConnection2.BeginTrans;
+     // try
+           pbar.Properties.Max := Liste.Controller.SelectedRowCount;
+           pbar.Position := 0;
+
+           for x := 0 to Liste.Controller.SelectedRowCount - 1 do
            begin
                Application.ProcessMessages;
                pbar.Position := pbar.Position + 1;
 
                setData(x);
-
+               SonucMesaj := SonucMesaj + ' ' + AD + ' - ' + dosyaNo + ' Ýþlem Baþlatýldý ';
                  sql := 'select * from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) +
                         ' and BHDAT = ' + QuotedStr(tarih(provizyonTarihi));
               //   datalar.QuerySelect(sql);
@@ -234,54 +254,66 @@ begin
                       datalar.HastaKabulWS.TakipAl_3KimlikDorulama;
                       if datalar.HastaKabulWS.Cevap.sonucKodu = '0000'
                       Then begin
-                         //   gridAktif.Cells[11,x] := datalar.HastaKabulWS.GirisParametre.devredilenKurum;
-                         //   gridAktif.Cells[10,x] := datalar.HastaKabulWS.GirisParametre.sigortaliTuru;
-
+                            takipNo := datalar.HastaKabulWS.Cevap.takipNo;
+                            basvuruNo := datalar.HastaKabulWS.Cevap.hastaBasvuruNo;
                             if datalar.HastaKabulWS.GirisParametre.devredilenKurum <> datalar.HastaKabulWS.Cevap.hastaBilgileri.devredilenKurum
                             Then Begin
                               sql := 'update hastakart set DURUM = ' + QuotedStr(datalar.HastaKabulWS.Cevap.hastaBilgileri.sigortaliTuru) +
                                     ',KurumTip = ' + QuotedStr(datalar.HastaKabulWS.Cevap.hastaBilgileri.devredilenKurum) +
                                     ' where dosyaNO = ' + QuotedStr(dosyaNo);
                               datalar.QueryExec(sql);
-
                             End;
-                      End;
-
-                      txtHatalar.Lines.Add(AD +' Takip Sonucu :' + sonuc + ' ' + datalar.HastaKabulWS.Cevap.takipNo + ' Devredilen Kurum [ ' + datalar.HastaKabulWS.Cevap.hastaBilgileri.devredilenKurum + ' ]');
+                      End
+                      Else
+                        Hata := ' Hata ' + datalar.HastaKabulWS.Cevap.sonucMesaji;
+                      // SonucMesaj := SonucMesaj + ' Takip Alýnamadý : ' + datalar.HastaKabulWS.Cevap.sonucMesaji;
+                        SonucMesaj := SonucMesaj + ' ' + AD +' Takip Sonucu :' + sonuc + ' ' + datalar.HastaKabulWS.Cevap.takipNo;
                  End;
 
+                     DATALAR.ADOConnection2.BeginTrans;
 
                      sql := 'exec sp_HastaGelisKaydet ' +
-                            '@dosyaNo = ' + #39 + dosyaNo+ #39 + ',' +
-                            '@gelisNo = ' + gelisNo + ',' +
-                            '@BHDAT = ' + #39 + tarih(provizyonTarihi) + #39 + ',' +
-                            '@doktor = ' + #39 + doktor+ #39 + ',' +
-                            '@SERVIS = ' + #39 + brans + #39 + ',' +
+                            '@dosyaNo = ' + #39 + dosyaNo + #39 + ',' +
+                            '@gelisNo = ' + '0' + ',' +
+                            '@BHDAT = ' + #39 + FormatDateTime('YYYYMMDD', txtProvizyonTarihi.date) + #39 + ',' +
+                            '@doktor = ' + #39 + doktor + #39 + ',' +
+                            '@SERVIS = ' + #39 + datalar.KurumBransi + #39 + ',' +
                             '@TEDAVITURU = ' + #39 + 'G' + #39 + ',' +
                             '@HastaTop = 0 ,' +
                             '@KurumTop = 0 ,' +
                             '@Kullanici = ' + #39 + datalar.username + #39 + ',' +
                             '@DIYALIZOR = ' + QuotedStr('') + ',' +
                             '@GIRISYOLU = ' + QuotedStr('') + ',' +
-                            '@TakipNo = '   + QuotedStr('') + ',' +
-                            '@basvuruNo = ' + QuotedStr('') ;
+                            '@TakipNo = '   + QuotedStr(takipNo) + ',' +
+                            '@basvuruNo = ' + QuotedStr(basvuruNo) + ',' +
+                            '@kanAlimTarihi = ' + tarih(kanAlimTarihi) ;
 
                        datalar.QuerySelect(sqlRun,sql);
 
                        gelis := sqlRun.fieldbyname('Gelis').AsString;
                        error := sqlRun.fieldbyname('error').AsString;
-                       gelisSiraNo := sqlRun.fieldbyname('GelisSIRANO').AsString;
+
 
                        if gelis = '-1'
                        then begin
                           //ShowMessageSkin(error,'','','info');
-                          raise Exception.Create(error);
+                         // raise Exception.Create(error);
+                          Datalar.ADOConnection2.RollbackTrans;
+                          Hata := ' Hata ';
+                          SonucMesaj := SonucMesaj + ' Gelis Açýlamadý : ' + error;
+                          txtLog.Lines.Add(Hata + ' ' + SonucMesaj);
                           Continue;
+                       end
+                       else
+                       begin
+                        gelisSiraNo := sqlRun.fieldbyname('GelisSIRANO').AsString;
+                        Datalar.ADOConnection2.CommitTrans;
                        end;
-
-                      txtHatalar.Lines.Add(AD +' Gelis Tablosuna Yazýldý ');
+                      SonucMesaj := SonucMesaj + '  Gelis Açýldý ';
                       Takip := '';
+                      txtLog.Lines.Add(Hata + ' ' + SonucMesaj);
 
+                      (*    bu iþlemler artýk [sp_HastaGelisKaydet] içinde yapýlýyor
 
                       sql := 'delete from hareketler where dosyaNo = ' + QuotedStr(dosyaNo) +
                       ' and gelisNo = ' + gelisNo;
@@ -307,6 +339,7 @@ begin
                                  dosyaNo,gelisNo,doktor,
                                  mNo,
                                  seansNo);
+                                 *)
                    (*
 
                      if sureKontrol
@@ -324,16 +357,16 @@ begin
 
            end; // for end
 
-          datalar.ADOConnection2.CommitTrans;
-          ShowMessageSkin('Geliþler Açýldý','','','info');
-          Takipsor.Enabled := true;
-      except on e : Exception do
-        begin
-            datalar.ADOConnection2.RollbackTrans;
-            ShowMessageSkin('Hata Oluþtu : ' + e.Message,'','','info');
+        //  datalar.ADOConnection2.CommitTrans;
+         // ShowMessageSkin('Geliþler Açýldý','','','info');
+         // Takipsor.Enabled := true;
+   //   except on e : Exception do
+   //     begin
+   //         datalar.ADOConnection2.RollbackTrans;
+   //         ShowMessageSkin('Hata Oluþtu : ' + e.Message,'','','info');
             //exit;
-        end;
-      end;
+  //      end;
+   //   end;
 
   finally
     DurumGoster(False);
@@ -342,14 +375,15 @@ begin
 
 end;
 
-procedure TfrmTopluGelis.SeansOlustur;
+
+procedure TfrmTopluGelis.KanAlimTarihiSet;
 var
   x : integer;
-  gelis , sonuc : string;
+  gelis , sonuc ,sql : string;
 begin
 
-       Takipsor.Enabled := false;
-       DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
+  Takipsor.Enabled := false;
+  DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
   try
        for x := 0 to Liste.Controller.SelectedRowCount - 1 do
        begin
@@ -358,17 +392,60 @@ begin
 
            setData(x);
 
+           sql := 'update hareketler set kanalindimi = 0 ' +
+            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis + ' and Tip = ''S'' '
+                  +
+                  ' update hareketler set kanalindimi = 1 ' +
+            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis + ' and Tarih = ' + QuotedStr(tarih(kanAlimTarihi)) + ' and Tip = ''S'' '
+                  +
+                  ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(tarih(kanAlimTarihi)) +
+            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
 
-          SeansDetay(31,seansGunleri,FormattedTarih(ilkS),FormattedTarih(sonS),
-                     dosyaNo,gelisNo,doktor,
-                     mNo,
-                     seansNo);
+
+           datalar.QueryExec(sql);
        end;
 
        ShowMessageSkin('Seanslar Oluþturuldu','','','info');
+
   finally
     DurumGoster(False);
   end;
+
+
+
+end;
+
+
+procedure TfrmTopluGelis.SeansOlustur;
+var
+  x : integer;
+  gelis , sonuc ,sql : string;
+begin
+
+  Takipsor.Enabled := false;
+  DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
+  try
+       for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+       begin
+           Application.ProcessMessages;
+           pbar.Position := pbar.Position + 1;
+
+           setData(x);
+
+           sql := 'exec sp_hastaSeansIsle ' + QuotedStr(dosyaNo) + ',' +
+                                              gelisNo + ',' +
+                                              QuotedStr(tarih(kanAlimTarihi));
+           datalar.QueryExec(sql);
+       end;
+
+       ShowMessageSkin('Seanslar Oluþturuldu','','','info');
+
+  finally
+    DurumGoster(False);
+  end;
+
+
+
 end;
 
 procedure TfrmTopluGelis.SetData(x: integer);
@@ -384,6 +461,7 @@ begin
    doktor := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('doktor').Index));
    AD := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('ADSOYAD').Index));
    provizyonTarihi := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('provizyonTarihi').Index));
+   kanAlimTarihi := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('KanAlimTarihi').Index));
    brans := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('brans').Index));
    seansGunleri := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('SeansGunleri').Index));
    mNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('makinaNo').Index));
@@ -465,7 +543,7 @@ procedure TfrmTopluGelis.ListeFocusedRecordChanged(
   Sender: TcxCustomGridTableView; APrevFocusedRecord,
   AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
 begin
-  SetDataFocused(AFocusedRecord.Index);
+//  SetDataFocused(AFocusedRecord.Index);
 end;
 
 procedure TfrmTopluGelis.Listele(Tag : integer);
@@ -485,11 +563,15 @@ begin
    sql := 'exec er_aphastalistesiGelis ''1''' + ',' + QuotedStr(ilkS) + ',' + QuotedStr(sonS) + ',' +
            QuotedStr(txtSeansNo.Text) + ',' + QuotedStr(copy(hastaTip.Text,1,1)) + ',' + QuotedStr(datalar.AktifSirket);
 
-   cxGrid2.Dataset.Connection := DATALAR.ADOConnection2;
-   datalar.QuerySelect(cxGrid2.Dataset,sql);
 
-   Liste.DataController.SelectRows(0,0);
-   SetDataFocused(0);
+   cxGrid2.Dataset.Active := False;
+   cxGrid2.Dataset.SQL.Text := sql;
+   cxGrid2.Dataset.Active := True;
+
+  // datalar.QuerySelect(cxGrid2.Dataset,sql);
+
+//   Liste.DataController.SelectRows(0,0);
+ //  SetDataFocused(0);
 
  (*
 
@@ -573,7 +655,7 @@ var
   x : integer;
 
 begin
-       DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
+   DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
    try
        for x := 0 to Liste.Controller.SelectedRowCount - 1 do
        begin
@@ -729,6 +811,7 @@ begin
     datalar.HastaKabulWS.GirisParametre.takipTipi := 'N';
     datalar.HastaKabulWS.GirisParametre.tedaviTuru := 'G';
     datalar.HastaKabulWS.GirisParametre.tedaviTipi := '1';
+    datalar.HastaKabulWS.GirisParametre.provizyonTipi := 'N';
     datalar.HastaKabulWS.GirisParametre.devredilenKurum := kurum;
     datalar.HastaKabulWS.GirisParametre.provizyonTarihi := provizyonTarihi;
     datalar.HastaKabulWS.GirisParametre.sigortaliTuru := sigortaliTuru;
@@ -797,6 +880,17 @@ begin
 
        end;
 
+end;
+
+procedure TfrmTopluGelis.PasifYap;
+var
+  sql,dosyaNo : string;
+  satir : integer;
+begin
+   satir := Liste.Controller.SelectedRows[0].RecordIndex;
+   dosyaNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+   datalar.QueryExec('update hastaKart set aktif = 0 where dosyaNO = ' + QuotedStr(dosyaNo));
+   cxGrid2.Dataset.Requery();
 end;
 
 procedure TfrmTopluGelis.btnVazgecClick(Sender: TObject);
@@ -884,13 +978,17 @@ end;
 
 procedure TfrmTopluGelis.H1Click(Sender: TObject);
 var
- r : integer;
+ r ,satir : integer;
  Form : TGirisForm;
 begin
+   satir := Liste.Controller.SelectedRows[0].RecordIndex;
+   dosyaNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+
    if FindTab(AnaForm.sayfalar,'TabfrmHastaKart')
    Then begin
      Form := TGirisForm(FormClassType(TagfrmHastaKart));
      TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := dosyaNo;
+     TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
      TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
    end
    Else begin

@@ -561,7 +561,7 @@ object frmHastaRecete: TfrmHastaRecete
         ExplicitLeft = 2
         ExplicitTop = -2
         ExplicitWidth = 1046
-        ExplicitHeight = 239
+        ExplicitHeight = 262
         object gridIlaclar: TcxGridDBTableView
           PopupMenu = GridIlaclarPopup
           OnDblClick = gridIlaclarDblClick
@@ -633,6 +633,9 @@ object frmHastaRecete: TfrmHastaRecete
           object gridIlaclarColumn2: TcxGridDBColumn
             Caption = 'Adet'
             DataBinding.FieldName = 'adet'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
             FooterAlignmentHorz = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
@@ -668,27 +671,38 @@ object frmHastaRecete: TfrmHastaRecete
             HeaderAlignmentVert = vaCenter
             MinWidth = 60
             Options.Editing = False
+            Width = 60
           end
           object gridIlaclarkullanimZaman: TcxGridDBColumn
             Caption = 'Peryot Adet'
             DataBinding.FieldName = 'kullanimZaman'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
             FooterAlignmentHorz = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 50
+            Width = 45
           end
           object gridIlaclarColumn1: TcxGridDBColumn
             Caption = 'Kullan'#305'm Doz(1)'
             DataBinding.FieldName = 'kullanimAdet2'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
             FooterAlignmentHorz = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
+            Width = 45
           end
           object gridIlaclarkullanimAdet: TcxGridDBColumn
             Caption = 'Kullan'#305'm Doz(2)'
             DataBinding.FieldName = 'kullanimAdet'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
             FooterAlignmentHorz = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
@@ -744,7 +758,7 @@ object frmHastaRecete: TfrmHastaRecete
         TabOrder = 1
         ExplicitLeft = 1048
         ExplicitTop = -2
-        ExplicitHeight = 239
+        ExplicitHeight = 262
         Height = 237
         Width = 46
         object btnIlacSil: TcxButtonKadir
@@ -787,8 +801,6 @@ object frmHastaRecete: TfrmHastaRecete
       Align = alClient
       Caption = 'Re'#231'ete '#304'la'#231' A'#231#305'klama'
       TabOrder = 3
-      ExplicitTop = 545
-      ExplicitHeight = 124
       DesignSize = (
         1096
         94)
@@ -811,7 +823,9 @@ object frmHastaRecete: TfrmHastaRecete
         TabOrder = 0
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
-        ExplicitHeight = 99
+        ExplicitLeft = 2
+        ExplicitTop = -2
+        ExplicitHeight = 101
         object cxGridReceteIlacAciklama: TcxGridDBTableView
           OnDblClick = cxGridReceteIlacAciklamaDblClick
           Navigator.Buttons.First.Visible = True
@@ -917,7 +931,6 @@ object frmHastaRecete: TfrmHastaRecete
       Height = 8
       AlignSplitter = salTop
       Control = cxPanelReceteDetay
-      ExplicitTop = 537
     end
   end
   object PopupMenu1: TPopupMenu
@@ -1237,8 +1250,8 @@ object frmHastaRecete: TfrmHastaRecete
   end
   object PopupMenu2: TPopupMenu
     OnPopup = PopupMenu2Popup
-    Left = 608
-    Top = 320
+    Left = 568
+    Top = 408
     object ilacR2: TMenuItem
       Tag = -40
       Caption = 'Re'#231'ete '#304'la'#231' A'#231#305'klama Ekle (Medula)'

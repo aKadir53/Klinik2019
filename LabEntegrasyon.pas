@@ -47,7 +47,7 @@ type
     ikazRed: TcxStyle;
     ikazYellow: TcxStyle;
     KaydetItem: TMenuItem;
-    PeryodikMuayeneOlutur1: TMenuItem;
+    SonucAlItem: TMenuItem;
     f1: TMenuItem;
     cxPageControl1: TcxPageControl;
     Sayfa_Liste: TcxTabSheet;
@@ -81,6 +81,13 @@ type
     O1: TMenuItem;
     Y2: TMenuItem;
     memData: TSQLMemTable;
+    IslemItem: TMenuItem;
+    IslemItemSub1: TMenuItem;
+    IslemItemSub2: TMenuItem;
+    IslemItemSub3: TMenuItem;
+    T1: TMenuItem;
+    E2: TMenuItem;
+    ListeColumn1: TcxGridDBColumn;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -95,12 +102,14 @@ type
       ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
       out AStyle: TcxStyle);
     procedure TopPanelButonClick(Sender: TObject);
-    procedure Gonder;
-    procedure AL;
+  //  procedure Gonder;
+  //  procedure AL;
 
     procedure S1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
 
+    procedure IslemItemSub1Click(Sender: TObject);
+    procedure IslemItemSub2Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -121,22 +130,123 @@ var
 implementation
   uses Data_Modul,AnaUnit,HastaRecete,
   ENA,
-  Centro;
-
-
+  Centro,
+  GemSoftBIYOTIP,
+  TenaySynevo,
+  Referans,
+  TenaySYNLAB;
 
 {$R *.dfm}
 
 
 function TfrmLabEntegrasyon.Init(Sender : TObject) : Boolean;
 begin
-
    Result := True;
-
 end;
 
 
 
+procedure TfrmLabEntegrasyon.IslemItemSub1Click(Sender: TObject);
+begin
+  case TMenuItem(Sender).Tag of
+    BIYOTIP : begin
+                DurumGoster(True,True);
+                try
+                  OrnekListesiOku(txtTopPanelTarih1.Date,txtTopPanelTarih2.Date);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+    ENALAB  : begin
+                DurumGoster(True,True);
+                try
+                  TenayOrderKaydetENA(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+    SYNEVO  : begin
+                DurumGoster(True,True);
+                try
+                  TenayOrderKaydetSynevo(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+REFERANSLAB : begin
+                DurumGoster(True,True);
+                try
+                  Referans.SonucAl(txtTopPanelTarih1.Date,txtTopPanelTarih2.Date, '' , txtLog , pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+      SYNLAB : begin
+                DurumGoster(True,True);
+                try
+                  TenayOrderKaydetSYNLAB(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+               end;
+  end;
+
+end;
+
+procedure TfrmLabEntegrasyon.IslemItemSub2Click(Sender: TObject);
+var
+  glmref : string;
+begin
+  case TMenuItem(Sender).Tag of
+    BIYOTIP : Begin
+                 DurumGoster(True,True);
+                 try
+                  OrnekNoSonucOku(Liste,txtLog,pBar);
+                 finally
+                  DurumGoster(False);
+                 end;
+              End;
+    ENALAB  : Begin
+                DurumGoster(True,True);
+                try
+                  TenaySonucAlTCdenENA('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar,False);
+                finally
+                  DurumGoster(False);
+                end;
+              End;
+    SYNEVO  : Begin
+                DurumGoster(True,True);
+                try
+                  TenaySonucAlTCdenSynevo('','','','',Liste,txtLog,pBar,False);
+                finally
+                  DurumGoster(False);
+                end;
+              End;
+   REFERANSLAB : begin
+                   DurumGoster(True,True);
+                   try
+                     glmref := varToStr(Liste.DataController.GetValue(
+                                        Liste.Controller.SelectedRows[0].RecordIndex,Liste.DataController.GetItemByFieldName('ornekNo').Index));
+                     Referans.SonucAl(txtTopPanelTarih1.Date,txtTopPanelTarih2.Date, glmref , txtLog , pBar);
+
+                   finally
+                      DurumGoster(False);
+                   end;
+                 end;
+         SYNLAB : begin
+                      DurumGoster(True,True);
+                      try
+                        TenaySonucAlTCdenSYNLAB('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar);
+                      finally
+                        DurumGoster(False);
+                      end;
+                  end;
+
+  end;
+end;
+
+
+  (*
 procedure TfrmLabEntegrasyon.Gonder;
 begin
   case strToint(datalar._labID) of
@@ -158,7 +268,7 @@ begin
          End;
   end;
 end;
-
+   *)
 
 procedure TfrmLabEntegrasyon.btnVazgecClick(Sender: TObject);
 begin
@@ -178,6 +288,7 @@ begin
 
   try
     GirisFormRecord.F_dosyaNo_ := _Dataset.FieldByName('dosyaNo').AsString;
+    GirisFormRecord.F_gelisNO_ := _Dataset.FieldByName('gelisNo').AsString;
     GirisFormRecord.F_HastaAdSoyad_ := _Dataset.FieldByName('ADSOYAD').AsString;
     GirisFormRecord.F_TC_ := _Dataset.FieldByName('TCKIMLIKNO').AsString;
     GirisFormRecord.F_provizyonTarihi_ := _Dataset.FieldByName('BHDAT').AsString;
@@ -188,11 +299,11 @@ begin
   case Tcontrol(sender).tag of
   LabHastaGonder :
       begin
-          Gonder;
+         // Gonder;
       end;
  LabSonucAl :
       begin
-          Al;
+         // Al;
       end;
 
 
@@ -217,14 +328,26 @@ begin
 
  -21 : begin
           DurumGoster(True,True);
-          BarkodOlustur(Liste,txtLog,pBar);
-          DurumGoster(False);
+          try
+            BarkodOlustur(Liste,txtLog,pBar);
+          finally
+            DurumGoster(False);
+          end;
        end;
 
  -22 : begin
           DurumGoster(True,True);
-          BarkodYazdir(Liste,memData,txtLog,pBar);
-          DurumGoster(False);
+          try
+            BarkodYazdir(Liste,memData,txtLog,pBar);
+          finally
+            DurumGoster(False);
+          end;
+       end;
+ -32 : begin
+          F := FormINIT(TagfrmHastaTetkikEkle,GirisFormRecord);
+         // F._Foto_ := foto;
+          if F <> nil then F.ShowModal;
+         // TetkikEkle(dosyaNo.Text,_gelisNo_,datalar.HastaBil.Tarih);
        end;
 
   end;
@@ -258,9 +381,69 @@ begin
 end;
 
 procedure TfrmLabEntegrasyon.FormShow(Sender: TObject);
+var
+  _tag_ : integer;
 begin
    if datalar._LabBarkodBasim = 'E' Then B1.Visible := True;
    if datalar._LabCalismaYon = '1' Then KaydetItem.Visible := False;
+
+   _tag_ := strToint(datalar._labID);
+   IslemItemSub1.Tag := _tag_;
+   IslemItemSub2.Tag := _tag_;
+   IslemItemSub3.Tag := _tag_;
+   IslemItemSub1.OnClick :=  IslemItemSub1Click;
+   IslemItemSub2.OnClick :=  IslemItemSub2Click;
+ //  IslemItemSub3.OnClick :=  IslemItemSubClick;
+  // IslemItemSub1.OnClick :=  IslemItemSubClick;
+
+   if strToint(datalar._labID) in [ENALAB,SYNEVO]
+   then begin
+      IslemItemSub1.Caption := 'Hasta Kaydet';
+      IslemItemSub2.Caption := 'Sonuç Al';
+      IslemItemSub1.Visible := True;
+      IslemItemSub2.Visible := True;
+      IslemItemSub3.Visible := False;
+      IslemItem.Visible := True;
+      KaydetItem.Visible := False;
+      SonucAlItem.Visible := False;
+   end
+   else
+   if strToint(datalar._labID) = BIYOTIP
+   then begin
+      IslemItemSub1.Caption := 'Örnek Listesini Oku';
+      IslemItemSub2.Caption := 'ÖrnekNo Sonuc Oku';
+      IslemItemSub1.Visible := True;
+      IslemItemSub2.Visible := True;
+      IslemItemSub3.Visible := False;
+      IslemItem.Visible := True;
+      KaydetItem.Visible := false;
+      SonucAlItem.Visible := False;
+   end
+   else
+   if strToint(datalar._labID) = REFERANSLAB
+   then begin
+      IslemItemSub1.Caption := 'Sonuçlarý Al';
+      IslemItemSub2.Caption := 'GeliþRef Sonuç Al';
+      IslemItemSub1.Visible := True;
+      IslemItemSub2.Visible := True;
+      IslemItemSub3.Visible := False;
+      IslemItem.Visible := True;
+      KaydetItem.Visible := false;
+      SonucAlItem.Visible := False;
+   end;
+
+   if strToint(datalar._labID) = SYNLAB
+   then begin
+      IslemItemSub1.Caption := 'Hasta Kaydet';
+      IslemItemSub2.Caption := 'Sonuç Al';
+      IslemItemSub1.Visible := True;
+      IslemItemSub2.Visible := True;
+      IslemItemSub3.Visible := False;
+      IslemItem.Visible := True;
+      KaydetItem.Visible := false;
+      SonucAlItem.Visible := False;
+   end;
+
 
    inherited;
 

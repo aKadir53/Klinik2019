@@ -152,8 +152,6 @@ object frmIlacSarf: TfrmIlacSarf
       Font.Style = [fsBold]
       ParentFont = False
       OnClick = btnVazgecClick
-      ExplicitLeft = 584
-      ExplicitTop = 4
     end
     object btnSend: TcxButton
       Left = 503

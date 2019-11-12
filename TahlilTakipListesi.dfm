@@ -387,7 +387,6 @@ object frmTahliltakip: TfrmTahliltakip
         ExcelFileName = 'TahlilSonuclar'#305
         ExceleGonder = True
         PopupForm = False
-        ExplicitTop = 37
         object Liste: TcxGridDBBandedTableView
           OnDblClick = ListeDblClick
           OnCustomDrawCell = ListeCustomDrawCell
@@ -1276,6 +1275,7 @@ object frmTahliltakip: TfrmTahliltakip
     object T3: TMenuItem
       Tag = 9
       Caption = 'Tetkik Takip Formu'
+      ImageIndex = 46
       OnClick = T3Click
     end
     object T4: TMenuItem

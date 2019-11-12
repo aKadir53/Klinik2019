@@ -1138,7 +1138,7 @@ object GirisForm: TGirisForm
           DDF990918AA427757830220DC123A8F66B7AFEEABFB57B7D5E16C0EA7D1A3F44
           C7BAB307C3FE4D481C68ECE37D35A4BD3E00ECFE0148E5CEFD198D5E48000000
           0049454E44AE426082}
-        OnClick = cxKaydetClick
+        OnClick = Image1Click
         ExplicitLeft = 672
         ExplicitHeight = 41
       end
@@ -1249,7 +1249,7 @@ object GirisForm: TGirisForm
       object ToolBar1: TToolBar
         Left = 11
         Top = 2
-        Width = 0
+        Width = 614
         Height = 48
         Align = alClient
         ButtonHeight = 32
@@ -1763,15 +1763,7 @@ object GirisForm: TGirisForm
       Properties.Alignment.Horz = taCenter
       Properties.Alignment.Vert = taVCenter
       Properties.ClearKey = 46
-      Properties.Items = <
-        item
-          Description = 'SGK'
-          Value = '1'
-        end
-        item
-          Description = 'Yurt D'#305#351#305
-          Value = '99'
-        end>
+      Properties.Items = <>
       Properties.OnChange = TopPanelPropertiesChange
       Style.Font.Charset = DEFAULT_CHARSET
       Style.Font.Color = clWindowText
@@ -1782,8 +1774,11 @@ object GirisForm: TGirisForm
       TabOrder = 10
       OnEnter = cxEditEnter
       OnExit = cxEditExit
+      TableName = 'Kurumlar'
+      Conn = DATALAR.ADOConnection2
+      ValueField = 'kod'
+      DisplayField = 'tanimi'
       BosOlamaz = False
-      ItemList = '1;SGK,99;Yurt D'#305#351#305
       FilterSet = fsNone
       Width = 115
     end
@@ -1846,6 +1841,7 @@ object GirisForm: TGirisForm
       Width = 117
     end
     object RdGroup: TcxRadioGroup
+      Tag = -100
       Left = 1073
       Top = 2
       Align = alLeft

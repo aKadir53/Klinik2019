@@ -42,6 +42,7 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
         Align = alClient
         TabOrder = 0
         ExceleGonder = False
+        PopupForm = False
         object gridListe: TcxGridDBTableView
           PopupMenu = PopupMenu1
           DataController.Summary.DefaultGroupSummaryItems = <>
@@ -1183,6 +1184,7 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
         Align = alClient
         TabOrder = 1
         ExceleGonder = False
+        PopupForm = False
         object GridTakipList: TcxGridDBTableView
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>

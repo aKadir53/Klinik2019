@@ -300,6 +300,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       Tag = 81
       Caption = 'D'#252'zenle'
       ImageIndex = 35
+      Visible = False
       OnClick = cxButtonCClick
     end
     object S2: TMenuItem

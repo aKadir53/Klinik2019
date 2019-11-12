@@ -94,12 +94,12 @@ var
 begin
   _Tarih := NoktasizTarih(_provizyonTarihi_);
   try
-    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '1';
+    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '1,''H'',' + QuotedStr(datalar.AktifSirket);
     datalar.QuerySelect(ADO_Tetkikler,sql);
 
     TetkikSonucGridKolonGizle;
 
-    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '0';
+    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '0,''H'',' + QuotedStr(datalar.AktifSirket);
     ado := TADOQuery.Create(nil);
     try
       datalar.QuerySelect(ado,sql);

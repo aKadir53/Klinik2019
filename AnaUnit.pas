@@ -177,6 +177,7 @@ type
       var AllowChange: Boolean);
     procedure cxScheduler1AfterEditing(Sender: TcxCustomScheduler;
       AEvent: TcxSchedulerControlEvent);
+    procedure HesapBilgileriYukle;
   private
     { Private declarations }
     procedure WMSettingChange(var Message: TMessage); message WM_SETTINGCHANGE;
@@ -302,6 +303,121 @@ begin
     ado.Free;
   end;
 
+
+end;
+
+procedure TAnaForm.HesapBilgileriYukle;
+var
+  sube , sql : string;
+  _LabDataset_ : TDataset;
+begin
+
+
+ // datalar.QuerySelect(datalar.ADO_AktifSirket,'select * from SIRKETLER_TNM where sirketKod = ' +
+ //                     QuotedStr(datalar.AktifSirket));
+
+
+   sql := 'select id,Value,Erisim_Tanimi,SLK,SLB,Sira,SLB_Tanimi,ValueTip,ValueObje,ValueObjeValues ' +
+          ' from WebServisErisimBilgileri ' +
+          ' where Ozel = ''O''';
+    Datalar.ServisErisimBilgileri.Active := False;
+    Datalar.ServisErisimBilgileri.Active := True;
+    Datalar.ServisErisimBilgileri.LoadFromDataSet(datalar.QuerySelect(sql));
+
+    try
+      WebErisimBilgileriFirma(datalar.AktifSirket);
+
+      if WebErisimBilgi('98','00') = 'Gerçek'
+      Then BEgin
+        datalar._tesisKodu := WebErisimBilgiFirma('98','01');//datalar.ADO_AktifSirket.FieldByName('TesisKodu').AsInteger;
+        datalar._username := WebErisimBilgiFirma('98','07');//datalar.ADO_AktifSirket.FieldByName('TesisKodu').AsString;
+        datalar._sifre := WebErisimBilgiFirma('98','08');//datalar.ADO_AktifSirket.FieldByName('HastaKabulSifre').AsString;
+        datalar._kurumKod := strToint(ifThen(datalar._tesisKodu='','0',datalar._tesisKodu));
+        datalar._medulaOrtam_ := 'G';
+      End
+      Else
+      begin
+        datalar._tesisKodu := WebErisimBilgi('98','03');//datalar.ADO_AktifSirket.FieldByName('TesisKodu').AsInteger;
+        datalar._username := WebErisimBilgi('98','05');//datalar.ADO_AktifSirket.FieldByName('TesisKodu').AsString;
+        datalar._sifre := WebErisimBilgi('98','06');//datalar.ADO_AktifSirket.FieldByName('HastaKabulSifre').AsString;
+        datalar._kurumKod := strToint(ifThen(datalar._tesisKodu='','0',datalar._tesisKodu));
+        datalar._medulaOrtam_ := 'T';
+      end;
+
+      datalar._donemuser := WebErisimBilgiFirma('98','09');
+      datalar._donemsifre := WebErisimBilgiFirma('98','10');
+
+      datalar._userSaglikNet2_ := WebErisimBilgiFirma('SNT','02');//datalar.ADO_AktifSirket.FieldByName('SaglikNetKullaniciAdi').AsString;
+      datalar._passSaglikNet2_ := WebErisimBilgiFirma('SNT','03');//datalar.ADO_AktifSirket.FieldByName('SaglikNetSifre').AsString;
+      datalar._KurumSKRS_ := WebErisimBilgiFirma('SNT','01');
+
+
+      datalar.SMSHesapUser := WebErisimBilgiFirma('SMS','00');
+      datalar.SMSHesapSifre := WebErisimBilgiFirma('SMS','01');
+      datalar.SMSHesapFrom := WebErisimBilgiFirma('SMS','02');
+
+      datalar._labusername := WebErisimBilgiFirma('LA','00');
+      datalar._labsifre := WebErisimBilgiFirma('LA','01');
+      datalar._labkurumkod := WebErisimBilgiFirma('LA','02');
+      datalar._labkurumkodText := WebErisimBilgiFirma('LA','03');
+      datalar._labID := WebErisimBilgiFirma('LA','05');
+
+      datalar.KurumBransi := WebErisimBilgiFirma('98','11');
+   //   datalar._labSonucIcinGozArdiEt := WebErisimBilgiFirma('817');
+
+      _LabDataset_ := datalar.QuerySelect('select WebserviceURL,CalismaTipi,BarkodBasim from LabFirmalar where kod = ' +
+                                     QuotedStr(datalar._labID));
+
+       datalar._laburl := _LabDataset_.FieldByName('WebserviceURL').AsString;
+       datalar._LabCalismaYon := _LabDataset_.FieldByName('CalismaTipi').AsString;
+       datalar._LabBarkodBasim := _LabDataset_.FieldByName('BarkodBasim').AsString;
+
+       datalar.eNabizKayit := WebErisimBilgi('PRM','03');
+       datalar.DefaultTedaviTuru := WebErisimBilgi('98','12');
+       datalar.DefaultTedaviTipi := WebErisimBilgi('98','13');
+
+       datalar._DyobKurumKodu_ := WebErisimBilgiFirma('TDIS','00');
+       datalar._DyobSifre_ := WebErisimBilgiFirma('TDIS','01');
+       datalar._DyobServiceKodu_ := WebErisimBilgiFirma('TDIS','02');
+
+
+    except
+    end;
+
+
+
+
+  // Lab Eriþim bilgileri buraya alýnacak
+
+
+
+  datalar.HizmetKayitWS.UserName := datalar._username;
+  datalar.HizmetKayitWS.Password := datalar._sifre;
+  datalar.HastaKabulWS.UserName := datalar._username;
+  datalar.HastaKabulWS.Password := datalar._sifre;
+  datalar.YardimciIslemWS.UserName := datalar._username;
+  datalar.YardimciIslemWS.Password := datalar._sifre;
+  datalar.FaturaKayitWS.UserName := datalar._username;
+  datalar.FaturaKayitWS.Password := datalar._sifre;
+  datalar.RaporIslemWS.UserName := datalar._username;
+  datalar.RaporIslemWS.Password := datalar._sifre;
+
+  if datalar._medulaOrtam_ = 'T'
+  Then begin
+   datalar.RaporIslemWS.Method := mTest;
+   datalar.HizmetKayitWS.Method := mTest;
+   datalar.HastaKabulWS.Method := mTest;
+   datalar.YardimciIslemWS.Method := mTest;
+   datalar.FaturaKayitWS.Method := mTest;
+  end
+  else
+  begin
+   datalar.RaporIslemWS.Method := mGercek;
+   datalar.HizmetKayitWS.Method := mGercek;
+   datalar.HastaKabulWS.Method := mGercek;
+   datalar.YardimciIslemWS.Method := mGercek;
+   datalar.FaturaKayitWS.Method := mGercek;
+  end;
 
 end;
 
@@ -431,6 +547,7 @@ begin
   end;
 
   SetMenu;
+  HesapBilgileriYukle;
 
 end;
 
@@ -1154,75 +1271,7 @@ begin
   dxStatusBar1.Panels[1].Text := DATALAR.AktifSirketAdi + '-' + datalar.AktifSubeAdi;
   dxStatusBar1.Panels[1].Width := length(Datalar.AktifSirketAdi) * 8;
 
- // datalar.QuerySelect(datalar.ADO_AktifSirket,'select * from SIRKETLER_TNM where sirketKod = ' +
- //                     QuotedStr(datalar.AktifSirket));
-
-
-   sql := 'select WF.id,WF.Value,W.Erisim_Tanimi,W.sLK,W.SLB,W.Sira,W.SLB_Tanimi,W.ValueTip,W.ValueObje,W.ValueObjeValues ' +
-          'from WebServisErisimBilgileri_Firma WF ' +
-          'join WebServisErisimBilgileri W on W.id = WF.id ' +
-          'where WF.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-          ' order by SLK,SLB ';
-    Datalar.ServisErisimBilgileri.Active := False;
-    Datalar.ServisErisimBilgileri.Active := True;
-    Datalar.ServisErisimBilgileri.LoadFromDataSet(datalar.QuerySelect(sql));
-
-    try
-      WebErisimBilgileriFirma(datalar.AktifSirket);
-
-      datalar._labusername := WebErisimBilgiFirma('811');
-      datalar._labsifre := WebErisimBilgiFirma('812');
-      datalar._labkurumkod := WebErisimBilgiFirma('813');
-      datalar._labkurumkodText := WebErisimBilgiFirma('814');
-      datalar._labID := WebErisimBilgiFirma('15');
-      datalar._labSonucIcinGozArdiEt := WebErisimBilgiFirma('817');
-
-      _LabDataset_ := datalar.QuerySelect('select WebserviceURL,CalismaTipi,BarkodBasim from LabFirmalar where kod = ' +
-                                     QuotedStr(datalar._labID));
-
-       datalar._laburl := _LabDataset_.FieldByName('WebserviceURL').AsString;
-       datalar._LabCalismaYon := _LabDataset_.FieldByName('CalismaTipi').AsString;
-       datalar._LabBarkodBasim := _LabDataset_.FieldByName('BarkodBasim').AsString;
-    except
-    end;
-
-  if WebErisimBilgi('98','00') = 'Gerçek'
-  Then BEgin
-    datalar._tesisKodu := WebErisimBilgi('99','00');//datalar.ADO_AktifSirket.FieldByName('TesisKodu').AsInteger;
-    datalar._username := WebErisimBilgi('98','18');//datalar.ADO_AktifSirket.FieldByName('TesisKodu').AsString;
-    datalar._sifre := WebErisimBilgi('98','19');//datalar.ADO_AktifSirket.FieldByName('HastaKabulSifre').AsString;
-    datalar._kurumKod := strToint(ifThen(datalar._tesisKodu='','0',datalar._tesisKodu));
-  End
-  Else
-  begin
-    datalar._tesisKodu := WebErisimBilgi('991','00');//datalar.ADO_AktifSirket.FieldByName('TesisKodu').AsInteger;
-    datalar._username := WebErisimBilgi('98','16');//datalar.ADO_AktifSirket.FieldByName('TesisKodu').AsString;
-    datalar._sifre := WebErisimBilgi('98','17');//datalar.ADO_AktifSirket.FieldByName('HastaKabulSifre').AsString;
-    datalar._kurumKod := strToint(ifThen(datalar._tesisKodu='','0',datalar._tesisKodu));
-  end;
-
-  datalar._donemuser := WebErisimBilgi('98','20');
-  datalar._donemsifre := WebErisimBilgi('98','21');
-
-  datalar._userSaglikNet2_ := WebErisimBilgi('SNT','02');//datalar.ADO_AktifSirket.FieldByName('SaglikNetKullaniciAdi').AsString;
-  datalar._passSaglikNet2_ := WebErisimBilgi('SNT','03');//datalar.ADO_AktifSirket.FieldByName('SaglikNetSifre').AsString;
-  datalar._KurumSKRS_ := WebErisimBilgi('SNT','01');
-
-
-  // Lab Eriþim bilgileri buraya alýnacak
-
-
-
-  datalar.HizmetKayitWS.UserName := datalar._username;
-  datalar.HizmetKayitWS.Password := datalar._sifre;
-  datalar.HastaKabulWS.UserName := datalar._username;
-  datalar.HastaKabulWS.Password := datalar._sifre;
-  datalar.YardimciIslemWS.UserName := datalar._username;
-  datalar.YardimciIslemWS.Password := datalar._sifre;
-  datalar.FaturaKayitWS.UserName := datalar._username;
-  datalar.FaturaKayitWS.Password := datalar._sifre;
-  datalar.RaporIslemWS.UserName := datalar._username;
-  datalar.RaporIslemWS.Password := datalar._sifre;
+  HesapBilgileriYukle;
 
   datalar.QuerySelect(datalar.ADO_aktifSirketLogo,'select * from FirmaLogo where sirketKod = ' +
                       QuotedStr(datalar.AktifSirket));

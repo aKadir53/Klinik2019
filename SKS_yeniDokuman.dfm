@@ -115,6 +115,7 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
       ExceleGonder = False
+      PopupForm = False
       ExplicitLeft = 2
       ExplicitTop = -2
       ExplicitWidth = 586
@@ -531,6 +532,7 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
       ExceleGonder = False
+      PopupForm = False
       ExplicitLeft = 2
       ExplicitTop = -2
       ExplicitWidth = 796
@@ -847,6 +849,7 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
       ExceleGonder = False
+      PopupForm = False
       ExplicitLeft = 2
       ExplicitTop = -2
       ExplicitWidth = 188
@@ -1199,6 +1202,20 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
     end
     object N3: TMenuItem
       Caption = '-'
+    end
+    object P1: TMenuItem
+      Caption = 'PDF Y'#252'kle'
+      ImageIndex = 110
+      object Y1: TMenuItem
+        Tag = -20
+        Caption = 'Y'#252'kle'
+        OnClick = cxButtonCClick
+      end
+      object S1: TMenuItem
+        Tag = -21
+        Caption = 'Sil'
+        OnClick = cxButtonCClick
+      end
     end
   end
 end

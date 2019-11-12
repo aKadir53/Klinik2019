@@ -574,11 +574,10 @@ begin
   ii := chkList.Properties.Items.Add;
   ii.Caption := 'Fatura Detayý Göster';
 
-
   GridFaturalar.DataController.DataSource := DataSource;
   FaturaDetayGrid.Dataset.Connection := Datalar.ADOConnection2;
 
-  SayfaCaption('','','','','');
+  SayfaCaption('Takipler','','','','');
 end;
 
 procedure TfrmFaturalar.GozlemYazdir(const GozlemID: integer);

@@ -2,7 +2,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
   Left = 0
   Top = 0
   Caption = 'frmSKS_Dokumanlar'
-  ClientHeight = 625
+  ClientHeight = 633
   ClientWidth = 972
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -38,7 +38,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     Left = 0
     Top = 0
     Width = 972
-    Height = 625
+    Height = 633
     Align = alClient
     Font.Charset = TURKISH_CHARSET
     Font.Color = clWindowText
@@ -54,6 +54,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     LookAndFeel.SkinName = 'McSkin'
     ExcelFileName = 'SKS_DokumanListesi'
     ExceleGonder = True
+    PopupForm = False
     object gridDokumanlar: TcxGridDBTableView
       PopupMenu = PopupMenu1
       OnDblClick = gridDokumanlarDblClick
@@ -76,22 +77,11 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       FilterBox.CustomizeDialog = False
       DataController.DataModeController.DetailInSQLMode = True
       DataController.DataSource = DS_Dokumanlar
-      DataController.DetailKeyFieldNames = 'Kod'
       DataController.Filter.Active = True
       DataController.Filter.TranslateBetween = True
       DataController.Filter.TranslateLike = True
       DataController.Summary.DefaultGroupSummaryItems = <>
-      DataController.Summary.FooterSummaryItems = <
-        item
-          Format = '#,###.#0'
-          Kind = skSum
-          FieldName = 'borc'
-        end
-        item
-          Format = '#,###.#0'
-          Kind = skSum
-          FieldName = 'alacak'
-        end>
+      DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
       Filtering.MRUItemsList = False
       Filtering.ColumnMRUItemsList = False
@@ -154,6 +144,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         DataBinding.FieldName = 'tur'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         HeaderGlyphAlignmentHorz = taCenter
@@ -360,191 +351,25 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         HeaderAlignmentVert = vaCenter
         Width = 80
       end
-    end
-    object cxGridDBBandedTableView1: TcxGridDBBandedTableView
-      DataController.DataModeController.DetailInSQLMode = True
-      DataController.DataModeController.GridMode = True
-      DataController.DataModeController.SmartRefresh = True
-      DataController.DetailKeyFieldNames = 'Tan'#305'm'
-      DataController.Filter.Active = True
-      DataController.Filter.AutoDataSetFilter = True
-      DataController.Filter.TranslateBetween = True
-      DataController.Filter.TranslateIn = True
-      DataController.Filter.TranslateLike = True
-      DataController.KeyFieldNames = 'Tan'#305'm'
-      DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText, dcoFocusTopRowAfterSorting, dcoImmediatePost]
-      DataController.Summary.DefaultGroupSummaryItems = <
-        item
-          Kind = skSum
-          Position = spFooter
-          Column = cxGridDBBandedColumn5
-        end
-        item
-          Kind = skSum
-          Column = cxGridDBBandedColumn5
-        end>
-      DataController.Summary.FooterSummaryItems = <>
-      DataController.Summary.SummaryGroups = <>
-      Filtering.ColumnFilteredItemsList = True
-      FilterRow.InfoText = 'Arama Sat'#305'r'#305
-      FilterRow.ApplyChanges = fracImmediately
-      OptionsBehavior.AlwaysShowEditor = True
-      OptionsBehavior.DragDropText = True
-      OptionsBehavior.FocusCellOnTab = True
-      OptionsBehavior.FocusFirstCellOnNewRecord = True
-      OptionsBehavior.GoToNextCellOnEnter = True
-      OptionsBehavior.FocusCellOnCycle = True
-      OptionsBehavior.PullFocusing = True
-      OptionsData.Deleting = False
-      OptionsData.Editing = False
-      OptionsData.Inserting = False
-      OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
-      OptionsView.Footer = True
-      OptionsView.FooterMultiSummaries = True
-      OptionsView.GroupByBox = False
-      OptionsView.GroupFooterMultiSummaries = True
-      OptionsView.GroupFooters = gfVisibleWhenExpanded
-      OptionsView.BandCaptionsInColumnAlternateCaption = True
-      OptionsView.BandHeaderEndEllipsis = True
-      Bands = <
-        item
-          Caption = 'Geli'#351'ler'
-        end>
-      object cxGridDBBandedColumn1: TcxGridDBBandedColumn
-        DataBinding.FieldName = 'Tan'#305'm'
-        Width = 90
-        Position.BandIndex = 0
-        Position.ColIndex = 0
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn2: TcxGridDBBandedColumn
-        Caption = 'Tan'#305'm Ad'#305
-        DataBinding.FieldName = 'ad'
-        Width = 150
-        Position.BandIndex = 0
-        Position.ColIndex = 1
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn3: TcxGridDBBandedColumn
-        Caption = 'Toplam'
-        DataBinding.FieldName = 'adet'
-        Width = 70
-        Position.BandIndex = 0
-        Position.ColIndex = 2
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn4: TcxGridDBBandedColumn
-        DataBinding.FieldName = 'kurumT'
-        PropertiesClassName = 'TcxCurrencyEditProperties'
-        Properties.DisplayFormat = '#,###.#0'
-        Width = 80
-        Position.BandIndex = 0
-        Position.ColIndex = 3
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn5: TcxGridDBBandedColumn
-        DataBinding.FieldName = 'hastaT'
-        PropertiesClassName = 'TcxCurrencyEditProperties'
-        Properties.DisplayFormat = '#,###.#0'
-        Width = 80
-        Position.BandIndex = 0
-        Position.ColIndex = 4
-        Position.RowIndex = 0
-      end
-    end
-    object cxGridDBBandedTableView2: TcxGridDBBandedTableView
-      DataController.DetailKeyFieldNames = 'gelisNo'
-      DataController.KeyFieldNames = 'gelisNo'
-      DataController.MasterKeyFieldNames = 'gelisNo'
-      DataController.Summary.DefaultGroupSummaryItems = <>
-      DataController.Summary.FooterSummaryItems = <>
-      DataController.Summary.SummaryGroups = <>
-      OptionsBehavior.AlwaysShowEditor = True
-      OptionsView.GroupByBox = False
-      Bands = <
-        item
-          Caption = 'Hareketler'
-        end>
-      object cxGridDBBandedColumn6: TcxGridDBBandedColumn
-        DataBinding.FieldName = 'NAME1'
-        Position.BandIndex = 0
-        Position.ColIndex = 0
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn7: TcxGridDBBandedColumn
-        DataBinding.FieldName = 'SATISF'
-        Position.BandIndex = 0
-        Position.ColIndex = 1
-        Position.RowIndex = 0
-      end
-    end
-    object cxGridDBBandedTableView3: TcxGridDBBandedTableView
-      DataController.Summary.DefaultGroupSummaryItems = <>
-      DataController.Summary.FooterSummaryItems = <>
-      DataController.Summary.SummaryGroups = <>
-      Bands = <
-        item
-          Caption = 'i'#351'lemler'
-        end>
-    end
-    object cxGridDBBandedTableView4: TcxGridDBBandedTableView
-      DataController.DataModeController.DetailInSQLMode = True
-      DataController.DataModeController.GridMode = True
-      DataController.Filter.Active = True
-      DataController.Summary.DefaultGroupSummaryItems = <>
-      DataController.Summary.FooterSummaryItems = <>
-      DataController.Summary.SummaryGroups = <>
-      OptionsData.Deleting = False
-      OptionsData.DeletingConfirmation = False
-      OptionsData.Editing = False
-      OptionsData.Inserting = False
-      OptionsView.GroupByBox = False
-      OptionsView.BandCaptionsInColumnAlternateCaption = True
-      Bands = <
-        item
-        end>
-      object cxGridDBBandedColumn8: TcxGridDBBandedColumn
-        Caption = 'Tanim'
-        DataBinding.FieldName = 'TANIM'
-        Position.BandIndex = 0
-        Position.ColIndex = 0
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn9: TcxGridDBBandedColumn
-        Caption = 'Hasta Ad'#305
-        DataBinding.FieldName = 'HASTAADI'
-        Position.BandIndex = 0
-        Position.ColIndex = 1
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn10: TcxGridDBBandedColumn
-        Caption = 'Soyad'#305
-        DataBinding.FieldName = 'HASTASOYADI'
-        Position.BandIndex = 0
-        Position.ColIndex = 2
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn11: TcxGridDBBandedColumn
-        Caption = 'Hizmet Ad'#305
-        DataBinding.FieldName = 'NAME1'
-        Width = 80
-        Position.BandIndex = 0
-        Position.ColIndex = 3
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn12: TcxGridDBBandedColumn
-        Caption = 'Kurum F'
-        DataBinding.FieldName = 'KSATISF'
-        Position.BandIndex = 0
-        Position.ColIndex = 4
-        Position.RowIndex = 0
-      end
-      object cxGridDBBandedColumn13: TcxGridDBBandedColumn
-        Caption = 'Hasta F'
-        DataBinding.FieldName = 'SATISF'
-        Position.BandIndex = 0
-        Position.ColIndex = 5
-        Position.RowIndex = 0
+      object gridDokumanlarColumn3: TcxGridDBColumn
+        Caption = 'PDF'
+        DataBinding.FieldName = 'PDFVar'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Images = DATALAR.imag24png
+        Properties.Items = <
+          item
+            ImageIndex = 110
+            Value = 1
+          end
+          item
+            Value = 0
+          end>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 40
       end
     end
     object cxGridLevel1: TcxGridLevel
@@ -557,21 +382,16 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
     Parameters = <>
-    Prepared = True
     SQL.Strings = (
-      'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from Dokumanlar D'
-      '          join DokumanKapsamlari DK on DK.kod = D.Kapsam '
-      '           join DokumanTurleri DT on DT.kod = D.tur '
-      
-        'left join DokumanlarRev DR on DR.dokumanid = D.id and DR.aktif =' +
-        ' 1')
+      'exec sp_DokumanListesi '#39'000005'#39
+      '')
     Left = 368
     Top = 208
   end
   object DS_Dokumanlar: TDataSource
     DataSet = Ado_Dokumanlar
-    Left = 416
-    Top = 208
+    Left = 368
+    Top = 272
   end
   object ADO_Kapsam: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -633,7 +453,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     end
     object E1: TMenuItem
       Tag = -1
-      Caption = 'Ekle'
+      Caption = 'Yeni'
       ImageIndex = 30
       OnClick = cxButtonCClick
     end

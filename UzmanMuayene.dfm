@@ -247,8 +247,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 152
-    Top = 88
+    Left = 248
+    Top = 272
     object K1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -272,6 +272,12 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     object N3: TMenuItem
       Caption = '-'
       ImageIndex = 28
+    end
+    object T2: TMenuItem
+      Tag = -5
+      Caption = 'Tahlil Sonu'#231'lar'#305
+      ImageIndex = 45
+      OnClick = cxButtonCClick
     end
   end
   object ADO_UzmanMuayene: TADOQuery

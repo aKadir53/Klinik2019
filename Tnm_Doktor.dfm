@@ -87,6 +87,7 @@ object frmDoktorlar: TfrmDoktorlar
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
     ExceleGonder = False
+    PopupForm = False
     object DBGrid: TcxGridDBTableView
       Navigator.Buttons.First.Visible = False
       Navigator.Buttons.PriorPage.Visible = False

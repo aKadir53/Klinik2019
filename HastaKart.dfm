@@ -22,7 +22,7 @@ object frmHastaKart: TfrmHastaKart
   TextHeight = 13
   object Splitter_Muayene: TSplitter
     Left = 0
-    Top = 373
+    Top = 411
     Width = 806
     Height = 3
     Cursor = crVSplit
@@ -37,12 +37,10 @@ object frmHastaKart: TfrmHastaKart
     Properties.Items = <
       item
         Description = 'Bay'
-        ImageIndex = 3
         Value = '0'
       end
       item
         Description = 'Bayan'
-        ImageIndex = 2
         Value = '1'
       end>
     Style.LookAndFeel.NativeStyle = False
@@ -51,6 +49,8 @@ object frmHastaKart: TfrmHastaKart
     StyleHot.LookAndFeel.NativeStyle = False
     TabOrder = 0
     BosOlamaz = False
+    ItemList = '0;Bay,1;Bayan'
+    FilterSet = fsCinsiyet
     Width = 121
   end
   object MEDENI: TcxImageComboKadir
@@ -60,16 +60,24 @@ object frmHastaKart: TfrmHastaKart
     Properties.Items = <
       item
         Description = 'Evli'
-        ImageIndex = 4
         Value = '0'
       end
       item
         Description = 'Bekar'
-        ImageIndex = 5
         Value = '1'
+      end
+      item
+        Description = 'Bo'#351'anm'#305#351
+        Value = '2'
+      end
+      item
+        Description = 'Dul'
+        Value = '3'
       end>
     TabOrder = 1
     BosOlamaz = False
+    ItemList = '0;Evli,1;Bekar,2;Bo'#351'anm'#305#351',3;Dul'
+    FilterSet = fsMedeniHal
     Width = 121
   end
   object DURUM: TcxImageComboKadir
@@ -79,7 +87,6 @@ object frmHastaKart: TfrmHastaKart
     Properties.Items = <
       item
         Description = #199'al'#305#351'an'
-        ImageIndex = 0
         Value = '1'
       end
       item
@@ -97,20 +104,20 @@ object frmHastaKart: TfrmHastaKart
     TabOrder = 2
     Visible = False
     TableName = 'Medula_SigortaliTurleri'
-    Conn = DATALAR.ADOConnection2
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    ItemList = '1;'#199'al'#305#351'an,2;Emekli,3;SSK Kurum Personeli,4;Di'#287'er'
+    FilterSet = fsSgkDurumTip
     Width = 121
   end
   object VatandasTip: TcxImageComboKadir
     Left = 296
-    Top = 35
+    Top = 53
     Properties.ClearKey = 46
     Properties.Items = <
       item
         Description = 'Vatanda'#351
-        ImageIndex = 0
         Value = '0'
       end
       item
@@ -123,7 +130,7 @@ object frmHastaKart: TfrmHastaKart
       end
       item
         Description = 'Yabanc'#305
-        Value = '3'
+        Value = '4'
       end
       item
         Description = 'Kimliksiz'
@@ -131,6 +138,8 @@ object frmHastaKart: TfrmHastaKart
       end>
     TabOrder = 3
     BosOlamaz = False
+    ItemList = '0;Vatanda'#351',1;Yeni Do'#287'an,2;S'#305#287#305'nmac'#305',4;Yabanc'#305',6;Kimliksiz'
+    FilterSet = fsVatandasTip
     Width = 121
   end
   object seansGunleri: TcxCheckGroup
@@ -269,6 +278,7 @@ object frmHastaKart: TfrmHastaKart
   object KANGRUBU: TcxImageComboBox
     Left = 296
     Top = 80
+    Properties.ImmediateDropDownWhenActivated = True
     Properties.Items = <
       item
         Description = 'A RH (+)'
@@ -310,32 +320,9 @@ object frmHastaKart: TfrmHastaKart
     TabOrder = 8
     Width = 121
   end
-  object txtAktif: TcxImageComboBox
-    Left = 624
-    Top = 215
-    EditValue = '0'
-    Properties.Alignment.Vert = taVCenter
-    Properties.Items = <
-      item
-        Description = 'Pasif'
-        ImageIndex = 77
-        Value = 0
-      end
-      item
-        Description = 'Aktif'
-        Value = 1
-      end
-      item
-        Description = 'Misafir'
-        Value = 2
-      end>
-    Style.TextStyle = [fsBold]
-    TabOrder = 9
-    Width = 161
-  end
   object txtSeansSikayet: TcxCheckGroup
-    Left = 512
-    Top = 78
+    Left = 416
+    Top = 184
     Alignment = alCenterCenter
     EditValue = '011000000'
     Properties.Columns = 3
@@ -369,7 +356,7 @@ object frmHastaKart: TfrmHastaKart
         Caption = 'KOAH'
       end>
     Properties.OnEditValueChanged = seansGunleriPropertiesEditValueChanged
-    TabOrder = 10
+    TabOrder = 9
     Height = 64
     Width = 89
   end
@@ -382,7 +369,7 @@ object frmHastaKart: TfrmHastaKart
         Kind = bkEllipsis
       end>
     Properties.OnButtonClick = cxButtonEditPropertiesButtonClick
-    TabOrder = 11
+    TabOrder = 10
     ListeAc = Meslekler
     indexField = False
     ListeAcTus = 0
@@ -390,7 +377,7 @@ object frmHastaKart: TfrmHastaKart
   end
   object cxpnlHastaGelisler: TcxGroupBox
     Left = 0
-    Top = 376
+    Top = 414
     Align = alBottom
     Caption = 'Geli'#351'ler'
     ParentFont = False
@@ -400,14 +387,14 @@ object frmHastaKart: TfrmHastaKart
     Style.Font.Name = 'Tahoma'
     Style.Font.Style = [fsBold]
     Style.IsFontAssigned = True
-    TabOrder = 12
-    Height = 238
+    TabOrder = 11
+    Height = 200
     Width = 806
     object cxGridGelis: TcxGridKadir
       Left = 3
       Top = 15
       Width = 800
-      Height = 213
+      Height = 175
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -417,10 +404,11 @@ object frmHastaKart: TfrmHastaKart
       ParentFont = False
       TabOrder = 0
       ExceleGonder = False
+      PopupForm = False
       ExplicitLeft = 2
       ExplicitTop = -2
       ExplicitWidth = 802
-      ExplicitHeight = 238
+      ExplicitHeight = 200
       object GridGelisler: TcxGridDBBandedTableView
         PopupMenu = PopupMenu1
         OnDblClick = GridGelislerDblClick
@@ -620,13 +608,13 @@ object frmHastaKart: TfrmHastaKart
   object txtBobrekHastaligi: TcxButtonEdit
     Tag = 101
     Left = 17
-    Top = 251
+    Top = 269
     Properties.Buttons = <
       item
         Default = True
         Kind = bkEllipsis
       end>
-    TabOrder = 13
+    TabOrder = 12
     Width = 177
   end
   object hastaTip: TcxImageComboBox
@@ -642,7 +630,7 @@ object frmHastaKart: TfrmHastaKart
         Description = 'Akut'
         Value = '1'
       end>
-    TabOrder = 14
+    TabOrder = 13
     Width = 121
   end
   object txtBransKodu: TcxImageComboKadir
@@ -651,28 +639,20 @@ object frmHastaKart: TfrmHastaKart
     Top = 173
     EditValue = 'N'
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = 'Normal'
-        ImageIndex = 0
-        Value = 'N'
-      end
-      item
-        Description = 'Acil'
-        Value = 'A'
-      end>
+    Properties.Items = <>
     Style.BorderColor = clWindowFrame
     Style.BorderStyle = ebs3D
     Style.HotTrack = False
     Style.ButtonStyle = bts3D
     Style.PopupBorderStyle = epbsFrame3D
-    TabOrder = 15
+    TabOrder = 14
     Visible = False
     TableName = 'Medula_BransKodlari'
     Conn = DATALAR.ADOConnection2
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object txtDoktor: TcxImageComboKadir
@@ -681,28 +661,71 @@ object frmHastaKart: TfrmHastaKart
     Top = 197
     EditValue = 'N'
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = 'Normal'
-        ImageIndex = 0
-        Value = 'N'
-      end
-      item
-        Description = 'Acil'
-        Value = 'A'
-      end>
+    Properties.Items = <>
     Style.BorderColor = clWindowFrame
     Style.BorderStyle = ebs3D
     Style.HotTrack = False
     Style.ButtonStyle = bts3D
     Style.PopupBorderStyle = epbsFrame3D
-    TabOrder = 16
+    TabOrder = 15
     Visible = False
     TableName = 'DoktorlarT'
     Conn = DATALAR.ADOConnection2
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
+    Width = 121
+  end
+  object txtAktifPasifSebeb: TcxImageComboKadir
+    Left = 625
+    Top = 242
+    Properties.ClearKey = 46
+    Properties.Items = <>
+    TabOrder = 16
+    TableName = 'Diyaliz_AktifPasif_Sebeb'
+    Conn = DATALAR.ADOConnection2
+    ValueField = 'kod'
+    DisplayField = 'tanimi'
+    BosOlamaz = False
+    FilterSet = fsNone
+    Width = 161
+  end
+  object txtOlumNeden: TcxImageComboKadir
+    Left = 625
+    Top = 269
+    Properties.ClearKey = 46
+    Properties.Items = <>
+    TabOrder = 17
+    TableName = 'Diyaliz_Olum_Nedenleri'
+    Conn = DATALAR.ADOConnection2
+    ValueField = 'kod'
+    DisplayField = 'tanimi'
+    BosOlamaz = False
+    FilterSet = fsNone
+    Width = 161
+  end
+  object txtAktif: TcxImageComboKadir
+    Left = 627
+    Top = 215
+    Properties.ClearKey = 46
+    Properties.Items = <
+      item
+        Description = 'Pasif'
+        Value = '0'
+      end
+      item
+        Description = 'Aktif'
+        Value = '1'
+      end
+      item
+        Description = 'Misafir'
+        Value = '2'
+      end>
+    TabOrder = 18
+    BosOlamaz = False
+    ItemList = '0;Pasif,1;Aktif,2;Misafir'
+    FilterSet = fsNone
     Width = 121
   end
   object cxStyleRepository1: TcxStyleRepository
@@ -755,8 +778,8 @@ object frmHastaKart: TfrmHastaKart
     Top = 117
   end
   object PopupMenu2: TPopupMenu
-    Left = 344
-    Top = 136
+    Left = 400
+    Top = 272
   end
   object cxStyleRepository2: TcxStyleRepository
     PixelsPerInch = 96
@@ -795,8 +818,8 @@ object frmHastaKart: TfrmHastaKart
   end
   object ActionList1: TActionList
     Images = DATALAR.imag24png
-    Left = 632
-    Top = 320
+    Left = 328
+    Top = 256
     object PersonelKaydet: TAction
       Caption = 'Kaydet'
       ImageIndex = 83
@@ -812,8 +835,8 @@ object frmHastaKart: TfrmHastaKart
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 408
-    Top = 256
+    Left = 456
+    Top = 272
     object Kapat1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -900,9 +923,14 @@ object frmHastaKart: TfrmHastaKart
     end
     object T3: TMenuItem
       Tag = -36
-      Caption = 'Tedavi '#304'zlem'
+      Caption = 'Diyaliz '#304'zlem'
       ImageIndex = 67
       OnClick = cxButtonCClick
+    end
+    object MenucxKaydet: TMenuItem
+      Caption = 'Kaydet'
+      ImageIndex = 29
+      OnClick = cxKaydetClick
     end
     object lemler1: TMenuItem
       Tag = -20
@@ -914,16 +942,17 @@ object frmHastaKart: TfrmHastaKart
         ImageIndex = 85
         OnClick = cxKaydetClick
       end
-      object MenucxKaydet: TMenuItem
-        Caption = 'Kaydet'
-        ImageIndex = 86
-        OnClick = cxKaydetClick
-      end
       object MenucxIptal: TMenuItem
         Tag = 1
         Caption = 'Hasta Kart Sil'
         ImageIndex = 87
         OnClick = cxKaydetClick
+      end
+      object H2: TMenuItem
+        Tag = -20
+        Caption = 'Hasta Sorgula'
+        ImageIndex = 36
+        OnClick = cxButtonCClick
       end
       object akipBul1: TMenuItem
         Tag = -5

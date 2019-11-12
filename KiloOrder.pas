@@ -68,6 +68,7 @@ type
     procedure E1Click(Sender: TObject);
     procedure Y1Click(Sender: TObject);
     procedure H1Click(Sender: TObject);
+    procedure TopPanelButonClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -86,6 +87,7 @@ var
   sql , doktor , dosyaNo , gelisNo : string;
   adoRun : TADOQuery;
 begin
+(*
   doktor := copy(ado.FieldByName('doktor').AsString,1,4);
   dosyaNo := ado.FieldByName('dosyaNo').AsString;
   gelisNo := ado.FieldByName('gelisNo').AsString;
@@ -102,7 +104,7 @@ begin
      adoRun.Free;
   end;
 
-
+  *)
 end;
 
 procedure TfrmKiloOrder.B1Click(Sender: TObject);
@@ -169,7 +171,7 @@ begin
 
   TopPanel.Visible := True;
   TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False,True);
-  GridEkstre.DataController.DataSource := DataSource;
+ // GridEkstre.DataController.DataSource := DataSource;
 
 
    chkList.Properties.Items.Clear;
@@ -264,6 +266,23 @@ begin
   _Dataset.GotoBookmark(book);
 
   adoSql.Free;
+
+end;
+
+procedure TfrmKiloOrder.TopPanelButonClick(Sender: TObject);
+var
+  sql : string;
+begin
+  sql :='select HK.TCKIMLIKNO, hk.HASTAADI+'' ''+hk.HASTASOYADI hastaAdi ,Tarih,' +
+        ' hk.IdealKilo,GIRISKILO,CIKISKILO ,dbo.fn_yas(HK.dogumTARIHI) yas, ' +
+        ' tanG,Tanc,NabizG,NabizC,TanGK,TanCK,KanAlindimi,h.durum ' +
+        ' from hareketler h ' +
+        ' join hastakart hk on hk.dosyaNo = h.dosyaNo ' +
+        ' where Tarih between ' + txtTopPanelTarih1.GetSQLValue('YYYY-MM-DD') + ' and ' + txtTopPanelTarih2.GetSQLValue('YYYY-MM-DD') +
+        ' and hk.sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and h.Tip = ''S''';
+
+  datalar.QuerySelect(ado,sql);
+
 
 end;
 

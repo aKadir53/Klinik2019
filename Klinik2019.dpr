@@ -35,7 +35,6 @@ uses
   HastaTaniKart in 'HastaTaniKart.pas' {frmTaniKart},
   KurumLogin in 'KurumLogin.pas' {frmKurumBilgi},
   MedulaKurumSifreDegis in 'MedulaKurumSifreDegis.pas' {KurumSifreDegisForm},
-  hizliKayit in 'hizliKayit.pas' {frmHizliKayit},
   FirmaKart in 'FirmaKart.pas' {frmFirmaKart},
   MerkezBilgisi in 'MerkezBilgisi.pas' {frmMerkezBilgisi},
   HizmetKart in 'HizmetKart.pas' {frmHizmetKart},
@@ -97,7 +96,18 @@ uses
   TenayENA in 'WebReferans\TenayENA.pas',
   tenayserviceCENTRO in 'WebReferans\tenayserviceCENTRO.pas',
   LabTestlerService in 'WebReferans\LabTestlerService.pas',
-  klorOlcum in 'klorOlcum.pas' {frmKlorOlcum};
+  klorOlcum in 'klorOlcum.pas' {frmKlorOlcum},
+  GemsoftServiceBIYOTIP in 'WebReferans\GemsoftServiceBIYOTIP.pas',
+  GemSoftBIYOTIP in 'WebReferans\GemSoftBIYOTIP.pas',
+  TenayServiceSYNEVO in 'WebReferans\TenayServiceSYNEVO.pas',
+  TenaySynevo in 'WebReferans\TenaySynevo.pas',
+  Referans in 'WebReferans\Referans.pas',
+  ServiceReferansLab in 'WebReferans\ServiceReferansLab.pas',
+  TenayServiceSYNLAB in 'WebReferans\TenayServiceSYNLAB.pas',
+  TenaySYNLAB in 'WebReferans\TenaySYNLAB.pas',
+  hizliKayit in 'hizliKayit.pas' {frmHizliKayit},
+  HastaIzlemListesi in 'HastaIzlemListesi.pas' {frmIzlem},
+  TakipKontrol in 'TakipKontrol.pas' {frmTakipKontrol};
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 

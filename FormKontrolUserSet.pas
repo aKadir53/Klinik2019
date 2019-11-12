@@ -175,8 +175,9 @@ begin
         (FormName.components[i].ClassName = 'TcxComboBox') or
         (FormName.components[i].ClassName = 'TcxComboBoxKadir') or
         (FormName.components[i].ClassName = 'TcxImageComboKadir') or
-        (FormName.components[i].ClassName = 'TcxImageComboBox')
-
+        (FormName.components[i].ClassName = 'TcxImageComboBox') or
+        (FormName.components[i].ClassName = 'TcxMemo') or
+        (FormName.components[i].ClassName = 'TcxCurrencyEdit')
      Then
      begin
         item := Inputkontroller.Items.Add;

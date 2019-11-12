@@ -22,7 +22,6 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
     Width = 481
     Height = 564
     Align = alLeft
-    Caption = 'Son 6 Aydaki Tahlil Bilgileri'
     TabOrder = 0
     object cxGrid3: TcxGrid
       Left = 2
@@ -117,7 +116,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object EKIM: TcxGridDBColumn
           DataBinding.FieldName = 'EKIM'
@@ -127,7 +127,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object EYLUL: TcxGridDBColumn
           DataBinding.FieldName = 'EYLUL'
@@ -137,7 +138,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object AGUSTOS: TcxGridDBColumn
           DataBinding.FieldName = 'AGUSTOS'
@@ -147,7 +149,7 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Width = 35
         end
         object TEMMUZ: TcxGridDBColumn
           DataBinding.FieldName = 'TEMMUZ'
@@ -157,7 +159,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object HAZIRAN: TcxGridDBColumn
           DataBinding.FieldName = 'HAZIRAN'
@@ -167,7 +170,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object MAYIS: TcxGridDBColumn
           DataBinding.FieldName = 'MAYIS'
@@ -177,7 +181,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object NISAN: TcxGridDBColumn
           DataBinding.FieldName = 'NISAN'
@@ -187,7 +192,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object MART: TcxGridDBColumn
           DataBinding.FieldName = 'MART'
@@ -197,7 +203,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object SUBAT: TcxGridDBColumn
           DataBinding.FieldName = 'SUBAT'
@@ -207,7 +214,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object OCAK: TcxGridDBColumn
           DataBinding.FieldName = 'OCAK'
@@ -217,7 +225,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
           Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Width = 30
+          Options.Editing = False
+          Width = 35
         end
         object cxGridDBColumn4: TcxGridDBColumn
           DataBinding.FieldName = 'INo'
@@ -237,7 +246,9 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
       Top = 15
       Align = alTop
       Caption = 'Test Normalleri Kontrol'
+      Properties.Alignment = taLeftJustify
       TabOrder = 1
+      ExplicitTop = 14
       Width = 477
     end
   end
@@ -262,7 +273,7 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
     Parameters = <>
     SQL.Strings = (
       'exec sp_HastaTetkikTakipPIVOT '#39'015099'#39','#39'20160301'#39',1')
-    Left = 144
-    Top = 104
+    Left = 96
+    Top = 176
   end
 end

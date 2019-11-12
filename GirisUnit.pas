@@ -173,6 +173,7 @@ type
     procedure SayfalarChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure Timer1Timer(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
 
   private
     F_dosyaNO_ : string;
@@ -219,6 +220,10 @@ type
     F_sysTakipNo_ : string;
     F_DescFieldKontrol : Boolean;
     F_FormDiseabled : Boolean;
+    F_Foto_ : TcxImage;
+    F_kilo_ : double;
+    F_yas_ : integer;
+    F_value_ : Variant;
 
   protected
     F_IDENTITY : Integer;
@@ -344,6 +349,10 @@ type
     property _sysTakipNo_ : string read F_sysTakipNo_ write F_sysTakipNo_;
     property _DescFieldKontrol : Boolean read F_DescFieldKontrol write F_DescFieldKontrol;
     property _FormDiseabled : Boolean read F_FormDiseabled write F_FormDiseabled;
+    property _Foto_ : TcxImage read F_Foto_ write F_Foto_;
+    property _kilo_ : double read F_kilo_ write F_kilo_;
+    property _yas_ : integer read F_yas_ write F_yas_;
+    property _value_ : variant read F_value_ write F_value_;
   end;
 
 const
@@ -585,13 +594,17 @@ begin
 
        TagfrmSKS_Dokumanlar :
            begin
-
-               sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
+                 (*
+               sql := 'select top 1 *,DK.tanimi KapsamAdi,DT.tanimi TurAdi, ' +
+                      ' case when isnull(DR.PDF,D.PDF) is null then 0 else 1 end PDFVar ' +
+                      ' from SKS_Dokumanlar D' +
                       ' join SKS_DokumanKapsamlari DK on DK.kod = D.Kapsam ' +
                       ' join SKS_DokumanTurleri DT on DT.kod = D.tur ' +
                       ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id'+ // and DR.aktif = 1' +
-                      ' where D.sirketKod = ' + QuotedStr(datalar.AktifSirket);
+                      ' where D.sirketKod = ' + QuotedStr(datalar.AktifSirket)  +
+                      ' order by rev desc ';
                       //convert(varchar,yayinTarih,112) between ' + tarihal(txtTopPanelTarih1.date) + ' and ' + tarihal(txtTopPanelTarih2.Date);
+           *)
            end;
 
 
@@ -713,6 +726,12 @@ begin
 
   pnlDurum.left := (width div 2) - pnlDurum.width div 2;
   pnlDurum.Top := (Height div 2) - pnlDurum.Height div 2;
+
+  KurumTipTopPanel.Conn := datalar.ADOConnection2;
+  KurumTipTopPanel.TableName := 'Kurumlar';
+  KurumTipTopPanel.DisplayField := 'ADI1';
+  KurumTipTopPanel.ValueField := 'Kurum';
+  KurumTipTopPanel.Filter := '';
 
   Result := True;
 end;
@@ -869,26 +888,34 @@ begin
 
     setDataStringIC(self,'DiyalizorCinsi','Diyalizör Cinsi',Grp,'',120,'Diyalizor_Cinsleri','Kod','Tanimi','',1);
     setDataStringIC(self,'DiyalizorTipi','Diyalizör Tipi',Grp,'',120,'Diyalizor_Tipleri','Kod','Tanimi','',1);
-    setDataStringIC(self,'Diyalizor','Diyalizör',Grp,'',120,'Diyalizorler','Kod','Tanimi','',1);
+
+    setDataStringIC(self,'Diyalizor','Diyalizör',Grp,'',120,'Diyalizorler','Code','Name1','',1);
+
     setDataStringIC(self,'D','Diyalizat',Grp,'',120,'Diyaliz_Diyalizat','Kod','Tanimi','',1);
     setDataStringIC(self,'GIRISYOLU','Damar Giriþ',Grp,'',120,'Diyaliz_DamarGiris','Kod','Tanimi','',1);
 
     D.Name := 'txtYA';
-    ComboDoldurName('',D);
+    ComboDoldur3('select tanimi from Diyaliz_YA',D,0,-1);
     setDataStringC(self,'YA','Yüzey Alan',Grp,'',120,D.Properties.Items);
 
     D.Name := 'txtHipar';
-    ComboDoldurName('',D);
+    ComboDoldur3('select tanimi from Diyaliz_Heparin',D,0,-1);
+
     setDataStringC(self,'HEPARINTIP','Heparin Tip',Grp,'',120,'Standart,DüþükMolekül,Diðer');
     setDataStringC(self,'HEPARIN','Heparin',Grp,'Hep',120,D.Properties.Items);
     setDataString(self,'HEPARINUYG','Heprin Uyg.',Grp,'',120);
 
+    D.name := 'txtAPH';
+    ComboDoldur3('select tanimi from Diyaliz_APH',D,0,-1);
 
     setDataStringC(self,'HCOOO','HCO3',Grp,'',70,'25,26,27,28,29,30,31,32,33,34,35');
-    setDataStringC(self,'APH','APH',Grp,'',70,'200,300,350,400,450');
+    setDataStringC(self,'APH','APH',Grp,'',70,D.Properties.Items);
     setDataStringC(self,'Na','Na',Grp,'',70,'136,138,140,142,144,146');
-    setDataStringC(self,'Igne','A.Ýðne',Grp,'',70,'14,15,16,17');
-    setDataStringC(self,'IgneV','V.Ýðne',Grp,'',70,'14,15,16,17');
+
+    D.name := 'txtIgne';
+    ComboDoldur3('select tanimi from Diyaliz_Igne',D,0,-1);
+    setDataStringC(self,'Igne','A.Ýðne',Grp,'',70,D.Properties.Items);
+    setDataStringC(self,'IgneV','V.Ýðne',Grp,'',70,D.Properties.Items);
 
     TcxImageComboKadir(FindComponent('DiyalizorCinsi')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
     TcxImageComboKadir(FindComponent('DiyalizorTipi')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
@@ -1409,12 +1436,12 @@ begin
       list := TcxButtonEditKadir(sender).ListeAc.ListeGetir;
       datalar.ButtonEditSecimlist := list;
       if length(list) = 0 then begin
-        TcxButtonEditKadir(sender).ListeAc.Where := where;
-        TcxButtonEditKadir(sender).Text := '';
-        TcxButtonEditKadir(sender).tanimDeger := '';
-        TcxButtonEditKadir(sender).kolon3 := '';
-        TcxButtonEditKadir(sender).kolon4 := '';
-        indexKaydiBul(varTostr(TcxCustomEdit(sender).EditingValue),TcxButtonEditKadir(sender).name);
+       // TcxButtonEditKadir(sender).ListeAc.Where := where;
+       // TcxButtonEditKadir(sender).Text := '';
+       // TcxButtonEditKadir(sender).tanimDeger := '';
+       // TcxButtonEditKadir(sender).kolon3 := '';
+       // TcxButtonEditKadir(sender).kolon4 := '';
+      //  indexKaydiBul(varTostr(TcxCustomEdit(sender).EditingValue),TcxButtonEditKadir(sender).name);
         exit;
       end;
       TcxButtonEditKadir(sender).Text := list[0].kolon1;
@@ -1630,12 +1657,14 @@ var
    key_ : word;
    shift_ :TShiftState;
    tus : TShortCut;
+   c : string;
 begin
 // butonedit kontolde enter tuþlanmýþ ve bu kntrolun indexfield true ise konumlanma yapýlýyor
 // kayýt bulunmuþsa dataset editlniyor kayýt kontrollere yerleþtiriliyor
 // bir sonraki kontoler geçiliyor
 // eger kontrollde tanýnlý kýsa yol tuþu varsa liste çma iþlemi için kýsa yol liste açýlýyor
-  if Key = 13
+
+  if (Key = 13) //and ((TcxCustomEdit(Sender).ClassName <> 'TcxImageComBoBox') or (TcxCustomEdit(Sender).ClassName <> 'TcxImageComBoKadir'))
   then begin
         if (TcxButtonEditKadir(sender).indexField = True)
         then begin
@@ -2050,6 +2079,8 @@ begin
   cxEditC.OnExit := cxEditExit;
   cxEditC.OnKeyDown := cxTextEditBKeyDown;
   cxEditC.Properties.OnEditValueChanged := PropertiesEditValueChanged;
+  cxEditC.Properties.ImmediatePost := True;
+  cxEditC.Properties.ImmediateUpdateText := True;
 end;
 
 
@@ -2091,6 +2122,8 @@ begin
   cxEditC.OnEnter := cxEditEnter;
   cxEditC.OnExit := cxEditExit;
   cxEditC.OnKeyDown := cxTextEditBKeyDown;
+  cxEditC.Properties.ImmediatePost := True;
+  cxEditC.Properties.ImmediateUpdateText := True;
 end;
 
 procedure TGirisForm.setDataStringC(sender : Tform ; fieldName,caption : string;
@@ -2276,7 +2309,8 @@ begin
      (obje.ClassName = 'TcxGridKadir') or
      (obje.ClassName = 'TcxPageControl') or
      (obje.ClassName = 'TcxGroupBox') or
-     (obje.ClassName = 'TcxCheckListBox')
+     (obje.ClassName = 'TcxCheckListBox') or
+     (obje.ClassName = 'TcxDBVerticalGrid')
   then
   begin
      dxLac.CaptionOptions.Layout := CaptionAling;
@@ -2300,9 +2334,11 @@ begin
      TcxCustomEdit(obje).OnExit := cxEditExit;
      TcxCustomEdit(obje).OnKeyDown := cxTextEditBKeyDown;
      TcxImageComboBox(obje).Properties.ImmediatePost := ImmediatePost;
+     TcxImageComboBox(obje).Properties.ImmediateUpdateText := True;
      TcxImageComboBox(obje).Properties.OnEditValueChanged := PropertiesEditValueChanged;
     end;
   end;
+
 
 end;
 
@@ -2536,12 +2572,13 @@ procedure TGirisForm.tableColumnDescCreate;
 var
  sql,col,desc : string;
  prm : TStringList;
+ IC : TStringList;
  grup : TdxLayoutGroup;
  ado : TADOQuery;
 begin
 // tablonun kolonlarýnda description özelliði tanýmlanmýþ kolonlarý bulup burdaki
 // tanýmlamaya göre forma kontrol koyar.
-// Caption,kolon,grup,uzunluk
+// Caption,kolon,grup,uzunluk,tablename;kod;value
 
   sql := Format(selectTableDescColumn,[#39+TableName+#39]);
   ado := TADOQuery.Create(nil);
@@ -2555,9 +2592,29 @@ begin
         col := ado.FieldByName('Column').AsString;
         desc := ado.FieldByName('Description').AsString;
         Split(',',desc,prm);
+
         grup := TdxLayoutGroup(FindComponent(prm[1]));
-        setDataString(self,col,prm[0], grup, prm[2],strtoint(prm[3]));
-        TcxTextEdit(FindComponent(col)).Enabled := _FormDiseabled;
+
+        if prm[4] <> ''
+        then begin
+          IC := TStringList.Create;
+          try
+            ExtractStrings([';'],[],PWideChar(prm[4]),IC);
+            setDataStringIC(self,col,prm[0],grup, prm[2],strtoint(prm[3]),IC[0],IC[1],IC[2]);
+          finally
+            IC.free;
+          end;
+        end
+        else
+        begin
+
+          setDataString(self,col,prm[0], grup, prm[2],strtoint(prm[3]));
+          TcxTextEdit(FindComponent(col)).Enabled := _FormDiseabled;
+
+        end;
+
+
+
         ado.Next;
       end;
     finally
@@ -2827,7 +2884,7 @@ begin
   if Menu.Items.Count > 0 then
   PopupMenuToToolBar(self,ToolBar1,Menu)
   else ToolBar1.Visible := false;
-
+  ToolBar1.Width := (Menu.Items.Count * 32) + 50;
   dxStatusBar1.Panels[1].Text := datalar.username;
   //USER_ID.Text := datalar.username;
 
@@ -2848,6 +2905,12 @@ begin
        end;
   end;
 //  GridToSayfaClient('YillikPlanGrid',self);
+end;
+
+procedure TGirisForm.Image1Click(Sender: TObject);
+begin
+   ShellExecute(0, 'open', PChar('Chrome.exe'), PChar('https://www.noktayazilim.net/KlinikKlavuz/'+ Tform(self).Name + '.html'),
+   nil, SW_SHOWNORMAL);
 end;
 
 procedure TGirisForm.Image2Click(Sender: TObject);

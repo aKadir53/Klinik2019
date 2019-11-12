@@ -5,7 +5,7 @@ object frmHastaListeD: TfrmHastaListeD
   BorderStyle = bsNone
   Caption = 'frmHastaListeD'
   ClientHeight = 601
-  ClientWidth = 650
+  ClientWidth = 740
   Color = 13750737
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,13 +23,12 @@ object frmHastaListeD: TfrmHastaListeD
     Align = alClient
     PanelStyle.Active = True
     TabOrder = 0
-    ExplicitWidth = 558
     Height = 563
-    Width = 650
+    Width = 740
     object uyari: TcxPageControl
       Left = 2
       Top = 488
-      Width = 646
+      Width = 736
       Height = 73
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -42,15 +41,13 @@ object frmHastaListeD: TfrmHastaListeD
       Visible = False
       Properties.ActivePage = cxTabSheet1
       Properties.Images = DATALAR.ImageList1
-      ExplicitWidth = 554
       ClientRectBottom = 66
       ClientRectLeft = 3
-      ClientRectRight = 639
+      ClientRectRight = 729
       ClientRectTop = 35
       object cxTabSheet1: TcxTabSheet
         Caption = 'Uyar'#305' Bilgisi'
         ImageIndex = 133
-        ExplicitWidth = 544
         object txtUyariMesaj: TcxMemo
           Left = 0
           Top = 0
@@ -65,16 +62,15 @@ object frmHastaListeD: TfrmHastaListeD
           StyleHot.LookAndFeel.NativeStyle = False
           StyleHot.LookAndFeel.SkinName = 'McSkin'
           TabOrder = 0
-          ExplicitWidth = 544
           Height = 31
-          Width = 636
+          Width = 726
         end
       end
     end
     object cxGrid2: TcxGridKadir
       Left = 2
       Top = 2
-      Width = 646
+      Width = 736
       Height = 486
       Align = alClient
       Font.Charset = TURKISH_CHARSET
@@ -86,8 +82,9 @@ object frmHastaListeD: TfrmHastaListeD
       TabOrder = 1
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
-      ExceleGonder = False
-      ExplicitWidth = 554
+      ExcelFileName = 'HastaGelis_Listesi'
+      ExceleGonder = True
+      PopupForm = False
       object Liste: TcxGridDBTableView
         PopupMenu = PopupMenu1
         OnDblClick = ListeDblClick
@@ -145,11 +142,6 @@ object frmHastaListeD: TfrmHastaListeD
         OptionsView.GroupByBox = False
         OptionsView.RowSeparatorColor = clBlack
         Styles.Indicator = cxStyle1
-        object TC: TcxGridDBColumn
-          Caption = 'Tc Kimlik No'
-          DataBinding.FieldName = 'TCKIMLIKNO'
-          Visible = False
-        end
         object ListeColumn1: TcxGridDBColumn
           Caption = 'Dosya'
           DataBinding.FieldName = 'dosyaNo'
@@ -167,6 +159,16 @@ object frmHastaListeD: TfrmHastaListeD
           Properties.Stretch = True
           HeaderAlignmentHorz = taCenter
           Options.Editing = False
+        end
+        object TC: TcxGridDBColumn
+          Caption = 'Tc Kimlik No'
+          DataBinding.FieldName = 'TCKIMLIKNO'
+          PropertiesClassName = 'TcxTextEditProperties'
+          Properties.Alignment.Horz = taCenter
+          Properties.Alignment.Vert = taVCenter
+          HeaderAlignmentHorz = taCenter
+          Options.Editing = False
+          Width = 95
         end
         object HastaAdi: TcxGridDBColumn
           Caption = 'Ad'#305
@@ -327,9 +329,8 @@ object frmHastaListeD: TfrmHastaListeD
     PanelStyle.Active = True
     TabOrder = 1
     Visible = False
-    ExplicitWidth = 558
     Height = 38
-    Width = 650
+    Width = 740
     object DiyalizTip: TcxRadioGroup
       Left = 4
       Top = 4
@@ -469,13 +470,15 @@ object frmHastaListeD: TfrmHastaListeD
       Tag = -2
       Caption = 'Seans Kart'#305
       ImageIndex = 80
+      Visible = False
       OnClick = cxButtonCClick
       FormId = 0
     end
     object Epikriz1: TMenuItemModul
+      Tag = -3
       Caption = 'Epikriz'
       ImageIndex = 89
-      OnClick = Epikriz1Click
+      OnClick = cxButtonCClick
       FormId = 0
     end
     object e1: TMenuItemModul
@@ -483,11 +486,13 @@ object frmHastaListeD: TfrmHastaListeD
       ImageIndex = 28
       FormId = 0
       object He1: TMenuItemModul
+        Tag = 10
         Caption = 'Hepatitler Dahil'
         OnClick = H1Click
         FormId = 0
       end
       object He2: TMenuItemModul
+        Tag = 11
         Caption = 'Hepatitler Hari'#231
         OnClick = H1Click
         FormId = 0
@@ -514,6 +519,12 @@ object frmHastaListeD: TfrmHastaListeD
       Tag = -20
       Caption = #304'mza F'#246'yleri'
       ImageIndex = 34
+      OnClick = cxButtonCClick
+    end
+    object E2: TMenuItem
+      Tag = 9997
+      Caption = 'Excele G'#246'nder'
+      ImageIndex = 75
       OnClick = cxButtonCClick
     end
   end

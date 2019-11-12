@@ -39,7 +39,6 @@ object frmTestAyarlari: TfrmTestAyarlari
       Navigator.Buttons.SaveBookmark.Visible = True
       Navigator.Buttons.GotoBookmark.Visible = True
       Navigator.Buttons.Filter.Visible = True
-      Navigator.Visible = True
       DataController.DataSource = DataSource1
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
@@ -58,30 +57,48 @@ object frmTestAyarlari: TfrmTestAyarlari
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
       OptionsView.CellAutoHeight = True
       OptionsView.GroupByBox = False
+      OptionsView.HeaderHeight = 35
       OptionsView.Indicator = True
       OptionsView.RowSeparatorColor = clBlack
       object cxGrid1DBTableView1Column7: TcxGridDBColumn
         Caption = 'S'#305'ra'
         DataBinding.FieldName = 'sira'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 27
       end
       object cxGrid1DBTableView1butKodu: TcxGridDBColumn
         Caption = 'Sut Kodu'
         DataBinding.FieldName = 'butKodu'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 57
       end
       object cxGrid1DBTableView1tanimi: TcxGridDBColumn
         Caption = 'Tan'#305'm'#305
         DataBinding.FieldName = 'tanimi'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 145
       end
       object cxGrid1DBTableView1uygulamaSuresi: TcxGridDBColumn
         Caption = 'Uygulama'
         DataBinding.FieldName = 'uygulamaSuresi'
         PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         Properties.Images = DATALAR.global_img_list4
         Properties.Items = <
           item
@@ -101,14 +118,18 @@ object frmTestAyarlari: TfrmTestAyarlari
             Value = -1
           end>
         HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
       end
       object cxGrid1DBTableView1uygulamaAdet: TcxGridDBColumn
         Caption = 'GC'
         DataBinding.FieldName = 'uygulamaAdet'
         PropertiesClassName = 'TcxTextEditProperties'
-        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Horz = taLeftJustify
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 27
       end
       object cxGrid1DBTableView1tip: TcxGridDBColumn
@@ -128,41 +149,72 @@ object frmTestAyarlari: TfrmTestAyarlari
             Value = 3
           end>
         HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 32
       end
       object cxGrid1DBTableView1Column1: TcxGridDBColumn
         DataBinding.FieldName = 'SGKTip'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 52
       end
       object cxGrid1DBTableView1Column2: TcxGridDBColumn
         Caption = 'Birim'
         DataBinding.FieldName = 'birim'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 32
       end
       object cxGrid1DBTableView1Column3: TcxGridDBColumn
-        Caption = 'Lab.Kodu'
+        Caption = 'Lab.Kodu (Kaydet)'
         DataBinding.FieldName = 'islemKodu'
         PropertiesClassName = 'TcxTextEditProperties'
-        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Horz = taLeftJustify
         Properties.Alignment.Vert = taVCenter
         GroupSummaryAlignment = taCenter
         HeaderAlignmentHorz = taCenter
-        Width = 112
+        HeaderAlignmentVert = vaCenter
+        Width = 105
       end
       object cxGrid1DBTableView1Column4: TcxGridDBColumn
-        Caption = 'islemKodu '#199#305'k'#305#351
+        Caption = 'Lab.Kodu (Sonu'#231' Al)'
         DataBinding.FieldName = 'islemKoduC'
-        Visible = False
-        Width = 78
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 105
       end
       object cxGrid1DBTableView1Column5: TcxGridDBColumn
         Caption = 'Min'
         DataBinding.FieldName = 'minD'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 22
       end
       object cxGrid1DBTableView1Column6: TcxGridDBColumn
         Caption = 'Max'
         DataBinding.FieldName = 'maxD'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 25
       end
       object cxGrid1DBTableView1Column8: TcxGridDBColumn
@@ -173,6 +225,9 @@ object frmTestAyarlari: TfrmTestAyarlari
         Properties.Alignment.Vert = taVCenter
         Properties.Items.Strings = (
           'Evet')
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 45
       end
       object cxGrid1DBTableView1Column9: TcxGridDBColumn
@@ -196,10 +251,13 @@ object frmTestAyarlari: TfrmTestAyarlari
           end>
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 72
       end
       object cxGrid1DBTableView1Column10: TcxGridDBColumn
         DataBinding.FieldName = 'TurId'
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
         Width = 43
       end
       object cxGrid1DBTableView1Column11: TcxGridDBColumn
@@ -427,15 +485,7 @@ object frmTestAyarlari: TfrmTestAyarlari
   object DataSource1: TDataSource
     DataSet = ADOTable1
     Left = 40
-    Top = 168
-  end
-  object ADOTable1: TADOTable
-    Connection = DATALAR.ADOConnection2
-    CursorType = ctStatic
-    Filtered = True
-    TableName = 'LabTestler'
-    Left = 40
-    Top = 120
+    Top = 184
   end
   object cxImageList1: TcxImageList
     Height = 24
@@ -663,5 +713,10 @@ object frmTestAyarlari: TfrmTestAyarlari
       ImageIndex = 9
       OnClick = L1Click
     end
+  end
+  object ADOTable1: TADOQuery
+    Parameters = <>
+    Left = 40
+    Top = 136
   end
 end

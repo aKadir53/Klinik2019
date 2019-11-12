@@ -57,14 +57,15 @@ object frmKiloOrder: TfrmKiloOrder
     LookAndFeel.Kind = lfOffice11
     ExcelFileName = 'KiloOrder'
     ExceleGonder = True
-    ExplicitLeft = 112
-    ExplicitTop = 256
+    PopupForm = False
     object GridEkstre: TcxGridDBBandedTableView
       PopupMenu = PopupMenu1
       DataController.DataSource = DataSource1
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
+      OptionsData.Deleting = False
+      OptionsData.Inserting = False
       OptionsView.GroupByBox = False
       Bands = <
         item
@@ -166,8 +167,7 @@ object frmKiloOrder: TfrmKiloOrder
         IsCaptionAssigned = True
       end
       object GridEkstreRTarihDateTime: TcxGridDBBandedColumn
-        Caption = 'Tarih'
-        DataBinding.FieldName = 'RTarihDateTime'
+        DataBinding.FieldName = 'Tarih'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
@@ -355,14 +355,15 @@ object frmKiloOrder: TfrmKiloOrder
     Parameters = <>
     Prepared = True
     SQL.Strings = (
-      'exec sp_TopluSeansGetir '#39'20170101'#39','#39'20170531'#39','#39#39','#39#39','#39#39',0,0,0')
+      'exec sp_TopluSeansGetir '#39'20190501'#39','#39'20191019'#39','#39#39','#39#39','#39'000005'#39
+      '')
     Left = 96
-    Top = 152
+    Top = 184
   end
   object DataSource1: TDataSource
     DataSet = ado
     Left = 96
-    Top = 224
+    Top = 240
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
@@ -371,6 +372,7 @@ object frmKiloOrder: TfrmKiloOrder
     object K1: TMenuItem
       Caption = 'Kan Al'#305'nan Seans'
       ImageIndex = 60
+      Visible = False
       OnClick = K1Click
     end
     object N1: TMenuItem
@@ -379,11 +381,13 @@ object frmKiloOrder: TfrmKiloOrder
     object B1: TMenuItem
       Caption = 'Tedavideki Ideal Kilo Gir'
       ImageIndex = 105
+      Visible = False
       OnClick = B1Click
     end
     object Y1: TMenuItem
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
+      Visible = False
       OnClick = Y1Click
     end
     object E1: TMenuItem
@@ -394,6 +398,7 @@ object frmKiloOrder: TfrmKiloOrder
     object H1: TMenuItem
       Caption = 'Hasta Kart'#305
       ImageIndex = 44
+      Visible = False
       OnClick = H1Click
     end
   end

@@ -865,7 +865,9 @@ object frmMedulaFatura: TfrmMedulaFatura
           LevelTabs.Style = 1
           LookAndFeel.Kind = lfOffice11
           LookAndFeel.NativeStyle = False
-          ExceleGonder = False
+          ExcelFileName = 'MedulaFatura'
+          ExceleGonder = True
+          PopupForm = False
           object FaturaList: TcxGridDBTableView
             Navigator.Buttons.First.Visible = True
             Navigator.Buttons.PriorPage.Visible = True
@@ -1218,6 +1220,7 @@ object frmMedulaFatura: TfrmMedulaFatura
               LookAndFeel.Kind = lfOffice11
               LookAndFeel.NativeStyle = False
               ExceleGonder = False
+              PopupForm = False
               object cxGridDBTableView3: TcxGridDBTableView
                 PopupMenu = PopupMenu1
                 Navigator.Buttons.First.Visible = True
@@ -1551,6 +1554,7 @@ object frmMedulaFatura: TfrmMedulaFatura
               LookAndFeel.Kind = lfOffice11
               LookAndFeel.NativeStyle = False
               ExceleGonder = False
+              PopupForm = False
               object cxGridDBTableView1: TcxGridDBTableView
                 PopupMenu = PopupMenu1
                 Navigator.Buttons.First.Visible = True
@@ -1864,7 +1868,7 @@ object frmMedulaFatura: TfrmMedulaFatura
       Tag = -16
       Caption = 'Teyit No Kontrol Yap'
       ImageIndex = 7
-      OnClick = eyitNoKontrolYap1Click
+      OnClick = cxButtonCClick
     end
     object F4: TMenuItem
       Tag = -3
@@ -1880,9 +1884,15 @@ object frmMedulaFatura: TfrmMedulaFatura
     end
     object F3: TMenuItem
       Tag = -1
-      Caption = 'Fatura Teslim'
+      Caption = 'Fatura Teslim (Medula)'
       ImageIndex = 76
       OnClick = cxButtonCClick
+    end
+    object FaturaptalTm1: TMenuItem
+      Tag = -7
+      Caption = 'Fatura '#304'ptal (Medula)'
+      ImageIndex = 13
+      OnClick = FaturaptalTm1Click
     end
     object FaturaOkuTm1: TMenuItem
       Tag = -4
@@ -1899,49 +1909,32 @@ object frmMedulaFatura: TfrmMedulaFatura
     object N1: TMenuItem
       Caption = '-'
     end
-    object Faturaptal1: TMenuItem
-      Tag = -6
-      Caption = 'Fatura '#304'ptal'
-      Visible = False
-      OnClick = Faturaptal1Click
+    object ENabzSGKBildirimPaketiGnder1: TMenuItem
+      Caption = 'E-Nab'#305'z SGK Bildirim Paketi G'#246'nder'
+      ImageIndex = 118
+      OnClick = ENabzSGKBildirimPaketiGnder1Click
     end
-    object FaturaptalTm1: TMenuItem
-      Tag = -7
-      Caption = 'Fatura '#304'ptal'
-      ImageIndex = 13
-      OnClick = FaturaptalTm1Click
+    object ENabzGnderim1: TMenuItem
+      Caption = 'E-Nab'#305'z G'#246'nderim'
+      Visible = False
+    end
+    object N6: TMenuItem
+      Caption = '-'
+    end
+    object F2: TMenuItem
+      Tag = -15
+      Caption = 'Faturadan '#199#305'kar'
+      ImageIndex = 43
+      OnClick = cxButtonCClick
     end
     object N2: TMenuItem
       Caption = '-'
-    end
-    object Onay1: TMenuItem
-      Tag = -8
-      Caption = 'Tutar Onay'
-      ImageIndex = 31
-      Visible = False
-      OnClick = Onay1Click
     end
     object utarOnayTm1: TMenuItem
       Tag = -9
       Caption = 'Tutar Onay'
       ImageIndex = 31
       OnClick = utarOnayTm1Click
-    end
-    object N3: TMenuItem
-      Caption = '-'
-    end
-    object mnSe1: TMenuItem
-      Tag = -10
-      Caption = 'T'#252'm'#252'n'#252' Se'#231
-      ImageIndex = 0
-      Visible = False
-      OnClick = cxButtonCClick
-    end
-    object mSeme1: TMenuItem
-      Tag = 131
-      Caption = 'T'#252'm'#252' Se'#231'me'
-      ImageIndex = 131
-      Visible = False
     end
     object N4: TMenuItem
       Caption = '-'
@@ -1967,14 +1960,8 @@ object frmMedulaFatura: TfrmMedulaFatura
       ImageIndex = 68
       OnClick = F1Click
     end
-    object F2: TMenuItem
-      Tag = -15
-      Caption = 'Faturadan '#199#305'kar'
-      ImageIndex = 43
-      OnClick = cxButtonCClick
-    end
     object E1: TMenuItem
-      Tag = 9998
+      Tag = 9997
       Caption = 'Excele G'#246'nder'
       ImageIndex = 75
       OnClick = cxButtonCClick

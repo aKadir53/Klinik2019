@@ -51,7 +51,7 @@
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<Icon_MainIcon>Klinik2019_Icon.ico</Icon_MainIcon>
-			<DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+			<DCC_Namespace>Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -148,9 +148,6 @@
 			</DCCReference>
 			<DCCReference Include="MedulaKurumSifreDegis.pas">
 				<Form>KurumSifreDegisForm</Form>
-			</DCCReference>
-			<DCCReference Include="hizliKayit.pas">
-				<Form>frmHizliKayit</Form>
 			</DCCReference>
 			<DCCReference Include="FirmaKart.pas">
 				<Form>frmFirmaKart</Form>
@@ -315,6 +312,23 @@
 			<DCCReference Include="WebReferans\LabTestlerService.pas"/>
 			<DCCReference Include="klorOlcum.pas">
 				<Form>frmKlorOlcum</Form>
+			</DCCReference>
+			<DCCReference Include="WebReferans\GemsoftServiceBIYOTIP.pas"/>
+			<DCCReference Include="WebReferans\GemSoftBIYOTIP.pas"/>
+			<DCCReference Include="WebReferans\TenayServiceSYNEVO.pas"/>
+			<DCCReference Include="WebReferans\TenaySynevo.pas"/>
+			<DCCReference Include="WebReferans\Referans.pas"/>
+			<DCCReference Include="WebReferans\ServiceReferansLab.pas"/>
+			<DCCReference Include="WebReferans\TenayServiceSYNLAB.pas"/>
+			<DCCReference Include="WebReferans\TenaySYNLAB.pas"/>
+			<DCCReference Include="hizliKayit.pas">
+				<Form>frmHizliKayit</Form>
+			</DCCReference>
+			<DCCReference Include="HastaIzlemListesi.pas">
+				<Form>frmIzlem</Form>
+			</DCCReference>
+			<DCCReference Include="TakipKontrol.pas">
+				<Form>frmTakipKontrol</Form>
 			</DCCReference>
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>

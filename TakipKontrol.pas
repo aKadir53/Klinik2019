@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   kadir, kadirMedula3,Data_Modul,KadirLabel,GetFormClass,KadirType,
-  Dialogs, StdCtrls, Grids, BaseGrid, AdvGrid, ComCtrls, Mask, EditType, adodb,
+  Dialogs, StdCtrls, Grids, BaseGrid, ComCtrls, Mask, EditType, adodb,
   strutils, ExtCtrls, Buttons, sBitBtn, AdvToolBtn, cxGraphics, cxControls,
   cxLookAndFeels, cxLookAndFeelPainters, cxContainer, cxEdit, cxTextEdit,
   cxMaskEdit, cxDropDownEdit, cxCalendar, Menus, sGauge, sCheckBox,
@@ -27,9 +27,6 @@ uses
 
 type
   TfrmTakipKontrol = class(TGirisForm)
-    pnlToolBar: TPanel;
-    txtTarih: TcxDateEdit;
-    txttarih1: TcxDateEdit;
     PopupMenu1: TPopupMenu;
     mnSe1: TMenuItem;
     mptal1: TMenuItem;
@@ -52,10 +49,7 @@ type
     N6: TMenuItem;
     MedulaSistemKontrol1: TMenuItem;
     mHizmetleriptalEt1: TMenuItem;
-    Progres: TsGauge;
-    chkTakip: TCheckBox;
     R1: TMenuItem;
-    hastaTip: TcxRadioGroup;
     StatusBar1: TStatusBar;
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
@@ -64,7 +58,6 @@ type
     T1: TMenuItem;
     S1: TMenuItem;
     H1: TMenuItem;
-    ktip: TcxComboBox;
     PopupMenu2: TPopupMenu;
     S2: TMenuItem;
     M1: TMenuItem;
@@ -72,7 +65,6 @@ type
     S3: TMenuItem;
     L1: TMenuItem;
     K1: TMenuItem;
-    btnList: TcxButton;
     dxLayoutHizmetlerLookAndFeelList1: TdxLayoutLookAndFeelList;
     dxLayoutHizmetlerSkinLookAndFeel1: TdxLayoutSkinLookAndFeel;
     ADO_TahlillSQL: TADOQuery;
@@ -80,13 +72,6 @@ type
     cxTabSheetTakipler: TcxTabSheet;
     cxTabSheetEAck: TcxTabSheet;
     cxTabSheetLog: TcxTabSheet;
-    Panel1: TPanel;
-    cxLabel14: TcxLabel;
-    cxLabel15: TcxLabel;
-    cxLabel16: TcxLabel;
-    txt230Donem: TcxTextEdit;
-    txt233Donem: TcxTextEdit;
-    txt234Donem: TcxTextEdit;
     cxGrid4: TcxGrid;
     cxGridDBTableView1: TcxGridDBTableView;
     cxGridDBColumn1: TcxGridDBColumn;
@@ -169,23 +154,8 @@ type
     cxGridLevel7: TcxGridLevel;
     cxTabSheetSistem: TcxTabSheet;
     cxStyle4: TcxStyle;
-    ADO_Malzeme: TADOTable;
-    ADO_Diger: TADOTable;
-    ADO_TetkikveRad: TADOTable;
-    ADO_Tahlil: TADOTable;
-    ADO_TahliltakipNo: TStringField;
-    ADO_TahlilsutKodu: TStringField;
-    ADO_TahlilislemTarihi: TStringField;
-    ADO_TahlilbransKodu: TStringField;
-    ADO_TahlilhizmetSunucuRefNo: TStringField;
-    ADO_TahlilislemSiraNo: TStringField;
-    ADO_TahlildrTescilNo: TStringField;
-    ADO_TahlilAdet: TIntegerField;
-    ADO_TahlilsiraNo: TIntegerField;
-    ADO_Tahlilname: TStringField;
-    ADO_TahlilozelDurum: TStringField;
-    ADO_Tahlilbirim: TStringField;
-    ADO_TahlilSonuc: TADOTable;
+    TakiplerColumn8: TcxGridColumn;
+    TakiplerColumn9: TcxGridColumn;
     procedure cxButtonCClick(Sender: TObject);
     procedure mnSe1Click(Sender: TObject);
     procedure mptal1Click(Sender: TObject);
@@ -204,7 +174,6 @@ type
     procedure TakiplerFocusedRecordChanged(Sender: TcxCustomGridTableView;
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
-    procedure MemDataToDataset(Dataset: TdxMemData; DatasetAdo: Tdataset);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure GonderimSonuc(takip, s: string);
     procedure TakiplerStylesGetContentStyle(Sender: TcxCustomGridTableView;
@@ -227,9 +196,12 @@ type
     { Private declarations }
   public
     { Public declarations }
+    procedure MemDataToDataset(Dataset: TdxMemData; DatasetAdo: Tdataset); overload;
+    procedure MemDataToDataset(Dataset: TdxMemData); overload;
     procedure OrtakEventAta(Sender : TObject);overload;
     procedure OrtakEventAta(Sender : TcxImageComboKadir);overload;
     function Init(Sender: TObject) : Boolean; override;
+
   end;
 
 var
@@ -247,8 +219,9 @@ uses  rapor, //TedaviBilgisi, Seanslar,
 function TfrmTakipKontrol.Init(Sender : TObject) : Boolean;
 begin
   Result := False;
-  txttarih1.Date := ayliktarih(date,txtTarih);
+  txtTopPanelTarih2.Date := ayliktarih(date,txtTopPanelTarih2);
   if not inherited Init(Sender) then exit;
+  Result := True;
 end;
 
 procedure TfrmTakipKontrol.OrtakEventAta(Sender : TObject);
@@ -289,11 +262,94 @@ procedure TfrmTakipKontrol.SeansSayiToplam;
 var
   Toplam, P704230, P704233, P704234: integer;
 begin
+(*
   Toplam := TakipKontrolDonemSeansSayisi(copy(tarihal(txtTarih.Date), 1, 6),
     P704230, P704233, P704234);
   txt230Donem.Text := inttostr(P704230);
   txt233Donem.Text := inttostr(P704233);
   txt234Donem.Text := inttostr(P704234);
+  *)
+end;
+
+procedure TfrmTakipKontrol.MemDataToDataset(Dataset: TdxMemData);
+var
+  sql : string;
+begin
+  try
+    Dataset.First;
+    while not Dataset.Eof do
+    begin
+      if Dataset.Name = 'RxDigerIslem'
+      then begin
+        datalar.QueryExec('insert into gssTakipOkuDiger(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo,raporTakipno) ' +
+                          'values(' + QuotedStr(dataset.FieldByName('takipNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('sutKodu').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('islemTarihi').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('bransKodu').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('hizmetSunucuRefNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('islemSiraNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('drTescilNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('raporTakipNo').AsString) + ')');
+      end
+      else
+      if Dataset.Name = 'RxTahlilIslem'
+      then begin
+        datalar.QueryExec('insert into gssTakipOkuTahlil(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo) ' +
+                          'values(' + QuotedStr(dataset.FieldByName('takipNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('sutKodu').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('islemTarihi').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('bransKodu').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('hizmetSunucuRefNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('islemSiraNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('drTescilNo').AsString) + ')');
+      end
+      else
+      if Dataset.Name = 'RxTahlilSonuc'
+      then begin
+        datalar.QueryExec('insert into gssTakipOkuTahlilSonuc(takipNo,islemSiraNo,sonuc,tip,birim,code,Tanim) ' +
+                          'values(' + QuotedStr(dataset.FieldByName('takipNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('islemSiraNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('sonuc').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('tip').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('birim').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('code').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('Tanim').AsString) + ')');
+      end
+      else
+      if Dataset.Name = 'RxRadIslem'
+      then begin
+        datalar.QueryExec('insert into gssTakipOkuTetkikvdRadyoloji(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo) ' +
+                          'values(' + QuotedStr(dataset.FieldByName('takipNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('sutKodu').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('islemTarihi').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('bransKodu').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('hizmetSunucuRefNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('islemSiraNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('deTescilNo').AsString) + ')');
+      end
+      else
+      if Dataset.Name = 'RxTaniBilgisi'
+      then begin
+        datalar.QueryExec('insert into gssTakipOkuTani(takipNo,code,BIRINCIL,TANITURU,hizmetSunucuRefNo,islemSiraNo) ' +
+                          'values(' + QuotedStr(dataset.FieldByName('takipNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('TaniKodu').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('birincilTani').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('TaniTipi').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('hizmetSunucuRefNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('islemSiraNo').AsString) +
+                                      ')');
+      end;
+
+      Dataset.Next;
+
+    end;
+  except
+    on e: Exception do
+    begin
+      ShowMessage(e.Message);
+    end;
+  end;
+
 
 end;
 
@@ -380,6 +436,7 @@ end;
 
 procedure TfrmTakipKontrol.PopupMenu1Popup(Sender: TObject);
 begin
+(*
   if hastaTip.ItemIndex = 1 Then
   Begin
     HizmetleriptalEt1.Enabled := false;
@@ -392,7 +449,7 @@ begin
     SeanslarSistemeYaz1.Enabled := True;
     MalzemeptalEt1.Enabled := True;
   End;
-
+  *)
 end;
 
 procedure TfrmTakipKontrol.gridAktifCheckBoxClick(Sender: TObject;
@@ -435,9 +492,6 @@ var
   sql, TakipVar, _Tip_, kurumTip: string;
   x, tip: integer;
 begin
-  pnlDurum.BringToFront;
-  pnlDurum.Visible := True;
-  Application.ProcessMessages;
 
   try
     ADO_TahlillSQL.Active := false;
@@ -447,79 +501,48 @@ begin
     Else
       _Tip_ := 'P,A';
 
-    if chkTakip.Checked Then
-      TakipVar := 'and isnull(g.TakýpNo,'''') <>  '''' '
+    if chkList.EditValue = '100' Then
+      TakipVar := 'and isnull(g.TakipNo,'''') <>  '''' '
     Else
       TakipVar := '';
 
+   (*
     if ktip.Text = 'Tümü' Then
       kurumTip := '1,99'
     else
       kurumTip := KurumTipTopPanel.EditValue;// trim(copy(ktip.Text, 1, 2));
+     *)
 
     sql :=
-      'select g.TakýpNo Takýpno,g.dosyaNo,g.gelisNo,g.BHDAT ,h.HASTAADI+'' ''+h.HASTASOYADI as ADSOYAD,SIRANO,h.TCKIMLIKNO,g.basvuruNo, '
-      +
-      '(select count(*) from gelisDetay where dosyaNo = g.dosyaNo and gelisNo = g.gelisNo and durum = 1) SeansAdet, ' +
-      '(select count(*) from gssTakipOkuDiger where takipno = g.takýpNo) MedulaSeansAdet, ' +
-      '(SELECT COUNT(*) FROM hareketler where dosyaNo = g.dosyaNo and gelisNo = g.gelisNo and code in (''901940'',''903130'',''902210'') and onay = 1) + ' +
-      '(select count(*) from hareketler where dosyaNo = g.dosyaNo and gelisNo = g.gelisNo and tip = ''2'' and onay = 1) - ' +
-      '(8*(SELECT COUNT(*) FROM hareketler where dosyaNo = g.dosyaNo and gelisNo = g.gelisNo and code = ''901620'' and onay = 1 and tip = ''2'')) TahlilAdet, ' +
-
-      '(select count(*) from gssTakipOkuTahlil where takipno = g.takýpNo) MedulaTahlilAdet, '
-      +
-      '(select count(*) from hareketler where dosyaNo = g.dosyaNo and gelisNo = g.gelisNo and tip = ''3'' and onay = 1) RadAdet, ' +
-      '(select count(*) from gssTakipOkuTetkikvdRadyoloji where takipno = g.takýpNo) MedulaRadAdet,TakýpSend ,g.Aciklama' +
-      ' from gelisler g ' +
-      ' join hastakart h on h.dosyaNO = g.dosyaNO ' +
-      ' left join Kurumlar k on k.kurum = h.kurum ' +
-      ' where BHDAT between ' + QuotedStr(tarihal(txtTopPanelTarih1.Date)) +
-      ' and ' + QuotedStr(tarihal(txtTopPanelTarih2.Date)) +
-      ' and k.KURUMTIPI in (select datavalue from strtotable(' + QuotedStr(kurumTip) + ', '',''))' + ' and g.diyalizTedaviYontemi in ' + '(select datavalue from strtotable(' + QuotedStr(_Tip_) + ', '',''))' +
-
-      TakipVar + ' order by h.HASTAADI,h.HASTASOYADI,BHDAT ';
+          'exec sp_TakipKontrolListesi ' + txtTopPanelTarih1.GetSQLValue + ',' +
+                                           txtTopPanelTarih2.GetSQLValue + ',' +
+                                           QuotedStr(datalar.AktifSirket);
     datalar.QuerySelect(ADO_SQL, sql);
 
     ADO_SQL.First;
     Takipler.DataController.RecordCount := ADO_SQL.RecordCount;
     for x := 0 to ADO_SQL.RecordCount - 1 do
     begin
-      Takipler.DataController.Values[x, 1] := ADO_SQL.fieldbyname('TakýpNo')
-        .AsString;
-      Takipler.DataController.Values[x, 2] := ADO_SQL.fieldbyname('dosyaNo')
-        .AsString;
-      Takipler.DataController.Values[x, 3] := ADO_SQL.fieldbyname('GelisNo')
-        .AsString;
-      Takipler.DataController.Values[x, 4] := ADO_SQL.fieldbyname('ADSOYAD')
-        .AsString;
-      Takipler.DataController.Values[x, 5] := FormattedTarih
-        (ADO_SQL.fieldbyname('BHDAT').AsString);
-      Takipler.DataController.Values[x, 6] := ADO_SQL.fieldbyname('SIRANO')
-        .AsString;
-      Takipler.DataController.Values[x, 7] := ADO_SQL.fieldbyname('basvuruNo')
-        .AsString;
-      Takipler.DataController.Values[x, 8] := ADO_SQL.fieldbyname('TakýpSend')
-        .AsString;
-      Takipler.DataController.Values[x, 9] := ADO_SQL.fieldbyname('SeansAdet')
-        .AsInteger;
-      Takipler.DataController.Values[x, 10] := ADO_SQL.fieldbyname
-        ('MedulaSeansAdet').AsInteger;
-      Takipler.DataController.Values[x, 11] := ADO_SQL.fieldbyname('TahlilAdet')
-        .AsInteger;
-      Takipler.DataController.Values[x, 12] := ADO_SQL.fieldbyname
-        ('MedulaTahlilAdet').AsInteger;
-      Takipler.DataController.Values[x, 13] := ADO_SQL.fieldbyname('RadAdet')
-        .AsInteger;
-      Takipler.DataController.Values[x, 14] := ADO_SQL.fieldbyname
-        ('MedulaRadAdet').AsInteger;
-      Takipler.DataController.Values[x, 15] := ADO_SQL.fieldbyname('aciklama')
-        .AsString;
+      Takipler.DataController.Values[x, 1] := ADO_SQL.fieldbyname('TakipNo').AsString;
+      Takipler.DataController.Values[x, 2] := ADO_SQL.fieldbyname('dosyaNo').AsString;
+      Takipler.DataController.Values[x, 3] := ADO_SQL.fieldbyname('GelisNo').AsString;
+      Takipler.DataController.Values[x, 4] := ADO_SQL.fieldbyname('ADSOYAD').AsString;
+      Takipler.DataController.Values[x, 5] := ADO_SQL.fieldbyname('BHDAT').Value;
+      Takipler.DataController.Values[x, 6] := ADO_SQL.fieldbyname('SIRANO').AsString;
+      Takipler.DataController.Values[x, 7] := ADO_SQL.fieldbyname('basvuruNo').AsString;
+     // Takipler.DataController.Values[x, 8] := ADO_SQL.fieldbyname('TakýpSend').AsString;
+      Takipler.DataController.Values[x, 9] := ADO_SQL.fieldbyname('SeansAdet').AsInteger;
+      Takipler.DataController.Values[x, 10] := ADO_SQL.fieldbyname('MedulaSeansAdet').AsInteger;
+      Takipler.DataController.Values[x, 11] := ADO_SQL.fieldbyname('TahlilAdet').AsInteger;
+      Takipler.DataController.Values[x, 12] := ADO_SQL.fieldbyname('MedulaTahlilAdet').AsInteger;
+      Takipler.DataController.Values[x, 13] := ADO_SQL.fieldbyname('RadAdet').AsInteger;
+      Takipler.DataController.Values[x, 14] := ADO_SQL.fieldbyname('MedulaRadAdet').AsInteger;
+      Takipler.DataController.Values[x, 15] := ADO_SQL.fieldbyname('aciklama').AsString;
+      Takipler.DataController.Values[x, 16] := ADO_SQL.fieldbyname('Durum').AsInteger;
+      Takipler.DataController.Values[x, 17] := ADO_SQL.fieldbyname('DurumDetay').AsString;
 
       ADO_SQL.Next;
     end;
-
- //   ADO_Tahlil.Active := True;
- //   ADO_TahlilSonuc.Active := True;
 
     SeansSayiToplam;
 
@@ -542,7 +565,7 @@ begin
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
 
-  sql := 'update gelisler set Aciklama = ' + QuotedStr(cxMemo1.Text)
+  sql := 'update Hasta_gelisler set Aciklama = ' + QuotedStr(cxMemo1.Text)
     + ' where dosyaNo = ' + QuotedStr(dn) + ' and gelisNo = ' + gn;
 
   datalar.QueryExec(ado, sql);
@@ -555,6 +578,8 @@ begin
   // DatasetiDoldur(gridAktif.Cells[1,gridAktif.row],'G');
 
  // DatasetiDoldur(Takipler.DataController.Values[id, 1], 'G', '');
+
+
 
   frmRapor.raporData1(frmRapor.topluset, '014', '\HizmetDetay');
   frmRapor.ShowModal;
@@ -665,29 +690,7 @@ begin
   if Form <> nil then Form.show;
  end;
 
- (*
-  try
 
-    if datalar.HkA = 0 Then
-    Begin
-      frmHastaKarti := TfrmHastaKarti.Create(self);
-      GorselAyar(frmHastaKarti, datalar.global_img_list4);
-      frmHastaKarti.Top := 2;
-      frmHastaKarti.Left := 2 + frmHastaListe.Width + 5;
-    End;
-
-    frmHastaKarti.Combo;
-    frmHastaKarti.ilCombo;
-    frmHastaKarti.yakinlikCombo;
-    frmHastaKarti.KartGetir(Takipler.DataController.Values[r, 2]);
-    frmHastaKarti.Gelisler(Takipler.DataController.Values[r, 2]);
-    frmHastaKarti.Durum(1);
-    frmHastaKarti.btnGuncelle.Enabled := True;
-    // Disabled(frmHastaKarti);
-    frmHastaKarti.Disable;
-  except
-  end;
-  *)
 end;
 
 procedure TfrmTakipKontrol.H2Click(Sender: TObject);
@@ -697,102 +700,70 @@ var
   ado: TADOQuery;
   secili: Boolean;
 begin
-  ado := TADOQuery.Create(nil);
-  ado.Connection := datalar.ADOConnection2;
-
-  satir := 1;
-  satirlar := Takipler.DataController.RowCount - 1;
-
-  Progres.MaxValue := Takipler.Controller.SelectedRowCount - 1;
-  Progres.Progress := 0;
-  Progres.Visible := True;
-  StatusBar1.Panels[0].Text := 'Hizmetler Okunuyor...';
-
   if mrYes = ShowMessageSkin('Seçili Takipler Ýçin Okuma Ýþlemi Baþlayacak',
     'Onaylýyormusunuz ?', '', 'msg') then
   begin
+    DurumGoster(True,True);
+    pBar.Properties.Max := Takipler.Controller.SelectedRowCount;
+    pBar.Position := 0;
+    try
     for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
     begin
-      // Takipler.DataController.FocusedRowIndex := satir;
-      // x := Takipler.DataController.GetFocusedRecordIndex;
-      Application.ProcessMessages;
+          Application.ProcessMessages;
+          takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
+          DatalariBosalt;
 
-      takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
+          if takip <> '' then
+            msj := HizmetKaydiOku(takip, BasvuruNo)
+          else
+            Continue;
+          try
+            datalar.ADOConnection2.BeginTrans;
+            if (msj = '0000') or (copy(msj, 1, 4) = '0631') Then
+            Begin
+              sql := 'update Hasta_gelisler set TakýpSend = ''0'' where TakipNo = ' + QuotedStr(takip);
+              datalar.QueryExec(sql);
+              sql := 'delete from gssTakipOkuDiger where TakipNO = ' + QuotedStr(takip);
+              datalar.QueryExec(sql);
+              sql := 'delete from gssTakipOkuTahlil where TakipNO = ' + QuotedStr(takip);
+              datalar.QueryExec(sql);
+              sql := 'delete from gssTakipOkuTahlilSonuc where TakipNO = ' + QuotedStr(takip);
+              datalar.QueryExec(sql);
+              sql :=
+                'delete from gssTakipOkuTetkikvdRadyoloji where TakipNO = ' + QuotedStr(takip);
+              datalar.QueryExec(sql);
+              sql := 'delete from gssTakipOkuMalzeme where TakipNO = ' + QuotedStr(takip);
+              datalar.QueryExec(sql);
 
-      DatalariBosalt;
+              MemDataToDataset(datalar.RxDigerIslem);
+              MemDataToDataset(datalar.RxTahlilIslem);
+              MemDataToDataset(datalar.RxTahlilSonuc);
+              MemDataToDataset(datalar.RxRadIslem);
+              MemDataToDataset(datalar.RxTaniBilgisi);
 
-      if takip <> '' then
-        msj := HizmetKaydiOku(takip, BasvuruNo, Sonuc, datalar.HizmetKayit)
-      else
-        Continue;
-      if (msj = '0000') or (copy(msj, 1, 4) = '0631') Then
-      Begin
-        sql := 'update gelisler set TakýpSend = ''0'' where TakýpNo = ' + QuotedStr(takip);
-        datalar.QueryExec(ado, sql);
-        sql := 'delete from gssTakipOkuDiger where TakipNO = ' + QuotedStr(takip);
-        datalar.QueryExec(ado, sql);
-        sql := 'delete from gssTakipOkuTahlil where TakipNO = ' + QuotedStr(takip);
-        datalar.QueryExec(ado, sql);
-        sql := 'delete from gssTakipOkuTahlilSonuc where TakipNO = ' + QuotedStr(takip);
-        datalar.QueryExec(ado, sql);
-        sql :=
-          'delete from gssTakipOkuTetkikvdRadyoloji where TakipNO = ' + QuotedStr(takip);
-        datalar.QueryExec(ado, sql);
-        sql := 'delete from gssTakipOkuMalzeme where TakipNO = ' + QuotedStr(takip);
-        datalar.QueryExec(ado, sql);
+              ADO_TahlillSQL.Requery();
 
-        ADO_Tahlil.Active := false;
-        ADO_Tahlil.Active := True;
-        ADO_TahlilSonuc.Active := false;
-        ADO_TahlilSonuc.Active := True;
-
-        ADO_Diger.Active := false;
-        ADO_Diger.Active := True;
-        ADO_TetkikveRad.Active := false;
-        ADO_TetkikveRad.Active := True;
-
-        ADO_Malzeme.Active := false;
-        ADO_Malzeme.Active := True;
-
-        MemDataToDataset(datalar.RxDigerIslem, ADO_Diger);
-        MemDataToDataset(datalar.RxTahlilIslem, ADO_Tahlil);
-        MemDataToDataset(datalar.RxTahlilSonuc, ADO_TahlilSonuc);
-        MemDataToDataset(datalar.RxMalzemeBilgisi, ADO_Malzeme);
-        MemDataToDataset(datalar.RxRadIslem, ADO_TetkikveRad);
-
-        if copy(msj, 1, 4) = '0631' Then
-          txtHatalar.Lines.Add(msj);
-
-        Progres.Progress := Progres.Progress + 1;
-      End
-      Else
-      Begin
-        sql := 'update gelisler set TakýpSend = ''1'' where TakýpNO = ' + QuotedStr(takip);
-        datalar.QueryExec(ado, sql);
-
-        txtHatalar.Lines.Add(msj);
-        Progres.Progress := Progres.Progress + 1;
-      End; // if HizmetKaydýOku end
-
-    end; // for end
+              if copy(msj, 1, 4) = '0631' Then
+                txtHatalar.Lines.Add(msj);
+            End
+            Else
+            Begin
+              sql := 'update Hasta_gelisler set TakýpSend = ''1'' where TakipNO = ' + QuotedStr(takip);
+              datalar.QueryExec(sql);
+              txtHatalar.Lines.Add(msj);
+            End; // if HizmetKaydýOku end
+            datalar.ADOConnection2.CommitTrans;
+          except on e : exception do
+           begin
+            datalar.ADOConnection2.RollbackTrans;
+            txtHatalar.Lines.Add(msj + ' - ' + e.Message);
+           end;
+          end;
+        end; // for end
+    finally
+      DurumGoster(False);
+    end;
   end; // end if
-
-  ado.Free;
-
-  ADO_Tahlil.close;
-  ADO_Tahlil.Open;
-  ADO_TahlilSonuc.close;
-  ADO_TahlilSonuc.Open;
-  ADO_Diger.close;
-  ADO_Diger.Open;
-  ADO_TetkikveRad.close;
-  ADO_TetkikveRad.Open;
-  ADO_Malzeme.close;
-  ADO_Malzeme.Open;
-  Progres.Visible := false;
-  StatusBar1.Panels[0].Text := '.';
-
-  SeansSayiToplam;
 
 end;
 
@@ -818,9 +789,7 @@ begin
   satir := 1;
   satirlar := Takipler.DataController.RowCount - 1;
 
-  Progres.MaxValue := Takipler.Controller.SelectedRowCount - 1;
-  Progres.Progress := 0;
-  Progres.Visible := True;
+
   StatusBar1.Panels[0].Text := 'Hizmetler Siliniyor...';
 
   if mrYes = ShowMessageSkin(
@@ -848,7 +817,7 @@ begin
         Continue;
 
       if takip <> '' then
-        msg := HizmetKaydiIptal(takip, datalar.HizmetKayit)
+        msg := HizmetKaydiIptal(takip)
       else
         Continue;
 
@@ -857,8 +826,8 @@ begin
         if TMenuItem(Sender).tag = -7 then
         begin
           sql :=
-            'update gelisDetay set TalepSira = '''''
-            + ' where dosyaNo = ' + QuotedStr(dosyaNo)
+            'update hareketler set islemSiraNo = '''''
+            + ' where Tip = ''S'' and dosyaNo = ' + QuotedStr(dosyaNo)
             + ' and gelisNo = ' + gelisNo;
           datalar.QueryExec(ado, sql);
         end;
@@ -982,55 +951,40 @@ begin
     exit;
   End;
 
-  ado := TADOQuery.Create(nil);
-  ado.Connection := datalar.ADOConnection2;
-
   try
     if mrYes = ShowMessageSkin('Hizmet Ýptal Edilecek Emin misiniz ?', '', '',
       'msg') then
     begin
-
       SetLength(datalar.islemSiralari, 1);
       HizmetTuru := ADO_TahlillSQL.fieldbyname('HizmetTuru').AsString;
       datalar.islemSiralari[0] := ADO_TahlillSQL.fieldbyname('islemSirano').AsString;
 
-      msg := HizmetKaydiIptal(ADO_TahlillSQL.fieldbyname('takipno').AsString,
-        datalar.HizmetKayit);
+      msg := HizmetKaydiIptal(ADO_TahlillSQL.fieldbyname('takipno').AsString);
 
       if msg = '0000' Then
       Begin
-        if HizmetTuru = 'Diyaliz Seans' then
-        begin
-          sql := 'update gelisDetay set TalepSira = ''''' +
-                 ' where TalepSira = ' + QuotedStr(ADO_TahlillSQL.fieldbyname('islemSirano').AsString);
-          datalar.QueryExec(ado, sql);
-        end;
-
-        if (HizmetTuru = 'Tahlil') or (HizmetTuru = 'Rad') then
+        if (HizmetTuru = 'Diyaliz Seans') or (HizmetTuru = 'Tahlil') or (HizmetTuru = 'Rad') then
         begin
          sql := ' update hareketler set islemSiraNo = ''''' +
                 ' where islemSiraNo = ' + QuotedStr(ADO_TahlillSQL.fieldbyname('islemSirano').AsString);
-              datalar.QueryExec(ado, sql);
+              datalar.QueryExec(sql);
         end;
 
         if (HizmetTuru = 'Malzeme') then
         begin
          sql := ' update hareketlerIS set islemSiraNo = ''''' +
                 ' where islemSiraNo = ' + QuotedStr(ADO_TahlillSQL.fieldbyname('islemSirano').AsString);
-              datalar.QueryExec(ado, sql);
+              datalar.QueryExec(sql);
         end;
 
         ShowMessageSkin('Hizmet Ýptal Edildi', '', '', 'info');
         SetLength(datalar.islemSiralari, 0);
-
       End;
-      ado.Free;
     end;
   except
     on e: Exception do
     begin
       ShowMessageSkin(e.Message, '', '', 'info');
-      ado.Free;
     end;
   end;
 
@@ -1038,11 +992,12 @@ end;
 
 procedure TfrmTakipKontrol.S3Click(Sender: TObject);
 begin
+(*
   Application.CreateForm(TfrmHakedis, frmHakedis);
   frmHakedis.list(tarihal(txtTarih.Date), tarihal(txttarih1.Date));
   frmHakedis.ShowModal;
   frmHakedis := nil;
-
+  *)
 end;
 
 procedure TfrmTakipKontrol.sBitBtn1Click(Sender: TObject);
@@ -1054,11 +1009,11 @@ end;
 procedure TfrmTakipKontrol.SeanslarSistemeYaz1Click(Sender: TObject);
 var
   satir, satirlar, satirs, r: integer;
-  Sonuc, BasvuruNo, sql, msg, takip, dosyaNo, gelisNo: string;
+  Sonuc, BasvuruNo, sql, msg, takip, dosyaNo, gelisNo , Tip,gelisSIRANO : string;
   ado: TADOQuery;
   secili: Boolean;
 begin
-
+(*
   if UserRight('Donem Sonlandýrma', 'Okunan Hizmet Sisteme Yaz') = false Then
   Begin
     ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Yok',
@@ -1066,19 +1021,7 @@ begin
       'Okunan Hizmet Sisteme Yaz', 'info');
     exit;
   End;
-
-  Ado_diger.Active := True;
-
-  ado := TADOQuery.Create(nil);
-  ado.Connection := datalar.ADOConnection2;
-
-  satir := 1;
-  satirlar := Takipler.DataController.RowCount - 1;
-
-  Progres.MaxValue := Takipler.Controller.SelectedRowCount - 1;
-  Progres.Progress := 0;
-  Progres.Visible := True;
-  StatusBar1.SimpleText := 'Hizmetler Siliniyor...';
+  *)
 
   if mrYes = ShowMessageSkin(
     'Seçilen Takipler Ýçin Seans Alma Ýþlemi Baþlayacak', 'Onaylýyormusunuz ?',
@@ -1086,47 +1029,75 @@ begin
   begin
     for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
     begin
-      // Takipler.DataController.FocusedRowIndex := satir;
-      // r := Takipler.DataController.GetFocusedRecordIndex;
-      Takipler.DataController.FocusedRowIndex :=
-        Takipler.Controller.SelectedRows[satir].RecordIndex;
       Application.ProcessMessages;
-      // gridAktif.GetCheckBoxState(1,satir,secili);
+      Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[satir].RecordIndex;
+      takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
+      dosyaNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 2);
+      gelisNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 3);
+      gelisSIRANO := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 6);
 
-      takip := Takipler.DataController.GetValue
-        (Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
-      dosyaNo := Takipler.DataController.GetValue
-        (Takipler.Controller.SelectedRows[satir].RecordIndex, 2);
-      gelisNo := Takipler.DataController.GetValue
-        (Takipler.Controller.SelectedRows[satir].RecordIndex, 3);
+      DATALAR.ADOConnection2.BeginTrans;
+      try
+          sql := ' delete from hareketler ' +
+                   ' where dosyaNo = ' + QuotedStr(dosyaNo) +
+                   ' and gelisNo = ' + gelisNo + ' and Tip in (''S'',''L'')';
+          datalar.QueryExec(sql);
 
-      if not ADO_Diger.Eof then
-      begin
-        sql := ' delete from gelisDetay ' + ' where dosyaNo = ' + QuotedStr
-          (dosyaNo) + ' and gelisNo = ' + gelisNo + ' and durum = 1 ';
-        datalar.QueryExec(ado, sql);
+          ADO_TahlillSQL.First;
+          while not ADO_TahlillSQL.Eof do
+          begin
+            if (ADO_TahlillSQL.fieldbyname('HizmetTuru').AsString = 'Diyaliz Seans') or
+               (ADO_TahlillSQL.fieldbyname('HizmetTuru').AsString = 'Tahlil')
+            then begin
+              if ADO_TahlillSQL.fieldbyname('HizmetTuru').AsString = 'Diyaliz Seans'
+              then
+                Tip := 'S'
+              else
+                Tip := 'L';
+
+              sql := 'SET IDENTITY_INSERT Hareketler ON ' +
+                'insert into hareketler(dosyaNo,gelisNo,gelisSIRANO,sirano,Code,Tarih,Durum,Doktor,islemSiraNo,Tip,Onay,RaporTakipNo)'
+                + 'values(' + QuotedStr(dosyaNo) + ',' + gelisNo + ','
+                + gelisSIRANO + ','
+                + ADO_TahlillSQL.fieldbyname('hizmetSunucuRefNo').AsString + ','
+                + QuotedStr(ADO_TahlillSQL.fieldbyname('sutKodu').AsString) + ','
+                + QuotedStr(tarih(ADO_TahlillSQL.fieldbyname('islemTarihi').AsString)) + ','
+                + '1' + ',' + QuotedStr(doktorTescilToKod(ADO_TahlillSQL.fieldbyname('drTescilNo').AsString)) + ','
+                + QuotedStr(ADO_TahlillSQL.fieldbyname('islemSiraNo').AsString) + ','
+                + QuotedStr(Tip) + ','
+                + QuotedStr('1') + ','
+                + QuotedStr(ADO_TahlillSQL.fieldbyname('raporTakipNo').AsString) +
+                ')' +
+                ' SET IDENTITY_INSERT Hareketler OFF ';
+
+              datalar.QueryExec(sql);
+            end;
+            (*
+            if (ADO_TahlillSQL.fieldbyname('HizmetTuru').AsString = 'Taný')
+            Then begin
+              sql :=
+                'insert into hareketler(dosyaNo,gelisNo,Tarih,Durum,Doktor,islemSiraNo,Tip,Onay)'
+                + 'values(' + QuotedStr(dosyaNo) + ',' + gelisNo + ','
+                + QuotedStr(tarih(ADO_TahlillSQL.fieldbyname('islemTarihi').AsString)) + ','
+                + '1' + ',' + QuotedStr(doktorTescilToKod(ADO_TahlillSQL.fieldbyname('drTescilNo').AsString)) + ','
+                + QuotedStr(ADO_TahlillSQL.fieldbyname('islemSiraNo').AsString) + ','
+                + QuotedStr(Tip) + ','
+                + QuotedStr('1') +
+                ')';
+              datalar.QueryExec(sql);
+
+            end;
+              *)
+
+            ADO_TahlillSQL.Next;
+          end;
+      datalar.ADOConnection2.CommitTrans;
+      except on e : exception do
+       begin
+        datalar.ADOConnection2.RollbackTrans;
+        txtHatalar.Lines.Add(takip + ' : ' + e.Message);
+       end;
       end;
-
-      ADO_Diger.First;
-      while not ADO_Diger.Eof do
-      begin
-        sql :=
-          'insert into GelisDetay(dosyaNo,gelisNo,RTarih,UTarih,Durum,Doktor,TalepSira)'
-          + 'values(' + QuotedStr(dosyaNo) + ',' + gelisNo + ',' + QuotedStr
-          (tarih(ADO_Diger.fieldbyname('islemTarihi').AsString))
-          + ',' + QuotedStr
-          (tarih(ADO_Diger.fieldbyname('islemTarihi').AsString))
-          + ',' + '1' + ',' + QuotedStr
-          (doktorTescilToKod(ADO_Diger.fieldbyname('drTescilNo')
-              .AsString)) + ',' + QuotedStr
-          (ADO_Diger.fieldbyname('islemSiraNo').AsString) + ')';
-
-        datalar.QueryExec(ado, sql);
-
-        ADO_Diger.Next;
-
-      end;
-
     end;
   end;
 
@@ -1141,8 +1112,8 @@ begin
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
 
-  sql := 'update gelisler set TakýpSend = ' + QuotedStr(s)
-    + ' where takýpNo = ' + QuotedStr(takip);
+  sql := 'update Hasta_gelisler set TakýpSend = ' + QuotedStr(s)
+    + ' where takipNo = ' + QuotedStr(takip);
   datalar.QueryExec(ado, sql);
 
   ado.Free;
@@ -1246,7 +1217,7 @@ begin
         4) + ' ' + takip + ' Hata : ' + s);
 
   StatusBar1.SimpleText := '.';
-  Progres.Progress := Progres.Progress + 1;
+
 end;
 
 procedure TfrmTakipKontrol.mHizmetleriKaydet1Click(Sender: TObject);
@@ -1254,138 +1225,32 @@ var
   fark: double;
   hatali: TstringList;
   ado: TADOQuery;
-  tedavi, Sonuc, takip, BasvuruNo, sql, ts: string;
+  tedavi, Sonuc, takipNo, BasvuruNo, sql, ts : string;
   x, r: integer;
 Begin
 
   if not LisansKontrol(fark) = True Then
     exit;
 
-  StatusBar1.Panels[0].Text := 'Ödeme Bilgisi Yollanýyor....';
-
-  Progres.MaxValue := Takipler.Controller.SelectedRowCount - 1;
-  Progres.Progress := 0;
-  Progres.Visible := True;
-
-  hatali := TstringList.Create;
-
-  for r := 0 to Takipler.Controller.SelectedRowCount - 1 do
-  begin
-    Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[r].RecordIndex;
-    x := r;
-    Application.ProcessMessages;
-    // Takipler.DataController.FocusedRowIndex := r;
-    // x := Takipler.DataController.GetFocusedRecordIndex;
-
-    // tedavi := gridGelisler.Cells[5,gridGelisler.Row];
-    takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex, 1);
-    BasvuruNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex, 7);
-
-    verisetleriyenile(takip, 'D', 'G');
-    // tümü kaydet
-    if length(datalar.VeriSeti.Tahlil) + length(datalar.VeriSeti.Diger) + length
-      (datalar.VeriSeti.Tani) + length(datalar.VeriSeti.Malzeme) + length
-      (datalar.VeriSeti.Rad) <= 20 then
+  DurumGoster(True,True);
+  pBar.Properties.Max := Takipler.Controller.SelectedRowCount;
+  pBar.Position := 0;
+  try
+    for r := 0 to Takipler.Controller.SelectedRowCount - 1 do
     begin
-      Sonuc := HizmetKayit_3(BasvuruNo, takip, datalar.HizmetKayit, nil,
-        nil, nil, nil, nil, datalar.VeriSeti.Malzeme,
-        nil, datalar.VeriSeti.Tahlil, datalar.VeriSeti.Tani,
-        datalar.VeriSeti.Rad, nil,
-        // datalar.veriSeti.KayitliIslem,
-        hatali, 1, '');
-      Sonucyaz(Sonuc, takip, x, hatali);
-      if Sonuc = '0000' then
-        ts := '9'
-      else
-        ts := '1';
-      GonderimSonuc(takip, ts);
-    end
-    Else
-    Begin
-      // Seanslarý taný , Rad ,kaydet
-      verisetleriyenile(takip, 'D', 'G');
-      Sonuc := HizmetKayit_3(BasvuruNo, takip, datalar.HizmetKayit, nil,
-        nil, nil, nil, nil, nil, nil, nil,
-        datalar.VeriSeti.Tani, datalar.VeriSeti.Rad, nil,
-        // datalar.veriSeti.KayitliIslem,
-        hatali, 1, '');
-      Sonucyaz(Sonuc, takip, x, hatali);
-      if Sonuc = '0000' then
-        ts := '9'
-      else
-        ts := '1';
-      GonderimSonuc(takip, ts);
+      Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[r].RecordIndex;
+      Application.ProcessMessages;
+      takipNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex, 1);
+      BasvuruNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex, 7);
 
-      if length(datalar.VeriSeti.Malzeme) > 0 Then
-      Begin
-        sleep(3000);
-        // verisetleriyenile(takip,'D','G');
-        Sonuc := HizmetKayit_3(BasvuruNo, takip, datalar.HizmetKayit, nil, nil,
-          nil, nil, nil, datalar.VeriSeti.Malzeme, nil, nil, nil, nil, nil,
-          // datalar.veriSeti.KayitliIslem,
-          hatali, 1, '');
-        Sonucyaz(Sonuc, takip, x, hatali);
-        if Sonuc = '0000' then
-          ts := '9'
-        else
-          ts := '1';
-        GonderimSonuc(takip, ts);
-
-      End;
-
-      // Tahlilleri kaydet
-      if length(datalar.VeriSeti.Tahlil) > 20 Then
-      Begin
-        sleep(3000);
-        SetLength(datalar.VeriSeti.Tahlil, 20);
-        Sonuc := HizmetKayit_3(BasvuruNo, takip, datalar.HizmetKayit, nil, nil,
-          nil, nil, nil, nil, nil, datalar.VeriSeti.Tahlil, nil, nil, nil,
-          // datalar.veriSeti.KayitliIslem,
-          hatali, 1, '');
-        Sonucyaz(Sonuc, takip, x, hatali);
-        if Sonuc = '0000' then
-          ts := '9'
-        else
-          ts := '1';
-        GonderimSonuc(takip, ts);
-
-        verisetleriyenile(takip, 'D', 'G');
-
-        sleep(3000);
-        Sonuc := HizmetKayit_3(BasvuruNo, takip, datalar.HizmetKayit, nil, nil,
-          nil, nil, nil, nil, nil, datalar.VeriSeti.Tahlil, nil, nil, nil,
-          // datalar.veriSeti.KayitliIslem,
-          hatali, 1, '');
-        Sonucyaz(Sonuc, takip, x, hatali);
-        if Sonuc = '0000' then
-          ts := '9'
-        else
-          ts := '1';
-        GonderimSonuc(takip, ts);
-
-      End
-      Else
-      Begin
-        verisetleriyenile(takip, 'D', 'G');
-        Sonuc := HizmetKayit_3(BasvuruNo, takip, datalar.HizmetKayit, nil, nil,
-          nil, nil, nil, nil, nil, datalar.VeriSeti.Tahlil, nil, nil, nil,
-          // datalar.veriSeti.KayitliIslem,
-          hatali, 1, '');
-        Sonucyaz(Sonuc, takip, x, hatali);
-        if Sonuc = '0000' then
-          ts := '9'
-        else
-          ts := '1';
-        GonderimSonuc(takip, ts);
-
-      End;
-
-      Progres.Progress := Progres.Progress + 1;
+      HizmetKayitVeriSeti(takipNo,BasvuruNo, 'D','G','Tümü','',sonuc);
+      pBar.Position := pBar.Position + 1;
     End;
-   // GonderimSonuc(takip, ts);
-    StatusBar1.Panels[0].Text := '.';
-    Progres.Visible := false;
-  End;
+
+  finally
+    DurumGoster(False);
+  end;
+
 End;
 
 procedure TfrmTakipKontrol.FaturayaAt1Click(Sender: TObject);
@@ -1400,14 +1265,11 @@ begin
 
   for r := 0 to Takipler.Controller.SelectedRowCount - 1 do
   begin
-    // Takipler.DataController.FocusedRowIndex := r;
-    // x := Takipler.DataController.GetFocusedRecordIndex;
-
     takip := Takipler.DataController.GetValue
       (Takipler.Controller.SelectedRows[r].RecordIndex, 1);
 
-    sql := 'exec sp_kurumFaturaIsle_M3 ' + #39 + takip + #39 + ',' + #39 + tarih
-      (txtTarih.Text) + #39 + ',' + #39 + tarih(txttarih1.Text) + #39;
+    sql := 'exec sp_kurumFaturaIsle_M3 ' + #39 + takip + #39 + ',' + #39 +
+            txtTopPanelTarih1.GetValue + #39 + ',' + #39 + txtTopPanelTarih2.GetValue + #39;
 
     datalar.QuerySelect(ado, sql);
 
@@ -1419,6 +1281,7 @@ end;
 
 procedure TfrmTakipKontrol.FormCreate(Sender: TObject);
 begin
+  inherited;
   Menu := PopupMenu1;
 
 //  Tag := TagfrmHastaKart;
@@ -1435,8 +1298,8 @@ begin
   TapPanelElemanVisible(True,True,True,False,False,False,True,False,False,False,True,False);
 //  Liste.DataController.DataSource := DataSource;
 
-  Sayfa3_Kolon3.Width := 0;
-  Sayfa3_Kolon2.Width := 0;
+  Sayfa3_Kolon3.Visible := False;
+  Sayfa3_Kolon2.Visible := False;
   SayfaCaption('','','','','');
 end;
 
@@ -1454,8 +1317,7 @@ begin
 
   //  sql := 'select count(*) from gelisler where
 
-    sql := 'exec sp_HizmetKodToplamKontrol  ' + QuotedStr
-      (tarihal(txtTarih.Date)) + ',' + QuotedStr(tarihal(txttarih1.Date));
+    sql := 'exec sp_HizmetKodToplamKontrol  ' + txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih1.GetSQLValue;
     datalar.QueryExec(ado, sql);
     ShowMessageSkin('Ýþlem Tamamlandý', '', '', 'info');
     ado.Free;
@@ -1483,9 +1345,7 @@ begin
   satir := 1;
   satirlar := Takipler.DataController.RowCount - 1;
 
-  Progres.MaxValue := Takipler.Controller.SelectedRowCount - 1;
-  Progres.Progress := 0;
-  Progres.Visible := True;
+
   StatusBar1.SimpleText := 'Hizmetler Okunuyor...';
 
   if mrYes = ShowMessageSkin('Seçili Takipler Ýçin Okuma Ýþlemi Baþlayacak',
@@ -1518,7 +1378,7 @@ begin
       else
       begin
       end;
-      Progres.Progress := Progres.Progress + 1;
+
     end;
   end;
   ado.Free;
@@ -1554,7 +1414,7 @@ procedure TfrmTakipKontrol.TakiplerFocusedRecordChanged
 begin
 
   id := AFocusedRecord.Index;
-  ADO_SQL.Locate('TakýpNo', AFocusedRecord.Values[1], []);
+  ADO_SQL.Locate('TakipNo', AFocusedRecord.Values[1], []);
 
   cxGroupBox1.Caption := 'Açýklama  [ ' + AFocusedRecord.Values[4] + ' ]';
   dn := AFocusedRecord.Values[2];

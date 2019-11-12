@@ -362,6 +362,8 @@ procedure Son6AylikTetkikSonuc(dosyaNo,Tarih : string);
 procedure TetkikEkle(dosyaNo,gelisNo,Tarih : string);
 procedure AdoQueryActiveYenile(ado : TADOQuery);
 procedure PrintYap(raporKodu,caption,formId : string; Data: TDataSetKadir; yazdirmaTipi : TprintTip = pTNone ; Form : TForm = nil);
+procedure PrintYapDokuman(raporKodu,caption,formId : string; Data: TDataSetKadir; yazdirmaTipi : TprintTip = pTNone ; Form : TForm = nil);
+
 procedure PrintIcerik(raporKodu : string);
 procedure RTFToIcerik(raporKodu : string);
 procedure KanTetkikleri(dosyaNo,Tarih : string);
@@ -403,7 +405,7 @@ function FotografGoruntule (const aPicture: TPicture) : TModalResult;
 function CombodanSectir (const sFormCaption, sComboCaption, sItemsList: String; var iItemIndex : Integer): Boolean;
 procedure AdSoyadAyir (const pAdSoyad: String; var pAd, pSoyad : String);
 function WebErisimBilgileriFirma(sirketKod : string) : string;
-function WebErisimBilgiFirma(id : string) : string;
+function WebErisimBilgiFirma(slk,slb : string) : string;
 function WebErisimBilgi(slk,slb : string) : string;
 function WebErisimBilgiOrtak(slk,slb : string) : string;
 
@@ -436,6 +438,7 @@ procedure HesapIsleOdeme(BorcHesap,AlacakHesap,Aciklama : string ; Tutar : Doubl
 function SifreGecerliMi (const sSifre: String; const pMinKarakter, pMinHarf, pMinKucukHarf, pMinBuyukHarf, pMinRakam : Integer; pMsgGostrt : Boolean = True) : Boolean;
 procedure DokumanAc(Dataset : Tdataset;fieldName : string;fileName : string; Open : Boolean = True ; DokumanTip : string = 'rtf');
 procedure DokumanYukle(Dataset : Tdataset;field : string;fielName : string;maxSize : longint = 60000000);
+procedure DokumanYuklePDF(Dataset : Tdataset;field : string;fielName : string;maxSize : longint = 60000000);
 function RTFSablonDataset(RTFKodu : string) : TDataset;
 function SirketIGUToSQLStr(sirketKodu : string) : string;
 function SirketDoktorToSQLStr(sirketKodu : string) : string;
@@ -479,6 +482,7 @@ procedure TakipListGetir(kullaniciAdi,sifre,sksrs,Tarih,uygulamaKodu : string);
 
 procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 procedure ENabizHizmetSil(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '');
+procedure ENabizSgkBildir(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 
 
 procedure GunlereGoreHastaDagilimCizelgesi;
@@ -495,8 +499,11 @@ procedure TakipNoTetkikIslemSiraNo(TakipNo : string);
 procedure TakipNoMalzemeIslemSiraNo(TakipNo : string);
 function TakipNoTetkikIslemRefNo(TakipNo  : string) : string;
 procedure TakipNoHizmetIslemSiraNo(TakipNo , Tip : string);
+procedure IslemNumaralariniAl(_TakipNo : string);
 
 procedure XMLGoster(filename: string);
+
+function FotoGetir( dosyaNo : string) : TcxImage;
 
 
 
@@ -579,12 +586,136 @@ uses message,AnaUnit,message_y,popupForm,rapor,TedaviKart,Son6AylikTetkikSonuc,D
              HastaRecete,sifreDegis,HastaTetkikEkle,GirisUnit,SMS,LisansUzat,Update_G, DBGrids,
              UyumSoftPortal,NThermo, TransUtils;
 
+function FotoGetir( dosyaNo : string) : TcxImage;
+var
+  g : TGraphic;
+  foto : TcxImage;
+begin
+   datalar.ADO_Foto.SQL.Text := Format(FotoTable,[#39+dosyaNo+#39]);
+   datalar.ADO_FOTO.Open;
+
+   g := TJpegimage.Create;
+   foto := TcxImage.Create(nil);
+   try
+    if not datalar.ADO_FOTO.Eof
+    then
+      if datalar.ADO_FOTO.FieldByName('foto').AsVariant <> Null
+      Then begin
+        g.Assign(datalar.ADO_FOTO.FieldByName('foto'));
+        foto.Picture.Assign(g);
+        FotoGetir := foto;
+      end
+      else begin
+       FOTO.Picture.Assign(nil);
+       FotoGetir := foto;
+      end
+    else
+    begin
+       FOTO.Picture.Assign(nil);
+       FotoGetir := foto;
+    end;
+
+   finally
+     g.Free;
+   end;
+end;
 
 procedure XMLGoster(filename: string);
 begin
     ShellExecute(0, 'open', PChar('Chrome.exe'), PChar(filename + '.xml'),
     nil, SW_SHOWNORMAL);
 end;
+
+
+procedure IslemNumaralariniAl(_TakipNo : string);
+var
+  msg , islemSiraNo , siraNo , sql : string;
+  ado : TADOQuery;
+  i , j : integer;
+begin
+         if mrYes = ShowMessageSkin('Hizmet Ýslem Numaralarý Düzeltilecek Eminmisiniz ?','','','msg')
+         then begin
+            datalar.ADOConnection2.BeginTrans;
+            try
+               sql := 'update hareketler set islemSiraNo = '''' ' +
+                        'from hareketler h join Hasta_gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+                        ' where g.takipNo = ' + QuotedStr(_takipNo) + ' and h.Tip = ''L''';
+               datalar.QueryExec(ado,sql);
+
+               datalar.RxTahlilIslem.First;
+               while not datalar.RxTahlilIslem.Eof do
+               Begin
+                   islemSiraNo := datalar.RxTahlilIslem.fieldbyname('islemSiraNo').AsString;
+                   siraNo := datalar.RxTahlilIslem.fieldbyname('HizmetSunucuRefNo').AsString;
+                   sql := 'update hareketler set islemSiraNo = ' + QuotedStr(islemSiraNo) +
+                          ' where sirano = ' + siraNo;
+                   datalar.QueryExec(ado,sql);
+                   datalar.RxTahlilIslem.Next;
+               End;
+              (*
+               datalar.RxMalzemeBilgisi.First;
+               while not datalar.RxMalzemeBilgisi.Eof do
+               Begin
+                   islemSiraNo := datalar.RxMalzemeBilgisi.fieldbyname('islemSiraNo').AsString;
+                   siraNo := datalar.RxMalzemeBilgisi.fieldbyname('HizmetSunucuRefNo').AsString;
+                   sql := 'update hareketlerIS set islemSiraNo = ' + QuotedStr(islemSiraNo) +
+                          ' where SIRANO = ' + copy(siraNo,2,15);
+                   datalar.QueryExec(ado,sql);
+                   datalar.RxMalzemeBilgisi.Next;
+               End;
+                *)
+
+
+
+               sql := 'update hareketler set islemSiraNo = '''' ' +
+                        'from hareketler h join hasta_gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo  ' +
+                        ' where g.takipNo = ' + QuotedStr(_takipNo) + ' and h.Tip = ''S''';
+               datalar.QueryExec(ado,sql);
+
+
+               datalar.RxDigerIslem.First;
+               while not datalar.RxDigerIslem.Eof do
+               Begin
+                   islemSiraNO := datalar.RxDigerIslem.fieldbyname('islemSiraNo').AsString;
+                   siraNO := datalar.RxDigerIslem.fieldbyname('HizmetSunucuRefNo').AsString;
+                   sql := 'update gelisDetay set TalepSira = ' + QuotedStr(islemSiraNo) +
+                          ' where sirano = ' + siraNO;
+                   datalar.QueryExec(ado,sql);
+                   datalar.RxDigerIslem.Next;
+               End;
+
+
+               sql := 'update hareketler set islemSiraNo = '''' ' +
+                        'from hareketler h join hasta_gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+                        ' where g.takipNo = ' + QuotedStr(_takipNo) + ' and Tip = ''T''';
+               datalar.QueryExec(ado,sql);
+
+
+               datalar.RxTaniBilgisi.First;
+               while not datalar.RxTaniBilgisi.Eof do
+               Begin
+                   islemSiraNO := datalar.RxTaniBilgisi.fieldbyname('islemSiraNo').AsString;
+                   siraNO := datalar.RxTaniBilgisi.fieldbyname('HizmetSunucuRefNo').AsString;
+                   sql := 'update hareketler set islemSiraNo = ' + QuotedStr(islemSiraNo) +
+                          ' where sirano = ' + siraNO;
+                   datalar.QueryExec(ado,sql);
+                   datalar.RxTaniBilgisi.Next;
+               End;
+
+              ShowMessageSkin('Ýþlem Sýra Numaralarý Düzeltildi','','','info');
+              datalar.ADOConnection2.CommitTrans;
+            except on e : exception do
+              begin
+               ShowMessageSkin('Ýþlem Sýra Numaralarý Düzeltilemedi',e.Message,'','info');
+               datalar.ADOConnection2.RollbackTrans;
+              end;
+            end;
+
+
+         End;
+
+
+End;
 
 
 procedure TakipNoHizmetIslemSiraNo(TakipNo , Tip : string);
@@ -597,8 +728,8 @@ begin
    ado.Connection := datalar.ADOConnection2;
    try
      sql := 'select islemSiraNo from hareketler h ' +
-            ' join gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
-            ' where g.TakýpNo = ' + QuotedStr(TakipNo) + ' and Tip = ' + QuotedStr(Tip) +
+            ' join Hasta_gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+            ' where g.TakipNo = ' + QuotedStr(TakipNo) + ' and Tip = ' + QuotedStr(Tip) +
             ' and isnull(islemSiraNo,'''') <> ''''' ;
      datalar.QuerySelect(ado,sql);
      setlength(datalar.islemSiralari,ado.RecordCount);
@@ -794,6 +925,34 @@ begin
     end
   else
   _Sonuc_ := 'SysTakipNo Boþ Olmaz';
+  finally
+    ado.Free;
+  end;
+end;
+
+procedure ENabizSgkBildir(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
+var
+  sql,msj : string;
+  ado : TADOQuery;
+begin
+
+  ado := TADOQuery.Create(nil);
+  ado.Connection := datalar.ADOConnection2;
+  try
+  if sysTakipNo <> '' then
+  begin
+     sql := 'select dbo.fn_HIZMET_BILGISI_SGK_BILDIR(' + QuotedStr(sysTakipNo) + ',' + QuotedStr(islemReferansNo) + ',' + QuotedStr(Tip) + ')';
+     datalar.QuerySelect(ado,sql);
+     msj := ado.Fields[0].AsString;
+     if msj <> '' then
+     begin
+        MesajGonder(msj,'SGK ISLEM BILDIR',HastaneRefNo,_Sonuc_);
+     end
+     else
+     _Sonuc_ := 'Mesaj Oluþturulamadý';
+  end
+  else
+  _Sonuc_ := 'SysTakipNo Boþ Olmaz,E-Nabýz Hasta Kayýt Yapýnýz';
   finally
     ado.Free;
   end;
@@ -1107,7 +1266,7 @@ end;
 
 procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 var
-  sql : string;
+  sql,msj : string;
   ado : TADOQuery;
 begin
   ado := TADOQuery.Create(nil);
@@ -1117,9 +1276,10 @@ begin
   begin
      sql := 'select dbo.fn_HIZMET_BILGISI(' + QuotedStr(sysTakipNo) + ',' + QuotedStr(islemReferansNo) + ',' + QuotedStr(Tip) + ')';
      datalar.QuerySelect(ado,sql);
-     if ado.Fields[0].AsString <> '' then
+     msj := ado.Fields[0].AsString;
+     if msj <> '' then
      begin
-        MesajGonder(ado.Fields[0].AsString,'Hizmet Kayýt',HastaneRefNo,_Sonuc_);
+        MesajGonder(msj,'Hizmet Kayýt',HastaneRefNo,_Sonuc_);
      end
      else
      _Sonuc_ := 'Mesaj Oluþturulamadý';
@@ -1371,6 +1531,7 @@ var
 begin
 
    Grid := TcxGridDBTableView(cxGrid.Levels[0].GridView);
+   Grid.OptionsView.DataRowHeight := 25;
    try
        Kolonlar := TStringList.Create;
        ExtractStrings([','],[],PChar(Colums),Kolonlar);
@@ -1385,6 +1546,7 @@ begin
        KolonItems := TStringList.Create;
        ExtractStrings([','],[],PChar(ColumsPropertiesItems),KolonItems);
 
+
        Grid.ClearItems;
        for i := 0 to Kolonlar.Count - 1 do
        begin
@@ -1393,6 +1555,7 @@ begin
               DataBinding.FieldName := Kolonlar[i];
               Caption := KolonBasliklar[i];
               Width := strToint(KolonGenislik[i]);
+
               HeaderAlignmentHorz := taCenter;
               HeaderAlignmentVert := vaCenter;
               PropertiesClassName := KolonProperties[i];
@@ -1400,7 +1563,7 @@ begin
               Properties.ReadOnly := StrToBool(KolonReadOnly[i]);
             //  Properties.Alignment.Vert := taVCenter;
 
-             if KolonProperties[i] = 'TcxImageComboBoxProperties'
+             if (KolonProperties[i] = 'TcxImageComboBoxProperties')
              Then Begin
                  ic := TcxImageComboKadir.Create(nil);
                  TcxImageComboBoxProperties(Properties).Alignment.Horz := taCenter;
@@ -1434,7 +1597,13 @@ begin
                    ic.Free;
                  end;
 
-             End;
+             End
+             else
+             begin
+              TcxTextEditProperties(Properties).Alignment.Horz := taCenter;
+              TcxTextEditProperties(Properties).Alignment.Vert := TcxEditVertAlignment.taVCenter;
+             end;
+
 
 
             end;
@@ -2224,23 +2393,30 @@ procedure DokumanAc(Dataset : Tdataset;fieldName : string;fileName : string; Ope
 var
   Blob : TAdoBlobStream;
 begin
-
+    if DokumanTip = ''
+    then
     try
     // id := Dataset.FieldByName('id').AsString;
      DokumanTip := Dataset.FieldByName('DokumanTip').AsString;
     except
     end;
 
+    if Dataset.FieldByName(fieldName).AsVariant <> null
+    then  begin
+         Blob := TADOBlobStream.Create((Dataset.FieldByName(fieldName) as TBlobField), bmRead);
+        try
+         // filename := filename;
+          Blob.SaveToFile(filename+'.'+DokumanTip);
+        finally
+          Blob.Free;
+        end;
 
-    Blob := TADOBlobStream.Create((Dataset.FieldByName(fieldName) as TBlobField), bmRead);
-    try
-     // filename := filename;
-      Blob.SaveToFile(filename+'.'+DokumanTip);
-    finally
-      Blob.Free;
+        sleep(1000);
+
+        if open
+        then
+         ShellExecute(0, 'open', PChar(filename+'.'+DokumanTip), nil, nil, SW_SHOWNORMAL);
     end;
-    sleep(1000);
-    if open then ShellExecute(0, 'open', PChar(filename+'.'+DokumanTip), nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure DokumanYukle(Dataset : Tdataset;field : string;fielName : string;maxSize : longint = 60000000);
@@ -2250,6 +2426,9 @@ var
   dosyaBoyutu : integer;
   myFile : File of Word;
 begin
+
+    if dataset.Eof then exit;
+    
       dosyaBoyutu := myFileSize(fielName);
       if dosyaBoyutu > maxSize then
       begin
@@ -2279,6 +2458,47 @@ begin
     end;
 end;
 
+procedure DokumanYuklePDF(Dataset : Tdataset;field : string;fielName : string;maxSize : longint = 60000000);
+var
+  Blob : TADOBlobStream;
+  dosyaTip : string;
+  dosyaBoyutu : integer;
+  myFile : File of Word;
+begin
+
+      if dataset.Eof then exit;
+
+      dosyaTip := ExtractFileExt(fielName);
+      dosyaTip := UpperCase(StringReplace(dosyaTip,'.','',[rfReplaceAll]));
+      if dosyaTip <> 'PDF' then exit;
+
+      dosyaBoyutu := myFileSize(fielName);
+
+      if dosyaBoyutu > maxSize then
+      begin
+        ShowMessageSkin('Dosya Yükleme Hatasý','Yüklenebilecek Max Dosya Boyutu : ' + floattostr(maxSize) + ' Kb',
+                        inttostr(dosyaBoyutu) + ' Kb Boyutlu Dosya Yüklenemez','info');
+        exit;
+      end;
+
+      Dataset.Edit;
+    try
+      Blob := TADOBlobStream.Create(TBlobField(Dataset.FieldByName(field)),bmwrite);
+      try
+        Blob.LoadFromFile(fielName);
+        Blob.Position := 0;
+        TBlobField(Dataset.FieldByName(field)).LoadFromStream(Blob);
+       // Dataset.FieldByName('DokumanTip').AsString := dosyaTip;
+        Blob.Free;
+        Dataset.Post;
+      except
+        Dataset.Cancel;
+      end;
+    except
+      Dataset.Cancel;
+      raise;
+    end;
+end;
 
 
 procedure HesapIsle(BorcHesap,AlacakHesap,Aciklama : string ; Tutar : Double ; Tarih,cek,vadeTarihi,evrakTipi,evrakNo,cekdurum,cekId : string );
@@ -2819,10 +3039,10 @@ begin
     Datalar.ServisErisimBilgileriFirma.LoadFromDataSet(datalar.QuerySelect(sql));
 end;
 
-function WebErisimBilgiFirma(id : string) : string;
+function WebErisimBilgiFirma(slk,slb : string) : string;
 begin
    WebErisimBilgiFirma := '';
-   Datalar.ServisErisimBilgileriFirma.Locate('id',VarArrayOf([id]),[]);
+   Datalar.ServisErisimBilgileriFirma.Locate('slk;slb',VarArrayOf([slk,slb]),[]);
    WebErisimBilgiFirma := Datalar.ServisErisimBilgileriFirma.Fieldbyname('Value').AsString;
 end;
 
@@ -3161,6 +3381,7 @@ begin
           'PROTOKOLNO = ' + QuotedStr(gelisBilgisi.ProtokolNo) + ',' +
           'TEDAVITURU = ' + QuotedStr(gelisBilgisi.TedaviTuru) + ',' +
           'Yupass = ' + QuotedStr(GelisBilgisi.Yupass) + ',' +
+          'sysTakipNo = ' + QuotedStr(GelisBilgisi.sysTakipNo) + ',' +
           'Taburcu = ' + QuotedStr(GelisBilgisi.TaburcuKodu) +
           ' where dosyaNo = ' + QuotedStr (gelisBilgisi.dosyaNo) +
           ' and gelisNo = ' + gelisBilgisi.gelisNo;
@@ -3427,6 +3648,37 @@ begin
 end;
 
 
+procedure PrintYapDokuman(raporKodu,caption,formId : string; Data: TDataSetKadir; yazdirmaTipi : TprintTip = pTNone ; Form : TForm = nil);
+//var
+  //i : integer;
+  //oExportfilter : TfrxCustomExportFilter;
+begin
+  Application.CreateForm(TfrmRapor, frmRapor);
+  try
+    frmRapor.raporDataDokuman(Data ,raporKodu,caption,formId,yazdirmaTipi);
+    if yazdirmaTipi = pTNone
+    then begin
+      if Form <> nil then TGirisForm(Form).DurumGoster(False);
+      frmRapor.ShowModal;
+    end;
+    if yazdirmaTipi = pTPDF
+    then begin
+      frmRapor.frxReport1.PrepareReport(true);
+      frmRapor.frxPDFExport1.ShowDialog := False;
+      frmRapor.frxPDFExport1.FileName := caption + '.PDF';
+      frmRapor.frxPDFExport1.ExportObject(frmRapor.frxReport1);
+      frmRapor.frxReport1.Export(frmRapor.frxPDFExport1);
+
+      if Form <> nil then TGirisForm(Form).DurumGoster(False);
+    end;
+
+
+  finally
+    FreeAndNil(frmRapor);
+  end;
+end;
+
+
 procedure PrintIcerik(raporKodu : string);
 begin
   Application.CreateForm(TfrmRapor, frmRapor);
@@ -3662,15 +3914,20 @@ var
 begin
    if Tip = 'gelisler'
    then begin
-       sql := 'select top 24 g.dosyaNo,g.gelisNo,cast(g.BHDAT as Datetime) Tarih,g.TakipNo TakIpNo,g.TEDAVITURU,g.PROTOKOLNO, mt.AnemnezEkranTipi, mt.Tanimi TEDAVITURUAck,g.SIRANO,g.PROTOKOLNO '+
+       sql := 'select top 24 g.dosyaNo,g.gelisNo,cast(g.BHDAT as Datetime) Tarih,g.TakipNo TakIpNo,g.TEDAVITURU,g.PROTOKOLNO, ' +
+       'mt.AnemnezEkranTipi, mt.Tanimi TEDAVITURUAck,g.SIRANO,g.PROTOKOLNO,dbo.fn_yasTarih(h.DOGUMTARIHI,g.bhdat) yas ,' +
+       'h.IdealKilo kilo ' +
        'from gelisler g '+
+       'join PersonelKart h on h.dosyaNo = g.dosyaNo ' +
        'inner join MuayeneTipleri mt on mt.Kod = g.TEDAVITURU ' +
        'where g.dosyaNo = ' + QuotedStr(dosyaNo) + ' order by BHDAT desc, g.GelisNo desc';
    end
    else
-     sql := 'select top 24 g.dosyaNo,g.gelisNo,g.BHDAT Tarih,g.TakipNo TakIpNo,g.TEDAVITURU,g.PROTOKOLNO,SIRANO '+
+     sql := 'select top 24 g.dosyaNo,g.gelisNo,g.BHDAT Tarih,g.TakipNo TakIpNo,g.TEDAVITURU,g.PROTOKOLNO,SIRANO, '+
+     'dbo.fn_yasTarih(h.DOGUMTARIHI,g.bhdat) yas ,h.IdealKilo kilo ' +
      'from ' + Tip + ' g '+
      'left join Medula_TedaviTurleri mt on mt.Kod = g.TEDAVITURU ' +
+     'join HastaKart h on h.dosyaNo = g.dosyaNo ' +
      'where g.dosyaNo = ' + QuotedStr(dosyaNo) + ' order by BHDAT desc, g.GelisNo desc';
 
 
@@ -3755,8 +4012,8 @@ procedure BasvuruNoSistemeYaz(TakipNo,BasvuruNo : string);
   sql : string;
   ado : TADOQuery;
 begin
-  sql := 'update gelisler set basvuruNO = ' + QuotedStr(BasvuruNo) +
-         ' where takýpNo = ' + QuotedStr(TakipNo);
+  sql := 'update hasta_gelisler set basvuruNO = ' + QuotedStr(BasvuruNo) +
+         ' where takipNo = ' + QuotedStr(TakipNo);
   datalar.QueryExec(ado,sql);
 end;
 
@@ -4867,16 +5124,25 @@ end;
 
 procedure Sonucyaz(Http : THizmetKayit);
 var
-  sql: string;
+  sql , hizmetSunucuRefNo : string;
   i : integer;
 begin
-  if Http.Cevap.sonucKodu = '0000' Then
-  Begin
-    for i := 0 to length(Http.Cevap.islemBilgileri)-1 do
+  hizmetSunucuRefNo := '';
+  if Http.Cevap.sonucKodu = '0000'
+  Then Begin
+    for i := 0 to length(Http.Cevap.islemBilgileri) - 1 do
     Begin
+      hizmetSunucuRefNo := Http.Cevap.islemBilgileri[i].hizmetSunucuRefNo;
+      if pos('MLZM',hizmetSunucuRefNo) > 0
+      Then
+        sql := 'update hareketlerIS set islemSiraNo = ' + QuotedStr(Http.Cevap.islemBilgileri[i].islemSiraNo)
+          + ' where sirano = ' + QuotedStr(StringReplace(hizmetSunucuRefNo,'MLZM','',[rfReplaceAll]))
+      else
         sql := 'update hareketler set islemSiraNo = ' + QuotedStr(Http.Cevap.islemBilgileri[i].islemSiraNo)
           + ' where sirano = ' + QuotedStr(Http.Cevap.islemBilgileri[i].hizmetSunucuRefNo);
+
         datalar.QueryExec(sql);
+
     End;
   End
   else
@@ -6542,84 +6808,47 @@ end;
 *)
 
 function KodEslestirNormalDeger(kod: string; turId: string;
-  var minD, maxD, Tip: string): string;
+                                 var minD, maxD, Tip: string): string;
 var
   sql , where : string;
   ado: TADOQuery;
 begin
-  if turId = '147' then
-    turId := '0';
+  if turId = '147' then turId := '0';
 
-  where := ' and sirketKodu = ' + QuotedStr(datalar.aktifSirket);
+  where := ' and L.labID = ' + QuotedStr(datalar._labID);
 
   ado := TADOQuery.Create(nil);
   try
     ado.Connection := datalar.ADOConnection2;
+    sql := 'select TurId from Labtestler_Firma L ' +
+           ' join Labtestler T on T.butKodu = L.butKodu ' +
+           'where islemkoduC = ' + QuotedStr(kod) + where;
 
-    sql := 'select TurId from Labtestler where islemkodu = ' + QuotedStr(kod) + where;
-    datalar.QuerySelect(ado, sql);
-
-    if ado.FieldByName('TurId').AsString <> '' then
+    if datalar.QuerySelect(sql).FieldByName('TurId').AsString <> '' then
     begin
       sql :=
-        'select butKodu,minD,maxD from Labtestler where islemkodu = ' + QuotedStr
-        (kod) + ' and TurId = ' + turId + where;
-      datalar.QuerySelect(ado, sql);
-
-      if ado.eof Then
-      Begin
-        sql :=
-          'select butKodu,minD,maxD from Labtestler where islemkoduC = '+ QuotedStr(kod) + where;
-        // + ' and TurId = ' + turId;
+        'select butKodu,minD,maxD,uygulamaAdet from Labtestler_Firma  L ' +
+        ' join Labtestler T on T.butKodu = L.butKodu ' +
+        ' where islemkoduC = ' + QuotedStr(kod) + ' and T.TurId = ' + turId + where;
         datalar.QuerySelect(ado, sql);
-        if not ado.eof Then
-        Begin
-          Result := ado.Fields[0].AsString;
-          minD := ado.Fields[1].AsString;
-          maxD := ado.Fields[2].AsString;
-          Tip := 'C';
-        End
-        Else
-          Result := '';
-      End
-      Else
-      Begin
         Result := ado.Fields[0].AsString;
         minD := ado.Fields[1].AsString;
         maxD := ado.Fields[2].AsString;
-        Tip := 'G';
-      End;
+        Tip := ado.Fields[3].AsString;
     end
     else
     begin
       sql :=
-        'select butKodu,minD,maxD from Labtestler where islemkodu = ' + QuotedStr(kod) + where;
-      datalar.QuerySelect(ado, sql);
-
-      if ado.eof Then
-      Begin
-        sql :=
-          'select butKodu,minD,maxD from Labtestler where islemkoduC = '+ QuotedStr(kod) + where;
-        // + ' and TurId = ' + turId;
+        'select butKodu,minD,maxD,uygulamaAdet from Labtestler_Firma L ' +
+        ' join Labtestler T on T.butKodu = L.butKodu ' +
+        ' where islemkoduC = ' + QuotedStr(kod) + where;
         datalar.QuerySelect(ado, sql);
-        if not ado.eof Then
-        Begin
-          Result := ado.Fields[0].AsString;
-          minD := ado.Fields[1].AsString;
-          maxD := ado.Fields[2].AsString;
-          Tip := 'C';
-        End
-        Else
-          Result := '';
-      End
-      Else
-      Begin
         Result := ado.Fields[0].AsString;
         minD := ado.Fields[1].AsString;
         maxD := ado.Fields[2].AsString;
-        Tip := 'G';
-      End;
+        Tip := ado.Fields[3].AsString;
     end;
+
   finally
     ado.Free;
   end;
@@ -7649,7 +7878,7 @@ begin
   ado := TADOQuery.Create(nil);
   try
     ado.Connection := datalar.ADOConnection2;
-    sql := 'select kod from Doktorlar where TescilNo = ' + QuotedStr(Tescil);
+    sql := 'select kod from DoktorlarT where TescilNo = ' + QuotedStr(Tescil);
     datalar.QuerySelect(ado, sql);
 
     Result := ado.FieldByName('kod').AsString;
@@ -10635,6 +10864,7 @@ procedure ComboDoldur3(sql: string; c: TcxComboBox; alan: integer;
   alan2: integer);
 var
   ado: TADOQuery;
+  item : string;
 begin
   ado := TADOQuery.Create(nil);
   try
@@ -10644,10 +10874,13 @@ begin
     ado.Open;
     ado.First;
     c.Properties.Items.Clear;
+    item := '';
     while not ado.eof do
     begin
-      c.Properties.Items.Add(trim(ado.Fields[alan].AsString) + ' - ' + trim
-          (ado.Fields[alan2].AsString));
+     if alan2 > 0 then item := trim(ado.Fields[alan].AsString) + ' - ' + trim(ado.Fields[alan2].AsString)
+      else item := trim(ado.Fields[alan].AsString);
+
+      c.Properties.Items.Add(item);
       ado.Next;
     end;
     ado.close;

@@ -15,7 +15,7 @@ uses
   cxDropDownEdit, cxPC, cxGroupBox, cxImageComboBox,GetFormClass,
   cxDBLookupComboBox, cxLabel, cxMemo, cxLookupEdit, cxDBLookupEdit,
   cxCurrencyEdit, Vcl.StdCtrls, Vcl.Buttons, cxCheckBox,
-  Vcl.ExtCtrls,  cxButtons, cxDBEdit, Menus;
+  Vcl.ExtCtrls,  cxButtons, cxDBEdit, Menus, cxCalendar;
 
 type
   TfrmHastaTetkikEkle = class(TfrmTedaviBilgisi)
@@ -59,24 +59,6 @@ type
     cxGridTetkiklerKabulNo: TcxGridDBColumn;
     Aciklama: TcxGridDBColumn;
     cxGridTetkiklerISLENDIMI: TcxGridDBColumn;
-    cxGridTetkiklerbutKodu: TcxGridDBColumn;
-    cxGridTetkiklertanimi: TcxGridDBColumn;
-    cxGridTetkikleruygulamaSuresi: TcxGridDBColumn;
-    cxGridTetkikleruygulamaAdet: TcxGridDBColumn;
-    cxGridTetkiklertip_1: TcxGridDBColumn;
-    cxGridTetkiklerDurum: TcxGridDBColumn;
-    cxGridTetkiklersira: TcxGridDBColumn;
-    cxGridTetkiklerminD: TcxGridDBColumn;
-    cxGridTetkiklermaxD: TcxGridDBColumn;
-    cxGridTetkiklerSGKTip: TcxGridDBColumn;
-    cxGridTetkiklerbirim: TcxGridDBColumn;
-    cxGridTetkiklerislemKodu: TcxGridDBColumn;
-    cxGridTetkiklerislemKoduC: TcxGridDBColumn;
-    cxGridTetkiklerhepatitMarker: TcxGridDBColumn;
-    cxGridTetkiklerSonucTip: TcxGridDBColumn;
-    cxGridTetkiklerTurId: TcxGridDBColumn;
-    cxGridTetkiklergrupKodu: TcxGridDBColumn;
-    cxGridTetkiklergrupKodu_Centro: TcxGridDBColumn;
     cxGridTetkiklerColumn1: TcxGridDBColumn;
     H1: TMenuItem;
     T2: TMenuItem;
@@ -84,7 +66,6 @@ type
     K1: TMenuItem;
     cxTabTetkik: TcxTabControl;
     ADO_TetkikDegerlendir: TADOQuery;
-    DataSource1: TDataSource;
     cxPanelHesapla: TcxGroupBox;
     txtUrr: TcxDBTextEdit;
     Label2: TLabel;
@@ -101,6 +82,34 @@ type
     T4: TMenuItem;
     T5: TMenuItem;
     Tetkikler: TListeAc;
+    cxGridTetkiklerColumn2: TcxGridDBColumn;
+    cxGridTetkiklerColumn3: TcxGridDBColumn;
+    T6: TMenuItem;
+    G1: TMenuItem;
+    cxTabTetkikDegerlendir: TcxTabSheet;
+    DataSource3: TDataSource;
+    DataSource17: TDataSource;
+    ADO_Uyar: TADOTable;
+    cxPageControlDegerlendir: TcxPageControl;
+    cxTabSheet3: TcxTabSheet;
+    Panel5: TPanel;
+    cxBtnDegerlendir: TcxButtonKadir;
+    cxGridDegerlendir: TcxGridKadir;
+    gridTetkikDegerlendir: TcxGridDBTableView;
+    cxGridDBColumn1: TcxGridDBColumn;
+    gridTetkikDegerlendirColumn1: TcxGridDBColumn;
+    TedaviKolon: TcxGridDBColumn;
+    gridTetkikDegerlendirColumn2: TcxGridDBColumn;
+    cxGridLevel2: TcxGridLevel;
+    cxTabSheet4: TcxTabSheet;
+    cxGrid13: TcxGrid;
+    gridUyar: TcxGridDBTableView;
+    cxGridDBColumn22: TcxGridDBColumn;
+    cxGridDBColumn23: TcxGridDBColumn;
+    gridUyarColumn1: TcxGridDBColumn;
+    cxGridLevel13: TcxGridLevel;
+    txtTS: TcxDBTextEdit;
+    Label5: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure ItemClick(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);
@@ -111,10 +120,13 @@ type
     procedure TetkikEkle;
     procedure TetkikSil;
     procedure Sonuclar;
+    procedure DegerlendirmeGetir;
     procedure cxTabTetkikChange(Sender: TObject);
     procedure ktvClick(Sender: TObject);
     procedure spKtvClick(Sender: TObject);
     procedure cxBtnHesapKaydetClick(Sender: TObject);
+    procedure cxBtnDegerlendirClick(Sender: TObject);
+    procedure gridTetkikDegerlendirDblClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -122,8 +134,8 @@ type
   end;
 
 const _TableName_ = 'Hareketler';
-      formGenislik = 900;
-      formYukseklik = 600;
+      formGenislik = 980;
+      formYukseklik = 720;
 var
   frmHastaTetkikEkle: TfrmHastaTetkikEkle;
 
@@ -134,8 +146,11 @@ implementation
 
 procedure TfrmHastaTetkikEkle.cxKaydetClick(Sender: TObject);
 begin
+  ADO_Tetkikler.Close;
+  ADO_TetkikDegerlendir.Close;
+
   inherited;
-  //
+
 end;
 
 procedure TfrmHastaTetkikEkle.cxTabTetkikChange(Sender: TObject);
@@ -156,38 +171,69 @@ begin
 
 end;
 
+procedure TfrmHastaTetkikEkle.DegerlendirmeGetir;
+var
+ sql : string;
+begin
+   (*
+    sql := 'select dosyaNo,gelisNo,tipname+Uyarý  as uyari,Onay,U.tip,U.tedavi from HastaTedaviUyari U ' +
+           ' JOIN TedaviUyariAyar tua ON u.tip = tua.tip ' +
+           ' where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNo_;
+    datalar.QuerySelect(ado_tetkikDegerlendir,sql);
+     *)
+    ADO_Uyar.Active := True;
+
+
+
+
+end;
+
+
 procedure TfrmHastaTetkikEkle.Sonuclar;
 begin
+  (*
    sql := 'select h.tip ,h.tip1,h.onay,h.gd ,h.islemAciklamasi,h.kabulNo,h.Adet,h.doktor,' +
-          ' h.code,h.NAME1,h.dosyaNo,h.gelisNo,h.siraNo,h.gelisSIRANO,h.Tarih ' +
-          ' from hareketler h ' +
-          ' join labtestler t on t.butKodu = h.code and t.uygulamaAdet = h.tip1' +
-          ' where dosyaNo = ' + #39 + _dosyaNo_ + #39 +
+          ' h.code,h.NAME1,h.dosyaNo,h.gelisNo,h.siraNo,h.gelisSIRANO,h.Tarih,h.ICODE,h.ISLENDIMI ' +
+          ' from hareketlerLab h ' +
+          ' join HastaKart HK on HK.dosyaNo = h.dosyaNo ' +
+          ' join labtestler t on t.butKodu = h.code and t.uygulamaAdet = h.tip1 and t.sirketKod = HK.sirketKod ' +
+          ' where h.dosyaNo = ' + #39 + _dosyaNo_ + #39 +
           ' and gelisNo = ' + _gelisNo_ + ' and abs(t.tip) = ' + inttostr(ABS(cxTabTetkik.TabIndex+2)) + // sql1 +
           ' order by t.sira asc,h.tip1 desc ';
+   *)
+
+   sql := 'exec sp_HastaGelisTetkik ' + QuotedStr(_dosyaNo_) + ',' + _gelisNO_ + ',' + inttostr(ABS(cxTabTetkik.TabIndex+2)) ;
    datalar.QuerySelect(ADO_Tetkikler,sql);
-  (*
+   cxGridTetkikler.ViewData.Expand(true);
+
    sql := 'select * from labsonucdegerlendirme where dosyaNo = ' + #39 + _dosyaNo_ + #39 +
           ' and gelisNo = ' + _gelisNo_;
    datalar.QuerySelect(ADO_TetkikDegerlendir,sql);
-   *)
+   if ADO_TetkikDegerlendir.eof
+   then begin
+     ADO_TetkikDegerlendir.Append;
+     ADO_TetkikDegerlendir.FieldByName('dosyaNo').AsString := _dosyaNo_;
+     ADO_TetkikDegerlendir.FieldByName('gelisNo').AsString := _gelisNo_;
+     ADO_TetkikDegerlendir.Post;
+   end;
+
+
+
 end;
 
 procedure TfrmHastaTetkikEkle.TetkikSil;
 var
   sql : string;
-  ado : TADOQuery;
 begin
   try
-   ado := TADOQuery.Create(nil);
-   sql := 'delete from hareketler where SIRANO = ' + ADO_Tetkikler.FieldByName('SIRANO').AsString;
-   datalar.QueryExec(ado,sql);
-   AdoQueryActiveYenile(ADO_Tetkikler);
-   ado.Free;
+   sql := 'delete from hareketler ' +
+          ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
+          ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L''';
+   datalar.QueryExec(sql);
+   ADO_Tetkikler.Requery;
   except on e : Exception do
    begin
       ShowMessageSkin(e.Message,'','','info');
-      ado.Free;
    end;
   end;
 end;
@@ -203,24 +249,40 @@ begin
        Tetkikler.Filter := '%2%'
     else
        Tetkikler.Filter := '%3%';
+
    Tetkikler.SkinName := AnaForm.dxSkinController1.SkinName;
+   Tetkikler.where := ' sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and charindex(''.'',butKodu) = 0  and uygulamaAdet = ''G''';
    List := Tetkikler.ListeGetir;
-   if length(List) > 0 then
-   begin
-     ADO_Tetkikler.Append;
-     ADO_Tetkikler.FieldByName('dosyaNo').AsString := _dosyaNO_;
-     ADO_Tetkikler.FieldByName('gelisNo').AsString := _gelisNO_;
-     ADO_Tetkikler.FieldByName('gelisSIRANO').AsString := _gelisSiraNo_;
-     ADO_Tetkikler.FieldByName('Tarih').AsDateTime := strToDate(_provizyonTarihi_);
-     ADO_Tetkikler.FieldByName('Doktor').AsString := _Doktor_;
-     ADO_Tetkikler.FieldByName('adet').AsInteger := 1;
-     ADO_Tetkikler.FieldByName('code').AsString := List[0].kolon1;
-     ADO_Tetkikler.FieldByName('name1').AsString := List[0].kolon2;
-     ADO_Tetkikler.FieldByName('tip').AsString := 'L';
-     ADO_Tetkikler.FieldByName('tip1').AsString := List[0].kolon4;
-     ADO_Tetkikler.Post;
+
+   try
+     if length(List) > 0 then
+     begin
+       ado := datalar.QuerySelect('select butKodu,tanimi,uygulamaAdet from labtestler where sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and substring(butKodu,1,6) = ' + QuotedStr(List[0].kolon1));
+       while not ado.Eof do
+       begin
+           sql := 'insert into hareketler (dosyaNo,gelisNo,gelisSIRANO,Tarih,Doktor,adet,code,name1,tip,tip1) ' +
+                  'values(' + QuotedStr(_dosyaNO_) + ',' +
+                              _gelisNo_ + ',' +
+                             _gelisSiraNo_ + ',' +
+                             QuotedStr(NoktasizTarih(_provizyonTarihi_))  + ',' +
+                             QuotedStr(_Doktor_) + ',' +
+                             '1' + ',' +
+                             QuotedStr(ado.FieldByName('butKodu').AsString) + ',' +
+                             QuotedStr(ado.FieldByName('tanimi').AsString) + ',' +
+                             QuotedStr('L') + ',' +
+                             QuotedStr(ado.FieldByName('uygulamaAdet').AsString) + ')';
+           datalar.QueryExec(sql);
+           ado.Next;
+       end;
+     end;
+   finally
+    ado.Free;
    end;
+
+   ADO_Tetkikler.Requery;
+
 end;
+
 
 procedure TfrmHastaTetkikEkle.GrupTetkikEkle(grup : integer);
 var
@@ -281,19 +343,36 @@ begin
            TetkikEkle;
           end;
 
+    -23 : begin
+           //TetkikTarihDegistir;
+            datalar.QueryExec('update hareketler set Tarih = ' +
+    '(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
+                              ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_
+
+            );
+            ADO_Tetkikler.Requery;
+          end;
+
 
     end;
 end;
 
 procedure TfrmHastaTetkikEkle.ktvClick(Sender: TObject);
 var
-   CaxP , G_ure , C_ure, demir , demirbaglama : double;
-   ca , p , URR , Kt_VB , Kt_vj: double;
+   CaxP , G_ure , C_ure, demir , demirbaglama ,Dca,alb : double;
+   ca , p , URR , Kt_VB , Kt_vj , Ts : double;
    x : integer;
-   Ts : string;
+
 begin
 
     try
+
+      if ADO_TetkikDegerlendir.Locate('dosyaNo;gelisNo',VarArrayOf([_gelisNO_,_gelisNO_]),[]) = True
+      Then
+        ADO_TetkikDegerlendir.Append
+      Else
+        ADO_TetkikDegerlendir.Edit;
+
       ADO_Tetkikler.Locate('CODE','901910',[]);
       Ca := ADO_Tetkikler.FieldByName('Gd').AsFloat;
       ADO_Tetkikler.Locate('CODE','901260',[]);
@@ -302,19 +381,41 @@ begin
       demir := ADO_Tetkikler.FieldByName('Gd').AsFloat;
       ADO_Tetkikler.Locate('CODE','901040',[]);
       demirbaglama := ADO_Tetkikler.FieldByName('Gd').AsFloat;
-      ADO_Tetkikler.Locate('CODE','901940',[]);
+      ADO_Tetkikler.Locate('CODE;tip1',VarArrayOf(['901940','G']),[]);
       G_ure := ADO_Tetkikler.FieldByName('Gd').AsFloat;
-      C_ure := ADO_Tetkikler.FieldByName('Cd').AsFloat;
+      ADO_Tetkikler.Locate('CODE;tip1',VarArrayOf(['901940','C']),[]);
+      C_ure := ADO_Tetkikler.FieldByName('Gd').AsFloat;
+      ADO_Tetkikler.Locate('CODE','900210',[]);
+      alb := ADO_Tetkikler.FieldByName('Gd').AsFloat;
 
-      URR := strtofloat(FormatFloat('#.##',(1 - (C_ure/G_ure))));
-      Kt_VB := strtofloat(FormatFloat('#.##',(0.031 * ((G_ure - C_ure)/G_ure*100) - 0.66)));
-
+      if (G_ure <= 0) or (C_ure <= 0)
+      then begin
+        ShowMessageSkin('Üre Deðerleri Girilmemiþ , Kt/v Hesaplama Yapýlmaz','','','info');
+        exit;
+      end
+      else
+      begin
+        URR := strtofloat(FormatFloat('#.##',(1 - (C_ure/G_ure))));
+        Kt_VB := strtofloat(FormatFloat('#.##',(0.031 * ((G_ure - C_ure)/G_ure*100) - 0.66)));
+        txtktv.Text := FloatToStr(kt_vb);
+        txtUrr.Text := FloatToStr(URR*100);
+      end;
 
       CaxP := Ca * P;
-      txtktv.Text := FloatToStr(kt_vb);
-      txtUrr.Text := FloatToStr(URR*100);
       txtCaxP.Text := FloatToStr(CaxP);
-      Ts := FloatToStr((demir / demirbaglama) * 100);
+
+      Dca := Ca + ((4 - alb) * 0.8);
+      txtDuzCa.Text := FloatToStr(Dca);
+
+      if (demirbaglama <= 0)
+      then begin
+        ShowMessageSkin('Demir Deðerleri Girilmemiþ , TS Hesaplama Yapýlmaz','','','info');
+        exit;
+      end
+      else begin
+       Ts := (demir / demirbaglama) * 100;
+       txtTS.EditValue := TS;
+      end;
 
     except  on e : Exception do
      begin
@@ -326,43 +427,67 @@ end;
 
 procedure TfrmHastaTetkikEkle.spKtvClick(Sender: TObject);
 var
-   CaxP , G_ure , C_ure , iKilo , kilofark , g,c ,Dca  ,alb : double;
+   CaxP , G_ure , C_ure , iKilo , kilofark , g,c ,Dca  ,alb ,demirbaglama,Ts : double;
    x : integer;
-   ca , p , URR , Kt_VB , Kt_vj: double;
+   ca , p , URR , Kt_VB , Kt_vj,demir: double;
 begin
 
     iKilo := idealKilo(_dosyaNo_);
     kilofark := SonSeansGCKilo(_dosyaNo_,_gelisNo_ , g,c);
 
     try
+
+      if ADO_TetkikDegerlendir.Locate('dosyaNo;gelisNo',VarArrayOf([_gelisNO_,_gelisNO_]),[]) = True
+      Then
+        ADO_TetkikDegerlendir.Append
+      Else
+        ADO_TetkikDegerlendir.Edit;
+
       ADO_Tetkikler.Locate('CODE','901910',[]);
       Ca := ADO_Tetkikler.FieldByName('Gd').AsFloat;
       ADO_Tetkikler.Locate('CODE','901260',[]);
       P := ADO_Tetkikler.FieldByName('Gd').AsFloat;
       ADO_Tetkikler.Locate('CODE','900210',[]);
       alb := ADO_Tetkikler.FieldByName('Gd').AsFloat;
-      ADO_Tetkikler.Locate('CODE','901940',[]);
+      ADO_Tetkikler.Locate('CODE;tip1',VarArrayOf(['901940','G']),[]);
       G_ure := ADO_Tetkikler.FieldByName('Gd').AsFloat;
-      C_ure := ADO_Tetkikler.FieldByName('Cd').AsFloat;
+      ADO_Tetkikler.Locate('CODE;tip1',VarArrayOf(['901940','C']),[]);
+      C_ure := ADO_Tetkikler.FieldByName('Gd').AsFloat;
+      ADO_Tetkikler.Locate('CODE','901020',[]);
+      demir := ADO_Tetkikler.FieldByName('Gd').AsFloat;
+      ADO_Tetkikler.Locate('CODE','901040',[]);
+      demirbaglama := ADO_Tetkikler.FieldByName('Gd').AsFloat;
 
+      if (G_ure <= 0) or (C_ure <= 0) or (iKilo <= 0)
+      then begin
+        ShowMessageSkin('Üre Deðerleri veya Kilo Girilmemiþ , Kt/v Hesaplama Yapýlmaz','','','info');
+        exit;
+      end
+      else
+      begin
+        URR := strtofloat(FormatFloat('#.##',(1 - (C_ure/G_ure))));
+        Kt_VB := strtofloat(FormatFloat('#.##',
+        -ln((C_ure/G_ure) - (0.008 * 4)) + ((4 - (3.5 * C_ure/G_ure)) * kilofark / iKilo) ));
 
-      URR := strtofloat(FormatFloat('#.##',(1 - (C_ure/G_ure))));
-
-      Kt_VB := strtofloat(FormatFloat('#.##',
-
-      -ln((C_ure/G_ure) - (0.008 * 4)) + ((4 - (3.5 * C_ure/G_ure)) * kilofark / iKilo) ));
-
+        txtktv.Text := FloatToStr(kt_vb);
+        txtUrr.Text := FloatToStr(URR * 100);
+      end;
 
       CaxP := Ca * P;
-      txtktv.Text := FloatToStr(kt_vb);
-      txtUrr.Text := FloatToStr(URR * 100);
       txtCaxP.Text := FloatToStr(CaxP);
 
       Dca := Ca + ((4 - alb) * 0.8);
       txtDuzCa.Text := FloatToStr(Dca);
 
-
-
+      if (demirbaglama <= 0)
+      then begin
+        ShowMessageSkin('Demir Deðerleri Girilmemiþ , TS Hesaplama Yapýlmaz','','','info');
+        exit;
+      end
+      else begin
+       Ts := (demir / demirbaglama) * 100;
+       txtTS.EditValue := TS;
+      end;
     except on e : Exception do
      begin
          ShowMessageSkin(e.Message,'','','info');
@@ -372,10 +497,26 @@ begin
 
 end;
 
+procedure TfrmHastaTetkikEkle.cxBtnDegerlendirClick(Sender: TObject);
+var
+  sql : string;
+begin
+    if MrYes = ShowMessageSkin('Deðerlendirme Yapýlacak ,Var Olan Deðerlendirme Ýptal Edilecek','','','msg')
+    Then Begin
+      sql := 'exec sp_TetkikSonucDegerlandir ' + QuotedStr(_dosyaNo_) + ',' + _gelisNo_;
+      datalar.QuerySelect(sql);
+      ado_tetkikDegerlendir.Requery();
+
+    End;
+end;
+
 procedure TfrmHastaTetkikEkle.cxBtnHesapKaydetClick(Sender: TObject);
 begin
   inherited;
-      ADO_TetkikDegerlendir.Post;
+
+  if ADO_TetkikDegerlendir.State = dsEdit
+  then
+   ADO_TetkikDegerlendir.Post;
 end;
 
 procedure TfrmHastaTetkikEkle.cxGridIlacTedaviPlaniStylesGetContentStyle(
@@ -383,6 +524,7 @@ procedure TfrmHastaTetkikEkle.cxGridIlacTedaviPlaniStylesGetContentStyle(
   AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
 begin
   inherited;
+  (*
    if (ARecord.Values[1] = '0')
    Then begin
     AStyle := K;
@@ -397,6 +539,8 @@ begin
    Then begin
     AStyle := Yesil_Siyah;
    end;
+    *)
+
 end;
 
 procedure TfrmHastaTetkikEkle.FormCreate(Sender: TObject);
@@ -420,6 +564,19 @@ begin
   cxTabTetkik.Tabs[1].ImageIndex := 95;
 
 
+end;
+
+procedure TfrmHastaTetkikEkle.gridTetkikDegerlendirDblClick(Sender: TObject);
+begin
+  inherited;
+   _value_ := ado_tetkikDegerlendir.FieldByName('tedavi').AsString;
+   if mrYes = ShowPopupForm('Diyaliz Ýzlem',ado_tetkikDegerlendir.FieldByName('tip').AsInteger,Self)
+   then begin
+     ado_tetkikDegerlendir.Edit;
+     ado_tetkikDegerlendir.FieldByName('tedavi').Value := _value_;
+     ado_tetkikDegerlendir.Post;
+     ado_tetkikDegerlendir.Requery();
+   end;
 end;
 
 end.

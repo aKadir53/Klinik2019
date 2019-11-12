@@ -3,7 +3,7 @@ object frmHastaSeans: TfrmHastaSeans
   Left = 0
   Top = 10
   Caption = 'frmHastaSeans'
-  ClientHeight = 526
+  ClientHeight = 561
   ClientWidth = 900
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,12 +21,12 @@ object frmHastaSeans: TfrmHastaSeans
     Left = 0
     Top = 0
     Width = 900
-    Height = 526
+    Height = 561
     Align = alClient
     TabOrder = 0
     Properties.ActivePage = Seanslar_Sayfa
     Properties.Style = 11
-    ClientRectBottom = 519
+    ClientRectBottom = 554
     ClientRectLeft = 3
     ClientRectRight = 893
     ClientRectTop = 26
@@ -39,25 +39,36 @@ object frmHastaSeans: TfrmHastaSeans
         Align = alClient
         PanelStyle.Active = True
         TabOrder = 0
-        Height = 493
+        Height = 528
         Width = 890
         object cxGrid_Seans: TcxGridKadir
           Left = 2
           Top = 23
           Width = 886
-          Height = 441
+          Height = 476
           Cursor = crHandPoint
           Align = alClient
           PopupMenu = PopupMenu5
           TabOrder = 0
           LookAndFeel.NativeStyle = False
           ExceleGonder = False
+          PopupForm = False
           object ListeS: TcxGridDBBandedTableView
             PopupMenu = PopupMenu5
             OnCellDblClick = ListeSCellDblClick
             OnFocusedRecordChanged = ListeSFocusedRecordChanged
             DataController.Summary.DefaultGroupSummaryItems = <>
-            DataController.Summary.FooterSummaryItems = <>
+            DataController.Summary.FooterSummaryItems = <
+              item
+                Format = 'Seans Say'#305's'#305' : 0'
+                Kind = skCount
+                Column = ListeSColumn1
+              end
+              item
+                Format = '0'
+                Kind = skSum
+                Column = Listedurum
+              end>
             DataController.Summary.SummaryGroups = <>
             OptionsBehavior.AlwaysShowEditor = True
             OptionsCustomize.ColumnSorting = False
@@ -68,43 +79,28 @@ object frmHastaSeans: TfrmHastaSeans
             OptionsSelection.MultiSelect = True
             OptionsView.NoDataToDisplayInfoText = 'Listelenecek Kay'#305't Yok'
             OptionsView.DataRowHeight = 27
+            OptionsView.Footer = True
             OptionsView.GridLines = glHorizontal
             OptionsView.GroupByBox = False
             OptionsView.HeaderHeight = 35
             OptionsView.BandHeaderHeight = 21
             Bands = <
               item
-                Caption = 'Hasta Bilgileri'
-                FixedKind = fkLeft
-                Visible = False
-              end
-              item
-                Caption = 'Geli'#351' Bilgisi'
-                FixedKind = fkLeft
-                Visible = False
-                Width = 146
-              end
-              item
                 Caption = 'Seans Bilgileri'
                 Styles.Header = AnaForm.cxStyle1
                 Width = 852
-              end
-              item
-                Caption = 'Rapor Bilgileri'
-                Visible = False
-                Width = 258
               end>
             object ListeSiraNumarasi: TcxGridDBBandedColumn
               DataBinding.FieldName = 'SiraNumarasi'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 0
               Position.RowIndex = 0
             end
             object cxGridDBBandedColumn1: TcxGridDBBandedColumn
               DataBinding.FieldName = 'dosyaNo'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 1
               Position.RowIndex = 0
             end
@@ -119,9 +115,9 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Width = 28
-              Position.BandIndex = 1
-              Position.ColIndex = 0
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListehastaAdi: TcxGridDBBandedColumn
               Caption = 'Hasta Ad'#305
@@ -131,9 +127,9 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Width = 124
-              Position.BandIndex = 0
-              Position.ColIndex = 2
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeSColumn1: TcxGridDBBandedColumn
               Caption = 'Seans G'#252'n'#252
@@ -147,14 +143,14 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
-              Width = 163
-              Position.BandIndex = 2
+              Width = 105
+              Position.BandIndex = 0
               Position.ColIndex = 3
               Position.RowIndex = 0
             end
-            object Listesirano: TcxGridDBBandedColumn
+            object ListeislemRefNo: TcxGridDBBandedColumn
               Caption = 'Seans ID'
-              DataBinding.FieldName = 'sirano'
+              DataBinding.FieldName = 'islemRefNo'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -165,7 +161,7 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 32
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 26
               Position.RowIndex = 0
             end
@@ -187,21 +183,21 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Moving = False
               Options.Sorting = False
               Width = 40
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 6
               Position.RowIndex = 0
             end
             object ListeDiyalizorTipi: TcxGridDBBandedColumn
               DataBinding.FieldName = 'DiyalizorTipi'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 7
               Position.RowIndex = 0
             end
             object ListeUTarih: TcxGridDBBandedColumn
               DataBinding.FieldName = 'UTarih'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 8
               Position.RowIndex = 0
             end
@@ -215,7 +211,7 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Width = 80
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 5
               Position.RowIndex = 0
             end
@@ -231,8 +227,8 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
-              Width = 252
-              Position.BandIndex = 2
+              Width = 141
+              Position.BandIndex = 0
               Position.ColIndex = 9
               Position.RowIndex = 0
             end
@@ -240,7 +236,7 @@ object frmHastaSeans: TfrmHastaSeans
               DataBinding.FieldName = 'doktor'
               Visible = False
               Width = 119
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 10
               Position.RowIndex = 0
             end
@@ -255,22 +251,22 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
-              Width = 172
-              Position.BandIndex = 2
+              Width = 95
+              Position.BandIndex = 0
               Position.ColIndex = 11
               Position.RowIndex = 0
             end
             object ListeislemSiraNoYatak: TcxGridDBBandedColumn
               DataBinding.FieldName = 'islemSiraNoYatak'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 12
               Position.RowIndex = 0
             end
             object ListesiranoYatis: TcxGridDBBandedColumn
               DataBinding.FieldName = 'siranoYatis'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 13
               Position.RowIndex = 0
             end
@@ -285,9 +281,9 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Width = 48
-              Position.BandIndex = 1
-              Position.ColIndex = 2
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListebasvuruNo: TcxGridDBBandedColumn
               Caption = 'Ba'#351'vuru No'
@@ -300,14 +296,14 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderGlyphAlignmentHorz = taCenter
               Options.Editing = False
               Width = 57
-              Position.BandIndex = 1
-              Position.ColIndex = 1
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeSERVIS: TcxGridDBBandedColumn
               DataBinding.FieldName = 'SERVIS'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 14
               Position.RowIndex = 0
             end
@@ -321,8 +317,8 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderAlignmentVert = vaCenter
               Options.Filtering = False
               Options.Sorting = False
-              Width = 54
-              Position.BandIndex = 2
+              Width = 30
+              Position.BandIndex = 0
               Position.ColIndex = 15
               Position.RowIndex = 0
             end
@@ -336,31 +332,31 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderAlignmentVert = vaCenter
               Options.Filtering = False
               Options.Sorting = False
-              Width = 128
-              Position.BandIndex = 2
+              Width = 72
+              Position.BandIndex = 0
               Position.ColIndex = 24
               Position.RowIndex = 0
             end
             object ListeraporNo: TcxGridDBBandedColumn
               DataBinding.FieldName = 'raporNo'
               Visible = False
-              Position.BandIndex = 3
-              Position.ColIndex = 0
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeraporTarihi: TcxGridDBBandedColumn
               DataBinding.FieldName = 'raporTarihi'
               Visible = False
-              Position.BandIndex = 3
-              Position.ColIndex = 1
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeverenTesisKodu: TcxGridDBBandedColumn
               DataBinding.FieldName = 'verenTesisKodu'
               Visible = False
-              Position.BandIndex = 3
-              Position.ColIndex = 2
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeseansGun: TcxGridDBBandedColumn
               Caption = 'Seans Gun'
@@ -373,9 +369,9 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 37
-              Position.BandIndex = 3
-              Position.ColIndex = 3
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeseansSayi: TcxGridDBBandedColumn
               Caption = 'Seans Sayi'
@@ -388,9 +384,9 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 36
-              Position.BandIndex = 3
-              Position.ColIndex = 4
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListebaslangicTarihi: TcxGridDBBandedColumn
               Caption = 'Baslangic Tarihi'
@@ -403,9 +399,9 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 68
-              Position.BandIndex = 3
-              Position.ColIndex = 5
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeBitisTarihi: TcxGridDBBandedColumn
               Caption = 'Bitis Tarihi'
@@ -418,15 +414,15 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 70
-              Position.BandIndex = 3
-              Position.ColIndex = 6
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeADI: TcxGridDBBandedColumn
               DataBinding.FieldName = 'ADI'
               Visible = False
               Width = 115
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 16
               Position.RowIndex = 0
             end
@@ -442,9 +438,9 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderGlyphAlignmentHorz = taCenter
               HeaderImageIndex = 40
               Options.Editing = False
-              Position.BandIndex = 0
-              Position.ColIndex = 0
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
               IsCaptionAssigned = True
             end
             object ListeSeans: TcxGridDBBandedColumn
@@ -456,8 +452,8 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderAlignmentVert = vaCenter
               Options.Filtering = False
               Options.Sorting = False
-              Width = 76
-              Position.BandIndex = 2
+              Width = 43
+              Position.BandIndex = 0
               Position.ColIndex = 17
               Position.RowIndex = 0
             end
@@ -469,15 +465,15 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
               Width = 77
-              Position.BandIndex = 0
-              Position.ColIndex = 3
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeSNProtokolNo: TcxGridDBBandedColumn
               DataBinding.FieldName = 'SNProtokolNo'
               Visible = False
               Width = 172
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 18
               Position.RowIndex = 0
             end
@@ -493,8 +489,8 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
-              Width = 85
-              Position.BandIndex = 2
+              Width = 47
+              Position.BandIndex = 0
               Position.ColIndex = 37
               Position.RowIndex = 0
             end
@@ -510,8 +506,8 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
-              Width = 85
-              Position.BandIndex = 2
+              Width = 47
+              Position.BandIndex = 0
               Position.ColIndex = 38
               Position.RowIndex = 0
             end
@@ -519,14 +515,14 @@ object frmHastaSeans: TfrmHastaSeans
               DataBinding.FieldName = 'IdealKilo'
               Visible = False
               Options.Editing = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 19
               Position.RowIndex = 0
             end
             object ListeseansKontrol: TcxGridDBBandedColumn
               DataBinding.FieldName = 'seansKontrol'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 20
               Position.RowIndex = 0
             end
@@ -544,7 +540,7 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 137
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 39
               Position.RowIndex = 0
             end
@@ -562,7 +558,7 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 155
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 40
               Position.RowIndex = 0
             end
@@ -580,7 +576,7 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 169
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 41
               Position.RowIndex = 0
             end
@@ -597,7 +593,7 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 39
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 43
               Position.RowIndex = 0
             end
@@ -614,7 +610,7 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 48
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 42
               Position.RowIndex = 0
             end
@@ -635,22 +631,22 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
-              Width = 58
-              Position.BandIndex = 2
+              Width = 31
+              Position.BandIndex = 0
               Position.ColIndex = 21
               Position.RowIndex = 0
             end
             object ListeVatandasTip: TcxGridDBBandedColumn
               DataBinding.FieldName = 'VatandasTip'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 22
               Position.RowIndex = 0
             end
             object Listebhdat: TcxGridDBBandedColumn
               DataBinding.FieldName = 'bhdat'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 23
               Position.RowIndex = 0
             end
@@ -669,56 +665,56 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 209
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 27
               Position.RowIndex = 0
             end
             object ListeTanG: TcxGridDBBandedColumn
               DataBinding.FieldName = 'TanG'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 28
               Position.RowIndex = 0
             end
             object ListeTanC: TcxGridDBBandedColumn
               DataBinding.FieldName = 'TanC'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 29
               Position.RowIndex = 0
             end
             object ListeNabizG: TcxGridDBBandedColumn
               DataBinding.FieldName = 'NabizG'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 30
               Position.RowIndex = 0
             end
             object ListeNabizC: TcxGridDBBandedColumn
               DataBinding.FieldName = 'NabizC'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 31
               Position.RowIndex = 0
             end
             object ListeTanGK: TcxGridDBBandedColumn
               DataBinding.FieldName = 'TanGK'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 32
               Position.RowIndex = 0
             end
             object ListeTanCK: TcxGridDBBandedColumn
               DataBinding.FieldName = 'TanCK'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 33
               Position.RowIndex = 0
             end
             object ListeHemodiyalizTip: TcxGridDBBandedColumn
               DataBinding.FieldName = 'HemodiyalizTip'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 34
               Position.RowIndex = 0
             end
@@ -735,15 +731,15 @@ object frmHastaSeans: TfrmHastaSeans
                   Value = '1'
                 end>
               Width = 30
-              Position.BandIndex = 0
-              Position.ColIndex = 1
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
               IsCaptionAssigned = True
             end
             object ListeseansRaporKontrol: TcxGridDBBandedColumn
               DataBinding.FieldName = 'seansRaporKontrol'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 35
               Position.RowIndex = 0
             end
@@ -758,8 +754,8 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
-              Width = 130
-              Position.BandIndex = 2
+              Width = 72
+              Position.BandIndex = 0
               Position.ColIndex = 25
               Position.RowIndex = 0
             end
@@ -776,7 +772,7 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Filtering = False
               Options.Sorting = False
               Width = 51
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 36
               Position.RowIndex = 0
             end
@@ -784,16 +780,16 @@ object frmHastaSeans: TfrmHastaSeans
               DataBinding.FieldName = 'YAs'
               Visible = False
               Options.Editing = False
-              Position.BandIndex = 0
-              Position.ColIndex = 4
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object cxGridDBBandedColumn5: TcxGridDBBandedColumn
-              DataBinding.FieldName = 'rTarih'
+              DataBinding.FieldName = 'HastaneRefNo'
               Visible = False
-              Position.BandIndex = 0
-              Position.ColIndex = 5
-              Position.RowIndex = 0
+              Position.BandIndex = -1
+              Position.ColIndex = -1
+              Position.RowIndex = -1
             end
             object ListeColumn3: TcxGridDBBandedColumn
               DataBinding.FieldName = 'Tarih'
@@ -804,36 +800,36 @@ object frmHastaSeans: TfrmHastaSeans
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
               Options.Filtering = False
-              Width = 167
-              Position.BandIndex = 2
+              Width = 93
+              Position.BandIndex = 0
               Position.ColIndex = 4
               Position.RowIndex = 0
             end
             object ListeColumn4: TcxGridDBBandedColumn
               DataBinding.FieldName = 'rTarih'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 2
               Position.RowIndex = 0
             end
             object ListeSColumn2: TcxGridDBBandedColumn
               DataBinding.FieldName = 'KURUMTIPI'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 44
               Position.RowIndex = 0
             end
             object ListeSColumn3: TcxGridDBBandedColumn
               DataBinding.FieldName = 'doktorBrans'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 45
               Position.RowIndex = 0
             end
             object ListeSColumn4: TcxGridDBBandedColumn
               DataBinding.FieldName = 'DoktorTescil'
               Visible = False
-              Position.BandIndex = 2
+              Position.BandIndex = 0
               Position.ColIndex = 46
               Position.RowIndex = 0
             end
@@ -849,7 +845,8 @@ object frmHastaSeans: TfrmHastaSeans
                 item
                   Value = 0
                 end>
-              Position.BandIndex = 2
+              Width = 36
+              Position.BandIndex = 0
               Position.ColIndex = 47
               Position.RowIndex = 0
               IsCaptionAssigned = True
@@ -886,7 +883,7 @@ object frmHastaSeans: TfrmHastaSeans
         end
         object cxDBVerticalGrid1: TcxDBVerticalGrid
           Left = 2
-          Top = 464
+          Top = 499
           Width = 886
           Height = 27
           Align = alBottom
@@ -900,6 +897,7 @@ object frmHastaSeans: TfrmHastaSeans
           OptionsData.Inserting = False
           Styles.Header = AnaForm.cxStyle1
           TabOrder = 2
+          Visible = False
           DataController.DataSource = DataSource5
           Version = 1
           object cxDBVerticalGrid1DBMultiEditorRow1: TcxDBMultiEditorRow
@@ -950,14 +948,14 @@ object frmHastaSeans: TfrmHastaSeans
     object Sayfa_Log: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
-      object txtHatalar1: TcxMemo
+      object txtLog: TcxMemo
         Left = 0
         Top = 0
         Align = alClient
         Lines.Strings = (
           '')
         TabOrder = 0
-        Height = 493
+        Height = 528
         Width = 890
       end
     end
@@ -987,6 +985,12 @@ object frmHastaSeans: TfrmHastaSeans
     object S7: TMenuItem
       Caption = 'Seans Onay '#304'ptal'
       ImageIndex = 33
+      OnClick = cxButtonCClick
+    end
+    object Y1: TMenuItem
+      Tag = -50
+      Caption = 'Yazd'#305'r'
+      ImageIndex = 28
       OnClick = cxButtonCClick
     end
     object N6: TMenuItem
@@ -1025,6 +1029,7 @@ object frmHastaSeans: TfrmHastaSeans
       Tag = 260
       Caption = 'Seans '#304'zlem Formu'
       ImageIndex = 51
+      Visible = False
       OnClick = cxButtonCClick
     end
     object N8: TMenuItem
@@ -1033,7 +1038,13 @@ object frmHastaSeans: TfrmHastaSeans
     object H1: TMenuItem
       Tag = -4
       Caption = 'Seans'#305' D'#252'zenle'
-      ImageIndex = 9
+      ImageIndex = 51
+      OnClick = cxButtonCClick
+    end
+    object K1: TMenuItem
+      Tag = -20
+      Caption = 'Kan Alinan Seans Olarak '#304#351'aretler'
+      ImageIndex = 117
       OnClick = cxButtonCClick
     end
   end

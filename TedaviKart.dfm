@@ -32,7 +32,7 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
       Height = 346
       Align = alClient
       TabOrder = 0
-      Properties.ActivePage = cxTabHastaListe
+      Properties.ActivePage = cxTabHastaGelis
       Properties.TabPosition = tpBottom
       ClientRectBottom = 316
       ClientRectLeft = 3
@@ -42,10 +42,6 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
         Caption = 'Hasta Liste'
         ImageIndex = 0
         TabVisible = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object cxGroupBox1: TcxGroupBox
           Left = 0
           Top = 0
@@ -56,8 +52,8 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
           Width = 233
           object cxSalonBilgisi: TcxComboBox
             Tag = -100
-            Left = 2
-            Top = -2
+            Left = 3
+            Top = 15
             Align = alClient
             Properties.DropDownListStyle = lsFixedList
             Properties.Items.Strings = (
@@ -74,8 +70,11 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
               '10')
             Properties.OnChange = cxSalonBilgisiPropertiesChange
             TabOrder = 0
-            ExplicitWidth = 227
-            Width = 229
+            ExplicitLeft = 2
+            ExplicitTop = -2
+            ExplicitWidth = 229
+            ExplicitHeight = 51
+            Width = 227
           end
         end
         object cxGrid2: TcxGrid
@@ -130,10 +129,6 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
       object cxTabHastaGelis: TcxTabSheet
         Caption = 'Hastan'#305'n Geli'#351'leri'
         ImageIndex = 1
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object cxGroupBox2: TcxGroupBox
           Left = 0
           Top = 0
@@ -143,16 +138,16 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
           Height = 313
           Width = 233
           object cxGrid1: TcxGrid
-            Left = 2
-            Top = -2
-            Width = 229
-            Height = 313
+            Left = 3
+            Top = 15
+            Width = 227
+            Height = 288
             Align = alClient
             TabOrder = 0
-            ExplicitLeft = 3
-            ExplicitTop = 15
-            ExplicitWidth = 227
-            ExplicitHeight = 288
+            ExplicitLeft = 2
+            ExplicitTop = -2
+            ExplicitWidth = 229
+            ExplicitHeight = 313
             object cxGridHastaGelis: TcxGridDBTableView
               OnFocusedRecordChanged = cxGridHastaGelisFocusedRecordChanged
               DataController.DataModeController.GridMode = True
@@ -211,61 +206,44 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
       TabOrder = 1
       Height = 146
       Width = 243
-      object foto: TcxDBImage
-        Left = 2
+      object foto1: TcxImage
+        Left = 3
         Top = 2
-        Align = alLeft
-        Anchors = []
-        DataBinding.DataField = 'foto'
         Properties.GraphicClassName = 'TJPEGImage'
+        Properties.PopupMenuLayout.MenuItems = []
+        Properties.ReadOnly = True
+        Properties.Stretch = True
         TabOrder = 0
         Height = 142
         Width = 122
       end
-      object ad: TcxDBLabel
+      object kilo: TcxLabel
         Left = 127
-        Top = 5
-        DataBinding.DataField = 'HASTAADI'
-        Properties.Alignment.Horz = taCenter
-        Properties.Alignment.Vert = taVCenter
-        Height = 21
+        Top = 3
+        AutoSize = False
+        Caption = 'kilo'
+        Height = 20
         Width = 114
-        AnchorX = 184
-        AnchorY = 16
       end
-      object soyad: TcxDBLabel
+      object yas: TcxLabel
         Left = 127
-        Top = 25
-        DataBinding.DataField = 'HASTASOYADI'
-        Properties.Alignment.Horz = taCenter
-        Properties.Alignment.Vert = taVCenter
-        Height = 21
+        Top = 22
+        AutoSize = False
+        Caption = 'yas'
+        Height = 20
         Width = 114
-        AnchorX = 184
-        AnchorY = 36
-      end
-      object yas: TcxDBLabel
-        Left = 127
-        Top = 45
-        DataBinding.DataField = 'yas'
-        Properties.Alignment.Horz = taCenter
-        Properties.Alignment.Vert = taVCenter
-        Height = 21
-        Width = 114
-        AnchorX = 184
-        AnchorY = 56
       end
     end
   end
   object AdoHastaGelis: TADOQuery
     Connection = DATALAR.ADOConnection2
     Parameters = <>
-    Left = 344
-    Top = 176
+    Left = 304
+    Top = 80
   end
   object AdoHastaGelisDataSource: TDataSource
     DataSet = AdoHastaGelis
-    Left = 352
-    Top = 88
+    Left = 304
+    Top = 24
   end
 end

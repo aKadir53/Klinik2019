@@ -72,7 +72,7 @@ type
 
 const _TableName_ = 'Takipler';
       formGenislik = 450;
-      formYukseklik = 370;
+      formYukseklik = 380;
 var
   frmTakipNo: TfrmTakipNo;
 
@@ -139,7 +139,7 @@ end;
 
 procedure TFrmTakipNo.TakipAl(_TakipNo_ : String = '');
 var
-  Sql ,s1,s2 , d  , sonuckodu , takip: string;
+  Sql ,s1,s2 , d  , sonuckodu , takip , basvuru , msj : string;
   ado : TADOQuery;
 
 begin
@@ -177,10 +177,22 @@ begin
           datalar.HastaKabulWS.TakipAl_3KimlikDorulama;
 
 
-
+          if datalar.HastaKabulWS.Cevap.sonuckodu = '0543'
+          then begin
+             msj := datalar.HastaKabulWS.Cevap.sonucMesaji;
+             takip := copy(msj,pos('[',msj)+1,7);
+             datalar.HastaKabulWS.TakipOkuGiris.saglikTesisKodu := datalar._kurumKod;
+             datalar.HastaKabulWS.TakipOkuGiris.takipNo := takip;
+             datalar.HastaKabulWS.KabulOku;
+             basvuru := datalar.HastaKabulWS.Takip.hastaBasvuruNo;
+             sql := 'Update Hasta_Gelisler set TakipNo = ' + QuotedStr(takip) +
+                    ',BasvuruNo = ' + QuotedStr(basvuru) +
+                    ' where DosyaNo = ' + #39 + frmTakipNo._dosyaNO_ + #39 + ' and GelisNo = ' + #39 + frmTakipNo._gelisNO_ +#39;
+             datalar.QueryExec(sql);
+          end
+          else
           if datalar.HastaKabulWS.Cevap.sonuckodu = '0000'
           then begin
-
               txtAdi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.ad + ' ' +datalar.HastaKabulWS.Cevap.hastaBilgileri.soyad;
               txtDogumTarihi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.dogumTarihi;
 
@@ -321,7 +333,9 @@ begin
   setDataStringKontrol(self,txtTakipTipi, 'txtTakipTipi','Takip Türü',Kolon1,'',80);
   setDataStringKontrol(self,txtProvizyonTipi, 'txtProvizyonTipi','Provizyon Tipi',Kolon1,'',80);
   setDataStringKontrol(self,txtTedaviTuru, 'txtTedaviTuru','Tedavi Türü',Kolon1,'',100);
+  TcxImageComboKadir(FindComponent('txtTedaviTuru')).EditValue :=  DATALAR.DefaultTedaviTuru;
   setDataStringKontrol(self,txtTedaviTipi, 'txtTedaviTipi','Tedavi Tipi',Kolon1,'',100);
+  TcxImageComboKadir(FindComponent('txtTedaviTipi')).EditValue :=  DATALAR.DefaultTedaviTipi;
   setDataStringKontrol(self,txtBransKodu, 'txtBransKodu','Branþ Kodu',Kolon1,'',100);
   setDataStringKontrol(self,txtYUPASS, 'txtYUPASS','Yupass',Kolon1,'',100);
 
@@ -347,13 +361,13 @@ begin
 //  SayfaCaption('Provizyon Giriþ','Provizyon Cevap','Yurt Dýþý Yardým Hakký','','');
   //pnlYardimHakki.Align := alBottom;
 
- kolon2.Width := 0;
- Kolon3.Width := 0;
- Kolon4.Width := 0;
- Sayfa2_Kolon2.Width := 0;
- Sayfa2_Kolon2.Width := 0;
- Sayfa2_Kolon2.Width := 0;
-
+ kolon2.Visible := False;
+ Kolon3.Visible := False;
+ Kolon4.Visible := False;
+ Sayfa2_Kolon2.Visible := False;
+ Sayfa2_Kolon3.Visible := False;
+ Sayfa3_Kolon2.Visible := False;
+ Sayfa3_Kolon3.Visible := False;
 end;
 
 procedure TfrmTakipNo.FormShow(Sender: TObject);

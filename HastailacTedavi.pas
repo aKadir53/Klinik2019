@@ -245,7 +245,7 @@ begin
     sql := 'select * from hastakart where dosyaNo = ' + QuotedStr(_dosyaNo_);
     Datasets.Dataset0 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaTetkikTakip ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih_) + ',@f=1' ;
+    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih_) + ',@f=-1,@sirketKod = ' + QuotedStr(datalar.AktifSirket) ;
     Datasets.Dataset1 := datalar.QuerySelect(sql);
 
 
@@ -384,7 +384,7 @@ begin
         end;
 
   -2 : begin
-          TetkikIlacTedaviYazdir(ADO_GecmisIlacTedavi.FieldByName('donem').AsString);
+          TetkikIlacTedaviYazdir(FormatDateTime('YYYYMMDD', strTodate(_provizyonTarihi_)));
 
        end;
 
@@ -457,8 +457,8 @@ begin
      try
       Application.CreateForm(TfrmIlacSarf, frmIlacSarf);
       try
-        frmIlacSarf._dosyaNO_ := ADO_GecmisIlacTedavi.FieldByName('dosyaNo').AsString; //_dosyaNo_;
-        frmIlacSarf._gelisNO_ := ADO_GecmisIlacTedavi.FieldByName('gelisNo').AsString;//_gelisNo_;
+        frmIlacSarf._dosyaNO_ := _dosyaNo_;//ADO_GecmisIlacTedavi.FieldByName('dosyaNo').AsString; //_dosyaNo_;
+        frmIlacSarf._gelisNO_ := _gelisNo_;//ADO_GecmisIlacTedavi.FieldByName('gelisNo').AsString;//_gelisNo_;
         frmilacsarf._islem_ := islem;
         frmIlacSarf.Tanilar (False);
         frmIlacSarf.Tag := TagfrmIlacSarf;

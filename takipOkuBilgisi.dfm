@@ -28,8 +28,6 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
     Images = DATALAR.imag24png
     TabHeight = 25
     TabOrder = 0
-    ExplicitLeft = 8
-    ExplicitTop = 24
     object TabSheet1: TTabSheet
       Caption = 'Takip Bilgisi'
       ImageIndex = 35
@@ -891,35 +889,39 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
       ImageIndex = 18
       OnClick = cxButtonCClick
     end
-    object HizmetleriOku1: TMenuItem
-      Tag = -1
-      Caption = 'Hizmetleri Oku'
-      ImageIndex = 68
-      OnClick = cxButtonCClick
-    end
-    object HizmetleriptalEt1: TMenuItem
-      Tag = -2
-      Caption = 'Hizmetleri '#304'ptal Et'
-      ImageIndex = 43
-      OnClick = cxButtonCClick
-    end
-    object HizmetleriKaydet1: TMenuItem
-      Tag = -3
-      Caption = 'Hizmetleri Kaydet'
-      ImageIndex = 9
-      OnClick = cxButtonCClick
-    end
-    object lemNumaralarnAl1: TMenuItem
-      Tag = -4
-      Caption = #304#351'lem Numaralar'#305'n'#305' Al'
-      ImageIndex = 81
-      OnClick = cxButtonCClick
-    end
-    object BavuruNoAl1: TMenuItem
-      Tag = -5
-      Caption = 'Ba'#351'vuruNo Sisteme Yaz'
-      ImageIndex = 69
-      OnClick = cxButtonCClick
+    object N2: TMenuItem
+      Caption = #304#351'lem'
+      ImageIndex = 79
+      object BavuruNoAl1: TMenuItem
+        Tag = -5
+        Caption = 'Ba'#351'vuruNo Sisteme Yaz'
+        ImageIndex = 69
+        OnClick = cxButtonCClick
+      end
+      object lemNumaralarnAl1: TMenuItem
+        Tag = -4
+        Caption = #304#351'lem Numaralar'#305'n'#305' Al'
+        ImageIndex = 70
+        OnClick = cxButtonCClick
+      end
+      object HizmetleriKaydet1: TMenuItem
+        Tag = -3
+        Caption = 'Hizmetleri Kaydet'
+        ImageIndex = 9
+        OnClick = cxButtonCClick
+      end
+      object HizmetleriptalEt1: TMenuItem
+        Tag = -2
+        Caption = 'Hizmetleri '#304'ptal Et'
+        ImageIndex = 43
+        OnClick = cxButtonCClick
+      end
+      object HizmetleriOku1: TMenuItem
+        Tag = -1
+        Caption = 'Hizmetleri Oku'
+        ImageIndex = 68
+        OnClick = cxButtonCClick
+      end
     end
   end
 end

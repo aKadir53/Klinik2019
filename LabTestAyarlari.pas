@@ -23,7 +23,6 @@ uses
 type
   TfrmTestAyarlari = class(TGirisForm)
     DataSource1: TDataSource;
-    ADOTable1: TADOTable;
     cxGrid1DBTableView1: TcxGridDBTableView;
     cxGrid1Level1: TcxGridLevel;
     cxGrid1: TcxGrid;
@@ -71,6 +70,7 @@ type
     cxGridDBTableView1SLT: TcxGridDBColumn;
     PopupMenu1: TPopupMenu;
     L1: TMenuItem;
+    ADOTable1: TADOQuery;
     procedure btnVazgecClick(Sender: TObject);
     procedure L1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -96,12 +96,16 @@ begin
 end;
 
 function TfrmTestAyarlari.Init(Sender: TObject) : Boolean;
+var
+  sql : string;
 begin
-  ADOTable1.Active := True;
-  ADOTable1.Filter := 'sirketKod = ' + QuotedStr(datalar.AktifSirket);
-  ADOTable2.Active := True;
-//  ADOTable3.Active := True;
-//  LabSonucDeger.Active := True;
+  Result := False;
+  sql := 'select L.butKodu,L.tanimi,L.uygulamaSuresi,L.uygulamaAdet,L.tip,L.sira,L.minD,L.maxD,L.SGKTip,L.birim, ' +
+         'L.hepatitMarker,L.SonucTip,L.grupKodu,L.grupKodu_Centro,L.Loinc,L.ref_aciklama,F.islemKodu,F.islemKoduC ' +
+         'from LabTestler L ' +
+         'join LabTestler_Firma F on F.butKodu = L.butKodu ' +
+         ' where F.labID = ' + QuotedStr(datalar._labID);
+  datalar.QuerySelect(ADOTable1,sql);
   cxPanel.Visible := false;
   Result := True;
 end;
@@ -130,61 +134,32 @@ begin
 
      for Test in  Tests do
        begin
-          sql := 'if not exists(select * from LabTestler where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-                                       ' and butKodu = ' + QuotedStr(Test.butKodu) + ' and uygulamaAdet = ''G'')' +
+          sql := 'if not exists(select * from LabTestler_Firma where LabID = ' + QuotedStr(datalar._labID) +
+                                       ' and butKodu = ' + QuotedStr(Test.butKodu) + ' and Tip = ' + QuotedStr(Test.uygulamaAdet) +')' +
                             ' begin ' +
-                               'insert into LabTestler (sirketKod,butKodu,tanimi,uygulamaSuresi,uygulamaAdet,tip,SGKTip,SonucTip,birim,islemKodu)' +
-                               ' values(' + QuotedStr(datalar.AktifSirket) + ',' +
+                               'insert into LabTestler_Firma (LabID,butKodu,Tip,islemKodu,islemKoduC)' +
+                               ' values(' + QuotedStr(datalar._labID) + ',' +
                                 QuotedStr(Test.butKodu) + ',' +
-                                QuotedStr(Test.tanimi) + ',' +
-                                intTostr(Test.uygulamaSuresi) + ',''G'',' +
-                                intTostr(Test.tip) + ',' +
-                                QuotedStr(Test.SGKTip) + ',' +
-                                QuotedStr(Test.SonucTip) + ',' +
-                                QuotedStr(Test.birim) + ',' +
-                                QuotedStr(Test.islemKodu) + ')' +
-                                intTostr(Test.sira) +')' +
-                            ' end ' +
+                                QuotedStr(Test.uygulamaAdet) + ',' +
+                                QuotedStr(Test.islemKodu) + ',' +
+                                QuotedStr(Test.islemKoduC) +
+                            ') end ' +
                             'else ' +
                             'begin ' +
-                            'update LabTestler set islemKodu = ' + QuotedStr(Test.islemKodu) +
-                            ' where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                            'update LabTestler_firma set islemKodu = ' + QuotedStr(Test.islemKodu) +
+                            ',islemKoduC = ' + QuotedStr(Test.islemKoduC) +
+                            ',Tip = ' + QuotedStr(Test.uygulamaAdet) +
+                            ' where LabID = ' + QuotedStr(datalar._labID) +
                             ' and butKodu = ' + QuotedStr(Test.butKodu) +
-                            ' and uygulamaAdet = ''G''' +
+                            ' and Tip = ' + QuotedStr(Test.uygulamaAdet) +
                             ' end ';
 
           datalar.QueryExec(sql);
 
-          if Test.islemKoduC <> ''
-          then begin
-              datalar.QueryExec('if not exists(select * from LabTestler where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-                                           ' and butKodu = ' + QuotedStr(Test.butKodu) + ' and uygulamaAdet = ''C'')' +
-                                ' begin ' +
-                                   'insert into LabTestler (sirketKod,butKodu,tanimi,uygulamaSuresi,uygulamaAdet,tip,SGKTip,SonucTip,birim,islemKodu,sira)' +
-                                   ' values(' + QuotedStr(datalar.AktifSirket) + ',' +
-                                    QuotedStr(Test.butKodu) + ',' +
-                                    QuotedStr(Test.tanimi) + ',' +
-                                    intTostr(Test.uygulamaSuresi) + ',''C'',' +
-                                    intTostr(Test.tip) + ',' +
-                                    QuotedStr(Test.SGKTip) + ',' +
-                                    QuotedStr(Test.SonucTip) + ',' +
-                                    QuotedStr(Test.birim) + ',' +
-                                    QuotedStr(Test.islemKoduC) + ',' +
-                                    intTostr(Test.sira) +')' +
-                                ' end ' +
-                                'else ' +
-                                'begin ' +
-                                'update LabTestler set islemKodu = ' + QuotedStr(Test.islemKoduC) +
-                                ' where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-                                ' and butKodu = ' + QuotedStr(Test.butKodu) +
-                                ' and uygulamaAdet = ''C''' +
-                                ' end ');
-          end;
-
-           pBar.Position := pBar.Position + 1;
-           Application.ProcessMessages;
+          pBar.Position := pBar.Position + 1;
+          Application.ProcessMessages;
        end;
-
+       ADOTable1.Requery();
   finally
     DurumGoster(False);
   end;

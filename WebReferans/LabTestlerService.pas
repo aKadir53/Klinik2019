@@ -58,7 +58,7 @@ type
     FDurum: string;
     FDurum_Specified: boolean;
     FuygulamaSuresi: Integer;
-    FuygulamaAdet: Integer;
+    FuygulamaAdet: string;
     Ftip: Integer;
     Fsira: Integer;
     FminD: Single;
@@ -115,7 +115,7 @@ type
     property islemKoduC:      string   Index (IS_OPTN) read FislemKoduC write SetislemKoduC stored islemKoduC_Specified;
     property Durum:           string   Index (IS_OPTN) read FDurum write SetDurum stored Durum_Specified;
     property uygulamaSuresi:  Integer  Index (IS_NLBL) read FuygulamaSuresi write FuygulamaSuresi;
-    property uygulamaAdet:    Integer  Index (IS_NLBL) read FuygulamaAdet write FuygulamaAdet;
+    property uygulamaAdet:    string  Index (IS_NLBL) read FuygulamaAdet write FuygulamaAdet;
     property tip:             Integer  Index (IS_NLBL) read Ftip write Ftip;
     property sira:            Integer  Index (IS_NLBL) read Fsira write Fsira;
     property minD:            Single   Index (IS_NLBL) read FminD write FminD;

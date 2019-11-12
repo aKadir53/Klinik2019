@@ -62,6 +62,7 @@ type
     N1: TMenuItem;
     H2: TMenuItem;
     HastalarnSeanslarnOnayla1: TMenuItem;
+    E1: TMenuItem;
     procedure cxButtonCClick(Sender: TObject);
     procedure sBitBtn2Click(Sender: TObject);
     procedure sBitBtn9Click(Sender: TObject);
@@ -147,13 +148,15 @@ var
   satir : integer;
 begin
   DurumGoster;
-  tesis := inttostr(datalar._kurumKod);
-  tarih := datetostr(txtDonem.Date);
-  tc := '';
-
-  cvp := DamarIziDogrulamaSorgula(tc,tarih,tesis,yas,msj,ad);
-  ShowMessageSkin(msj,'','','info');
-  DurumGoster(false);
+  try
+    tesis := inttostr(datalar._kurumKod);
+    tarih := datetostr(txtDonem.Date);
+    tc := '';
+    cvp := DamarIziDogrulamaSorgula(tc,tarih,tesis,yas,msj,ad);
+    ShowMessageSkin(msj,'','','info');
+  finally
+    DurumGoster(false);
+  end;
 end;
 
 procedure TfrmDamarIzi.KimlikDogrulananHastaSeansOnaylaListe;

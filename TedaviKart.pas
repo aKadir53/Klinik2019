@@ -8,7 +8,7 @@ uses
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxContainer,
   cxEdit, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
-  dxSkinMoneyTwins, dxSkinsDefaultPainters, dxSkinscxPCPainter,Adodb,
+  dxSkinMoneyTwins, dxSkinsDefaultPainters, dxSkinscxPCPainter,Adodb,jpeg,
   cxPCdxBarPopupMenu, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   DB, cxDBData, cxGridLevel, cxClasses, cxGridCustomView, cxGridCustomTableView,
   cxGridTableView, cxGridDBTableView, cxGrid, cxTextEdit, cxMaskEdit,
@@ -48,10 +48,9 @@ type
     ProvizyonTarihi: TcxGridDBColumn;
     cxGridHastaGelisColumn1: TcxGridDBColumn;
     fotoPanel: TcxGroupBox;
-    foto: TcxDBImage;
-    ad: TcxDBLabel;
-    soyad: TcxDBLabel;
-    yas: TcxDBLabel;
+    foto1: TcxImage;
+    kilo: TcxLabel;
+    yas: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -75,7 +74,7 @@ type
 const _TableName_ = '';
       formGenislik = 500;
       formYukseklik = 500;
-
+      FotoTable = 'select * from PersonelFoto where dosyaNo = %s';
 
 var
   frmTedaviBilgisi: TfrmTedaviBilgisi;
@@ -97,6 +96,7 @@ begin
   Result := False;
   inherited;
 
+
    case TfrmTedaviBilgisi(self).Tag  of
      TagfrmHastaRecete,
      TagfrmHastaTetkikEkle,
@@ -112,10 +112,10 @@ begin
                  begin
                     frmHastaListeD._Dataset.Locate('dosyaNo',datalar.Bilgi.dosyaNo,[]);
                     cxGridHastaListesi.DataController.DataSource := frmHastaListeD._DataSource;
-                    foto.DataBinding.DataSource :=  frmHastaListeD._DataSource;
-                    ad.DataBinding.DataSource :=  frmHastaListeD._DataSource;
-                    soyad.DataBinding.DataSource :=  frmHastaListeD._DataSource;
-                    yas.DataBinding.DataSource :=  frmHastaListeD._DataSource;
+                  //  foto.DataBinding.DataSource :=  frmHastaListeD._DataSource;
+                   // ad.DataBinding.DataSource :=  frmHastaListeD._DataSource;
+                   // soyad.DataBinding.DataSource :=  frmHastaListeD._DataSource;
+                  //  yas.DataBinding.DataSource :=  frmHastaListeD._DataSource;
 
                     cxTabHastaListe.TabVisible := True;
                  end;
@@ -131,10 +131,10 @@ begin
                begin
                   frmHastaListe._Dataset.Locate('dosyaNo',datalar.Bilgi.dosyaNo,[]);
                   cxGridHastaListesi.DataController.DataSource := frmHastaListe._DataSource;
-                  foto.DataBinding.DataSource :=  frmHastaListe._DataSource;
-                  ad.DataBinding.DataSource :=  frmHastaListe._DataSource;
-                  soyad.DataBinding.DataSource :=  frmHastaListe._DataSource;
-                  yas.DataBinding.DataSource :=  frmHastaListe._DataSource;
+                  //foto.DataBinding.DataSource :=  frmHastaListe._DataSource;
+                //  ad.DataBinding.DataSource :=  frmHastaListe._DataSource;
+                 // soyad.DataBinding.DataSource :=  frmHastaListe._DataSource;
+                //  yas.DataBinding.DataSource :=  frmHastaListe._DataSource;
 
                   cxTabHastaListe.TabVisible := True;
                end;
@@ -143,6 +143,8 @@ begin
          end;
 
    end;
+
+
 
   Result := True;
 end;
@@ -166,7 +168,11 @@ begin
       self._provizyonTarihi_ := AdoHastaGelis.FieldByName('Tarih').AsString;
       self._MuayeneProtokolNo_ := AdoHastaGelis.FieldByName('PROTOKOLNO').AsString;
 
-
+      try
+        kilo.Caption := 'Kilo : ' +  AdoHastaGelis.FieldByName('kilo').AsString;
+        yas.Caption := 'Yaþ : ' + AdoHastaGelis.FieldByName('yas').AsString;
+      except
+      end;
 
 
       case TfrmTedaviBilgisi(self).Tag of
@@ -221,6 +227,7 @@ begin
                                    frmHastaTetkikEkle._gelisNO_ := self._gelisNO_;
 
                                    frmHastaTetkikEkle.Sonuclar;
+                                   frmHastaTetkikEkle.DegerlendirmeGetir;
                                 end;
 
  TagfrmAnamnez,TagfrmIseGiris : begin
@@ -300,6 +307,7 @@ begin
   LeftPanelcxPageControl.ActivePageIndex := 1;
 
   HastaGelisSelect(dosyaNo,AdoHastaGelis);
+  FOTO1.Picture := FotoGetir(_dosyaNo_).Picture;
 end;
 
 procedure TfrmTedaviBilgisi.cxGridHastaListesiFocusedRecordChanged(
@@ -310,6 +318,7 @@ var
   index : integer;
 begin
   inherited;
+  (*
 
   HastaBilgiRecordSet(cxGridHastaListesi.DataController.GetValue(AFocusedRecord.Index,HastaAdi.Index),
                       cxGridHastaListesi.DataController.GetValue(AFocusedRecord.Index,HastaSoyadi.Index),
@@ -332,9 +341,9 @@ begin
   cxTab.Tabs[0].Caption := self._HastaAdSoyad_;
   LeftPanelcxPageControl.ActivePageIndex := 1;
 
-  HastaGelisSelect(dosyaNo,AdoHastaGelis);
+ // HastaGelisSelect(dosyaNo,AdoHastaGelis);
 
-
+    *)
 
 end;
 
@@ -374,13 +383,20 @@ begin
 
 
 
+
 end;
 
 procedure TfrmTedaviBilgisi.FormShow(Sender: TObject);
 var
- tt : string;
+  tt,dosyaNo : string;
+  g : TGraphic;
 begin
    inherited;
+
+
+   if _dosyaNo_ <> ''
+   then
+    FOTO1.Picture := FotoGetir(_dosyaNo_).Picture;
 
    case TfrmTedaviBilgisi(self).Tag  of
      TagfrmHastaRecete,

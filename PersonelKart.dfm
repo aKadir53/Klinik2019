@@ -18,8 +18,6 @@ object frmPersonelKart: TfrmPersonelKart
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 320
-  ExplicitHeight = 240
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter_Muayene: TSplitter
@@ -53,6 +51,7 @@ object frmPersonelKart: TfrmPersonelKart
     StyleHot.LookAndFeel.NativeStyle = False
     TabOrder = 1
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object MEDENI: TcxImageComboKadir
@@ -72,6 +71,7 @@ object frmPersonelKart: TfrmPersonelKart
       end>
     TabOrder = 2
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object DURUM: TcxImageComboKadir
@@ -99,6 +99,7 @@ object frmPersonelKart: TfrmPersonelKart
     TabOrder = 3
     Visible = False
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object VatandasTip: TcxImageComboKadir
@@ -129,6 +130,7 @@ object frmPersonelKart: TfrmPersonelKart
       end>
     TabOrder = 4
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object seansGunleri: TcxCheckGroup
@@ -184,27 +186,32 @@ object frmPersonelKart: TfrmPersonelKart
     Width = 110
     object Foto: TcxImage
       Tag = -1
-      Left = 2
-      Top = -2
+      Left = 3
+      Top = 15
       Align = alClient
       Properties.PopupMenuLayout.MenuItems = []
       Properties.Stretch = True
       TabOrder = 0
-      ExplicitWidth = 104
-      ExplicitHeight = 96
-      Height = 121
-      Width = 106
+      ExplicitLeft = 2
+      ExplicitTop = -2
+      ExplicitWidth = 106
+      ExplicitHeight = 121
+      Height = 96
+      Width = 104
     end
     object cxFotoEkleButton: TcxButton
       Tag = -50
-      Left = 2
-      Top = 119
-      Width = 106
+      Left = 3
+      Top = 111
+      Width = 104
       Height = 28
       Align = alBottom
       Caption = 'Ekle'
       TabOrder = 1
       OnClick = cxButtonCClick
+      ExplicitLeft = 2
+      ExplicitTop = 119
+      ExplicitWidth = 106
     end
   end
   object dosyaNo: TcxButtonEditKadir
@@ -275,10 +282,10 @@ object frmPersonelKart: TfrmPersonelKart
     Height = 153
     Width = 806
     object cxGridGelis: TcxGrid
-      Left = 2
-      Top = -2
-      Width = 802
-      Height = 153
+      Left = 3
+      Top = 15
+      Width = 800
+      Height = 128
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -287,6 +294,10 @@ object frmPersonelKart: TfrmPersonelKart
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      ExplicitLeft = 2
+      ExplicitTop = -2
+      ExplicitWidth = 802
+      ExplicitHeight = 153
       object cxGridGelisler: TcxGridDBBandedTableView
         OnDblClick = cxGridGelislerDblClick
         OnFocusedRecordChanged = cxGridGelislerFocusedRecordChanged
@@ -575,6 +586,7 @@ object frmPersonelKart: TfrmPersonelKart
     TabOrder = 12
     Visible = False
     ExceleGonder = False
+    PopupForm = False
     object GridList: TcxGridDBBandedTableView
       DataController.DataSource = DataSource1
       DataController.Summary.DefaultGroupSummaryItems = <>
@@ -695,6 +707,7 @@ object frmPersonelKart: TfrmPersonelKart
     Height = 109
     TabOrder = 13
     ExceleGonder = False
+    PopupForm = False
     object GridEgitim: TcxGridDBBandedTableView
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>

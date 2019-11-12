@@ -31,11 +31,11 @@ object frmTakipNo: TfrmTakipNo
     Style.PopupBorderStyle = epbsFrame3D
     TabOrder = 0
     TableName = 'Medula_TedaviTipleri'
-    Filter = #39#39
     Conn = DATALAR.ADOConnection2
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object txtTarih: TcxDateEditKadir
@@ -66,11 +66,11 @@ object frmTakipNo: TfrmTakipNo
     Style.PopupBorderStyle = epbsFrame3D
     TabOrder = 2
     TableName = 'Medula_TakipTipleri'
-    Filter = #39#39
     Conn = DATALAR.ADOConnection2
     ValueField = 'kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object txtSigortaliTuru: TcxImageComboKadir
@@ -79,24 +79,7 @@ object frmTakipNo: TfrmTakipNo
     Top = 63
     EditValue = '1'
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = #199'al'#305#351'an'
-        ImageIndex = 0
-        Value = '1'
-      end
-      item
-        Description = 'Emekli'
-        Value = '2'
-      end
-      item
-        Description = 'SSK Kurum Personeli'
-        Value = '3'
-      end
-      item
-        Description = 'Di'#287'er'
-        Value = '4'
-      end>
+    Properties.Items = <>
     Style.BorderColor = clWindowFrame
     Style.BorderStyle = ebs3D
     Style.HotTrack = False
@@ -108,12 +91,14 @@ object frmTakipNo: TfrmTakipNo
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object txtTcKimlikNo: TcxTextEditKadir
     Tag = -100
     Left = 8
     Top = 36
+    Properties.ReadOnly = True
     TabOrder = 4
     Width = 121
   end
@@ -152,6 +137,7 @@ object frmTakipNo: TfrmTakipNo
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
       ExceleGonder = False
+      PopupForm = False
       object gridYardimHakki: TcxGridDBTableView
         Navigator.Buttons.First.Visible = True
         Navigator.Buttons.PriorPage.Visible = True
@@ -319,6 +305,7 @@ object frmTakipNo: TfrmTakipNo
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object txtYUPASS: TcxTextEditKadir
@@ -334,16 +321,7 @@ object frmTakipNo: TfrmTakipNo
     Top = 144
     EditValue = 'N'
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = 'Normal'
-        ImageIndex = 0
-        Value = 'N'
-      end
-      item
-        Description = 'Acil'
-        Value = 'A'
-      end>
+    Properties.Items = <>
     Style.BorderColor = clWindowFrame
     Style.BorderStyle = ebs3D
     Style.HotTrack = False
@@ -355,6 +333,7 @@ object frmTakipNo: TfrmTakipNo
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object txtProvizyonTipi: TcxImageComboKadir
@@ -363,16 +342,7 @@ object frmTakipNo: TfrmTakipNo
     Top = 117
     EditValue = 'N'
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = 'Normal'
-        ImageIndex = 0
-        Value = 'N'
-      end
-      item
-        Description = 'Acil'
-        Value = 'A'
-      end>
+    Properties.Items = <>
     Style.BorderColor = clWindowFrame
     Style.BorderStyle = ebs3D
     Style.HotTrack = False
@@ -384,6 +354,7 @@ object frmTakipNo: TfrmTakipNo
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object txtBransKodu: TcxImageComboKadir
@@ -392,16 +363,7 @@ object frmTakipNo: TfrmTakipNo
     Top = 225
     EditValue = 'N'
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = 'Normal'
-        ImageIndex = 0
-        Value = 'N'
-      end
-      item
-        Description = 'Acil'
-        Value = 'A'
-      end>
+    Properties.Items = <>
     Style.BorderColor = clWindowFrame
     Style.BorderStyle = ebs3D
     Style.HotTrack = False
@@ -413,6 +375,7 @@ object frmTakipNo: TfrmTakipNo
     ValueField = 'Kod'
     DisplayField = 'Tanimi'
     BosOlamaz = False
+    FilterSet = fsNone
     Width = 121
   end
   object takipNo: TcxLabel
@@ -469,7 +432,7 @@ object frmTakipNo: TfrmTakipNo
     object akipAl1: TMenuItem
       Tag = -1
       Caption = 'Takip Al'
-      ImageIndex = 9
+      ImageIndex = 76
       OnClick = cxButtonCClick
     end
   end

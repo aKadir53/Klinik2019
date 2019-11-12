@@ -557,9 +557,8 @@ var
   TS : TStringList;
   _sonuc_ : PWideChar;
 begin
-  datalar.Login;
   Basarili := 1;
-  dllHandle := LoadLibrary(LIB_DLL);
+  dllHandle := LoadLibrary(NoktaDll);
   if dllHandle = 0 then
     exit;
   @SendMesaj := findMethod(dllHandle, 'SendMesajMethod');

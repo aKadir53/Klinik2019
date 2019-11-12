@@ -99,7 +99,8 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
           TabOrder = 0
           LevelTabs.ImageBorder = 2
           LevelTabs.Style = 1
-          ExceleGonder = False
+          ExcelFileName = 'LabKay'#305'tListesi'
+          ExceleGonder = True
           PopupForm = False
           object Liste: TcxGridDBTableView
             PopupMenu = PopupMenu1
@@ -149,7 +150,6 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
             OptionsCustomize.ColumnHidingOnGrouping = False
             OptionsCustomize.ColumnsQuickCustomization = True
             OptionsData.Deleting = False
-            OptionsData.Editing = False
             OptionsData.Inserting = False
             OptionsSelection.MultiSelect = True
             OptionsView.NavigatorOffset = 20
@@ -170,6 +170,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 53
             end
             object ListeColumndosyaNo: TcxGridDBColumn
@@ -192,6 +193,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 42
             end
             object HastaSoyadi: TcxGridDBColumn
@@ -202,6 +204,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 120
             end
             object ListeColumn4: TcxGridDBColumn
@@ -232,7 +235,19 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 100
+            end
+            object ListeColumn1: TcxGridDBColumn
+              Caption = 'Do'#287'um Tarihi'
+              DataBinding.FieldName = 'DOGUMTARIHI'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 80
             end
             object ListeColumn6: TcxGridDBColumn
               Caption = 'Serum Giri'#351
@@ -282,7 +297,6 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Options.Editing = False
               Width = 100
             end
             object ListeColumn3: TcxGridDBColumn
@@ -480,16 +494,24 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
     Images = DATALAR.imag24png
     Left = 104
     Top = 270
+    object E2: TMenuItem
+      Tag = 9997
+      Caption = 'Excel G'#246'nder'
+      ImageIndex = 75
+      OnClick = cxButtonCClick
+    end
     object KaydetItem: TMenuItem
       Tag = 1
       Caption = 'Hasta Kaydet'
       ImageIndex = 15
+      Visible = False
       OnClick = cxButtonCClick
     end
-    object PeryodikMuayeneOlutur1: TMenuItem
+    object SonucAlItem: TMenuItem
       Tag = 2
       Caption = 'Sonu'#231' Al'
       ImageIndex = 13
+      Visible = False
       OnClick = cxButtonCClick
     end
     object f1: TMenuItem
@@ -552,6 +574,24 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
         ImageIndex = 28
         OnClick = cxButtonCClick
       end
+    end
+    object IslemItem: TMenuItem
+      Caption = #304#351'lem'
+      ImageIndex = 79
+      object IslemItemSub1: TMenuItem
+        ImageIndex = 4
+      end
+      object IslemItemSub2: TMenuItem
+        ImageIndex = 3
+      end
+      object IslemItemSub3: TMenuItem
+      end
+    end
+    object T1: TMenuItem
+      Tag = -32
+      Caption = 'Tetkik Tedavi Kart'#305
+      ImageIndex = 99
+      OnClick = cxButtonCClick
     end
   end
   object popupYil: TPopupMenu

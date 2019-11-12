@@ -6,9 +6,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, sBitBtn, ExtCtrls, cxControls, cxPC,adodb,db,
   cxGraphics, cxDropDownEdit, cxMaskEdit, cxCalendar, cxLabel, cxContainer,
-  cxEdit, cxTextEdit, cxLookupEdit, cxDBLookupEdit, cxDBLookupComboBox,kadir,
-  data_modul, KadirType,GetFormClass,
-  cxDBEdit, dxmdaset, InvokeRegistry, Rio, SOAPHTTPClient,strUtils,RaporIslemleriWS,
+  cxEdit, cxTextEdit, cxLookupEdit, cxDBLookupEdit, cxDBLookupComboBox,kadir,data_modul,
+  cxDBEdit, dxmdaset, InvokeRegistry, Rio, SOAPHTTPClient,strUtils,
   cxMemo, cxLookAndFeels, cxLookAndFeelPainters, dxSkinsCore,
   dxSkinsDefaultPainters, dxSkinscxPCPainter, cxPCdxBarPopupMenu,
   cxGroupBox, dxSkinBlack, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
@@ -23,951 +22,739 @@ uses
   cxGridLevel, cxGridBandedTableView, cxGridDBBandedTableView, cxGridCardView,
   cxGridDBCardView, cxGridCustomLayoutView, cxGridCustomTableView,
   cxGridTableView, cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid,
-  SQLMemMain, cxImageComboBox, KadirLabel,GirisUnit, cxButtons, Menus,
-  Vcl.Grids, AdvObj, BaseGrid, AdvGrid,ComObj, tmsAdvGridExcel, AdvGridWorkbook;
+  SQLMemMain, cxImageComboBox, KadirLabel,KadirMedula3,GirisUnit, Menus, cxButtons;
 
 type
   TfrmHizliKayit = class(TGirisForm)
+    pnlToolBar: TPanel;
     cxPageControl1: TcxPageControl;
-    PopupMenu1: TPopupMenu;
-    miExcelYukle: TMenuItem;
-    miVeritabaninaYaz: TMenuItem;
-    miAlanEslestir: TMenuItem;
-    GridList: TAdvStringGrid;
-    miSoyadAyarla: TMenuItem;
-    miOtomatikAktarim: TMenuItem;
-    procedure cxButtonCClick(Sender: TObject);
-    procedure ExcelToGrid;
-    procedure GridToPersonelKartTable;
+    TakipData: TdxMemData;
+    TakipDataTcKimlikNo: TStringField;
+    TakipDataTakipTarihi: TStringField;
+    TakipDataPTuru: TStringField;
+    TakipDatatturu: TStringField;
+    TakipDatatedevitipi: TStringField;
+    TakipDatadurum: TStringField;
+    TakipDatakurum: TStringField;
+    TakipDataservis: TStringField;
+    TakipDatadoktor: TStringField;
+    DataSource1: TDataSource;
+    cxGroupBox1: TcxGroupBox;
+    cxLabel1: TcxLabel;
+    txtTcKimlikNoAra: TcxTextEdit;
+    txtTakipTarihi: TcxDateEdit;
+    cxLabel2: TcxLabel;
+    cxLabel3: TcxLabel;
+    txtProvizyonTuru: TcxComboBox;
+    txtTakipTuru: TcxComboBox;
+    cxLabel4: TcxLabel;
+    cxLabel5: TcxLabel;
+    txtTedaviTipi: TcxComboBox;
+    txtBranslar: TcxDBLookupComboBox;
+    cxLabel8: TcxLabel;
+    cxLabel9: TcxLabel;
+    txtdoktorlar: TcxDBLookupComboBox;
+    cxGroupBox2: TcxGroupBox;
+    cxPageControl2: TcxPageControl;
+    cxTabSheet1: TcxTabSheet;
+    txtCinsiyet: TRadioGroup;
+    btnKabul: TsBitBtn;
+    btnVazgec: TsBitBtn;
+    txtdogumTarihi: TcxTextEdit;
+    cxLabel12: TcxLabel;
+    cxLabel11: TcxLabel;
+    txtHastaSoyadi: TcxTextEdit;
+    txtHastaAdi: TcxTextEdit;
+    cxLabel10: TcxLabel;
+    txtTakipNo: TcxTextEdit;
+    txtBasvuruNo: TcxTextEdit;
+    cxTabSheet2: TcxTabSheet;
+    txtHata: TcxMemo;
+    cxLabel7: TcxLabel;
+    cxLabel6: TcxLabel;
+    memDataRaporlar: TdxMemData;
+    memDataRaporlarRaporTuru: TStringField;
+    memDataRaporlarRaporNo: TStringField;
+    memDataRaporlarRaporTarihi: TStringField;
+    memDataRaporlarVerenTesis: TStringField;
+    memDataRaporlarTedaviRaporTuru: TStringField;
+    memDataRaporlarraporTakipNo: TStringField;
+    memDataRaporlarseansGun: TIntegerField;
+    memDataRaporlarseansSayi: TIntegerField;
+    memDataRaporlarbaslangicTarihi: TDateTimeField;
+    memDataRaporlarbitisTarihi: TDateField;
+    memDataRaporlarprotokolNo: TStringField;
+    memDataRaporlarbutKodu: TStringField;
+    memDataRaporlartani: TStringField;
+    memDataRaporlarprotokolTarihi: TDateField;
+    memDataRaporlaraciklama: TStringField;
+    cxGroupBox3: TcxGroupBox;
+    cxGrid2: TcxGrid;
+    GridEkstre: TcxGridDBTableView;
+    GridEkstreRaporTuru: TcxGridDBColumn;
+    GridEkstreRaporNo: TcxGridDBColumn;
+    GridEkstreRaporTarihi: TcxGridDBColumn;
+    GridEkstreVerenTesis: TcxGridDBColumn;
+    GridEkstreTedaviRaporTuru: TcxGridDBColumn;
+    GridEkstreraporTakipNo: TcxGridDBColumn;
+    GridEkstreseansGun: TcxGridDBColumn;
+    GridEkstreseansSayi: TcxGridDBColumn;
+    GridEkstrebaslangicTarihi: TcxGridDBColumn;
+    GridEkstrebitisTarihi: TcxGridDBColumn;
+    GridEkstreprotokolNo: TcxGridDBColumn;
+    GridEkstrebutKodu: TcxGridDBColumn;
+    GridEkstretani: TcxGridDBColumn;
+    GridEkstreprotokolTarihi: TcxGridDBColumn;
+    GridEkstreaciklama: TcxGridDBColumn;
+    cxGrid2DBCardView1: TcxGridDBCardView;
+    cxGrid2DBCardView1RecId1: TcxGridDBCardViewRow;
+    cxGrid2DBCardView1drTescil1: TcxGridDBCardViewRow;
+    cxGrid2DBCardView1drAdi1: TcxGridDBCardViewRow;
+    cxGrid2DBCardView1drSoyadi1: TcxGridDBCardViewRow;
+    cxGrid2DBCardView1brans1: TcxGridDBCardViewRow;
+    cxGrid2DBCardView1tip1: TcxGridDBCardViewRow;
+    cxGrid2DBCardView1raporTakipNo: TcxGridDBCardViewRow;
+    cxGrid2DBBandedTableView1: TcxGridDBBandedTableView;
+    cxGrid2DBBandedTableView1drtescil: TcxGridDBBandedColumn;
+    cxGrid2DBBandedTableView1dradi: TcxGridDBBandedColumn;
+    cxGrid2DBBandedTableView1drSoyadi: TcxGridDBBandedColumn;
+    cxGrid2DBBandedTableView1drbrans: TcxGridDBBandedColumn;
+    cxGrid2DBBandedTableView1tip: TcxGridDBBandedColumn;
+    cxGrid2DBBandedTableView1raporTakipNo: TcxGridDBBandedColumn;
+    cxGridLevel1: TcxGridLevel;
+    cxGrid2Level2: TcxGridLevel;
+    DataSource3: TDataSource;
+    MemTable_Doktorlar: TSQLMemTable;
+    MemTable_Doktorlardrtescil: TStringField;
+    MemTable_Doktorlardradi: TStringField;
+    MemTable_DoktorlardrSoyadi: TStringField;
+    MemTable_Doktorlardrbrans: TStringField;
+    MemTable_DoktorlarraporTakipNo: TStringField;
+    DataSource2: TDataSource;
+    RbTc: TRadioButton;
+    RbRt: TRadioButton;
+    txtTcKimlikNo: TcxTextEdit;
+    cxLabel13: TcxLabel;
+    txtilkTakip: TcxTextEdit;
+    txtSigortaliTuru: TcxImageComboKadir;
+    txtDevredilenKurum: TcxTextEdit;
+    btnAra: TcxButton;
+    Panel1: TPanel;
+    procedure txtBranslarPropertiesChange(Sender: TObject);
+    procedure btnKabulClick(Sender: TObject);
+    procedure btnAraClick(Sender: TObject);
+    procedure btnVazgecClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure txtBranslarClick(Sender: TObject);
+    procedure MemTable_DoktorlarAfterScroll(DataSet: TDataSet);
+    procedure RbRtClick(Sender: TObject);
+    procedure RbTcClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
   private
     { Private declarations }
-    FFileName : String;
-    FAlanEslestirmeYapildi : Boolean;
-  protected
-    FInitialColumnHeaders : TStringList;
-    FAcceptedColumnHeaders : TStringList;
-    FAssignedColumnIndexes : TIntegerArray;
-    function GridAlanEslestirme (const aTargetFields : TStringList;
-      var aAcceptedSourceColumns : TStringList;
-      var aAcceptedColumnIndexes : TIntegerArray;
-      const pReset : Boolean;
-      pMsg: Boolean = True;
-      aLookupColumnHeaders : TStringList = nil;
-      aLookupColumnHeaderFieldNames : TStringList = nil) : Boolean;
-    function GridAtanmisSutunDegerAyarlaGetir (const aGrid: TStringGrid; const ACol, ARow : Integer):String;
-    function GridBagliSutunDegerAyarlaGetir (const aGrid: TStringGrid; const aBaglantiList: TIntegerArray; const ACol, ARow : Integer):String;
-    function GridBaslikAyarla (const S: String; const iNumber : Integer) : String;
-    procedure GridSoyadiAyarla;
-    procedure GridCiftBaslikAyarla;
-    procedure TanimliOtomatikAktarim;
   public
     { Public declarations }
-    constructor Create (Aowver: TComponent); override;
-    destructor Destroy; override;
-    function Init(Sender: TObject) : Boolean; override;
+ //   procedure Rapor(RaporCvp : RaporIslemleriWS.RaporCevapTCKimlikNodanDVO);overload;
+    procedure Rapor;
+     function Init(Sender: TObject) : Boolean; override;
   end;
-
-  Const
-  _insertPersonel_ = 'exec sp_YeniPersonelHastaKarti ' +
-                     '@SirketKod = %0:s,' +
-                     '@TCKIMLIKNO = %1:s,'+
-                     '@HASTAADI = %2:s,'+
-                     '@HASTASOYADI = %3:s,'+
-                     '@CINSIYETI = %4:s,'+
-                     '@MEDENI = %5:s,'+
-                     '@BABAADI = %6:s,'+
-                     '@ANAADI = %7:s,'+
-                     '@EV_SEHIR = %19:s,'+
-                     '@EV_ADRES = %8:s,'+
-                     '@EV_TEL1 = %9:s,'+
-                     '@EV_TEL2 = %10:s,'+
-                     '@DOGUMYERI = %11:s,'+
-                     '@DOGUMTARIHI = %12:s,'+
-                     '@UYRUGU = %13:s,'+
-                     '@baslangic = %14:s,'+
-                     '@kanGrubu = %15:s,'+
-                     '@USER_ID = %16:s,'+
-                     '@sube = %18:s,'+
-                     '@Aktif = %17:s';
 
 var
   frmHizliKayit: TfrmHizliKayit;
+  ado , adodoktor : TADOQuery;
+  datasource  ,datasourcedoktor : TDataSource;
+  _dosyaNo , _gelisNo , _tedaviTur ,    sgk , sgkk  : string;
+ _msg : string;
+  DS : TDataSource;
 
 implementation
-uses AnaUnit, Math, NThermo, TransUtils;
+  uses Anaunit;
 {$R *.dfm}
-const
-  colTCKimlikNo = 1;
-  colAdi        = 2;
-  colSoyadi     = 3;
-  colCinsiyeti  = 4;
-  colMedeniHali = 5;
-  colBabaAdi    = 6;
-  colAnaAdi     = 7;
-  ColAdres      = 8;
-  ColTelefon1   = 9;
-  ColTelefon2   = 10;
-  ColDogumYeri  = 11;
-  colDogumTarihi= 12;
-  colUyruk      = 13;
-  colDurum      = 14;
-  colIseBaslama = 15;
-  colKanGrubu   = 16;
 
-destructor TfrmHizliKayit.Destroy;
-begin
-  FAcceptedColumnHeaders.Free;
-  FInitialColumnHeaders.Free;
-  inherited;
-end;
 
-procedure TfrmHizliKayit.ExcelToGrid;
+
+ {
+procedure TfrmHizliKayit.Rapor(RaporCvp :  RaporIslemleriWS.RaporCevapTCKimlikNodanDVO);
 var
-  openD : TOpenDialog;
-  dosya : string;
-  //sonsatir ,sonColon, x : integer;
+  x , i ,y : integer;
+  tanilar : string;
 begin
-  openD := TOpenDialog.Create(nil);
-  try
-    if not openD.Execute then Exit;
-    dosya := openD.FileName;
-  finally
-    openD.Free;
-  end;
-
-  GridList.LoadFromXLS(dosya);
-  FFileName := dosya;
-  FAlanEslestirmeYapildi := False;
+       if Length(RaporCvp.raporlar) > 0
+       Then Begin
 
 
-(*
-  v := CreateOleObject('Excel.Application');
-  try
-    v.Workbooks.Open(dosya);
-    v.visible := true;//Exceli acip verileri goster
-    sayfa := v.workbooks[1].worksheets[1];
-  except
-    v.DisplayAlerts := False;  //Excel mesajlarýný görünteleme
-    v.Quit;
-    v := Unassigned;
-  end;
+          for x := 0 to Length(RaporCvp.raporlar) - 1 do
+          Begin
+            memDataRaporlar.Append;
+            memDataRaporlar.FieldByName('raporTuru').AsString := RaporCvp.raporlar[x].raporTuru;
+            if  RaporCvp.raporlar[x].raporTuru = '1'
+            Then begin
+              if RaporCvp.raporlar[x].tedaviRapor.tedaviRaporTuru = 1
+              Then Begin
+               memDataRaporlar.FieldByName('raporTakipNo').AsString := inttostr(RaporCvp.raporlar[x].raporTakipNo);
+               memDataRaporlar.FieldByName('raporTarihi').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.tarih;
+               memDataRaporlar.FieldByName('raporNo').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.no;
+               memDataRaporlar.FieldByName('verenTesis').AsString := inttostr(RaporCvp.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.raporTesisKodu);
+               memDataRaporlar.FieldByName('baslangicTarihi').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.baslangicTarihi;
+               memDataRaporlar.FieldByName('bitisTarihi').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.bitisTarihi;
+               memDataRaporlar.FieldByName('tedaviRaporTuru').AsString := inttostr(RaporCvp.raporlar[x].tedaviRapor.tedaviRaporTuru);
+               memDataRaporlar.FieldByName('protokolNo').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.protokolNo;
+               memDataRaporlar.FieldByName('protokolTarihi').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.protokolTarihi;
+               memDataRaporlar.FieldByName('Aciklama').AsString := raporCvp.raporlar[x].tedaviRapor.raporDVO.aciklama;
+  //            memDataRaporlar.FieldByName('tani').AsString :=
+               memDataRaporlar.FieldByName('seansGun').AsInteger := RaporCvp.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansGun;
+               memDataRaporlar.FieldByName('seansSayi').AsInteger := RaporCvp.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansSayi;
+               memDataRaporlar.FieldByName('butKodu').AsString := RaporCvp.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.butKodu;
+               tanilar := '';
 
-  sonsatir := v.Range[Char(96 + 1) + IntToStr(65536)].end[3].Rows.Row;
-  sonColon := sayfa.UsedRange.Columns.Count;
-  if SonColon > 5 then ;;
+               for y := 0 to Length(RaporCvp.raporlar[x].tedaviRapor.raporDVO.tanilar) - 1 do
+               begin
+                 tanilar := tanilar + ',' +
+                 RaporCvp.raporlar[x].tedaviRapor.raporDVO.tanilar[y].taniKodu;
+               end;
 
-  for x := 2 to sonsatir do
-  begin
-    MemTable_Personel.append;
-    MemTable_Personel.fieldByname('TCKIMLIKNO').asstring := sayfa.cells[x,1];
-    MemTable_Personel.fieldByname('HASTAADI').asstring := sayfa.cells[x,2];
-    MemTable_Personel.fieldByname('HASTASOYADI').asstring := sayfa.cells[x,3];
-    MemTable_Personel.fieldByname('CINSIYETI').asstring := sayfa.cells[x,4];
-    MemTable_Personel.fieldByname('MEDENI').asstring := sayfa.cells[x,5];
-    MemTable_Personel.fieldByname('BABAADI').asstring := sayfa.cells[x,6];
-    MemTable_Personel.fieldByname('ANAADI').asstring := sayfa.cells[x,7];
-    MemTable_Personel.fieldByname('EV_SEHIR').asstring := sayfa.cells[x,8];
-    MemTable_Personel.fieldByname('EV_TEL1').asstring := sayfa.cells[x,9];
-    MemTable_Personel.fieldByname('EV_TEL2').asstring := sayfa.cells[x,10];
-    MemTable_Personel.fieldByname('DOGUMYERI').asstring := sayfa.cells[x,11];
-    MemTable_Personel.fieldByname('DOGUMTARIHI').asstring := IfThen (Pos ('.',  sayfa.cells[x,12]) > 0, NoktasizTarih (sayfa.cells[x,12]), sayfa.cells[x,12]);;
-    MemTable_Personel.fieldByname('UYRUGU').asstring := sayfa.cells[x,13];
-    MemTable_Personel.fieldByname('Durum').asstring := sayfa.cells[x,14];
-    MemTable_Personel.fieldByname('BASLANGIC').asstring := IfThen (Pos ('.',  sayfa.cells[x,15]) > 0, NoktasizTarih (sayfa.cells[x,15]), sayfa.cells[x,15]);
-    MemTable_Personel.fieldByname('KANGRUBU').asstring := sayfa.cells[x,16];
-    MemTable_Personel.post;
-    end;
-    *)
-end;
+               if copy(tanilar,1,1) = ','
+               then
+                tanilar := copy(tanilar,2,100);
+
+               if (length(tanilar) > 0) and (tanilar[length(tanilar)] = ',')
+               then
+                tanilar := copy(tanilar,1,length(tanilar)-1);
+
+                memDataRaporlar.FieldByName('tani').AsString := tanilar;
+
+               if pos('N18',upperCase(tanilar)) = 0
+               Then ShowMessageSkin('Rapor Tanýlarý içinde N18 Tanýsý Yoktur',
+                                    'Lütfen Kontrol Ediniz. !','','info');
+
+               MemTable_Doktorlar.Active := false;
+               MemTable_Doktorlar.Active := True;
+               for y := 0 to Length(RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar) - 1 do
+               begin
+                 if RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drBransKodu <> '1062'
+                 Then Showmessageskin('Doktor Branþ Nefroloji Deðildir','Lütfen Kontrol Edin','','info');
+                 MemTable_Doktorlar.Append;
+                 MemTable_Doktorlardrtescil.Value := RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drTescilNo;
+                 MemTable_Doktorlardradi.Value := RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drAdi;
+                 MemTable_DoktorlardrSoyadi.Value := RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drSoyadi;
+                 MemTable_Doktorlardrbrans.Value := RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drBransKodu;
+                 MemTable_DoktorlarraporTakipNo.Value := inttostr(RaporCvp.raporlar[x].raporTakipNo);
+                 MemTable_Doktorlar.Post;
+               end;
+
+              End;
+            End;
 
 
-function TfrmHizliKayit.GridAlanEslestirme (const aTargetFields : TStringList;
-  var aAcceptedSourceColumns : TStringList;
-  var aAcceptedColumnIndexes : TIntegerArray;
-  const pReset : Boolean;
-  pMsg: Boolean = True;
-  aLookupColumnHeaders : TStringList = nil;
-  aLookupColumnHeaderFieldNames : TStringList = nil): Boolean;
-var
-  aStringList : TStringList;
-  i, j: Integer;
-  sItems, sHeaderBackup : String;
-  aItems: TIntegerArray;
-begin
-  Result := False;
-  if pMsg then
-    if ShowMessageSkin ('Bu iþlem, bu ekraný ilk açtýðýnýzda gördüðünüz standart þablon dýþýndaki personel listelerini aktarabilmeniz için imkân saðlar'#13#10#13#10+
-                        IfThen (pReset,
-                          'Önceden yapýlmýþ eþleþtirmeler unutularak tüm sütunlar için',
-                          'Baþlýklarý eþleþen sütunlar otomatik olarak eþleþtirilecek ve geri kalaný için')+
-                        ' size eþleþtirme sorusu sorulacaktýr'#13#10#13#10+
-                        'Devam etmek istiyor musunuz ?',
-                        '', '', 'conf') <> mrYes then Exit;
-  aStringList := TStringList.create;
-  try
-    //reset gelmiþse grid baþlýklarý eþleþmesin diye tahrip et.
-    if pReset then
-    begin
-      sHeaderBackup := GridList.Rows [0].Text;
-      for i := 0 to GridList.ColCount - 1 do
-        GridList.Cells [i, 0] := GridBaslikAyarla ('[' + GridList.Cells [i, 0] + ']', i);
-    end;
-    try
-      //stringlist boylarýný eþitle
-      while aAcceptedSourceColumns.Count < aTargetFields.Count do
-        aAcceptedSourceColumns.Add(aTargetFields [aAcceptedSourceColumns.Count]);
+            if  RaporCvp.raporlar[x].raporTuru = '10'
+            Then Begin
+              memDataRaporlar.FieldByName('raporTakipNo').AsString := inttostr(RaporCvp.raporlar[x].raporTakipNo);
+              memDataRaporlar.FieldByName('raporTarihi').AsString := RaporCvp.raporlar[x].ilacRapor.raporDVO.raporBilgisi.tarih;
+              memDataRaporlar.FieldByName('raporNo').AsString := RaporCvp.raporlar[x].ilacRapor.raporDVO.raporBilgisi.no;
+              memDataRaporlar.FieldByName('verenTesis').AsString := inttostr(RaporCvp.raporlar[x].ilacRapor.raporDVO.raporBilgisi.raporTesisKodu);
+              memDataRaporlar.FieldByName('baslangicTarihi').AsString := RaporCvp.raporlar[x].ilacRapor.raporDVO.baslangicTarihi;
+              memDataRaporlar.FieldByName('bitisTarihi').AsString := RaporCvp.raporlar[x].ilacRapor.raporDVO.bitisTarihi;
+            //  memDataRaporlar.FieldByName('tedaviRaporTuru').AsString := inttostr(RaporCvp.raporlar[x].ilacRapor.tedaviRaporTuru);
+              memDataRaporlar.FieldByName('protokolNo').AsString := RaporCvp.raporlar[x].ilacRapor.raporDVO.protokolNo;
+              memDataRaporlar.FieldByName('protokolTarihi').AsString := RaporCvp.raporlar[x].ilacRapor.raporDVO.protokolTarihi;
+              memDataRaporlar.FieldByName('Aciklama').AsString := raporCvp.raporlar[x].ilacRapor.raporDVO.aciklama;
 
-      for i := 0 to GridList.ColCount - 1 do
-        GridList.Cells [i, 0] := GridBaslikAyarla (GridList.Cells [i, 0], i);
-      //ÜÖ 20180105 Gride yüklenen excrl dosyasýnda ayný baþlýklý sütunlar varsa farklýlaþtýr, ileride eþleþmelerde problem çýkarmasýn.
-      GridCiftBaslikAyarla;
-      //ÜÖ 20171231 eþleþen sütun baþlýklarýný gridde arayýp indexlerini ata
-      for i := 0 to aTargetFields.Count - 1 do
-        aStringList.Add(IntToStr(GridList.Rows [0].IndexOf(aTargetFields [i])));
-      //arama baþlýðý listeleri geçilmiþse o baþlýklardan sütunlarý bulma gayreti içinde kendini kaybet...
-      if Assigned (aLookupColumnHeaders) and Assigned (aLookupColumnHeaderFieldNames) then
-      begin
-        //grid sütunlarýný tara, sütun eþleþmemiþse sütun baþlýðý lookup baþlýklarda varsa, onun karþýlýðýndaki sütun da eþleþmemiþse nikahla ikisini
-        for i := 0 to GridList.ColCount - 1 do
-        begin
-          if aStringList.IndexOf (IntToStr (i)) < 0 then
-          begin
-            //sütun baþlýklarýnda var mý
-            j := aLookupColumnHeaders.IndexOf(GridList.Cells [i, 0]);
-            if j < 0 then Continue;
-            //karþýlýðýndaki sütunun adý ne ?
-            sItems := aLookupColumnHeaderFieldNames [j];
-            //alanýn indexi ne ?
-            j := aTargetFields.IndexOf(sItems);
-            //Alanýn indexindeki deðer -1 ise eþlenmemiþ, hemen nikahla.
-            if StrToInt (aStringList [j]) < 0 then aStringList [j] := IntToStr (i);
-          end;
-        end;
-      end;
 
-      //ÜÖ 20180103 son aktarýlan ve eþleþtirilmiþ excel baþlýklarý ile uyuþanlarý da eþleþtir
-      for i := 0 to aAcceptedSourceColumns.Count - 1 do
-        if (StrToInt (aStringList [i]) < 0)
-          and (GridList.Rows [0].IndexOf(aAcceptedSourceColumns [i]) >= 0)
-          and (aStringList.IndexOf (IntToStr(GridList.Rows [0].IndexOf(aAcceptedSourceColumns [i]))) < 0) then
-            aStringList [i] := IntToStr(GridList.Rows [0].IndexOf(aAcceptedSourceColumns [i]));
-      //bulunamayanlar için kullanýcýya baþvur
-      for i := 0 to aStringList.Count - 1 do
-      begin
-        //o sütun karþýlýðý bir sütun eþleþmemiþ.
-        if StrToInt (aStringList [i]) < 0 then
-        begin
-          //grid baþlýklarýndan, daha önce eþleþmemiþ olanlarýndan bir ItemList oluþtur.
-          sItems:= 'Yok / Alma / Atla';
-          SetLength (aItems, 1);
-          aItems [0] := -1;
-          for j := 0 to GridList.ColCount - 1 do
-            if aStringList.IndexOf (IntToStr(j)) < 0 then
+            End;
+            (*
+            for i := 0 to length(RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar) - 1 do
             begin
-              sItems := sItems + #13#10 +
-                StringReplace (GridBaslikAyarla(GridList.Cells [j, 0], J), #13#10, '_', [rfReplaceAll]);
-              SetLength (aItems, High (aItems) + 2);
-              aItems [High (aItems)] := j;
+
+               memDataRaporDoktor.Append;
+               memDataRaporDoktor.FieldByName('raporTakipNo').AsString := inttostr(RaporCvp.raporlar[x].raporTakipNo);
+               memDataRaporDoktor.FieldByName('drTescil').AsString :=
+               RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[i].drTescilNo;
+               memDataRaporDoktor.FieldByName('dradi').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[i].drAdi;
+               memDataRaporDoktor.FieldByName('drSoyadi').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[i].drSoyadi;
+               memDataRaporDoktor.FieldByName('drbrans').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[i].drBransKodu;
+               memDataRaporDoktor.FieldByName('tip').AsString := RaporCvp.raporlar[x].tedaviRapor.raporDVO.doktorlar[i].tipi;
+               memDataRaporDoktor.Post;
+
             end;
-          //seçtirecek alan kalmadýysa döngüyü kýr
-          if High (aItems) <= 0 then Break;
 
-          j := -1;
-          if (not CombodanSectir ('Alan seçiniz', aTargetFields [i], sItems, j))
-            or (j < 0) then
-          begin
-            ShowMessageSkin('Ýþlem iptal edildi', '', '', 'info');
-            Exit;
-          end;
-          aStringList [i] := IntToStr (aItems [j]);
-        end;
-      end;
-      //buraya kadar sað salim geldikse olay tamam, geçici yerel diziyi form dizisine aktarýp ortamý terk edelim...
-      SetLength(aAcceptedColumnIndexes, 0);
-      for i := 0 to aStringList.Count - 1 do
-      begin
-        SetLength(aAcceptedColumnIndexes, High (aAcceptedColumnIndexes) + 2);
-        aAcceptedColumnIndexes [i] := StrToInt (aStringList [i]);
-        //eþleþen yeni grid sütun baþlýðý boþ deðilse onu son excel kabul edilen sütunlar listesine ekle.
-        if (aAcceptedColumnIndexes [i] >= 0) and (not IsNull (GridList.Cells [aAcceptedColumnIndexes [i], 0])) then
-          aAcceptedSourceColumns [i] := GridList.Cells [aAcceptedColumnIndexes [i], 0];
-        //Eþleþen baþlýklarý grid üzerinde yerine koyarak göster
-        if aAcceptedColumnIndexes [i] >= 0 then GridList.Cells [aAcceptedColumnIndexes [i], 0] := aTargetFields [i];
-      end;
-      Result := True;
-      if pMsg Then
-        ShowMessageSkin('Alan Eþleþtirmesi Baþarý ile Tamamlandý', '', '', 'info');
-    finally
-      //resetli gelmiþ fakat iþlem iptal olmuþsa sütun baþlýklarýný geri koy
-      if (not Result) and pReset then
-      begin
-        aStringList.Text := sHeaderBackup;
-        for i := 0 to GridList.ColCount - 1 do
-          GridList.Cells [i, 0] := aStringList [i];
-      end;
-    end;
-  finally
-    aStringList.Free;
-  end;
+              *)
+            memDataRaporlar.Post;
+          End;
+       End;
+
+       memDataRaporlar.First;
+
+
+
 end;
+    }
 
-function TfrmHizliKayit.GridBagliSutunDegerAyarlaGetir (
-  const aGrid: TStringGrid;
-  const aBaglantiList: TIntegerArray;
-  const ACol, ARow : Integer):String;
-begin
-  Result := Trim (
-              StringReplace (
-                IfThen (
-                  aBaglantiList [ACol] >= 0,
-                  aGrid.Cells[
-                    IfThen (
-                      aBaglantiList [ACol] <0,
-                      0,
-                      aBaglantiList [ACol]),
-                    ARow],
-                  ''),
-                #9,
-                '',
-                [rfReplaceAll]));
-end;
-
-function TfrmHizliKayit.GridAtanmisSutunDegerAyarlaGetir(
-  const aGrid: TStringGrid; const ACol, ARow: Integer): String;
-begin
-  Result := GridBagliSutunDegerAyarlaGetir (aGrid, FAssignedColumnIndexes, ACol, ARow);
-end;
-
-function TfrmHizliKayit.GridBaslikAyarla(const S: String; const iNumber : Integer): String;
-begin
-  Result := IfThen (
-              IsNull (
-                Trim (
-                  StringReplace (
-                    s,
-                    #9,
-                    '',
-                    [rfReplaceAll]))),
-              'Baþlýksýz Sütun - ' + IntToStr (iNumber),
-              Trim (StringReplace (s, #9, '', [rfReplaceAll])));
-end;
-
-procedure TfrmHizliKayit.GridCiftBaslikAyarla;
+procedure TfrmHizliKayit.Rapor;
 var
-  iCol, iRepeat : Integer;
-  aSL : TStringList;
-  sTmp1, sTmp2 : String;
+  x , i ,y : integer;
+  tanilar : string;
 begin
-  aSL := TStringList.Create;
-  try
-    for iCol := 0 to GridList.ColCount - 1 do
-    begin
-      iRepeat := 1;
-      sTmp1 := GridList.Cells [iCol, 0];
-      sTmp2 := sTmp1;
-      while aSL.IndexOf (sTmp2) >= 0 do
-      begin
-        sTmp2 := sTmp1 + IntToStr (iRepeat);
-        iRepeat := iRepeat + 1;
-      end;
-      aSL.Add(sTmp2);
-      GridList.Cells [iCol, 0] := sTmp2;
-    end;
-  finally
-    aSL.Free;
-  end;
+       if datalar.RaporIslemWS.RaporAraCevap.sonucKodu = 0
+       Then Begin
+          for x := 0 to Length(datalar.RaporIslemWS.RaporAraCevap.raporlar) - 1 do
+          Begin
+            memDataRaporlar.Append;
+            memDataRaporlar.FieldByName('raporTuru').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru;
+            if  datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru = '1'
+            Then begin
+              if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 1
+              Then Begin
+               memDataRaporlar.FieldByName('raporTakipNo').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTakipNo);
+               memDataRaporlar.FieldByName('raporTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.tarih;
+               memDataRaporlar.FieldByName('raporNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.no;
+               memDataRaporlar.FieldByName('verenTesis').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.raporTesisKodu);
+               memDataRaporlar.FieldByName('baslangicTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.baslangicTarihi;
+               memDataRaporlar.FieldByName('bitisTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.bitisTarihi;
+               memDataRaporlar.FieldByName('tedaviRaporTuru').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru);
+               memDataRaporlar.FieldByName('protokolNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolNo;
+               memDataRaporlar.FieldByName('protokolTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolTarihi;
+               memDataRaporlar.FieldByName('Aciklama').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.aciklama;
+  //            memDataRaporlar.FieldByName('tani').AsString :=
+               memDataRaporlar.FieldByName('seansGun').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansGun;
+               memDataRaporlar.FieldByName('seansSayi').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansSayi;
+               memDataRaporlar.FieldByName('butKodu').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.butKodu;
+               tanilar := '';
+               for y := 0 to Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) - 1 do
+               begin
+                 tanilar := tanilar + ',' +
+                 datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar[y].taniKodu;
+               end;
+
+               if copy(tanilar,1,1) = ','
+               then
+                tanilar := copy(tanilar,2,100);
+
+               if (length(tanilar) > 0) and (tanilar[length(tanilar)] = ',')
+               then
+                tanilar := copy(tanilar,1,length(tanilar)-1);
+
+                memDataRaporlar.FieldByName('tani').AsString := tanilar;
+
+               if pos('N18',upperCase(tanilar)) = 0
+               Then ShowMessageSkin('Rapor Tanýlarý içinde N18 Tanýsý Yoktur',
+                                    'Lütfen Kontrol Ediniz. !','','info');
+
+               MemTable_Doktorlar.Active := false;
+               MemTable_Doktorlar.Active := True;
+               for y := 0 to Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.doktorlar) - 1 do
+               begin
+                 if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drBransKodu <> '1062'
+                 Then Showmessageskin('Doktor Branþ Nefroloji Deðildir','Lütfen Kontrol Edin','','info');
+                 MemTable_Doktorlar.Append;
+                 MemTable_Doktorlardrtescil.Value := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drTescilNo;
+                 MemTable_Doktorlardradi.Value := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drAdi;
+                 MemTable_DoktorlardrSoyadi.Value := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drSoyadi;
+                 MemTable_Doktorlardrbrans.Value := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.doktorlar[y].drBransKodu;
+                 MemTable_DoktorlarraporTakipNo.Value := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTakipNo);
+                 MemTable_Doktorlar.Post;
+               end;
+
+              End;
+            End;
+
+
+            memDataRaporlar.Post;
+         // End;
+       End;
+
+       memDataRaporlar.First;
+
 end;
 
-procedure TfrmHizliKayit.GridSoyadiAyarla;
-var
-  iRow, iAd, iSoyad : Integer;
-  sSonKelime, sBasTaraf : String;
-  aTargetFields, aAccepted : TStringList;
-  aAcceptedIndexes : TIntegerArray;
-begin
-  if ShowMessageSkin (
-      'Bu iþlem, Soyadý sütunu boþ olan satýrlara Adý '+
-      'sütununun son kelimesini veya Adý sütunu boþ '+
-      'olan satýrlara Soyadý sütununun ilk kelimelerini atayacaktýr.'#13#10#13#10+
-      'Emin misiniz ?',
-      '', '', 'conf') <> mrYes then Exit;
-  if not FAlanEslestirmeYapildi then
-  begin
-    aTargetFields := TStringList.Create;
-    try
-      aAccepted := TStringList.Create;
-      try
-        aTargetFields.Clear;
-        aTargetFields.Add(FInitialColumnHeaders [colAdi]);
-        aTargetFields.Add(FInitialColumnHeaders [colSoyadi]);
-        aAccepted.Add(FAcceptedColumnHeaders [colAdi]);
-        aAccepted.Add(FAcceptedColumnHeaders [colSoyadi]);
-        if not GridAlanEslestirme (aTargetFields, aAccepted, aAcceptedIndexes, False, False) then Exit;
-        FAssignedColumnIndexes [colAdi] := aAcceptedIndexes [0];
-        FAssignedColumnIndexes [colSoyadi] := aAcceptedIndexes [1];
-        FAcceptedColumnHeaders [colAdi] := aAccepted [0];
-        FAcceptedColumnHeaders [colSoyadi] := aAccepted [1];
-      finally
-        aAccepted.Free;
-      end;
-    finally
-      aTargetFields.Free;
-    end;
-  end;
-
-  if (FAssignedColumnIndexes [colAdi] < 0)
-    or (FAssignedColumnIndexes [colSoyadi] < 0) then
-  begin
-    ShowMessageSkin('Adý veya Soyadý sütunlarý ile alan iliþkilendirilmesi yapýlmamýþ', '', '', 'info');
-    Exit;
-  end;
-  iAd := 0;
-  iSoyad := 0;
-  for iRow := GridList.FixedRows to GridList.RowCount - 1 do
-  begin
-    if IsNull (GridAtanmisSutunDegerAyarlaGetir (GridList, colAdi, iRow))
-      and IsNull (GridAtanmisSutunDegerAyarlaGetir (GridList, colSoyadi, iRow)) then Continue;
-    if not IsNull (GridAtanmisSutunDegerAyarlaGetir (GridList, colAdi, iRow))
-      and not IsNull (GridAtanmisSutunDegerAyarlaGetir (GridList, colSoyadi, iRow)) then Continue;
-
-    if IsNull (GridAtanmisSutunDegerAyarlaGetir (GridList, colSoyadi, iRow)) then
-    begin
-      iSoyad := iSoyad + 1;
-      adsoyadayir (GridAtanmisSutunDegerAyarlaGetir (GridList, colAdi, iRow), sBasTaraf, sSonKelime);
-    end
-    else begin
-      iAd := iAd + 1;
-      adsoyadayir (GridAtanmisSutunDegerAyarlaGetir (GridList, colSoyadi, iRow), sBasTaraf, sSonKelime);
-    end;
-    GridList.Cells [FAssignedColumnIndexes [colAdi], iRow] := sBasTaraf;
-    GridList.Cells [FAssignedColumnIndexes [colSoyadi], iRow] := sSonKelime;
-  end;
-  if iAd + iSoyad > 0 then
-    showmessageskin (IntToStr (iAd) + ' adet Adý, ' + IntToStr (iSoyad) + ' adet Soyadý bilgisi ayarlandý', '', '', 'info')
-   else
-    showmessageskin ('Deðiþikliðe uygun satýr bulunamadý', '', '', 'info');
 end;
 
-procedure TfrmHizliKayit.GridToPersonelKartTable;
-var
-  sql : string;
-  bBasarili : Boolean;
-  iThermo, iCount : Integer;
-  _row_, iRowC : integer;
-  Cins,Medeni,DTarih,BTarih : String;
-  ado1 : TADOQuery;
-  //aModalResult : TModalResult;
+
+procedure TfrmHizliKayit.RbRtClick(Sender: TObject);
 begin
-  try
-    if showmessageskin (
-        'Ekrana yüklenen "' + FFileName + '" dosyasý içeriði '+#13#10+'"' + DATALAR.AktifSirketAdi + '" þirketine aktarýlacak'#13#10#13#10+
-        'Onaylýyor musunuz ?', '', '', 'conf') <> mrYes then Exit;
-
-    if IsNull (HakikiAktifSube) then
-    begin
-      ShowMessageSkin('Aktif þube seçmeden personel aktarýmý yapamazsýnýz.'#13#10'Personeller, seçili þubeye aktarýlacak.', '', '', 'info');
-      Exit;
-    end;
-    if not FAlanEslestirmeYapildi then
-      FAlanEslestirmeYapildi := GridAlanEslestirme (FInitialColumnHeaders, FAcceptedColumnHeaders, FAssignedColumnIndexes, False, False);
-    if not FAlanEslestirmeYapildi then Exit;
-    cins := '';
-    medeni := '';
-    for _row_ := 1 to GridList.RowCount - 1 do
-    begin
-      if IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colTCKimlikNo,_row_))
-        and IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colAdi,_row_))
-        and IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colSoyadi,_row_)) then Continue;
-      if not TCKontrol(GridAtanmisSutunDegerAyarlaGetir(GridList,colTCKimlikNo,_row_)) then
-      begin
-        cins := cins + IntToStr(_row_) + ', ';
-        Medeni := Medeni + GridAtanmisSutunDegerAyarlaGetir(GridList,colTCKimlikNo,_row_) + ', ';
-      end;
-    end;
-    if not IsNull (Cins) then
-    begin
-      Delete(cins, length (cins) - 1, 2);
-      Delete(Medeni, length (Medeni) - 1, 2);
-      Showmessageskin (cins + ' numaralý satýrlardaki TC Kimlik Numaralarý Hatalý olduðu için iþlem devam etmiyor'#13#10#13#10 + Medeni, '', '', 'info');
-      if StrToIntDef (cins, -1) > 0 then GridList.Row := StrToIntDef (cins, -1);
-      Exit;
-    end;
-    bBasarili := False;
-    iCount := 0;
-    iRowC := 0;
-    ShowThermo(iThermo, 'Satýrlar veritabanýna yazýlýyor', 0, GridList.RowCount - 1, 0, True);
-    try
-      BeginTrans (datalar.ADOConnection2);
-      try
-        for _row_ := 1 to GridList.RowCount - 1 do
-        begin
-          if not UpdateThermo (_row_ - 1,
-            iThermo,
-            IntToStr (_row_) + ' ' +
-            GridAtanmisSutunDegerAyarlaGetir(GridList,colTCKimlikNo,_row_) + ' ' +
-            GridAtanmisSutunDegerAyarlaGetir(GridList,colAdi,_row_) + ' ' +
-            GridAtanmisSutunDegerAyarlaGetir(GridList,colSoyadi,_row_)) then Exit;
-
-          //hem adý hem TCKimlik numarasý boþ ise atlayarak sonraki satýrdan devam et.
-          if IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colTCKimlikNo,_row_))
-            and IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colAdi,_row_))
-            and IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colSoyadi,_row_)) then Continue;
-          //yukarýdan geçtiyse adý veya TCKimlik dolu demektir.
-          if IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colTCKimlikNo,_row_))
-            or IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colAdi,_row_))
-            or IsNull (GridAtanmisSutunDegerAyarlaGetir(GridList,colSoyadi,_row_)) then
-          begin
-            //transaction mesajý beklemesin önce rollback olsun sonra mesaj gelsin diye exit ile deðil raise ile yaptýk.
-            raise Exception.Create ('Adý veya Soyadý veya TC Kimlik Numarasý alaný dolu olmalýdýr.');
-          end;
-
-          sql :=
-            'select pk.SirketKod, s.Tanimi SirketAdi, pk.sube, ss.subeTanim SubeAdi,'#13#10 +
-            '  cast (case when pk.SirketKod = ' + SQLValue (DATALAR.AktifSirket) + ' and pk.Sube = ' + SQLValue (HakikiAktifSube) + ' then 1 else 0 end as bit) AktarilandaVar'#13#10 +
-            'from personelkart pk'#13#10 +
-            'inner join SIRKEtler_tnm s on s.SirketKod = pk.SirketKod'#13#10 +
-            'inner join SIRKET_SUBE_TNM ss on ss.sirketKod = pk.Sirketkod'#13#10 +
-            '  and ss.Subekod = pk.Sube'#13#10 +
-            'where pk.TCKIMLIKNO = ' + SQLValue (GridAtanmisSutunDegerAyarlaGetir (GridList, colTCKimlikNo,_row_)) + ''#13#10 +
-            'order by AktarilandaVar desc';
-          ado1 := DATALAR.QuerySelect(sql);
-          try
-            if not ado1.Eof then
-            begin
-              if ado1.FieldByName ('AktarilandaVar').AsBoolean then
-                raise Exception.Create(GridAtanmisSutunDegerAyarlaGetir (GridList, colTCKimlikNo,_row_) + ' TC Kimlik Numarasý bu þirket ve þubede tanýmlý.'#13#10'Daha önceden girilmiþ veya bu excel içinde iki kere yer almýþ olabilir')
-              else begin
-                if ShowMessageSkin (
-                     GridAtanmisSutunDegerAyarlaGetir (GridList, colTCKimlikNo,_row_) +
-                     ' TC Kimlik Numarasý, '#13#10 +
-                     ado1.FieldByName ('SirketAdi').AsString + ' þirketi'#13#10+
-                     ado1.FieldByName ('SubeAdi').AsString + ' þubesinde tanýmlý.'#13#10#13#10+
-                     'Devam Edilsin Mi ?' , '', '', 'conf') <> mrYes then
-                  raise Exception.Create('Ýþlem iptal edildi');
-              end;
-            end;
-          finally
-            ado1.Free;
-          end;
-
-          Cins := ifThen(AnsiSameText (Copy(GridAtanmisSutunDegerAyarlaGetir (GridList, colCinsiyeti,_row_),1,1), 'B'),'1',
-                  ifThen(AnsiSameText (Copy(GridAtanmisSutunDegerAyarlaGetir (GridList, colCinsiyeti,_row_),1,1), '1'),'1',
-                  ifThen(AnsiSameText (Copy(GridAtanmisSutunDegerAyarlaGetir (GridList, colCinsiyeti,_row_),1,1), 'K'),'1',
-                  ifThen(AnsiSameText (Copy(GridAtanmisSutunDegerAyarlaGetir (GridList, colCinsiyeti,_row_),1,5), 'bayan'),'1',
-                  '0'))));
-
-          Medeni := ifThen(Copy(GridAtanmisSutunDegerAyarlaGetir (GridList, colMedeniHali,_row_),1,1) = 'B','1',
-                    ifThen(Copy(GridAtanmisSutunDegerAyarlaGetir (GridList, colMedeniHali,_row_),1,1) = '1','1','0'));
-
-          DTarih := ifThen(pos('.',GridAtanmisSutunDegerAyarlaGetir (GridList, colDogumTarihi,_row_)) > 0,
-                           NoktasizTarih(GridAtanmisSutunDegerAyarlaGetir (GridList, colDogumTarihi,_row_)),
-                           GridAtanmisSutunDegerAyarlaGetir (GridList, colDogumTarihi,_row_));
-
-          BTarih := ifThen(pos('.',GridAtanmisSutunDegerAyarlaGetir (GridList, colIseBaslama,_row_)) > 0,
-                           NoktasizTarih(GridAtanmisSutunDegerAyarlaGetir (GridList, colIseBaslama,_row_)),
-                           GridAtanmisSutunDegerAyarlaGetir (GridList, colIseBaslama,_row_));
-
-          sql := Format(_insertPersonel_,
-                        [SQLValue(datalar.AktifSirket),
-                         SQLValue(GridAtanmisSutunDegerAyarlaGetir (GridList, colTCKimlikNo,_row_)),
-                         SQLValue(GridAtanmisSutunDegerAyarlaGetir (GridList, colAdi,_row_)),
-                         SQLValue(GridAtanmisSutunDegerAyarlaGetir (GridList, colSoyadi,_row_)),
-                         SQLValue(Cins),
-                         SQLValue(Medeni),
-                         SQLValue(GridAtanmisSutunDegerAyarlaGetir (GridList, colBabaAdi,_row_)),
-                         SQLValue(GridAtanmisSutunDegerAyarlaGetir (GridList, colAnaAdi,_row_)),
-                         SQLValue(GridAtanmisSutunDegerAyarlaGetir (GridList, ColAdres,_row_)),
-                         SQLValue(AktarimTelefonNoTemizle (GridAtanmisSutunDegerAyarlaGetir (GridList, ColTelefon1,_row_))),
-                         SQLValue(AktarimTelefonNoTemizle (GridAtanmisSutunDegerAyarlaGetir (GridList, ColTelefon2,_row_))),
-                         SQLValue(GridAtanmisSutunDegerAyarlaGetir (GridList, ColDogumYeri,_row_)),
-                         SQLValue(DTarih),
-                         SQLValue(AktarimUyrukDuzelt (GridAtanmisSutunDegerAyarlaGetir (GridList, colUyruk,_row_))),
-                         SQLValue(BTarih),
-                         'NULL',
-                         SQLValue(datalar.username),
-                         SQLValue('1'),
-                         SQLValue(HakikiAktifSube),
-                         'NULL']);
-          datalar.queryExec(SelectAdo,sql);
-          iRowC := _row_;
-          iCount := iCount + 1;
-        end;
-        bBasarili := True;
-      finally
-        if bBasarili then
-        begin
-          CommitTrans (datalar.ADOConnection2);
-          showmessageSkin (IntToStr (iCount) + ' adet kayýt baþarý ile aktarýldý', '', '', 'info');
-        end
-        else begin
-          RollBackTrans (datalar.ADOConnection2);
-          GridList.Row := iRowC + 1;
-          showmessageSkin (IntToStr (iRowC + 1) + '. satýrda hata oluþtu, aktarým iþlemi tamamlanamadý.',
-                           'Personel Bilgisi :  ' +GridList.Cells[colAdi,_row_] + ' ' + GridList.Cells[colSoyadi,_row_] ,
-                           '', 'info');
-        end;
-      end;
-    finally
-      FreeThermo(iThermo);
-    end;
-  except on e : exception do
-   begin
-     showmessageSkin(e.message,'','','info');
-   end;
-  end;
+  cxLabel1.Caption := 'Rapor Takip No';
+  cxLabel2.Visible := false;
+  cxLabel4.Visible := false;
+  txtTakipTarihi.Visible := false;
+  txtilkTakip.Text := '';
+  txtilkTakip.Visible := false;
 
 end;
+
+procedure TfrmHizliKayit.RbTcClick(Sender: TObject);
+begin
+  cxLabel1.Caption := 'TC Kimlik No';
+  cxLabel2.Visible := True;
+  cxLabel4.Visible := True;
+  txtTakipTarihi.Visible := True;
+  txtilkTakip.Visible := True;
+end;
+
+
+
+procedure TfrmHizliKayit.MemTable_DoktorlarAfterScroll(DataSet: TDataSet);
+begin
+ // if MemTable_Doktorlardrbrans.Value <> '1062'
+ // Then Showmessageskin('Doktor Branþ Nefroloji Deðildir','Lütfen Kontrol Edin','','info');
+end;
+
 
 function TfrmHizliKayit.Init(Sender: TObject): Boolean;
 begin
-  Result := inherited Init (Sender);
-  miExcelYukle .Visible := (Tag = TagfrmHizliKayitPersonel) or (Tag = TagfrmHizliKayitDisAktarimlar);
-  miVeritabaninaYaz .Visible := Tag = TagfrmHizliKayitPersonel;
-  miAlanEslestir .Visible := Tag = TagfrmHizliKayitPersonel;
-  miSoyadAyarla .Visible := Tag = TagfrmHizliKayitPersonel;
-  miOtomatikAktarim .Visible := Tag = TagfrmHizliKayitDisAktarimlar;
-end;
-
-procedure TfrmHizliKayit.TanimliOtomatikAktarim;
-var
-  aQuery, bQuery : TADOQuery;
-  sAktarimSonrasiStoredProc, sItems, sTableName : String;
-  aHedefAlanlar, aBasliginHedefAlani, aAramaBasliklari, aSecilenAlanlar : TStringList;
-  iInserted, iCol, iTmp, iAktarimTanimID, iThermo, iTmpRow : Integer;
-  bTmpPost, bHepsiBos, bTmp, bHedefTabloyuBosalt, bHedefTabloyuBosaltSor : Boolean;
-  aSecilenIndexler : TIntegerArray;
-begin
-  iTmpRow := GridList.Row;
-  aQuery := TADOQuery.Create (Self);
-  try
-    aQuery.Connection := DATALAR.ADOConnection2;
-    aQuery.SQL.Text := 'Select * From DisAktarimTanim Where Otomatik = 1 order by ID';
-    aQuery.Open;
-    sItems := '';
-    while not aQuery.Eof do
-    begin
-      sItems := sItems + aQuery.FieldByName ('Tanimi').AsString+#13#10;
-      aQuery.Next;
-    end;
-    if IsNull (sItems) then
-    begin
-      ShowMessageSkin('Seçilebilecek Otomatik Aktarým Tanýmý Bulunamadý', '', '', 'info');
-      Exit;
-    end;
-    Delete (sItems, Length (sItems) - 1, 2);
-    if not CombodanSectir ('Otomatik Aktarým Seçiniz', 'Aktarým Çeþitleri', sItems, iAktarimTanimID) then Exit;
-    if iAktarimTanimID < 0 then
-    begin
-      ShowMessageSkin('Aktarým Tipi düzgün seçilmemiþ', '', '', 'info');
-      Exit;
-    end;
-    aQuery.RecNo := iAktarimTanimID + 1;
-    sTableName := aQuery.FieldByName ('HedefTabloAdi').AsString;
-    sAktarimSonrasiStoredProc := aQuery.FieldByName ('AktarimSonrasiStoredProc').AsString;
-    bHedefTabloyuBosalt := aQuery.FieldByName ('HedefTabloyuBosalt').AsBoolean;
-    bHedefTabloyuBosaltSor := aQuery.FieldByName ('HedefTabloyuBosalt').IsNull;
-    iAktarimTanimID := aQuery.FieldByName ('ID').AsInteger;
-    aQuery.SQL.Text :=
-      'select HedefAlanAdi, KaynakBaslik'#13#10 +
-      'from DisAktarimBaglanti'#13#10 +
-      'where AktarimTanimID = ' + IntToStr (iAktarimTanimID) + ''#13#10 +
-      'order by ID';
-    aHedefAlanlar := TStringList.Create;
-    try
-      aBasliginHedefAlani := TStringList.Create;
-      try
-        aAramaBasliklari := TStringList.Create;
-        try
-          aSecilenAlanlar := TStringList.Create;
-          try
-            aHedefAlanlar.Clear;
-            aQuery.Open;
-            while not aQuery.Eof do
-            begin
-              if aHedefAlanlar.IndexOf (aQuery.FieldByName('HedefAlanAdi').AsString) < 0 then
-                aHedefAlanlar.Add(aQuery.FieldByName('HedefAlanAdi').AsString);
-              aBasliginHedefAlani.Add(aQuery.FieldByName('HedefAlanAdi').AsString);
-              aAramaBasliklari.Add(aQuery.FieldByName('KaynakBaslik').AsString);
-              aQuery.Next;
-            end;
-            if aHedefAlanlar.Count <= 0 then
-            begin
-              ShowMessageSkin('Aktarým Tipi için Alan - Baþlýk eþleþtirmesi hiç yapýlmamýþ', '', '', 'info');
-              Exit;
-            end;
-            //þimdi artýk elimizde alanlar ve karþýlýðýnda arayacaðýmýz baþlýklar var.
-            //ortalýðýn... ... ... için alan eþleþtirmeyi çaðýrýyoruz...
-            if not GridAlanEslestirme (aHedefAlanlar, aSecilenAlanlar, aSecilenIndexler, False, False, aAramaBasliklari, aBasliginHedefAlani) then
-            begin
-              ShowMessageSkin('Ýþlem Ýptal Edildi', '', '', 'info');
-              Exit;
-            end;
-            if bHedefTabloyuBosaltSor then
-            begin
-              //showmessageSkin iþimizi görmedi, evet hayýr vazgeç lazým oldu
-              case dialogs.MessageDlg ('Hedef Tablo önce boþaltýlsýn mý ?', mtConfirmation, [mbYes, mbNo, mbCancel], 0, mbNo) of
-                mrYes : bHedefTabloyuBosalt := True;
-                mrNo : bHedefTabloyuBosalt := False;
-                else Exit;
-              end;
-            end;
-            bTmp := False;
-            iInserted := 0;
-            BeginTrans (datalar.ADOConnection2);
-            try
-              //Aktarým tanýmlarýnda tablo boþaltýlýp doldurulacak tipteyse boþalt (null ise kullanýcýya sormuþtuk)
-              if bHedefTabloyuBosalt then
-              begin
-                aQuery.SQL.Text := 'Delete from '+ sTableName;
-                aQuery.ExecSQL;
-              end;
-
-              //Alan listesinin SQL'ini oluþtur
-              sItems := '';
-              for iTmp := 0 to aHedefAlanlar.Count - 1 do
-                sItems := sItems + aHedefAlanlar [iTmp] + ', ';
-              if IsNull (sItems) then
-              begin
-                ShowMessageSkin('Alan listesi olmamýþ', '', '', 'info');
-                Exit;
-              end;
-              Delete (sItems, Length (sItems) - 1, 2);
-
-              aQuery.SQL.Text := 'Update dbo.DisAktarim_Parametre set Aktif = 0 where SPID = @@SPID and Aktif = 1';
-              aQuery.ExecSQL;
-              aQuery.SQL.Text :=
-                'Insert into dbo.DisAktarim_Parametre (SPID, Aktif, SirketKod, SubeKod, Doktor, Kullanici, HostName, RecDatetime) '+
-                'SELECT @@SPID SPID, 1 Aktif, ' + SQLValue(DATALAR.AktifSirket) + ' SirketKod, ' + SQLValue (HakikiAktifSube) +
-                ' SubeKod, ' + SQLValue(DATALAR.doktorKodu)+' Doktor, ' + SQLValue (DATALAR.username) +
-                ' Kullanici, HOST_NAME () HostName, getdate () RecDatetime';
-              aQuery.ExecSQL;
-
-              sItems := 'SELECT TOP 0 ' + sItems + ' FROM '+ sTableName;
-              aQuery.sql.Text := sItems;
-              aQuery.Open;
-              try
-                ShowThermo (iThermo, 'Bilgiler Veritabanýna Yazýlýyor...', 0, GridList.RowCount - 1, 0, True);
-                try
-                  for iTmp := 1 to GridList.RowCount -1 do
-                  begin
-                    iTmpRow := iTmp;
-                    if not UpdateThermo (iTmp - 1, iThermo, 'Satýr: '+ IntToStr (iTmp)) then Exit;
-                    bTmpPost := False;
-                    aQuery.Append;
-                    try
-                      //Griddeki bütün sütunlarý boþsa o satýrý yazmamasý için kontrol
-                      bHepsiBos := True;
-                      for iCol := 0 to aHedefAlanlar.Count - 1 do
-                      begin
-                        sItems := GridBagliSutunDegerAyarlaGetir (GridList, aSecilenIndexler, iCol, iTmp);
-                        bHepsiBos := bHepsiBos and IsNull (sItems);
-                        if not IsNull (sItems) then
-                          aQuery.FieldByName(aHedefAlanlar [iCol]).AsString := sItems
-                         else
-                          aQuery.FieldByName(aHedefAlanlar [iCol]).Clear;
-                        if (aQuery.FieldByName(aHedefAlanlar [iCol]) is TStringField)
-                          and (aQuery.FieldByName(aHedefAlanlar [iCol]).Size < Length (sItems)) then
-                        begin
-                          GridList.Row := iTmp;
-                          GridList.Col := aSecilenIndexler [iCol];
-                          showmessageSkin (IntToStr (iTmp) + '. satýrda ' + aHedefAlanlar [iCol] + ' alaný için girilen deðer ayrýlan alandan ('+
-                            IntToStr (aQuery.FieldByName(aHedefAlanlar [iCol]).Size)+') geniþ', '', '', 'info');
-                        end;
-                      end;
-                      if bHepsiBos then Continue;
-                      bTmpPost := True;
-                      iInserted := iInserted + 1;
-                    finally
-                      if bTmpPost then
-                        aQuery.Post
-                       else
-                        aQuery.Cancel;
-                    end;
-                  end;
-                finally
-                  FreeThermo(iThermo);
-                end;
-
-              finally
-                aQuery.Close;
-              end;
-              aQuery.SQL.Text := 'Select top 0 AktarimTanimID, HedefAlanAdi, KaynakBaslik from dbo.DisaktarimBaglanti';
-              aQuery.Open;
-              try
-                //Arama baþlýklarýný veritabanýna yaz...
-                for iTmp := 0 to aSecilenAlanlar.Count -1 do
-                  if not IsNull (aSecilenAlanlar [iTmp])
-                    and (aAramaBasliklari.IndexOf (aSecilenAlanlar [iTmp]) < 0) then
-                  begin
-                    aAramaBasliklari.Add(aSecilenAlanlar [iTmp]);
-                    aBasliginHedefAlani.Add(aHedefAlanlar [iTmp]);
-                    aQuery.Append;
-                    btmpPost := False;
-                    try
-                      aQuery.FieldByName('AktarimTanimID').AsInteger := iAktarimTanimID;
-                      aQuery.FieldByName('HedefAlanAdi').AsString := aHedefAlanlar [iTmp];
-                      aQuery.FieldByName('KaynakBaslik').AsString := aSecilenAlanlar [iTmp];
-                      bTmpPost := True;
-                    finally
-                      if bTmpPost then
-                        aQuery.Post
-                       else
-                        aQuery.Cancel;
-                    end;
-                  end;
-              finally
-                aQuery.Close;
-              end;
-              bTmp := True;
-            finally
-              if bTmp then
-              begin
-                CommitTrans (datalar.ADOConnection2);
-              end
-              else begin
-                RollbackTrans (datalar.ADOConnection2);
-                GridList.Row := iTmpRow;
-                showmessageSkin ('Aktarým iþlemi sýrasýnda bir hata oluþtu ve iþlem tamamlanamadý', '', '', 'info');
-              end;
-            end;
-            if IsNull (sAktarimSonrasiStoredProc) then Exit;
-            bTmp := False;
-            bTmpPost := False;
-            bQuery := TADOQuery.Create(Self);
-            try
-              bQuery.Connection := aQuery.Connection;
-              BeginTrans (datalar.ADOConnection2);
-              try
-                aQuery.SQL.Text := 'exec '+ sAktarimSonrasiStoredProc +' 0';
-                aQuery.Open;
-                try
-                  ShowThermo(iThermo, 'Aktarým sonrasý güncellemeler yapýlýyor', 0, aQuery.RecordCount, 0, True);
-                  try
-                    while not aQuery.Eof do
-                    begin
-                      if not UpdateThermo (aQuery.RecNo - 1, iThermo, aQuery.FieldByName ('Aciklama').AsString) then Exit;
-                      bQuery.SQL.Text := 'exec '+ sAktarimSonrasiStoredProc +' ' + IntToStr (aQuery.FieldByName ('iTip').AsInteger);
-                      if aQuery.FieldByName ('Rowset').AsBoolean then
-                      begin
-                        bQuery.Open;
-                        if aQuery.FieldByName ('RowsetEditInput').AsBoolean then
-                        begin
-                          if bQuery.RecordCount > 0 then
-                          begin
-                            if DBGridDialog (aQuery.FieldByName ('HataMesaji').AsString, bQuery, [mbOk], mbOk) <> mrOk Then Exit;
-                          end;
-                        end
-                        else
-                        if aQuery.FieldByName ('RowsetHata').AsBoolean then
-                          if bQuery.RecordCount > 0 then
-                          begin
-                            bTmpPost := True;
-                            sItems:= aQuery.FieldByName ('HataMesaji').AsString;
-                            Exit;
-                          end;
-                      end
-                      else begin
-                        bQuery.ExecSQL;
-                      end;
-                      aQuery.Next;
-                    end;
-                  finally
-                    FreeThermo(iThermo);
-                  end;
-                finally
-                  aQuery.Close;
-                end;
-                bTmp := True;
-              finally
-                if bTmp then
-                begin
-                  CommitTrans (datalar.ADOConnection2);
-                  showmessageSkin (IntToStr (iInserted) + ' adet satýr baþarý ile aktarýldý', '', '', 'info');
-                end
-                else begin
-                  RollbackTrans (datalar.ADOConnection2);
-                  showmessageSkin ('Aktarým iþlemi sýrasýnda bir hata oluþtu ve iþlem tamamlanamadý', '', '', 'info');
-                  if bTmpPost then
-                    DBGridDialog (sItems, bQuery, [mbOk], mbOk);
-                end;
-              end;
-            finally
-              bQuery.Free;
-            end;
-          finally
-            aSecilenAlanlar.Free;
-          end;
-        finally
-          aAramaBasliklari.Free;
-        end;
-      finally
-        aBasliginHedefAlani.Free;
-      end;
-    finally
-      aHedefAlanlar.Free;
-    end;
-  finally
-    aQuery.Free;
-  end;
-end;
-
-constructor TfrmHizliKayit.Create(Aowver: TComponent);
-begin
-  inherited;
-  FInitialColumnHeaders := TStringList.Create;
-  FAcceptedColumnHeaders := TStringList.Create;
-  SetLength (FAssignedColumnIndexes, 0);
-end;
-
-procedure TfrmHizliKayit.cxButtonCClick(Sender: TObject);
-begin
-  datalar.KontrolUserSet := False;
-  inherited;
-  if datalar.KontrolUserSet = True then exit;
-
-
-  case TControl(sender).Tag  of
-    0 : begin
-
-          ExcelToGrid;
-        end;
-    1 : begin
-          GridToPersonelKartTable;
-        end;
-    4: begin
-      FAlanEslestirmeYapildi := GridAlanEslestirme (FInitialColumnHeaders, FAcceptedColumnHeaders, FAssignedColumnIndexes, True);
-       end;
-    5: GridSoyadiAyarla;
-    6: TanimliOtomatikAktarim;
-  end;
+  Result := True;
 end;
 
 procedure TfrmHizliKayit.FormCreate(Sender: TObject);
-var
-  i : Integer;
 begin
-  inherited;
-  Menu := PopupMenu1;
-  cxPanel.Visible := false;
-  SayfaCaption('','','' ,'','');
-  //Form ilk açýldýðýnda tasarým halindeki sütun baþlýklarýný dizide toplayýp baðlý indexlerini ikinci diziye atýyoruz
-  FInitialColumnHeaders.Clear;
-  FAcceptedColumnHeaders.Clear;
-  for i := 0 to GridList.ColCount - 1 do
-  begin
-    FInitialColumnHeaders.Add(GridBaslikAyarla (GridList.Cells [i, 0], i));
-    FAcceptedColumnHeaders.Add(GridBaslikAyarla (GridList.Cells [i, 0], i));
+     cxPanel.Visible := false;
+end;
+
+procedure TfrmHizliKayit.txtBranslarPropertiesChange(Sender: TObject);
+var
+  sql : string;
+begin
+
+  //   ShowMessage(ado.fieldbyname('SLX').AsString);
+
+     sql := 'exec sp_KabulBransDoktorlari' + #39 + ado.fieldbyname('SLX').AsString + #39;
+     datalar.QuerySelect(adodoktor,sql);
+     txtdoktorlar.Properties.ListSource := datasourcedoktor;
+end;
+
+procedure TfrmHizliKayit.btnKabulClick(Sender: TObject);
+var
+   sql  , servis , gelisTip , Flist , Kontrol , _ord , _tip_ , ktip ,error : string;
+   asim , yasi : integer;
+   ado : TADOQuery;
+   FTR : Boolean;
+   _tutar_ : double;
+begin
+
+  ado := TADOQuery.Create(nil);
+  datalar.ADOConnection2.BeginTrans;
+
+  try
+  ado.Connection := datalar.ADOConnection2;
+
+  _tedaviTur := 'G';
+
+  try
+    sql := 'exec sp_YeniHastaKarti ' +
+           '@KURUM = ' + #39 + '1000' + #39 +
+           ',@SIGORTANO = ' + #39 + '0000' + #39 +
+           ',@CINSIYETI = ' + #39 + inttostr(txtCinsiyet.ItemIndex) + #39 +
+           ',@MEDENI = ' + #39 + '0' + #39 +
+           ',@HASTAADI = ' + #39 + txtHastaAdi.Text + #39 +
+           ',@HASTASOYADI = ' + #39 + txtHastaSoyAdi.Text + #39 +
+           ',@BABAADI = ' + #39 + '' + #39 +
+           ',@ANAADI = ' + #39 + '' + #39 +
+           ',@EV_ADRES = ' + #39 + '' + #39 +
+           ',@EV_PK = ' + #39 + '' + #39 +
+           ',@EV_SEHIR = ' + #39 + '' + #39 +
+           ',@EV_TEL1 = ' + #39 + '' + #39 +
+           ',@EV_TEL2 = ' + #39 + '' + #39 +
+           ',@EMAIL = ' + #39 + 'a@' + #39 +
+           ',@DOGUMYERI = ' + #39 + '' + #39 +
+           ',@DOGUMTARIHI = ' + #39 + tarih(txtDogumTarihi.Text) + #39 +
+           ',@UYRUGU = ' + #39 + 'TR' + #39 +
+           ',@TCKIMLIKNO = ' + #39 + txtTcKimlikNo.Text + #39 +
+           ',@HUVIYETTIPI = ' + #39 + '1' + #39 +
+           ',@HUVIYETNO = ' + #39 + '' + #39 +
+           ',@KURUMTIPI = ' + #39 + trim(copy(txtDevredilenKurum.Text,1,2)) + #39 +
+           ',@SICILNO = ' + #39 + '' + #39 +
+           ',@KARNENO = ' + #39 + '' + #39 +
+           ',@seans = ' + #39 + '1' + #39 +
+           ',@seansSaat = ' + '4' +
+           ',@SigortaliTur = ' + #39 + copy(vartoStr(txtSigortaliTuru.EditValue),1,1) + #39 +
+           ',@seansTip = ' + #39 + '0' + #39 +
+          (*
+           ',@RaporTarih = ' + #39 + tarih(txtRaporTarihi.Text) + #39 +
+           ',@GecerlikTarihi = ' + #39 + tarih (txtGecerlik.Text) + #39 +
+           ',@sevkEdenTesis = ' + #39 + txtSevkEdenTesisKodu.Text + #39 +
+           ',@sevkEdilenBrans = ' + #39 + txtSevkEdilenBrans.Text + #39 +
+           ',@sevkEdenDoktor = ' + #39 + txtSevkEdenDoktorTescilNo.Text + #39 +
+           ',@muayenAcilis = ' + #39 + tarih(txtMuayeneAcilisT.Text) + #39 +
+            *)
+           ',@PBH = ' + #39 + '' + #39 +
+           ',@KH = ' + #39 + '' + #39 +
+           ',@TS = ' + #39 + '' + #39 +
+           ',@DS = ' + #39 + '' + #39 +
+           ',@DC = ' + #39 + '' + #39 +
+           ',@YA = ' + #39 + '' + #39 +
+           ',@SD = ' + #39 + '' + #39 +
+           ',@D = ' + #39 + '' + #39 +
+           ',@DG = ' + #39 + '' + #39 +
+           ',@H = ' + #39 + '' + #39 +
+           ',@Yakinlik = ' + #39 + '' + #39 +
+           ',@Baslangic = ' + #39 + '' + #39 +
+           ',@hastaNot = ' + #39 + '' + #39 +
+           ',@merkezdeBaslangic = ' + #39 + '' + #39 +
+           ',@Istel1 = ' +  #39 + '' + #39 +
+           ',@Istel2 = ' + #39 + '' + #39 +
+           ',@vyer = ' + #39 + '' + #39 +
+           ',@huviyetTarih = ' + #39 + '' + #39 +
+           ',@kanGrubu = ' + #39 + '' + #39 +
+           ',@USER_ID = ' + #39 + kullanici + #39 +
+           ',@DATE_CREATE = ' + #39 + tarihal(date) + #39 +
+          // ',@raporNo = ' + #39 + txtRaporNo.Text + #39 +
+           ',@hastaTip = ' + #39 + '0' + #39 +
+           ',@makinaNo = ' + #39 + '' + #39 +
+           ',@idealKilo = ' + QuotedStr('0') +
+           ',@Hepatit = ' + QuotedStr('') +
+           ',@HIV = ' + QuotedStr('') +
+           ',@aday = ' + QuotedStr('') +
+           ',@Sandalye = ' + '0' +
+           ',@APH = ' + QuotedStr('') +
+           ',@Na = ' + QuotedStr('') +
+           ',@Boy = ' + '0' +
+           ',@Tip = ' + QuotedStr('H') +
+           ',@vatandasTip = ' + QuotedStr('0') +
+           ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
+
+
+    datalar.QuerySelect(ado,sql);
+    _dosyaNo := FormatFloat('000000',ado.fieldbyname('DosyaNo').Asfloat);
+
+
+   sql := 'exec sp_HastaGelisKaydet ' +
+          '@dosyaNo = ' + #39 + _dosyaNo + #39 + ',' +
+          '@gelisNo = 0' + ',' +
+          '@BHDAT = ' + #39 + tarihal(txtTakipTarihi.Date)  + #39 + ',' +
+          '@doktor = ' + #39 + '' + #39 + ',' +
+          '@SERVIS = ' + #39 + datalar.KurumBransi + #39 + ',' +
+          '@TEDAVITURU = ' + #39 + 'G' + #39 + ',' +
+          '@Kullanici = ' + #39 + datalar.username + #39 + ',' +
+          '@TakipNo = '   + QuotedStr(txtTakipNo.Text) + ',' +
+          '@basvuruNo = ' + QuotedStr(txtBasvuruNo.Text) ;
+
+
+           datalar.QuerySelect(ado,sql);
+          _gelisNo := ado.Fieldbyname('Gelis').AsString;
+          error := ado.Fieldbyname('error').AsString;
+
+
+   if memDataRaporlar.fieldbyname('raporNo').AsString <> ''
+   then begin
+       sql := 'select * from raporlar where dosyaNo = ' + QuotedStr(_dosyaNo) +
+              ' and raporNo = ' + QuotedStr(memDataRaporlar.fieldbyname('raporNo').AsString);
+
+       datalar.QuerySelect(ado,sql);
+
+       if ado.Eof
+       Then Begin
+             sql := 'insert into raporlar (dosyaNo,raporNo,raporTarihi,verenTesisKodu,raporTakipno,turu,baslangicTarihi,bitisTarihi,' +
+                    'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,aktif) ' +
+                    ' values ( ' + QuotedStr(_dosyaNo) + ','
+                                 + QuotedStr(memDataRaporlar.fieldbyname('raporNo').AsString) + ','
+                                 + QuotedStr(memDataRaporlar.fieldbyname('raporTarihi').AsString) + ','
+                                 + QuotedStr(memDataRaporlar.fieldbyname('verenTesis').AsString)  + ','
+                                 + QuotedStr(memDataRaporlar.fieldbyname('raporTakipNo').AsString) + ','
+                                 + QuotedStr(memDataRaporlar.fieldbyname('raporTuru').AsString) + ','
+                                 + ' cast( ' + QuotedStr(tarihal(memDataRaporlar.fieldbyname('baslangicTarihi').Asdatetime)) + '  as datetime) ' + ','
+                                 + ' cast( ' + QuotedStr(tarihal(memDataRaporlar.fieldbyname('bitisTarihi').AsDateTime)) + '  as datetime) ' + ','
+                                 + QuotedStr(memDataRaporlar.fieldbyname('protokolNo').AsString) + ','
+                                 + ' cast( ' + QuotedStr(tarihal(memDataRaporlar.fieldbyname('protokolTarihi').AsDateTime)) + '  as datetime) ' + ','
+                                 + QuotedStr(memDataRaporlar.fieldbyname('tedaviRaporTuru').AsString) + ','
+                                 + memDataRaporlar.fieldbyname('seansGun').AsString + ','
+                                 + memDataRaporlar.fieldbyname('seansSayi').AsString + ',1' + ')' ;
+                               //  + memDataRaporlar.fieldbyname('seansSayi').AsString + ','
+                                // + memDataRaporlar.fieldbyname('Tani').AsString + ')';
+
+             datalar.QueryExec(sql);
+             ShowMessageSkin('Hasta Sisteme Aktarýldý','','','info');
+        End
+       Else
+         ShowMessageSkin('Rapor Sistemde Kayýtlý','','','info');
+   end;
+
+  // close;
+   datalar.ADOConnection2.CommitTrans;
+  except on e : Exception do
+    begin
+        datalar.ADOConnection2.RollbackTrans;
+       ShowMessageSkin('Ýþlem Yapýlýrken Hata Oluþtu',e.Message,'','info');
+       exit;
+    end;
   end;
-  SetLength (FAssignedColumnIndexes, 0);
-  for i:= 0 to FInitialColumnHeaders.Count - 1 do
-  begin
-    SetLength (FAssignedColumnIndexes, High (FAssignedColumnIndexes) + 2);
-    FAssignedColumnIndexes [High (FAssignedColumnIndexes)] := i;
+
+  finally
+    ado.free;
   end;
-  FFileName := '';
-  FAlanEslestirmeYapildi := False;
+
+
+end;
+
+procedure TfrmHizliKayit.btnAraClick(Sender: TObject);
+var
+  cvp : string;
+  _s_ : integer;
+  _msg : string;
+ // RaporCvp1 :  RaporIslemleriWS.RaporCevapTCKimlikNodanDVO;
+ // RaporCvpR : RaporIslemleriWS.RaporCevapDVO;
+begin
+
+
+
+   if RbTc.Checked
+   then begin
+        DurumGoster(True);
+        try
+          Application.ProcessMessages;
+
+          datalar.HastaKabulWS.GirisParametre.saglikTesisKodu := datalar._kurumKod;
+          datalar.HastaKabulWS.GirisParametre.takipTipi := copy(txtTakipturu.Text,1,1);
+          datalar.HastaKabulWS.GirisParametre.tedaviTuru := 'G';
+          datalar.HastaKabulWS.GirisParametre.tedaviTipi := trim(copy(txtTedaviTipi.Text,1,2));
+          datalar.HastaKabulWS.GirisParametre.devredilenKurum := varToStr(txtDevredilenKurum.EditValue);
+          datalar.HastaKabulWS.GirisParametre.provizyonTipi := copy(txtProvizyonTuru.Text,1,1);
+          datalar.HastaKabulWS.GirisParametre.sigortaliTuru := varToStr(txtSigortaliTuru.EditValue);
+          datalar.HastaKabulWS.GirisParametre.hastaTCKimlikNo := txtTcKimlikNoAra.Text;
+          datalar.HastaKabulWS.GirisParametre.bransKodu := KurumBransi;
+          datalar.HastaKabulWS.GirisParametre.provizyonTarihi := txtTakipTarihi.Text;
+          datalar.HastaKabulWS.GirisParametre.takipNo := txtilkTakip.Text;
+          datalar.HastaKabulWS.GirisParametre.hastaTelefon :=   '0123456789';
+          datalar.HastaKabulWS.GirisParametre.hastaAdres :=   'Yeni Kayit';
+
+          //HastaKabul.GirisParametre.yeniDoganBilgisi := nil;
+
+          datalar.HastaKabulWS.TakipAl_3KimlikDorulama;
+
+       if (datalar.HastaKabulWS.Cevap.sonucKodu = '0000') or
+          (datalar.HastaKabulWS.Cevap.sonucKodu = '0008') or
+          (datalar.HastaKabulWS.Cevap.sonucKodu = '9000')
+       Then BEgin
+          txtTakipNo.Text := datalar.HastaKabulWS.Cevap.takipNo;
+          txtBasvuruNo.Text := datalar.HastaKabulWS.Cevap.hastaBasvuruNo;
+          txtHastaAdi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.ad;
+          txtHastaSoyadi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.soyad;
+          txtTcKimlikNo.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.tcKimlikNo;
+          txtdogumTarihi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.dogumTarihi;
+          txtCinsiyet.ItemIndex := strtoint(ifThen(datalar.HastaKabulWS.Cevap.hastaBilgileri.cinsiyet = 'E','0','1'));
+          btnKabul.Enabled := true;
+          txtSigortaliTuru.EditValue := datalar.HastaKabulWS.Cevap.hastaBilgileri.sigortaliTuru;
+          txtDevredilenKurum.EditValue := datalar.HastaKabulWS.Cevap.hastaBilgileri.devredilenKurum;
+
+          _value_ := txtTcKimlikNoAra.Text;
+          HastaRaporlariBul(_value_,'1');
+          txtilkTakip.Text := '';
+          txtTcKimlikNoAra.Text := '';
+
+         if datalar.RaporIslemWS.RaporAraCevap.sonucKodu = 0
+         Then
+           Rapor
+         Else
+         cxPageControl2.ActivePageIndex := 1;
+         txtHata.Lines.Add(datalar.RaporIslemWS.RaporAraCevap.sonucAciklamasi);
+
+
+       End
+       Else
+         cxPageControl2.ActivePageIndex := 1;
+         txtHata.Lines.Add(datalar.HastaKabulWS.Cevap.sonucKodu + ' : ' + datalar.HastaKabulWS.Cevap.sonucMesaji);
+
+        finally
+          DurumGoster(false);
+        end;
+
+   end;
+
+
+   if RbRt.Checked
+   then begin
+      (*
+       txtinfo.Caption := 'Rapor Bilgisi Sorgulanýyor.....';
+       Application.ProcessMessages;
+
+          memDataRaporlar.Close;
+          memDataRaporlar.Active := True;
+          RaporCvpR := RaporCevapDVO.Create;
+          _msg := raporOkuRaporTakip(txtTcKimlikNoAra.Text,'1',RaporCvpR,datalar.Rapor_);
+
+         if _msg = '0'
+         Then begin
+           Rapor(RaporCvpR);
+           txtilkTakip.Text := '';
+           txtTakipNo.Text := '';
+           txtBasvuruNo.Text := '';
+           txtHastaAdi.Text := RaporCvpR.tedaviRapor.raporDVO.hakSahibi.adi; //copy(HastaBilgi.Adi,1,_s_-1);
+           txtHastaSoyadi.Text := RaporCvpR.tedaviRapor.raporDVO.hakSahibi.soyadi; //copy(HastaBilgi.Adi,_s_+1,50);
+           txtTcKimlikNo.Text := RaporCvpR.tedaviRapor.raporDVO.hakSahibi.tckimlikNo;
+          // txtdogumTarihi.Text := '';//HastaBilgi.DTarihi;
+          // txtCinsiyet.ItemIndex := strtoint(ifThen(HastaBilgi.Cinsiyet = 'E','0','1'));
+           btnKabul.Enabled := true;
+           txtSigortaliTuru.Text := RaporCvpR.tedaviRapor.raporDVO.hakSahibi.sigortaliTuru;
+           txtDevredilenKurum.Text := RaporCvpR.tedaviRapor.raporDVO.hakSahibi.devredilenKurum;
+         end
+         Else
+         cxPageControl2.ActivePageIndex :=1;
+         txtHata.Lines.Add(_msg);
+
+
+       End
+       Else begin
+         cxPageControl2.ActivePageIndex := 1;
+         txtHata.Lines.Add(cvp);
+
+          *)
+
+   end;
+
+
+
+
+end;
+
+procedure TfrmHizliKayit.btnVazgecClick(Sender: TObject);
+var
+  cvp : string;
+begin
+
+   cvp := TakipSil_3(txtTakipNo.Text);
+
+   if datalar.HastaKabulWS.CevapSil.sonucKodu  = '0000'
+   Then Begin
+     txtTakipNo.Text := '';
+     txtBasvuruNo.Text := '';
+     txtHastaAdi.Text := '';
+     txtHastaSoyadi.Text := '';
+     txtdogumTarihi.Text := '';
+
+     memDataRaporlar.Close;
+
+     ShowMessageSkin('Takip Ýptal Edildi','','','info');
+
+   End
+   Else
+   Begin
+     cxPageControl2.ActivePageIndex := 1; 
+     txtHata.Lines.Add(cvp);
+
+   End;
+end;
+
+procedure TfrmHizliKayit.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+
+   if key = vk_f5
+   Then btnAra.Click;
+
+   if key = vk_f4
+   Then btnKabul.Click;
+
+
+end;
+
+procedure TfrmHizliKayit.txtBranslarClick(Sender: TObject);
+begin
+
+   if (copy(txtBranslar.Text,1,4) = '9999') or
+      (copy(txtBranslar.Text,1,4) = '4400')
+  Then txtProvizyonTuru.text := 'A-ACÝL'
+  Else txtProvizyonTuru.text := 'N-NORMAL';
+  
+
 end;
 
 end.

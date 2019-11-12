@@ -69,23 +69,6 @@ type
     gridDokumanlarKontrol: TcxGridDBColumn;
     gridDokumanlarOnay: TcxGridDBColumn;
     gridDokumanlarRev: TcxGridDBColumn;
-    cxGridDBBandedTableView1: TcxGridDBBandedTableView;
-    cxGridDBBandedColumn1: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn2: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn3: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn4: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn5: TcxGridDBBandedColumn;
-    cxGridDBBandedTableView2: TcxGridDBBandedTableView;
-    cxGridDBBandedColumn6: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn7: TcxGridDBBandedColumn;
-    cxGridDBBandedTableView3: TcxGridDBBandedTableView;
-    cxGridDBBandedTableView4: TcxGridDBBandedTableView;
-    cxGridDBBandedColumn8: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn9: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn10: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn11: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn12: TcxGridDBBandedColumn;
-    cxGridDBBandedColumn13: TcxGridDBBandedColumn;
     cxGridLevel1: TcxGridLevel;
     N3: TMenuItem;
     D2: TMenuItem;
@@ -96,6 +79,7 @@ type
     N6: TMenuItem;
     L1: TMenuItem;
     cxStyle2: TcxStyle;
+    gridDokumanlarColumn3: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnListClick(Sender: TObject);
@@ -114,6 +98,7 @@ type
     procedure cxButtonCClick(Sender: TObject);
     procedure gridDokumanlarDblClick(Sender: TObject);
     procedure TopPanelPropertiesChange(Sender: TObject);
+    procedure TopPanelButonClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -129,6 +114,18 @@ implementation
           rapor;
           //DokumanDurumListesi;
 {$R *.dfm}
+
+procedure TfrmSKS_Dokumanlar.TopPanelButonClick(Sender: TObject);
+var
+  sql : string;
+begin
+
+       sql := 'exec sp_DokumanListesi ' + QuotedStr(datalar.AktifSirket);
+       datalar.QuerySelect(Ado_Dokumanlar,sql);
+       gridDokumanlar.ViewData.Expand(True);
+
+
+end;
 
 procedure TfrmSKS_Dokumanlar.TopPanelPropertiesChange(Sender: TObject);
 begin
@@ -243,8 +240,9 @@ begin
   ii.Caption := 'Liste Görünüm';
 
 
-  gridDokumanlar.DataController.DataSource := DataSource;
+  //gridDokumanlar.DataController.DataSource := DataSource;
   cxGrid2.Dataset.Connection := Datalar.ADOConnection2;
+
 
   SayfaCaption('','','','','');
 
@@ -278,9 +276,10 @@ var
 begin
     bTamam := False;
     try
-     Form := FormINIT(TagfrmSKS_YeniDokuman,self,_Dataset.FieldByName('id').AsString,nil);
+     Form := FormINIT(TagfrmSKS_YeniDokuman,self,Ado_Dokumanlar.FieldByName('id').AsString,nil);
      bTamam := Form <> nil;
      if bTamam then Form.ShowModal;
+     Ado_Dokumanlar.Requery;
     finally
       FreeAndNil(Form);
     end;
@@ -477,7 +476,7 @@ procedure TfrmSKS_Dokumanlar.cxButtonCClick(Sender: TObject);
 var
  List : TListeAc;
  _L_ : ArrayListeSecimler;
- _name_, tel,msj ,sql : string;
+ _name_, tel,msj ,sql , id : string;
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
  TopluDataset : TDataSetKadir;
@@ -491,6 +490,7 @@ begin
     -1 : begin
             F := FormINIT(TagfrmSKS_YeniDokuman,GirisFormRecord,ikHayir,'');
             if F <> nil then F.ShowModal;
+            Ado_Dokumanlar.Requery;
          end;
 
 
@@ -501,28 +501,44 @@ begin
    -10 : begin
            DurumGoster(True,False,'Döküman  Yükleniyor , Lütfen Bekleyiniz');
            try
-           TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
-           TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
-           sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
-                ' join SKS_DokumanKapsamlari DK on DK.kod = D.Kapsam ' +
-                ' join SKS_DokumanTurleri DT on DT.kod = D.tur ' +
-                ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id'+ // and DR.aktif = 1' +
-                ' where D.id = ' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('id').AsString;
-           TopluDataset.Dataset2 := datalar.QuerySelect(sql);
+
+             if Ado_Dokumanlar.FieldByName('PDFVar').AsInteger = 1
+             then begin
+               sql := 'select isnull(DR.PDF,D.PDF) PDF from SKS_Dokumanlar D ' +
+                                             ' left join (Select top 1 dokumanid,PDF from SKS_DokumanlarRev where dokumanid = ' + Ado_Dokumanlar.FieldByName('id').AsString +
+							                               ' order by rev desc) DR on DR.dokumanid = D.id ' +
+                                             ' where id = ' + Ado_Dokumanlar.FieldByName('id').AsString;
+               DokumanAc(
+                         datalar.QuerySelect(sql),
+                                             'PDF',
+                         Ado_Dokumanlar.FieldByName('dokumanNo').AsString+'_PDF',True,'PDF')
+
+             end
+             else
+             begin
 
 
-           PrintYap(gridDokumanlar.DataController.DataSource.dataset.FieldByName('dokumanNo').AsString +
-            ifThen(gridDokumanlar.DataController.DataSource.dataset.FieldByName('rev').AsString <> '',
-            '_' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('rev').AsString,''),
-                    gridDokumanlar.DataController.DataSource.dataset.FieldByName('adi').AsString ,
-                    inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTOnIzle);
+                 TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+                 TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
+                 sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
+                      ' join SKS_DokumanKapsamlari DK on DK.kod = D.Kapsam ' +
+                      ' join SKS_DokumanTurleri DT on DT.kod = D.tur ' +
+                      ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id'+ // and DR.aktif = 1' +
+                      ' where D.id = ' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('id').AsString;
+                 TopluDataset.Dataset2 := datalar.QuerySelect(sql);
 
 
+                 PrintYapDokuman(gridDokumanlar.DataController.DataSource.dataset.FieldByName('dokumanNo').AsString +
+                  ifThen(gridDokumanlar.DataController.DataSource.dataset.FieldByName('rev').AsString <> '',
+                  '_' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('rev').AsString,''),
+                          gridDokumanlar.DataController.DataSource.dataset.FieldByName('adi').AsString ,
+                          inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTOnIzle);
+
+
+           end;
            finally
               DurumGoster(False,False,'Döküman  Yükleniyor , Lütfen Bekleyiniz');
            end;
-
-
          end;
 
     -11 : begin
@@ -546,7 +562,7 @@ begin
                 ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id'+ // and DR.aktif = 1' +
                 ' where D.id = ' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('id').AsString;
            TopluDataset.Dataset2 := datalar.QuerySelect(sql);
-           PrintYap('BOS',
+           PrintYapDokuman('BOS',
                     gridDokumanlar.DataController.DataSource.dataset.FieldByName('adi').AsString ,
                     inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTDizayn);
           end;

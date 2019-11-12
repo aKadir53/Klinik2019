@@ -117,6 +117,9 @@ type
     GrupGG: TcxGroupBox;
     GrupOkuma: TcxGroupBox;
     N3: TMenuItem;
+    P1: TMenuItem;
+    Y1: TMenuItem;
+    S1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure PropertiesEditValueChanged(Sender: TObject);override;
     procedure cxButtonEditPropertiesButtonClick(Sender: TObject;
@@ -129,6 +132,8 @@ type
     procedure RevSil;
     procedure RevOnay(item : string);
     procedure RevDokumanYukle;
+
+    procedure RevDokumanYuklePDF(tip : integer);
     procedure RevDokumanAc;
 
     procedure RevAfterScroll(DataSet: TDataSet);
@@ -257,9 +262,11 @@ begin
           end;
 
    -10 : begin
-            RevDokumanYukle;
-         end;
-
+              RevDokumanYukle;
+             end;
+   -20,-21 : begin
+              RevDokumanYuklePDF(TControl(sender).Tag);
+            end;
    -11 : begin
            RevDokumanAc;
          end;
@@ -298,7 +305,10 @@ begin
 end;
 
 procedure TfrmSKS_YeniDokuman.cxKaydetClick(Sender: TObject);
+var
+ TopluDataset : TDataSetKadir;
 begin
+
     inherited;
     if datalar.KontrolUserSet = True then exit;
     if not cxKaydetResult then Exit;
@@ -306,8 +316,35 @@ begin
     TcxImageComboKadir(FindComponent('id')).EditValue := F_IDENTITY;
 
     case TControl(sender).Tag  of
+       Yeni : begin
+         TcxImageComboKadir(FindComponent('sirketKod')).EditValue := datalar.AktifSirket;
+       end;
+
        Kaydet : begin
-                  ilkRev;
+                    ilkRev;
+                    TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+                    TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
+
+
+                    if cxGrid1.dataset.RecordCount > 0
+                    then
+                      TopluDataset.Dataset2 := cxGrid1.dataset
+                    else
+                    TopluDataset.Dataset2 := datalar.QuerySelect('select *,'''' rev,'''' revTarihi, '''' aciklama from SKS_DOkumanlar where id = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text));
+
+                    datalar.QueryExec('exec sp_DokmanRaporDizaynOlustur ' + QuotedStr(TcxTextEdit(FindComponent('dokumanNo')).Text ) +
+                                      ',' + QuotedStr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue));
+
+                    (*
+
+                    PrintYap(TcxTextEdit(FindComponent('dokumanNo')).Text +
+                             ifThen(cxGrid1.dataset.FieldByName('rev').AsString <> '',
+                             '_'+cxGrid1.dataset.FieldByName('rev').AsString,''),
+                             TcxTextEdit(FindComponent('adi')).Text,
+                             inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTNone);
+                      *)
+
+                    close;
                 end;
     end;
 
@@ -450,6 +487,7 @@ begin
     cxButtonEditPropertiesButtonClick(TcxButtonEditKadir(FindComponent('id')),-1);
     enabled;
   end;
+//  cxYeni.Click;
   Result := True;
 end;
 
@@ -509,7 +547,7 @@ begin
               TopluDataset.Dataset2 := cxGrid1.dataset;
 
 
-        PrintYap(TcxTextEdit(FindComponent('dokumanNo')).Text +
+        PrintYapDokuman(TcxTextEdit(FindComponent('dokumanNo')).Text +
                 ifThen(cxGrid1.dataset.FieldByName('rev').AsString <> '',
                  '_'+cxGrid1.dataset.FieldByName('rev').AsString,''),
                  TcxTextEdit(FindComponent('adi')).Text,
@@ -551,18 +589,7 @@ begin
               TopluDataset.Dataset2 := datalar.QuerySelect('select *,'''' rev,'''' revTarihi, '''' aciklama from SKS_DOkumanlar where id = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text));
 
 
-           (*
-           //   frmRapor.raporData1(frmRapor.topluset ,'BOS','BoS');
-              frmRapor.raporData2(frmRapor.topluset ,
-                                  TcxTextEdit(FindComponent('dokumanNo')).Text +'_'+cxGrid1.dataset.FieldByName('rev').AsString
-                                 ,TcxTextEdit(FindComponent('adi')).Text,stHayir,False);
-              frmRapor.ShowModal;
-              *)
-
-
- //       RTFToIcerik(TcxTextEdit(FindComponent('dokumanNo')).Text+'_'+cxGrid1.dataset.FieldByName('rev').AsString);
-
-        PrintYap(TcxTextEdit(FindComponent('dokumanNo')).Text +
+        PrintYapDokuman(TcxTextEdit(FindComponent('dokumanNo')).Text +
                  ifThen(cxGrid1.dataset.FieldByName('rev').AsString <> '',
                  '_'+cxGrid1.dataset.FieldByName('rev').AsString,''),
                  TcxTextEdit(FindComponent('adi')).Text,
@@ -590,6 +617,71 @@ begin
   end;
 end;
 
+
+
+procedure TfrmSKS_YeniDokuman.RevDokumanYuklePDF(tip : integer);
+var
+  Blob : TADOBlobStream;
+  dosya : TOpenDialog;
+  dosyaTip , tableName , where , filename , rev , sql : string;
+  TopluDataset : TDataSetKadir;
+begin
+
+   if cxGrid1.Dataset.Eof
+   then begin
+     tableName := 'SKS_Dokumanlar';
+     where := ' id = ' + TcxButtonEditKadir(FindComponent('id')).Text;
+   end
+   else
+   begin
+     rev := cxGrid1.Dataset.FieldByName('rev').AsString;
+     tableName := 'SKS_DokumanlarRev';
+     where := ' dokumanid = ' + TcxButtonEditKadir(FindComponent('id')).Text + ' and rev = ' + rev;
+   end;
+
+  if tip = - 20
+  then begin
+
+      if MrYes = MessageDlg(
+          'PDF Eklenecek , Emin misiniz?',
+        mtConfirmation, [mbYes, mbNo], 0, mbYes)
+      then begin
+          dxStatusBar1.Panels[1].Text := 'Dosya Yükleniyor , Lütfen Bekleyiniz...';
+
+          DurumGoster(True,False,'PDF Yükleniyor , Lütfen Bekleyiniz');
+
+          try
+               dosya := TOpenDialog.Create(nil);
+               if not dosya.Execute then Exit;
+               dosyaTip := ExtractFileExt(dosya.FileName);
+               dosyaTip := StringReplace(dosyaTip,'.','',[rfReplaceAll]);
+
+
+
+
+               sql := 'select * from ' + tableName +
+                      ' where ' + where;
+             //  datalar.QuerySelect(sql);
+              DokumanYuklePDF(datalar.QuerySelect(sql),'PDF',dosya.FileName);
+
+          finally
+            dosya.Free;
+            dxStatusBar1.Panels[1].Text := '';
+            DurumGoster(False,False,'Dokuman Tasarým Yükleniyor , Lütfen Bekleyiniz');
+          end;
+
+  end;
+  end
+  else
+    begin
+      sql := 'update ' + tableName +
+             ' set PDF = NULL ' +
+             ' where ' + where;
+      datalar.QueryExec(sql);
+  end;
+end;
+
+
 procedure TfrmSKS_YeniDokuman.RevEkle;
 var
   sql : string;
@@ -608,6 +700,17 @@ begin
     cxGrid1.Dataset.FieldByName('onayDurum').AsInteger := 0;
     cxGrid1.Dataset.FieldByName('revUser').AsString := datalar.username;
     cxGrid1.Dataset.Post;
+
+    sql := 'exec sp_DokmanRaporDizaynOlustur ' + QuotedStr(TcxTextEdit(FindComponent('dokumanNo')).Text ) +
+                      ',' + QuotedStr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue) + ',' + intTostr(sonRev);
+
+    datalar.QueryExec(sql);
+
+
+
+
+
+
 end;
 
 procedure TfrmSKS_YeniDokuman.RevOnay(item : string);

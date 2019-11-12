@@ -78,6 +78,7 @@ type
     lemNumaralarnAl1: TMenuItem;
     BavuruNoAl1: TMenuItem;
     Kapat1: TMenuItem;
+    N2: TMenuItem;
     procedure btnYeniClick(Sender: TObject);
     procedure btnIptalClick(Sender: TObject);
     procedure mHizmetleriptalEt1Click(Sender: TObject);
@@ -155,9 +156,12 @@ begin
          pnlDurum.Visible := false;
        end;
   -4 : begin
-         pnlDurum.Visible := True;
-       //  IslemNumaralariniAl(_TakipNo_);
-         pnlDurum.Visible := false;
+         DurumGoster(True);
+         try
+          IslemNumaralariniAl(_TakipNo_);
+          finally
+           DurumGoster(False);
+         end;
        end;
   -5 : begin
          BasvuruNoSistemeYaz(_TakipNo_,_BasvuruNo_);
@@ -216,7 +220,7 @@ begin
           frmTakipBilgisiOku._HastaAdSoyad_ := _HastaAdSoyad_;
       End
       else
-      frmTakipBilgisiOku.txtTakipBilgisi.Lines.Add(Sonuc);
+      frmTakipBilgisiOku.txtTakipBilgisi.Lines.Add(datalar.HastaKabulWS.Takip.sonucMesaji);
 
 end;
 
