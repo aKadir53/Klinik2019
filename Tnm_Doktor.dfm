@@ -30,10 +30,6 @@ object frmDoktorlar: TfrmDoktorlar
       Properties.ReadOnly = False
       Properties.Stretch = True
       TabOrder = 0
-      ExplicitLeft = 2
-      ExplicitTop = -2
-      ExplicitWidth = 117
-      ExplicitHeight = 124
       Height = 99
       Width = 115
     end
@@ -43,9 +39,6 @@ object frmDoktorlar: TfrmDoktorlar
       Align = alBottom
       PanelStyle.Active = True
       TabOrder = 1
-      ExplicitLeft = 2
-      ExplicitTop = 122
-      ExplicitWidth = 117
       Height = 29
       Width = 115
       object cxFotoEkleButton: TcxButton

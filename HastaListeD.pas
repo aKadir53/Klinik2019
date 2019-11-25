@@ -160,7 +160,7 @@ begin
   GirisFormRecord.F_Makina_ := _Dataset.FieldByName('MakinaNo').AsString;
   GirisFormRecord.F_Seans_ := _Dataset.FieldByName('Seans').AsString;
 
-
+  if _Dataset.RecordCount = 0 then exit;
 
   case Tcontrol(sender).tag of
  -1 : begin

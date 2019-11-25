@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,Kadir,
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxContainer,
   cxEdit, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
@@ -20,6 +20,7 @@ type
     cxFotoTemizle: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure cxFotoEkleButtonClick(Sender: TObject);
+    procedure cxKaydetClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -65,6 +66,27 @@ begin
 
 end;
 
+procedure TfrmHemsireler.cxKaydetClick(Sender: TObject);
+begin
+  inherited;
+  case TcxButton(sender).Tag  of
+    0 : begin
+        // ShowMessage('Kaydet');
+        // ButonClick(self,'k');
+      //   Olustur(self,'Users');
+      //   setDataString(self,'ADISOYADI',100,10);
+
+        end;
+    1 : begin
+         // post;
+         //ShowMessage('Ýptal');
+    end;
+    2 : begin
+          TcxButtonEditKadir(FindComponent('Kod')).EditValue := dosyaNoYeniNumaraAl('HE');
+        end;
+  end;
+end;
+
 procedure TfrmHemsireler.FormCreate(Sender: TObject);
 var
   index,i : integer;
@@ -93,7 +115,7 @@ begin
   List.SkinName := 'coffee';
 
 
-  setDataStringB(self,'kod','Hemþire Kodu',Kolon1,'',70,List,True,nil);
+  setDataStringB(self,'kod','Hemþire Kodu',Kolon1,'',70,List,True,nil,'','',True,True);
   setDataString(self,'tanimi','Adý Soyadý',Kolon1,'',200);
   setDataString(self,'tcKimlikNo','TC Kimlik No',Kolon1,'',120,True);
   setDataString(self,'tescilNo','Tescil No',Kolon1,'',100);

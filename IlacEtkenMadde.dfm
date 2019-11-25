@@ -14,66 +14,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object pnlOnay: TPanel
-    Left = 0
-    Top = 551
-    Width = 908
-    Height = 32
-    Align = alBottom
-    Color = clBackground
-    TabOrder = 0
-    ExplicitTop = 528
-    ExplicitWidth = 832
-    object txtinfo: TLabel
-      Left = 7
-      Top = 11
-      Width = 3
-      Height = 13
-      Caption = '.'
-      Font.Charset = TURKISH_CHARSET
-      Font.Color = clWhite
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object btnSend: TsBitBtn
-      Left = 237
-      Top = 3
-      Width = 83
-      Height = 27
-      Hint = 'G'#246'nder'
-      Caption = 'Kaydet'
-      Font.Charset = TURKISH_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 0
-      Visible = False
-      SkinData.SkinSection = 'BUTTON'
-      ImageIndex = 49
-    end
-    object btnVazgec: TsBitBtn
-      Left = 712
-      Top = 2
-      Width = 83
-      Height = 27
-      Hint = 'Vazge'#231
-      Caption = 'Kapat'
-      Font.Charset = TURKISH_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 1
-      OnClick = btnVazgecClick
-      SkinData.SkinSection = 'BUTTON'
-      ImageIndex = 12
-    end
-  end
   object cxGroupBox1: TcxGroupBox
     Left = 0
     Top = 0
@@ -91,15 +31,15 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     StyleDisabled.LookAndFeel.Kind = lfFlat
     StyleFocused.LookAndFeel.Kind = lfFlat
     StyleHot.LookAndFeel.Kind = lfFlat
-    TabOrder = 1
-    ExplicitHeight = 528
-    Height = 551
+    TabOrder = 0
+    ExplicitHeight = 551
+    Height = 583
     Width = 416
     object cxGrid1: TcxGrid
       Left = 3
       Top = 45
       Width = 410
-      Height = 496
+      Height = 528
       Align = alClient
       Font.Charset = TURKISH_CHARSET
       Font.Color = clWindowText
@@ -108,10 +48,10 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = -2
-      ExplicitTop = 195
+      ExplicitLeft = 2
+      ExplicitTop = 28
       ExplicitWidth = 412
-      ExplicitHeight = 507
+      ExplicitHeight = 521
       object gridIlacSarf: TcxGridDBTableView
         Navigator.Buttons.First.Visible = True
         Navigator.Buttons.PriorPage.Visible = True
@@ -186,6 +126,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       Align = alTop
       PanelStyle.Active = True
       TabOrder = 1
+      ExplicitLeft = 2
+      ExplicitTop = -2
+      ExplicitWidth = 412
       Height = 30
       Width = 410
       object chkTumu: TcxCheckBoxKadir
@@ -215,10 +158,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         TabOrder = 1
         OnKeyDown = Edit1KeyDown
         OnKeyPress = Edit1KeyPress
-        ExplicitLeft = 64
-        ExplicitTop = 8
-        ExplicitWidth = 121
-        ExplicitHeight = 21
+        ExplicitWidth = 408
         Width = 406
       end
     end
@@ -235,12 +175,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     Style.Font.Name = 'Tahoma'
     Style.Font.Style = [fsBold]
     Style.IsFontAssigned = True
-    TabOrder = 2
-    ExplicitLeft = 422
-    ExplicitTop = 8
-    ExplicitWidth = 468
-    ExplicitHeight = 241
-    Height = 551
+    TabOrder = 1
+    ExplicitHeight = 551
+    Height = 583
     Width = 484
     object cxGroupBox6: TcxGroupBox
       Left = 3
@@ -248,6 +185,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       Align = alTop
       Caption = 'Etken Madde '#304#231'in '#304'stenen Tekkikleri Belirle'
       TabOrder = 0
+      ExplicitLeft = 2
+      ExplicitTop = -2
+      ExplicitWidth = 480
       Height = 183
       Width = 478
       object cxGrid2: TcxGrid
@@ -263,10 +203,10 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = -2
-        ExplicitTop = 195
-        ExplicitWidth = 412
-        ExplicitHeight = 507
+        ExplicitLeft = 2
+        ExplicitTop = -2
+        ExplicitWidth = 476
+        ExplicitHeight = 183
         object gridTetkikler: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -301,6 +241,8 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           FilterRow.InfoText = 'Filitre'
           FilterRow.SeparatorColor = 3155860
           FilterRow.ApplyChanges = fracImmediately
+          NewItemRow.SeparatorWidth = 4
+          NewItemRow.Visible = True
           OptionsBehavior.FocusCellOnTab = True
           OptionsBehavior.IncSearch = True
           OptionsData.DeletingConfirmation = False
@@ -383,15 +325,15 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       Style.Font.Style = []
       Style.IsFontAssigned = True
       TabOrder = 1
-      ExplicitLeft = 8
-      ExplicitTop = 120
-      ExplicitWidth = 416
-      ExplicitHeight = 344
-      Height = 343
+      ExplicitLeft = 2
+      ExplicitTop = 181
+      ExplicitWidth = 480
+      ExplicitHeight = 368
+      Height = 375
       Width = 478
       object Label2: TLabel
         Left = 3
-        Top = 15
+        Top = 117
         Width = 472
         Height = 13
         Align = alTop
@@ -411,7 +353,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       end
       object Label3: TLabel
         Left = 3
-        Top = 173
+        Top = 275
         Width = 472
         Height = 13
         Align = alTop
@@ -433,7 +375,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       end
       object Label4: TLabel
         Left = 3
-        Top = 258
+        Top = 288
         Width = 472
         Height = 13
         Align = alTop
@@ -453,7 +395,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       end
       object Label5: TLabel
         Left = 3
-        Top = 116
+        Top = 218
         Width = 472
         Height = 13
         Align = alTop
@@ -473,7 +415,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       end
       object DBMemo1: TDBMemo
         Left = 3
-        Top = 28
+        Top = 130
         Width = 472
         Height = 88
         Align = alTop
@@ -482,11 +424,13 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         ParentCtl3D = False
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitWidth = 410
+        ExplicitLeft = 2
+        ExplicitTop = 11
+        ExplicitWidth = 476
       end
       object DBMemo2: TDBMemo
         Left = 3
-        Top = 129
+        Top = 231
         Width = 472
         Height = 44
         Align = alTop
@@ -495,11 +439,13 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         ParentCtl3D = False
         ScrollBars = ssVertical
         TabOrder = 1
-        ExplicitWidth = 410
+        ExplicitLeft = 2
+        ExplicitTop = 112
+        ExplicitWidth = 476
       end
       object DBMemo3: TDBMemo
         Left = 3
-        Top = 271
+        Top = 301
         Width = 472
         Height = 57
         Align = alTop
@@ -508,106 +454,206 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         ParentCtl3D = False
         ScrollBars = ssVertical
         TabOrder = 2
-        ExplicitWidth = 410
+        ExplicitLeft = 2
+        ExplicitTop = 254
+        ExplicitWidth = 476
       end
-      object DBGridEh2: TDBGridEh
+      object cxGrid3: TcxGrid
         Left = 3
-        Top = 186
+        Top = 15
         Width = 472
-        Height = 72
+        Height = 102
         Align = alTop
-        DataSource = DataSource3
-        DynProps = <>
-        Flat = True
-        FooterParams.Color = clWindow
-        IndicatorOptions = [gioShowRowIndicatorEh]
+        Font.Charset = TURKISH_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 3
-        Columns = <
-          item
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'bDoz1'
-            Footers = <>
-            Title.Caption = 'MinD'
-            Width = 30
+        object gridSutKural: TcxGridDBBandedTableView
+          DataController.DataSource = DataSource3
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          NewItemRow.SeparatorWidth = 4
+          NewItemRow.Visible = True
+          OptionsView.GroupByBox = False
+          Bands = <
+            item
+              Caption = 'Ba'#351'lang'#305#231
+              Width = 150
+            end
+            item
+              Caption = #304'dame'
+              Width = 150
+            end
+            item
+              Width = 157
+            end>
+          object gridSutKuralATC_Kodu: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'ATC_Kodu'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
           end
-          item
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'bDoz2'
-            Footers = <>
-            Title.Caption = 'MaxD'
-            Width = 30
+          object gridSutKuralEtkenMaddeKodu: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'EtkenMaddeKodu'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
           end
-          item
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'bDozPeryot'
-            Footers = <>
-            PickList.Strings = (
-              ''
-              '3 - G'#252'n'
-              '4 - Hafta'
-              '5  - Ay'
-              '6 - Y'#305'l')
-            Title.Caption = 'Peryot'
-            Width = 37
+          object gridSutKuralTetkiksonuc: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Tetkiksonuc'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 2
+            Position.RowIndex = 0
           end
-          item
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'bDozPeryotAdet'
-            Footers = <>
-            Title.Caption = 'Per.Adet'
-            Width = 36
+          object gridSutKuralDoz: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Doz'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 3
+            Position.RowIndex = 0
           end
-          item
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'iDoz1'
-            Footers = <>
-            Title.Caption = 'MinD'
-            Width = 30
+          object gridSutKuralDiger: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Diger'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 4
+            Position.RowIndex = 0
           end
-          item
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'iDoz2'
-            Footers = <>
-            Title.Caption = 'MaxD'
-            Width = 30
+          object gridSutKuralid: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'id'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 5
+            Position.RowIndex = 0
           end
-          item
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'iDozPeryot'
-            Footers = <>
-            PickList.Strings = (
-              ''
-              '3 - G'#252'n'
-              '4 - Hafta'
-              '5  - Ay'
-              '6 - Y'#305'l')
-            Title.Caption = 'Peryot'
-            Width = 41
+          object gridSutKuralbDoz1: TcxGridDBBandedColumn
+            Caption = 'Min'
+            DataBinding.FieldName = 'bDoz1'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 50
+            Position.BandIndex = 0
+            Position.ColIndex = 6
+            Position.RowIndex = 0
           end
-          item
-            AutoFitColWidth = False
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'Birim'
-            Footers = <>
-            Width = 39
+          object gridSutKuralbDoz2: TcxGridDBBandedColumn
+            Caption = 'Max'
+            DataBinding.FieldName = 'bDoz2'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 50
+            Position.BandIndex = 0
+            Position.ColIndex = 7
+            Position.RowIndex = 0
           end
-          item
-            DynProps = <>
-            EditButtons = <>
-            FieldName = 'iDozPeryotAdet'
-            Footers = <>
-            Title.Caption = 'Per.Adet'
-            Width = 31
-          end>
-        object RowDetailData: TRowDetailPanelControlEh
+          object gridSutKuralbDozPeryot: TcxGridDBBandedColumn
+            Caption = 'Peryot'
+            DataBinding.FieldName = 'bDozPeryot'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 50
+            Position.BandIndex = 0
+            Position.ColIndex = 8
+            Position.RowIndex = 0
+          end
+          object gridSutKuraliDoz1: TcxGridDBBandedColumn
+            Caption = 'Min'
+            DataBinding.FieldName = 'iDoz1'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 50
+            Position.BandIndex = 1
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object gridSutKuraliDoz2: TcxGridDBBandedColumn
+            Caption = 'Max'
+            DataBinding.FieldName = 'iDoz2'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 50
+            Position.BandIndex = 1
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+          object gridSutKuraliDozPeryot: TcxGridDBBandedColumn
+            Caption = 'Peryot'
+            DataBinding.FieldName = 'iDozPeryot'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 50
+            Position.BandIndex = 1
+            Position.ColIndex = 2
+            Position.RowIndex = 0
+          end
+          object gridSutKuralBirim: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Birim'
+            Width = 29
+            Position.BandIndex = 2
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object gridSutKuralbDozPeryotAdet: TcxGridDBBandedColumn
+            Caption = 'Adet'
+            DataBinding.FieldName = 'bDozPeryotAdet'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 50
+            Position.BandIndex = 0
+            Position.ColIndex = 9
+            Position.RowIndex = 0
+          end
+          object gridSutKuraliDozPeryotAdet: TcxGridDBBandedColumn
+            Caption = 'Adet'
+            DataBinding.FieldName = 'iDozPeryotAdet'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 50
+            Position.BandIndex = 1
+            Position.ColIndex = 3
+            Position.RowIndex = 0
+          end
+          object gridSutKuralAciklama: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Aciklama'
+            Width = 111
+            Position.BandIndex = 2
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridLevel2: TcxGridLevel
+          GridView = gridSutKural
         end
       end
     end
@@ -616,10 +662,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     Left = 416
     Top = 0
     Width = 8
-    Height = 551
-    ExplicitLeft = 672
-    ExplicitTop = 320
-    ExplicitHeight = 100
+    Height = 583
+    Control = cxGroupBox1
+    ExplicitHeight = 551
   end
   object PopupMenu1: TPopupMenu
     Left = 344
@@ -655,18 +700,18 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     SQL.Strings = (
       'select * from OSGB_MASTER.dbo.ATC_Kodlari'
       'where Tanimi like :@p')
-    Left = 504
-    Top = 298
+    Left = 336
+    Top = 266
   end
   object DataSource1: TDataSource
     DataSet = ado_BransKodlari
-    Left = 504
-    Top = 338
+    Left = 336
+    Top = 314
   end
   object DataSource4: TDataSource
     DataSet = ADO_EtkenMaddeTetkik
-    Left = 505
-    Top = 490
+    Left = 529
+    Top = 90
   end
   object ADO_EtkenMaddeTetkik: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -684,20 +729,22 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     SQL.Strings = (
       'select * from OSGB_MASTER.dbo.IlaclarReceteTetkikSonuc'
       'where ATC_Kodu =:@kod')
-    Left = 504
-    Top = 424
+    Left = 464
+    Top = 120
   end
   object DataSource3: TDataSource
     DataSet = ADO_EtkenMaddeSUT
-    Left = 704
-    Top = 304
+    Left = 168
+    Top = 256
   end
   object ADO_EtkenMaddeSUT: TADOQuery
     Connection = DATALAR.ADOConnection2
+    CursorType = ctStatic
     OnNewRecord = ADO_EtkenMaddeSUTNewRecord
     Parameters = <
       item
         Name = '@kod'
+        Attributes = [paNullable]
         DataType = ftString
         NumericScale = 255
         Precision = 255
@@ -706,8 +753,8 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       end>
     SQL.Strings = (
       'select * from OSGB_MASTER.dbo.ETkenMaddeSutKurallari'
-      'where EtkenMaddeKodu =:@kod')
-    Left = 704
-    Top = 240
+      'where ATC_Kodu =:@kod')
+    Left = 160
+    Top = 208
   end
 end

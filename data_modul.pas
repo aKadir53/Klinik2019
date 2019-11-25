@@ -429,6 +429,7 @@ type
    Risk : TRiskRecord;
    SahaDenetim : TSahaDenetim;
    OrtamOlcum : TOlcumKriter;
+   KtvUrr : TKtvUrr;
    KKD : TKKDREcord;
    SeansOlusturPrm : TSeansOlusturPrm;
    TeleEkg : TTeleEKG;

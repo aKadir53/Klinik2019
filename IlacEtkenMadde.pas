@@ -13,14 +13,11 @@ uses
   cxDBData, Vcl.StdCtrls, Vcl.Buttons, sBitBtn, Vcl.ExtCtrls, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
   cxGridCustomView, cxGrid, GridsEh, DBGridEh, Vcl.DBCtrls, cxGroupBox,
-  Data.Win.ADODB, Vcl.Menus, cxCheckBox, KadirLabel, cxTextEdit, cxSplitter;
+  Data.Win.ADODB, Vcl.Menus, cxCheckBox, KadirLabel, cxTextEdit, cxSplitter,
+  cxGridBandedTableView, cxGridDBBandedTableView;
 
 type
   TfrmIlacEtkenMaddeSutKural = class(TGirisForm)
-    pnlOnay: TPanel;
-    txtinfo: TLabel;
-    btnSend: TsBitBtn;
-    btnVazgec: TsBitBtn;
     PopupMenu1: TPopupMenu;
     KurumEkle1: TMenuItem;
     KurumSil1: TMenuItem;
@@ -41,7 +38,6 @@ type
     DBMemo1: TDBMemo;
     DBMemo2: TDBMemo;
     DBMemo3: TDBMemo;
-    DBGridEh2: TDBGridEh;
     DataSource4: TDataSource;
     ADO_EtkenMaddeTetkik: TADOQuery;
     DataSource3: TDataSource;
@@ -62,9 +58,27 @@ type
     gridTetkikleraciklama: TcxGridDBColumn;
     gridTetkiklersonuc2: TcxGridDBColumn;
     gridTetkiklerreceteEklenir: TcxGridDBColumn;
+    cxGrid3: TcxGrid;
+    cxGridLevel2: TcxGridLevel;
+    gridSutKural: TcxGridDBBandedTableView;
+    gridSutKuralATC_Kodu: TcxGridDBBandedColumn;
+    gridSutKuralEtkenMaddeKodu: TcxGridDBBandedColumn;
+    gridSutKuralTetkiksonuc: TcxGridDBBandedColumn;
+    gridSutKuralDoz: TcxGridDBBandedColumn;
+    gridSutKuralDiger: TcxGridDBBandedColumn;
+    gridSutKuralid: TcxGridDBBandedColumn;
+    gridSutKuralbDoz1: TcxGridDBBandedColumn;
+    gridSutKuralbDoz2: TcxGridDBBandedColumn;
+    gridSutKuralbDozPeryot: TcxGridDBBandedColumn;
+    gridSutKuraliDoz1: TcxGridDBBandedColumn;
+    gridSutKuraliDoz2: TcxGridDBBandedColumn;
+    gridSutKuraliDozPeryot: TcxGridDBBandedColumn;
+    gridSutKuralBirim: TcxGridDBBandedColumn;
+    gridSutKuralbDozPeryotAdet: TcxGridDBBandedColumn;
+    gridSutKuraliDozPeryotAdet: TcxGridDBBandedColumn;
+    gridSutKuralAciklama: TcxGridDBBandedColumn;
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
-    procedure btnVazgecClick(Sender: TObject);
     procedure ado_BransKodlariAfterScroll(DataSet: TDataSet);
     procedure ADO_EtkenMaddeSUTNewRecord(DataSet: TDataSet);
     procedure ADO_EtkenMaddeTetkikNewRecord(DataSet: TDataSet);
@@ -111,14 +125,6 @@ procedure TfrmIlacEtkenMaddeSutKural.ADO_EtkenMaddeTetkikNewRecord(
   DataSet: TDataSet);
 begin
   // Dataset.FieldByName('EtkenMaddeKodu').AsString := ado_BransKodlari.FieldByName('tanimi').AsString;
-end;
-
-procedure TfrmIlacEtkenMaddeSutKural.btnVazgecClick(Sender: TObject);
-begin
-    ado_BransKodlari.Active := false;
-    ADO_EtkenMaddeSUT.Active := false;
-    ADO_EtkenMaddeTetkik.Active := false;
-    close;
 end;
 
 procedure TfrmIlacEtkenMaddeSutKural.chkTumuPropertiesEditValueChanged(
@@ -185,11 +191,11 @@ begin
       ADO_EtkenMaddeTetkik.Active := False;
       ADO_EtkenMaddeTetkik.Parameters[0].Value := kod;
       ADO_EtkenMaddeTetkik.Active := True;
-    (*
+
       ADO_EtkenMaddeSUT.Active := False;
       ADO_EtkenMaddeSUT.Parameters[0].Value := kod;
       ADO_EtkenMaddeSUT.Active := True;
-      *)
+
     end;
 
   end;

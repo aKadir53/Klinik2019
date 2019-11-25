@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, ComCtrls, jpeg, kadir,kadirType,kadirLabel,
   dxGDIPlusClasses, cxGraphics, cxControls,GirisUnit,KadirMedula3,
-  GetFormClass,StrUtils,
+  GetFormClass,StrUtils, Adodb,
   cxLookAndFeels, cxLookAndFeelPainters, cxContainer, cxEdit, dxSkinsCore,
   Menus, cxButtons, cxGroupBox, dxSkinBlack, dxSkinBlue, dxSkinCaramel,
   dxSkinCoffee, dxSkinDarkRoom, dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans,
@@ -63,6 +63,13 @@ type
     txtDVitaminKul: TcxComboBox;
     txtSinekalset: TcxComboBox;
     txtAnemi: TcxCheckGroup;
+    PopupMenu1: TPopupMenu;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    T1: TMenuItem;
+    N3: TMenuItem;
+    E2: TMenuItem;
+    ListeAc2: TListeAc;
     procedure txtDozClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure txtMsgEnter(Sender: TObject);
@@ -80,6 +87,9 @@ type
     procedure BeforePost(DataSet: TDataSet);
     procedure NavigatorButtonsButtonClick(Sender: TObject;
       AButtonIndex: Integer; var ADone: Boolean);
+    procedure cxButtonCClick(Sender: TObject);
+    procedure SablonOlarakKaydet;
+    procedure SablondanYukle;
 
 
   private
@@ -426,25 +436,30 @@ begin
            end;
           end;
   -20   : begin
-              datalar.HastaKabulWS.TakipOkuGiris.takipNo := TcxTextEdit(FindComponent('TakipNo')).EditValue;
-              datalar.HastaKabulWS.TakipOkuGiris.saglikTesisKodu := datalar._kurumKod;
-              datalar.HastaKabulWS.KabulOku;
-              if (datalar.HastaKabulWS.Takip.sonucKodu <> '0000')  and (datalar.HastaKabulWS.Takip.takipNo = '')
+              if varTostr(TcxTextEdit(FindComponent('TakipNo')).EditValue) <> ''
               then begin
-                TcxTextEdit(FindComponent('TakipNo')).EditValue := '';
-                TcxTextEdit(FindComponent('BasvuruNo')).EditValue := '';
-              end
-              else
-               ShowmessageSkin('Takip Meduladan Silinmeden Bu iþlem gerçekleþtirilmez',datalar.HastaKabulWS.Takip.sonucMesaji,'','info');
+                datalar.HastaKabulWS.TakipOkuGiris.takipNo := TcxTextEdit(FindComponent('TakipNo')).EditValue;
+                datalar.HastaKabulWS.TakipOkuGiris.saglikTesisKodu := datalar._kurumKod;
+                datalar.HastaKabulWS.KabulOku;
+                if (datalar.HastaKabulWS.Takip.sonucKodu <> '0000')  and (datalar.HastaKabulWS.Takip.takipNo = '')
+                then begin
+                  TcxTextEdit(FindComponent('TakipNo')).EditValue := '';
+                  TcxTextEdit(FindComponent('BasvuruNo')).EditValue := '';
+                end
+                else
+                 ShowmessageSkin('Takip Meduladan Silinmeden Bu iþlem gerçekleþtirilmez',datalar.HastaKabulWS.Takip.sonucMesaji,'','info');
+              end;
           end;
   -30   : begin
-             SysTakipNoSorgula(TcxTextEdit(FindComponent('sysTakipNo')).EditValue, _Sonuc_);
-             if Pos('E1014', _Sonuc_) > 0
-             Then
-               TcxTextEdit(FindComponent('sysTakipNo')).EditValue := ''
-             Else
-              ShowMessageSkin('Sys Takip No Silinmeden Bu iþlem Yapýlamaz','','','info');
-
+             if varToSTr(TcxTextEdit(FindComponent('sysTakipNo')).EditValue) <> ''
+             Then begin
+               SysTakipNoSorgula(TcxTextEdit(FindComponent('sysTakipNo')).EditValue, _Sonuc_);
+               if Pos('E1014', _Sonuc_) > 0
+               Then
+                 TcxTextEdit(FindComponent('sysTakipNo')).EditValue := ''
+               Else
+                ShowMessageSkin('Sys Takip No Silinmeden Bu iþlem Yapýlamaz','','','info');
+             end;
           end;
 
   end;
@@ -540,6 +555,147 @@ begin
    TcxCurrencyEdit(FindComponent('Doz2')).Value := strtoint(TcxCurrencyEdit(FindComponent('Doz')).Text[3]);
 end;
 
+procedure TfrmPopup.SablondanYukle;
+var
+  sql : string;
+  ado : TADOQuery;
+  L : ArrayListeSecimler;
+begin
+
+   L := ListeAc2.ListeGetir;
+
+   if L[0].kolon1 <> ''
+   Then Begin
+     ado := TADOQuery.Create(nil);
+     ado.Connection := datalar.ADOConnection2;
+     try
+        datalar.ADOConnection2.BeginTrans;
+       try
+           sql := 'select * from IlacRaporTeshislerSablon where sablonId = ' + L[0].kolon1;
+           datalar.QuerySelect(ado,sql);
+           while not ado.Eof do
+           Begin
+             TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.Append;
+             TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.FieldByName('RaporSira').AsString := datalar.RaporBilgisi.sira;
+
+             TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.FieldByName('baslangicTarihi').AsDateTime := date;
+             TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.FieldByName('bitisTarihi').AsDateTime := date;
+
+             TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.FieldByName('teshisKodu').AsString := ado.FieldByName('teshisKodu').AsString;
+             TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.FieldByName('ICD10Kodu').AsString := ado.FieldByName('ICD10Kodu').AsString;
+             TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.Post;
+             ado.Next;
+           End;
+
+           sql := 'select * from IlacRaporEtkenMaddelerSablon where sablonId = ' + L[0].kolon1;
+           datalar.QuerySelect(ado,sql);
+           while not ado.Eof do
+           Begin
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.Append;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('RaporSira').AsString := datalar.RaporBilgisi.sira;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('etkenMaddeKodu').AsString := ado.FieldByName('etkenMaddeKodu').AsString;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('etkenMaddeAdi').AsString := ado.FieldByName('etkenMaddeAdi').AsString;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimDoz1').AsString := ado.FieldByName('kullanimDoz1').AsString;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimDoz2').AsString := ado.FieldByName('kullanimDoz2').AsString;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimDozBirim').AsString := ado.FieldByName('kullanimDozBirim').AsString;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimPeriyot').AsString := ado.FieldByName('kullanimPeriyot').AsString;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimPeriyotBirim').AsString := ado.FieldByName('kullanimPeriyotBirim').AsString;
+             TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.Post;
+             ado.Next;
+           End;
+
+           sql := 'select * from IlacRaporAciklamaSablon where sablonId = ' + L[0].kolon1;
+           datalar.QuerySelect(ado,sql);
+           datalar.QueryExec('update Raporlar set ' +
+                             'aciklama = ' + QuotedStr(ado.FieldByName('aciklama').AsString) +
+                             'where sira = ' + datalar.RaporBilgisi.sira);
+
+          TcxMemo(FindComponent('aciklama')).EditValue := ado.FieldByName('aciklama').AsString;
+         datalar.ADOConnection2.CommitTrans;
+       except on e : exception do
+         begin
+          datalar.ADOConnection2.RollbackTrans;
+          ShowMessageSkin(e.message,'','','info');
+         end;
+       end;
+     finally
+       ado.Free;
+     end;
+
+   End;
+
+//   L.Free;
+end;
+
+procedure TfrmPopup.SablonOlarakKaydet;
+var
+  sql , sablon , id, idd ,doz1,doz2 ,peryot: string;
+begin
+   sablon := InputBox('Teþhis , Etken Madde Þablon','Þablon Tanýmý Giriniz','Sablon1');
+   if sablon <> ''
+   then begin
+     datalar.ADOConnection2.BeginTrans;
+
+     try
+       sql := 'insert into IlacRaporSablon(SablonTanimi) ' +
+              'values ( ' + QuotedStr(sablon) + ') select SCOPE_IDENTITY() as id ';
+
+       id := datalar.QuerySelect(sql).fieldbyname('id').AsString;
+
+       TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.First;
+       while not TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.Eof do
+       begin
+         sql := 'insert into IlacRaporTeshislerSablon (sablonId,teshisKodu,ICD10Kodu) ' +
+                'values(' + id + ',' +
+                QuotedStr(TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.FieldByName('teshisKodu').AsString) + ',' +
+                QuotedStr(TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.FieldByName('ICD10Kodu').AsString) + ')';
+         datalar.QueryExec(sql);
+         TcxGridKadir(FindComponent('cxGridTeshis')).Dataset.Next;
+       end;
+
+
+       TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.First;
+       while not TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.Eof do
+       begin
+         doz1 := ifThen(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimDoz1').AsString = '','1',TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimDoz1').AsString);
+         doz2 := ifThen(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimDoz2').AsString = '','1',TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimDoz2').AsString);
+         peryot := ifThen(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimPeriyot').AsString = '','3',TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimPeriyot').AsString);
+
+         sql := 'insert into IlacRaporEtkenMaddelerSablon (sablonId,etkenMaddeKodu,etkenMaddeAdi,kullanimDoz1,' +
+                ' kullanimDoz2,kullanimDozBirim,kullanimPeriyot,kullanimPeriyotBirim) ' +
+                'values(' + id + ',' +
+                QuotedStr(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('etkenMaddeKodu').AsString) + ',' +
+                QuotedStr(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('etkenMaddeAdi').AsString) +  ',' +
+                doz1 + ',' +
+                doz2 + ',' +
+                QuotedStr(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimDozBirim').AsString) + ',' +
+                peryot + ',' +
+                QuotedStr(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.FieldByName('kullanimPeriyotBirim').AsString) +  ')';
+         datalar.QueryExec(sql);
+         TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset.Next;
+       end;
+
+       sql := 'insert into IlacRaporAciklamaSablon (sablonId,Aciklama) ' +
+              'values(' + id + ',' +
+              QuotedStr(varToStr(TcxMemo(FindComponent('aciklama')).EditValue)) + ')';
+       datalar.QueryExec(sql);
+
+       datalar.ADOConnection2.CommitTrans;
+       ShowMessageSkin('Þablon Kayýt Edildi','','','info');
+
+     except on e : Exception do
+      begin
+        ShowMessageSkin(e.Message,'','','info');
+        datalar.ADOConnection2.RollbackTrans;
+      end;
+     end;
+
+   end;
+
+
+end;
+
+
 procedure TfrmPopup.SetDataTarih(Tarih : TDate);
 var
    Year, Month, Day: Word;
@@ -626,7 +782,6 @@ begin
                datalar.SeansBilgi.girisKilo := TcxCurrencyEdit(FindComponent('girisKilo')).EditValue;
                datalar.SeansBilgi.cikisKilo := TcxCurrencyEdit(FindComponent('cikisKilo')).EditValue;
                datalar.SeansBilgi.Seans := TcxComboBox(FindComponent('seans')).EditValue;
-               datalar.SeansBilgi.SeansSure := TcxTextEdit(FindComponent('seansSuresi')).EditValue;
                datalar.SeansBilgi.MakinaNo := TcxTextEdit(FindComponent('makinaNo')).EditValue;
                datalar.SeansBilgi.Igne := TcxComboBox(FindComponent('Igne')).EditValue;
                datalar.SeansBilgi.IgneV := TcxComboBox(FindComponent('IgneV')).EditValue;
@@ -636,7 +791,7 @@ begin
                datalar.SeansBilgi.VerilecekSivi := TcxCurrencyEdit(FindComponent('verilecekSivi')).EditValue;
                datalar.SeansBilgi.UF := TcxCurrencyEdit(FindComponent('UF')).EditValue;
                datalar.SeansBilgi.hemsireNot := TcxTextEdit(FindComponent('hekimGozlemDdiger')).EditValue;
-
+               datalar.SeansBilgi.SeansSure := TcxTextEdit(FindComponent('DIYALIZSURESI')).EditValue;
             end;
 
       raporUpdate,raporInsert :
@@ -666,7 +821,7 @@ begin
               datalar.SeansOlusturPrm.gunSayisi := TcxCurrencyEdit(FindComponent('txtGun')).EditValue;
     //          datalar.SeansOlusturPrm.HizmetTip := TcxCheckBox(FindComponent('chkEv')).EditValue;
               datalar.SeansOlusturPrm.araSeans := TcxCheckBox(FindComponent('chkPlan')).EditValue;
-              datalar.SeansOlusturPrm.SeansKodu := TcxImageComboKadir(FindComponent('HizmetKod')).EditValue;
+              datalar.SeansOlusturPrm.SeansKodu := varToStr(TcxImageComboKadir(FindComponent('HizmetKod')).EditValue);
             end;
       ReceteIlacEkle,ReceteIlacDuzenle :
             begin
@@ -1162,11 +1317,17 @@ riskDuzenle,yeniRisk :
                          end;
     hastaTakipleriGetir
              : begin
-
                  // hasta takipleri ekraný kapatýldý
-
                end;
 
+     KtvUrrDuzenle
+             : begin
+                 datalar.KtvUrr.Ktv := TcxCurrencyEdit(FindComponent('KT_v')).Value ;
+                 datalar.KtvUrr.URR := TcxCurrencyEdit(FindComponent('URR')).Value;
+                 datalar.KtvUrr.CaxP := TcxCurrencyEdit(FindComponent('CaxP')).Value;
+                 datalar.KtvUrr.DuzCa := TcxCurrencyEdit(FindComponent('DuzCa')).Value;
+                 datalar.KtvUrr.TS := TcxCurrencyEdit(FindComponent('TS')).Value;
+               end;
   end;
 end;
 
@@ -1421,6 +1582,7 @@ inherited;
           TcxTextEdit(FindComponent('ReceteAltTuru')).EditValue := datalar.YeniRecete.ReceteAltTuru;
           TcxTextEdit(FindComponent('ReceteTarih')).EditValue := datalar.YeniRecete.Tarih;
           TcxTextEdit(FindComponent('eReceteNo')).EditValue := datalar.YeniRecete.takipNo;
+          TcxTextEdit(FindComponent('eReceteNo')).Properties.ReadOnly := True;
        end;
 
    TeleEkgDuzenle :
@@ -2765,6 +2927,7 @@ ptPersonelTetkikleri :
           HizmetKod.DisplayField := 'tanimi';
           HizmetKod.Filter := '';
           HizmetKod.BosOlamaz := True;
+          HizmetKod.EditValue := 'P704230';
           setDataStringKontrol(self,HizmetKod,'HizmetKod','Sut Kodu',kolon1,'',120);
 
           setDataStringKontrol(self,txtGun, 'txtGun','Seans Sayýsý',Kolon1,'',50);
@@ -2855,8 +3018,8 @@ ptPersonelTetkikleri :
           setDataStringC(self,'seans','Seans / Süre',Kolon1,'ss',40,'1,2,3,4,5');
           TcxComboBox(FindComponent('seans')).EditValue := datalar.SeansBilgi.Seans;
 
-          setDataString(self,'seansSuresi','',Kolon1,'ss',40);
-          TcxTextEdit(FindComponent('seansSuresi')).EditValue := datalar.SeansBilgi.SeansSure;
+          setDataString(self,'DIYALIZSURESI','',Kolon1,'ss',40);
+          TcxTextEdit(FindComponent('DIYALIZSURESI')).EditValue := datalar.SeansBilgi.SeansSure;
 
           setDataString(self,'makinaNo','Makina',Kolon1,'',40);
           TcxTextEdit(FindComponent('makinaNo')).EditValue := datalar.SeansBilgi.MakinaNo;
@@ -2934,6 +3097,30 @@ ptPersonelTetkikleri :
 
          end;
 
+  KtvUrrDuzenle :
+        begin
+          ClientHeight := 300;
+          ClientWidth :=  200;
+          cxTab.Width := 150;
+          cxTab.Tabs[0].Caption := datalar.KtvUrr.hasta;
+
+          Kolon2.Visible := False;
+          Kolon3.Visible := False;
+          Kolon4.Visible := False;
+
+          setDataStringCurr(self,'KT_v','KT/V',Kolon1,'',50);
+          TcxCurrencyEdit(FindComponent('KT_v')).Value := datalar.KtvUrr.Ktv;
+          setDataStringCurr(self,'URR','URR',Kolon1,'',50);
+          TcxCurrencyEdit(FindComponent('URR')).Value := datalar.KtvUrr.URR;
+          setDataStringCurr(self,'CaxP','CaxP',Kolon1,'',50);
+          TcxCurrencyEdit(FindComponent('CaxP')).Value := datalar.KtvUrr.CaxP;
+          setDataStringCurr(self,'DuzCa','DuzCa',Kolon1,'',50);
+          TcxCurrencyEdit(FindComponent('DuzCa')).Value := datalar.KtvUrr.DuzCa;
+          setDataStringCurr(self,'TS','TS',Kolon1,'',50);
+          TcxCurrencyEdit(FindComponent('TS')).Value := datalar.KtvUrr.TS;
+
+        end;
+
   raporUpdate ,raporInsert :
         begin
           ClientHeight := 420;
@@ -2995,6 +3182,11 @@ ptPersonelTetkikleri :
 
           setDataString(self,'raporTakipNo','Rapor TakipNo',Kolon1,'',100);
           TcxTextEdit(FindComponent('raporTakipNo')).EditValue := datalar.RaporBilgisi.raporTakipNo;
+          if varToStr(TcxTextEdit(FindComponent('raporTakipNo')).EditValue) = ''
+          then
+           TcxTextEdit(FindComponent('raporTakipNo')).Properties.ReadOnly := False
+          else
+           TcxTextEdit(FindComponent('raporTakipNo')).Properties.ReadOnly := True;
 
           setDataStringMemo(self,'aciklama','Açýklama',Kolon1,'ack',503,50);
           TcxTextEdit(FindComponent('aciklama')).EditValue := datalar.RaporBilgisi.aciklama;
@@ -3032,6 +3224,7 @@ ptPersonelTetkikleri :
                 setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridEtkenMadde')) ,'cxGridEtkenMadde','Ýlaç Etken Maddeler',Kolon1,'',580,210);
                 datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset,'select * from IlacRaporEtkenMaddeler where RaporSira = ' + QuotedStr(datalar.RaporBilgisi.sira));
                 TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Levels[0].GridView).NavigatorButtons.OnButtonClick := NavigatorButtonsButtonClick;
+                TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Levels[0].GridView).PopupMenu := PopupMenu1;
 
              end;
 
@@ -3130,6 +3323,22 @@ begin
 
     End;
   end;
+
+
+end;
+
+procedure TfrmPopup.cxButtonCClick(Sender: TObject);
+begin
+  inherited;
+
+ case TMenuItem(Sender).Tag of
+ -20 : begin
+          SablonOlarakKaydet;
+       end;
+ -21 : begin
+         SablondanYukle;
+       end;
+ end;
 
 
 end;

@@ -30,14 +30,12 @@ object frmRaporDetay: TfrmRaporDetay
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    PopupMenu = PopupMenu1
     TabOrder = 0
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
     ExceleGonder = False
     PopupForm = False
     object ListeRaporlar: TcxGridDBTableView
-      PopupMenu = PopupMenu1
       OnDblClick = ListeRaporlarDblClick
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True
@@ -174,6 +172,7 @@ object frmRaporDetay: TfrmRaporDetay
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 80
       end
       object ListeRaporlarColumn8: TcxGridDBColumn
@@ -208,7 +207,7 @@ object frmRaporDetay: TfrmRaporDetay
     end
   end
   object PopupMenu1: TPopupMenu
-    Left = 104
+    Left = 80
     Top = 352
     object N1: TMenuItem
       Caption = #304'la'#231' Rapor Te'#351'hi'#351' Ve Etken Maddeleri '#350'ablon Olarak Kaydet'
@@ -249,8 +248,8 @@ object frmRaporDetay: TfrmRaporDetay
     BiriktirmeliSecim = False
     Grup = False
     GrupCol = 0
-    Left = 92
-    Top = 414
+    Left = 60
+    Top = 438
   end
   object TaniListe: TListeAc
     ListeBaslik = 'Tan'#305'lar'
@@ -273,11 +272,11 @@ object frmRaporDetay: TfrmRaporDetay
     BiriktirmeliSecim = False
     Grup = False
     GrupCol = 0
-    Left = 140
-    Top = 414
+    Left = 156
+    Top = 438
   end
   object PopupMenu2: TPopupMenu
-    Left = 184
+    Left = 160
     Top = 352
     object E1: TMenuItem
       Caption = 'Eklenen Etken Maddeyi Meduladaki Rapora Ekle'
@@ -286,7 +285,7 @@ object frmRaporDetay: TfrmRaporDetay
   end
   object PopupMenu3: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 272
+    Left = 240
     Top = 352
     object Kapat1: TMenuItem
       Tag = -30
@@ -327,6 +326,13 @@ object frmRaporDetay: TfrmRaporDetay
         Caption = 'Raporu Sistemden Sil'
         ImageIndex = 42
         OnClick = cxButtonCClick
+      end
+      object N4: TMenuItem
+        Caption = '-'
+      end
+      object N5: TMenuItem
+        Caption = #350'ablonlar'
+        OnClick = N5Click
       end
     end
     object M1: TMenuItem

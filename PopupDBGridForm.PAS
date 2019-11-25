@@ -880,6 +880,8 @@ procedure TfrmPopupDBGridForm.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   inherited;
+  if Assigned(DBGrid.DataController.DataSource.DataSet)
+  then
   if (DBGrid.DataController.DataSource.DataSet.State in [dsEdit, dsInsert]) then
     if ModalResult = mrYes then
       DBGrid.DataController.DataSource.DataSet.Post
@@ -923,21 +925,6 @@ begin
     _fieldReadOnly_  := ado.FieldByName('_fieldReadOnly_').AsString;
 
 
-  (*
-    if txtTable.Text = 'Ýþ Ekipmaný Tanýmla'
-    then begin
-       TableName := '(select C.* from Cihaz C ' +
-                 //  ' join CihazDetay CD on C.kod = CD.cihazKod ' +
-                   ' where C.sirketKod is null or C.sirketkod = ' + QuotedStr(vartostr(TcxImageComboKadir(AnaForm.Sirketler).EditingValue)) + ') Cihaz';
-    end
-    else
-    if txtTable.Text = 'Ýþ Ekipmaný Özellik Bilgisi Gir'
-    then begin
-       TableName := '(select CD.* from Cihaz C ' +
-                    ' join CihazDetay CD on C.kod = CD.cihazKod ' +
-                    ' where C.sirketkod is null or C.sirketkod = ' + QuotedStr(vartostr(TcxImageComboKadir(AnaForm.Sirketler).EditingValue)) + ') Cihaz';
-    end;
-    *)
 
     Yukle;
 
@@ -974,19 +961,7 @@ begin
        GrpAciklama.Visible := false;
        txtAciklama.DataBinding.DataSource := nil;
     end;
-  (*
-    if txtTable.Text = 'Ýþ Ekipmaný Tanýmla'
-    then begin
-       TcxImageComboBoxProperties(DbGrid.Columns[3].Properties).Items :=
-       TcxImageComboBoxProperties(TcxImageComboKadir(AnaForm.Sirketler).Properties).Items;
-    end
-    else
-    if txtTable.Text = 'Ýþ Ekipmaný Özellik Bilgisi Gir'
-    then begin
-      DbGrid.Columns[0].Options.Editing := False;
-      DbGrid.Columns[1].Options.Editing := False;
-    end;
-              *)
+
   finally
     ado.Free;
   end;

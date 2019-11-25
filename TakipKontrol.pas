@@ -741,7 +741,7 @@ begin
               MemDataToDataset(datalar.RxRadIslem);
               MemDataToDataset(datalar.RxTaniBilgisi);
 
-              ADO_TahlillSQL.Requery();
+             // ADO_TahlillSQL.Requery();
 
               if copy(msj, 1, 4) = '0631' Then
                 txtHatalar.Lines.Add(msj);

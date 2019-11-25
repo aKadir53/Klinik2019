@@ -110,6 +110,8 @@ type
     cxGridLevel13: TcxGridLevel;
     txtTS: TcxDBTextEdit;
     Label5: TLabel;
+    T7: TMenuItem;
+    S2: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure ItemClick(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);
@@ -118,7 +120,7 @@ type
       AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
     procedure GrupTetkikEkle(grup : integer);
     procedure TetkikEkle;
-    procedure TetkikSil;
+    procedure TetkikSil(Tag : integer);
     procedure Sonuclar;
     procedure DegerlendirmeGetir;
     procedure cxTabTetkikChange(Sender: TObject);
@@ -221,15 +223,27 @@ begin
 
 end;
 
-procedure TfrmHastaTetkikEkle.TetkikSil;
+procedure TfrmHastaTetkikEkle.TetkikSil(tag : integer);
 var
   sql : string;
 begin
   try
-   sql := 'delete from hareketler ' +
+
+  if tag = -1
+  then
+    sql := 'delete from hareketler ' +
           ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
-          ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L''';
+          ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'''
+  else
+    sql := 'delete from hareketler ' +
+           'where sirano = ' + inttostr(tag);
+
+
+
    datalar.QueryExec(sql);
+
+
+
    ADO_Tetkikler.Requery;
   except on e : Exception do
    begin
@@ -251,13 +265,13 @@ begin
        Tetkikler.Filter := '%3%';
 
    Tetkikler.SkinName := AnaForm.dxSkinController1.SkinName;
-   Tetkikler.where := ' sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and charindex(''.'',butKodu) = 0  and uygulamaAdet = ''G''';
+   Tetkikler.where := ' charindex(''.'',butKodu) = 0  and uygulamaAdet = ''G''';
    List := Tetkikler.ListeGetir;
 
    try
      if length(List) > 0 then
      begin
-       ado := datalar.QuerySelect('select butKodu,tanimi,uygulamaAdet from labtestler where sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and substring(butKodu,1,6) = ' + QuotedStr(List[0].kolon1));
+       ado := datalar.QuerySelect('select butKodu,tanimi,uygulamaAdet from labtestler where substring(butKodu,1,6) = ' + QuotedStr(List[0].kolon1));
        while not ado.Eof do
        begin
            sql := 'insert into hareketler (dosyaNo,gelisNo,gelisSIRANO,Tarih,Doktor,adet,code,name1,tip,tip1) ' +
@@ -289,14 +303,13 @@ var
   sql : string;
   ado : TADOQuery;
 begin
-   ado := TADOQuery.Create(nil);
    if mrYES = ShowMessageSkin('Var Olan Tablo Silinip Yeniden Oluþturulacak , Girilmiþ Sonuçlar Varsa , Bu Ýþlem Yapýlmaz','','','msg')
    Then Begin
      try
-       sql := 'exec sp_hastaLabIsle ' + QuotedStr(_dosyaNo_) + ',' +
-               _gelisNo_ + ',' + QuotedStr(tarihal(date())) + ',' + inttostr(-1*grup);
-       datalar.QueryExec(ado,sql);
-       AdoQueryActiveYenile(ADO_Tetkikler);
+       sql := 'exec sp_hastaLabIsle @dosyaNo = ' + QuotedStr(_dosyaNo_) + ', @gelisNo = ' +
+               _gelisNo_ + ', @tarih = ' + QuotedStr(tarihal(date())) + ', @tip = ' + inttostr(-1*grup);
+       datalar.QueryExec(sql);
+       ADO_Tetkikler.Requery();
      except on e : Exception do
         begin
             ShowMessageSkin('Hata :' + e.Message,'','','info');
@@ -304,7 +317,6 @@ begin
         end;
      end;
      ShowMessageSkin('Hizmetler Eklendi','','','info');
-     ado.Free;
    End;
 end;
 
@@ -318,8 +330,17 @@ begin
    -1,-3,-6,-12 : begin
                     GrupTetkikEkle(TMenuItem(sender).Tag);
                   end;
+    -30 : begin
+               if cxGridTetkikler.Controller.SelectedRowCount > 0
+               Then begin
+                 TetkikSil(ADO_Tetkikler.FieldByName('sirano').AsInteger);
+               end;
+         end;
     -2 : begin
-          TetkikSil;
+            if cxGridTetkikler.Controller.SelectedRowCount > 0
+            Then begin
+               TetkikSil(-1);
+            end;
          end;
     -4 : begin
            Kantetkikleri(_dosyaNO_,datalar.HastaBil.Tarih);
@@ -347,7 +368,7 @@ begin
            //TetkikTarihDegistir;
             datalar.QueryExec('update hareketler set Tarih = ' +
     '(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
-                              ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_
+                              ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L'''
 
             );
             ADO_Tetkikler.Requery;

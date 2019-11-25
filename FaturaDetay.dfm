@@ -2,8 +2,8 @@ object frmFaturaDetay: TfrmFaturaDetay
   Left = 1
   Top = 1
   Caption = 'Faturalar'
-  ClientHeight = 597
-  ClientWidth = 800
+  ClientHeight = 581
+  ClientWidth = 784
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,6 +23,7 @@ object frmFaturaDetay: TfrmFaturaDetay
     Height = 225
     TabOrder = 0
     ExceleGonder = False
+    PopupForm = False
     object FaturaSatirlar: TcxGridDBTableView
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <
@@ -172,8 +173,8 @@ object frmFaturaDetay: TfrmFaturaDetay
   end
   object DataSource1: TDataSource
     DataSet = ADO_FaturaDetay
-    Left = 80
-    Top = 306
+    Left = 112
+    Top = 298
   end
   object ADO_FaturaDetay: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -269,24 +270,27 @@ object frmFaturaDetay: TfrmFaturaDetay
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 32
-    Top = 248
+    Left = 312
+    Top = 48
     object E1: TMenuItem
       Tag = -20
       Caption = 'E-Ar'#351'iv G'#246'nder'
       ImageIndex = 15
+      Visible = False
       OnClick = cxButtonCClick
     end
     object E2: TMenuItem
       Tag = -21
       Caption = 'E-Ar'#351'iv Fatura '#304'ptal'
       ImageIndex = 43
+      Visible = False
       OnClick = cxButtonCClick
     end
     object E3: TMenuItem
       Tag = -24
       Caption = 'E-Ar'#351'iv Fatura PDF'
       ImageIndex = 110
+      Visible = False
       OnClick = cxButtonCClick
       object K1: TMenuItem
         Tag = -22
@@ -304,11 +308,19 @@ object frmFaturaDetay: TfrmFaturaDetay
     object E4: TMenuItem
       Tag = -25
       Caption = 'E-Ar'#351'iv Fatura Durum Sorgula'
+      Visible = False
       OnClick = cxButtonCClick
     end
     object H1: TMenuItem
       Tag = -26
-      Caption = 'Hizmet Ekle'
+      Caption = 'Sat'#305'r Ekle'
+      ImageIndex = 30
+      OnClick = cxButtonCClick
+    end
+    object H2: TMenuItem
+      Tag = -27
+      Caption = 'Sat'#305'r Sil'
+      ImageIndex = 42
       OnClick = cxButtonCClick
     end
   end

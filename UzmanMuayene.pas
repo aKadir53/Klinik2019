@@ -15,7 +15,7 @@ uses
   cxDropDownEdit, cxPC, cxGroupBox, Vcl.Menus, cxImageComboBox,
   cxDBLookupComboBox, cxLabel, cxMemo, cxLookupEdit, cxDBLookupEdit,
   cxCurrencyEdit, Vcl.StdCtrls, Vcl.Buttons, cxCheckBox,strUtils,
-  Vcl.ExtCtrls, cxSplitter, cxCheckListBox;
+  Vcl.ExtCtrls, cxSplitter, cxCheckListBox, AdvMemo;
 
 type
   TfrmUzmanMuayene = class(TfrmTedaviBilgisi)
@@ -36,6 +36,26 @@ type
     cxSplitter1: TcxSplitter;
     chkSistemSorgu: TcxCheckListBox;
     T2: TMenuItem;
+    izlemPanel: TcxGroupBox;
+    cxPageControl1: TcxPageControl;
+    cxTabSheet2: TcxTabSheet;
+    cxGroupBoxAnemi: TcxGroupBox;
+    txtAnemi: TcxCheckListBox;
+    cxGroupBoxAciklama: TcxGroupBox;
+    txtDAciklama: TcxMemo;
+    cxGroupBoxSinekalset: TcxGroupBox;
+    txtSinekalset: TcxComboBox;
+    cxGroupBoxAntihiper: TcxGroupBox;
+    txtAntihipertansif: TcxComboBox;
+    cxGroupBoxAktifD: TcxGroupBox;
+    txtDVitaminKul: TcxComboBox;
+    cxGroupBoxTedaviSeyri: TcxGroupBox;
+    txtedaviSeyri: TcxComboBox;
+    cxGroupBoxFosfor: TcxGroupBox;
+    txtFosfor: TcxCheckListBox;
+    cxTabSheet1: TcxTabSheet;
+    cxGroupBoxEpikrizAck: TcxGroupBox;
+    txtAciklama: TAdvMemo;
     procedure FormCreate(Sender: TObject);
     procedure gelisSikayetSec(cL : TcxCheckListBox ; c : string);
     function gelisSikayetSecili(c : TcxCheckListBox) : string;
@@ -52,8 +72,8 @@ type
   end;
 
 const _TableName_ = 'UzmanGozlem';
-      formGenislik = 1000;
-      formYukseklik = 600;
+      formGenislik = 1010;
+      formYukseklik = 700;
 var
   frmUzmanMuayene: TfrmUzmanMuayene;
   _islem_ : integer;
@@ -105,8 +125,10 @@ end;
 procedure TfrmUzmanMuayene.Yukle;
 begin
  // inherited;
-   sql := 'select * from uzmanGozlem ug left join DoktorlarT d on d.kod = substring(ug.doktor,1,4) ' +
-          ' where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + QuotedStr(_gelisNo_);
+   sql := 'select * from uzmanGozlem ug ' +
+          ' left join Hasta_gelisler g on g.dosyaNo = ug.dosyaNo and g.gelisNo = ug.gelisNo ' +
+          ' left join DoktorlarT d on d.kod = substring(ug.doktor,1,4) ' +
+          ' where ug.dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and ug.gelisNo = ' + QuotedStr(_gelisNo_);
    datalar.QuerySelect(ADO_UzmanMuayene,sql);
 
 
@@ -152,6 +174,48 @@ begin
 
  //  txtMalzemeSablon.Text := ADO_UzmanMuayene.fieldbyname('malzemeSablon').AsString;
  //  txtISI.Text := ADO_UzmanMuayene.fieldbyname('ISI').AsString;
+
+
+    txtAciklama.Lines.Text := ADO_UzmanMuayene.fieldbyname('aciklama').AsString;
+
+    txtDVitaminKul.text  := ADO_UzmanMuayene.fieldbyname('Dvitamin').AsString;
+    txtSinekalset.Text := ADO_UzmanMuayene.fieldbyname('Sinekalset').AsString;
+    txtAntihipertansif.Text := ADO_UzmanMuayene.fieldbyname('Antihipertansif').AsString;
+
+    try
+      gelisSikayetSec(txtFosfor,ADO_UzmanMuayene.fieldbyname('FosforBagAjan').AsString);
+
+      gelisSikayetSec(txtAnemi,ADO_UzmanMuayene.fieldbyname('Anemi').AsString);
+    //  txtAnemi.Text := datalar.ADO_SQL.fieldbyname('Anemi').AsString;
+    except
+    end;
+
+    if txtDVitaminKul.Text = '1 - Ihtiyacý Yok'
+    Then txtDVitaminKul.Style.Color := clWhite
+    Else txtDVitaminKul.Style.Color := clYellow;
+
+   (*
+    if txtAnemi.Text = '1 - Tedaviye ihtiyacý yok'
+    Then txtAnemi.Style.Color := clWhite
+    Else txtAnemi.Style.Color := clYellow;
+     *)
+
+    if txtAntihipertansif.Text = '1 - Kullanmýyor'
+    Then txtAntihipertansif.Style.Color := clWhite
+    Else txtAntihipertansif.Style.Color := clYellow;
+
+
+    if txtSinekalset.Text = '2 - Kullanmýyor'
+    Then txtSinekalset.Style.Color := clWhite
+    Else txtSinekalset.Style.Color := clYellow;
+
+    txtedaviSeyri.Text := ADO_UzmanMuayene.fieldbyname('tedaviSeyri').AsString;
+    txtDAciklama.Text := ADO_UzmanMuayene.fieldbyname('DVaciklama').AsString;
+
+ //   _Tarih_ := datalar.ADO_SQL.fieldbyname('bhdat').AsString;
+
+   // txtCa.Text := datalar.ADO_SQL.fieldbyname('Ca').AsString;
+
 
 
 
@@ -304,6 +368,20 @@ case TControl(sender).Tag  of
 
 
                   datalar.QueryExec(sql);
+
+                          sql := 'update Hasta_gelisler ' +
+                                 ' set aciklama = ' + ifThen(trimleft(txtAciklama.lines.Text) = '' , 'NULL', QuotedStr(trimleft(txtAciklama.lines.Text))) +
+                               //  ',OrnekNo = ' + QuotedStr(txtOrnekNo.Text) +
+                               //  ',CikisOrnekNo = ' + QuotedStr(txtOrnekNoCikis.Text) +
+                                 ',DVitamin = ' + QuotedStr(txtDVitaminKul.text) +
+                                 ',Anemi = ' + QuotedStr(gelisSikayetSecili(txtAnemi)) +
+                                 ',tedaviSeyri = ' + QuotedStr(txtedaviSeyri.Text) +
+                                 ',DVaciklama = ' + QuotedStr(txtDAciklama.Text) +
+                                 ',Sinekalset = ' + QuotedStr(txtSinekalset.Text) +
+                                 ',Antihipertansif = ' + QuotedStr(txtAntihipertansif.Text) +
+                                 ',FosforBagAjan = ' + QuotedStr(gelisSikayetSecili(txtFosfor)) +
+                                 ' where dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNO = ' + _gelisNo_;
+                  datalar.QueryExec(sql);
                 end
                 else
                 begin
@@ -409,12 +487,16 @@ begin
   setDataStringMemo(self,'psiko','Diyatisten ',Kolon1,'',550,50);
 
 
-  setDataStringBLabel(self,'tedaviOrder',Sayfa2_Kolon1,'',550,'Tedavi Order', '', '', True, clRed, taCenter);
+  setDataStringBLabel(self,'tedaviOrder',Sayfa2_Kolon1,'',350,'Tedavi Order', '', '', True, clRed, taCenter);
   setDataStringCurr(self,'kurukilo','Kuru Kilo',Sayfa2_Kolon1,'',80,'0.00',1);
   DiyalizTedaviControlleriniFormaEkle(Sayfa2_Kolon1,False);
 
+  setDataStringBLabel(self,'izlemOrder',Sayfa2_Kolon2,'',350,'Ýzlem Order', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,izlemPanel, 'izlemPanel','',Sayfa2_Kolon2,'',350,500);
 
-  SayfaCaption('Uzman Muayene','Tedavi Order','','','');
+  sayfa2_Kolon3.Visible := false;
+
+  SayfaCaption('Uzman Muayene','Tedavi/Ýzlem Order','','','');
 
 
 end;

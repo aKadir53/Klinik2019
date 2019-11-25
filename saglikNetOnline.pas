@@ -486,7 +486,7 @@ var
                then begin
                 takip := '';
                 sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr('') +
-                       ' where gelisID = ' + HastaneRefNo;
+                       ' where SIRANO = ' + HastaneRefNo;
                 datalar.QueryExec(sql);
                end;
 
@@ -533,10 +533,16 @@ var
 begin
   try
    sonuc := '';
+
+   if FileExists('C:\NoktaV3\Message\SysTakipNoSorgulaCvp.xml')
+   then
+     DeleteFile('C:\NoktaV3\Message\SysTakipNoSorgulaCvp.xml');
+
    s := SendMesajGonder(pwidechar(mesaj),pwidechar(islemTipi),sonuc,HastaneRefNo);
+
    if islemTipi = 'SysTakipNoSorgula'
    then begin
-     xmlGoster('C:\NoktaV3\' +  islemTipi + 'Cvp');
+     xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'Cvp');
    end
    else
    sonucYaz(s);

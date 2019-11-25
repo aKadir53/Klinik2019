@@ -138,48 +138,68 @@ var
   aNtfEvt: TNotifyEvent;
   AHandled : Boolean;
 begin
-  if not bReset then
-  begin
-    aNtfEvt := chkSIK.OnClick;
-    chkSIK.OnClick := nil;
-    try
-      chkSIK.Checked := FLastSikKull in [1, 2];
-    finally
-      chkSIK.OnClick := aNtfEvt;
-    end;
-  end;
-  if chkSIK.Checked then iTmp := 1 else iTmp := 0;
-  if not Assigned (FADO_ILACSARF) then
-  begin
-    FADO_ILACSARF := TADOQuery.Create (nil);
-    FADO_ILACSARF.Connection := DATALAR.ADOConnection2;
-    FADO_ILACSARF.CursorType := ctStatic;
-  end;
-  FADO_ILACSARF.AfterScroll := FADO_ILACSARFAfterScroll;
-  DataSource1.DataSet := FADO_ILACSARF;
-  if (FLastSikKull <> iTmp) or (not FADO_ILACSARF.Active) or bReset then
-  begin
-    FADO_ILACSARF.Close;
-    FADO_ILACSARF.SQL.Clear;
 
-    DurumGoster(True,False,'Ýlaç Listesi Yükleniyor...Lütfen Bekleyiniz...',0);
-    if not chkSIK.Checked
-    then begin
-       sql := 'select *,ICD TANI,kulYOL YOL from OSGB_MASTER.DBO.ilacListesi order by ilacAdi';
-    end
-    else
-    begin
-      sql := 'select *,D.ICD TANI,D.kulYol YOL from OSGB_MASTER.DBO.ilacListesi I ' +
-             ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
-             ' where drTC = ' + QuotedStr(datalar.doktorTC) +
-             ' and D.tip = ''ILAC''' +
-             ' order by ilacAdi ';
-    end;
+  if Tag = TagfrmIlacEtkenMadde then
+  begin
+            sql := 'select I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi from OSGB_MASTER.DBO.ilacListesi I ' +
+                   ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
+                   ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                   ' where drTC = ' + QuotedStr(datalar.doktorTC) +
+                   ' and D.tip = ''ILAC''' +
+                   ' order by ilacAdi ';
 
-    datalar.QuerySelect(FADO_ILACSARF, sql);
-    FLastSikKull := iTmp;
+
+          datalar.QuerySelect(FADO_ILACSARF, sql);
+
+  end
+  else
+  begin
+        if not bReset then
+        begin
+          aNtfEvt := chkSIK.OnClick;
+          chkSIK.OnClick := nil;
+          try
+            chkSIK.Checked := FLastSikKull in [1, 2];
+          finally
+            chkSIK.OnClick := aNtfEvt;
+          end;
+        end;
+        if chkSIK.Checked then iTmp := 1 else iTmp := 0;
+        if not Assigned (FADO_ILACSARF) then
+        begin
+          FADO_ILACSARF := TADOQuery.Create (nil);
+          FADO_ILACSARF.Connection := DATALAR.ADOConnection2;
+          FADO_ILACSARF.CursorType := ctStatic;
+        end;
+        FADO_ILACSARF.AfterScroll := FADO_ILACSARFAfterScroll;
+        DataSource1.DataSet := FADO_ILACSARF;
+        if (FLastSikKull <> iTmp) or (not FADO_ILACSARF.Active) or bReset then
+        begin
+          FADO_ILACSARF.Close;
+          FADO_ILACSARF.SQL.Clear;
+
+          DurumGoster(True,False,'Ýlaç Listesi Yükleniyor...Lütfen Bekleyiniz...',0);
+          if not chkSIK.Checked
+          then begin
+             sql := 'select I.*,ICD TANI,kulYOL YOL,ATC.Tanimi EtkenMaddeAdi from OSGB_MASTER.DBO.ilacListesi I' +
+                    ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                    ' order by ilacAdi';
+          end
+          else
+          begin
+            sql := 'select I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi from OSGB_MASTER.DBO.ilacListesi I ' +
+                   ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
+                   ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                   ' where drTC = ' + QuotedStr(datalar.doktorTC) +
+                   ' and D.tip = ''ILAC''' +
+                   ' order by ilacAdi ';
+          end;
+
+          datalar.QuerySelect(FADO_ILACSARF, sql);
+          FLastSikKull := iTmp;
+        end;
+        FADO_ILACSARF.First;
   end;
-  FADO_ILACSARF.First;
   DurumGoster(False,False,'');
 
 end;

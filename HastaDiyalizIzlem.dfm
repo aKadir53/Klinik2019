@@ -55,6 +55,8 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
         Properties.MultiLine = True
         Properties.Options = [pcoAlwaysShowGoDialogButton, pcoGoDialog, pcoGradient, pcoGradientClientArea]
         Properties.Style = 11
+        ExplicitLeft = -62
+        ExplicitTop = 58
         ClientRectBottom = 556
         ClientRectLeft = 3
         ClientRectRight = 340

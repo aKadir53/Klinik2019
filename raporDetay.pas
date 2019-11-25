@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ExtCtrls,data_modul, DB, ADODB,
   Grids, DBGridEh, DBCtrls,saglikTesisiRaporIslemleriWSIlac,
-  kadir,strutils,RaporIslemleriI,RaporIslemleriWS, kadirType,
+  kadir,strutils,RaporIslemleriI,RaporIslemleriWS, kadirType,GetFormClass,
   InvokeRegistry, Rio, SOAPHTTPClient, cxGraphics, cxMemo,
   cxDBEdit, cxDropDownEdit, cxCalendar, cxControls, cxContainer, cxEdit,
   cxTextEdit, cxMaskEdit, cxButtonEdit, cxPC, cxSpinEdit, cxLookAndFeels,
@@ -72,6 +72,8 @@ type
     ListeRaporlarColumn9: TcxGridDBColumn;
     Oku: TTimer;
     M1: TMenuItem;
+    N4: TMenuItem;
+    N5: TMenuItem;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
@@ -161,6 +163,7 @@ type
     procedure ListeRaporlarFocusedRecordChanged(Sender: TcxCustomGridTableView;
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
+    procedure N5Click(Sender: TObject);
   private
     { Private declarations }
    function findMethod(dllHandle: Cardinal; methodName: string): FARPROC;
@@ -267,41 +270,45 @@ end;
 
 procedure TfrmRaporDetay.RaporuSistemdenSil;
 var
-  sql , sira: string;
+  sql , sira , satir : string;
   ado : TADOQuery;
 begin
-  sira := RaporGrid.Dataset.FieldByName('sira').AsString;
-  if datalar.RaporBilgisi.raporTakipNo = ''
-  Then BEgin
-     if mrYes = ShowMessageSkin('Rapor Sistemden Silinecek Eminmisini?','','','msg')
-     Then Begin
-      // datalar.ADOConnection2.BeginTrans;
-      ado := TADOQuery.Create(nil);
-      ado.Connection := datalar.ADOConnection2;
-      try
+  if ListeRaporlar.Controller.SelectedRowCount > 0
+  Then begin
+    datalar.RaporBilgisi.raporTakipNo := RaporGrid.Dataset.FieldByName('raporTakipNo').AsString;
+    sira := RaporGrid.Dataset.FieldByName('sira').AsString;
+    if datalar.RaporBilgisi.raporTakipNo = ''
+    Then BEgin
+       if mrYes = ShowMessageSkin('Rapor Sistemden Silinecek Eminmisini?','','','msg')
+       Then Begin
+        // datalar.ADOConnection2.BeginTrans;
+        ado := TADOQuery.Create(nil);
+        ado.Connection := datalar.ADOConnection2;
         try
-       //    sql := 'delete from RaporDetay_Doktorlar where sira = ' + datalar.RaporBilgisi.sira;
-       //    datalar.QueryExec(ado,sql);
-           sql := 'delete from IlacRaporEtkenMaddeler where RaporSira = ' + sira;
-           datalar.QueryExec(ado,sql);
-           sql := 'delete from IlacRaporTeshisler where RaporSira = ' + sira;
-           datalar.QueryExec(ado,sql);
-           sql := 'delete from Raporlar where sira = ' + sira;
-           datalar.QueryExec(ado,sql);
-         //  datalar.ADOConnection2.CommitTrans;
-           ShowMessageSkin('Rapor Sistemden Silindi','','','info');
-           RaporGrid.Dataset.Requery();
-        except on e : exception do
-         begin
-         //  datalar.ADOConnection2.RollbackTrans;
-           ShowMessageSkin('Hata oluþtu , Rapor Sistemden Silinemedi',e.Message,'','info');
-         end;
-        end;
-        finally
-          ado.free;
-        end;
-     End;
-  End;
+          try
+         //    sql := 'delete from RaporDetay_Doktorlar where sira = ' + datalar.RaporBilgisi.sira;
+         //    datalar.QueryExec(ado,sql);
+             sql := 'delete from IlacRaporEtkenMaddeler where RaporSira = ' + sira;
+             datalar.QueryExec(ado,sql);
+             sql := 'delete from IlacRaporTeshisler where RaporSira = ' + sira;
+             datalar.QueryExec(ado,sql);
+             sql := 'delete from Raporlar where sira = ' + sira;
+             datalar.QueryExec(ado,sql);
+           //  datalar.ADOConnection2.CommitTrans;
+             ShowMessageSkin('Rapor Sistemden Silindi','','','info');
+             RaporGrid.Dataset.Requery();
+          except on e : exception do
+           begin
+           //  datalar.ADOConnection2.RollbackTrans;
+             ShowMessageSkin('Hata oluþtu , Rapor Sistemden Silinemedi',e.Message,'','info');
+           end;
+          end;
+          finally
+            ado.free;
+          end;
+       End;
+    End;
+  end;
 end;
 
 
@@ -1534,6 +1541,16 @@ begin
 
 end;
 
+procedure TfrmRaporDetay.N5Click(Sender: TObject);
+var
+ Form : TGirisForm;
+ GirisFormRecord : TGirisFormRecord;
+begin
+  inherited;
+  Form := FormINIT(TagfrmRaporSablon,GirisFormRecord);
+  if Form <> nil then Form.showModal;
+end;
+
 procedure TfrmRaporDetay.TedaviRaporu;
 begin
       TedaviRapor := TedaviRaporDVO.Create;
@@ -1625,6 +1642,7 @@ begin
      datalar.RaporBilgisi.raporTarihi := RaporGrid.Dataset.FieldByName('RaporTarihi').AsString;
      datalar.RaporBilgisi.verenTesisKodu := RaporGrid.Dataset.FieldByName('verenTesisKodu').AsString;
      datalar.RaporBilgisi.Turu := RaporGrid.Dataset.FieldByName('turu').AsString;
+     datalar.RaporBilgisi.raporTakipNo := RaporGrid.Dataset.FieldByName('raporTakipNo').AsString;
 end;
 
 procedure TfrmRaporDetay.DoktorKaydet(raporID : string ; var _rapor : RaporDVO);

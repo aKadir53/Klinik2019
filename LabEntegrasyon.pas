@@ -148,6 +148,8 @@ end;
 
 procedure TfrmLabEntegrasyon.IslemItemSub1Click(Sender: TObject);
 begin
+   if Liste.Controller.SelectedRowCount = 0 then exit;
+
   case TMenuItem(Sender).Tag of
     BIYOTIP : begin
                 DurumGoster(True,True);
@@ -197,6 +199,8 @@ procedure TfrmLabEntegrasyon.IslemItemSub2Click(Sender: TObject);
 var
   glmref : string;
 begin
+   if Liste.Controller.SelectedRowCount = 0 then exit;
+
   case TMenuItem(Sender).Tag of
     BIYOTIP : Begin
                  DurumGoster(True,True);
@@ -285,6 +289,10 @@ begin
   datalar.KontrolUserSet := False;
   inherited;
   if datalar.KontrolUserSet = True then exit;
+
+  if _Dataset.State = dsInactive then exit;
+  if _Dataset.RecordCount = 0  then exit;
+
 
   try
     GirisFormRecord.F_dosyaNo_ := _Dataset.FieldByName('dosyaNo').AsString;
@@ -551,17 +559,20 @@ var
   sql ,id ,ids : string;
 begin
    ids := '';
-   for x := 0 to Liste.Controller.SelectedRowCount - 1 do
-   begin
-       Application.ProcessMessages;
-       ids := ids + ifThen(ids <> '', ',','') + varToStr(Liste.DataController.GetValue(
-       Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('SIRANO').Index));
-   end;
+   if Liste.Controller.SelectedRowCount > 0
+   then begin
+       for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+       begin
+           Application.ProcessMessages;
+           ids := ids + ifThen(ids <> '', ',','') + varToStr(Liste.DataController.GetValue(
+           Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('SIRANO').Index));
+       end;
 
-       sql := 'update Hasta_Gelisler set LabOrnekDurum = ' + QuotedStr(TMenuItem(Sender).Hint) +
-                         ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','',''))';
-       datalar.QueryExec(sql);
-      _Dataset.Requery();
+           sql := 'update Hasta_Gelisler set LabOrnekDurum = ' + QuotedStr(TMenuItem(Sender).Hint) +
+                             ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','',''))';
+           datalar.QueryExec(sql);
+          _Dataset.Requery();
+   end;
 
 end;
 

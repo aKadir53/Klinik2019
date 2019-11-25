@@ -650,7 +650,15 @@ begin
 end;
 
 procedure TfrmTahliltakip.K1Click(Sender: TObject);
+var
+  F : TGirisForm;
+  GirisRecord : TGirisFormRecord;
 begin
+
+    F := FormINIT(TagfrmKiloOrder,GirisRecord,ikHayir,'');
+    if F <> nil then F.ShowModal
+
+
 (*
   Application.CreateForm(TfrmKiloOrder, frmKiloOrder);
   frmKiloOrder.txtDonem.Date := tarih1.Date;
@@ -663,11 +671,14 @@ end;
 
 
 procedure TfrmTahliltakip.K2Click(Sender: TObject);
+var
+  F : TGirisForm;
+  GirisRecord : TGirisFormRecord;
 begin
-    Application.CreateForm(TfrmKtvListesi, frmKtvListesi);
-    GorselAyar(frmKtvListesi,DATALAR.global_img_list4);
-    frmKtvListesi.ShowModal;
-    frmKtvListesi := nil;
+
+    F := FormINIT(TagfrmKtvListesi,GirisRecord,ikHayir,'');
+    if F <> nil then F.ShowModal;
+
 end;
 
 

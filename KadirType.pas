@@ -894,6 +894,19 @@ type
   end;
 
 
+type
+  TKtvUrr = record
+     Ktv : double;
+     urr : double;
+     DuzCa : double;
+     CaxP : double;
+     TS : double;
+     dosyaNo : string;
+     gelisNo : string;
+     hasta : string;
+  end;
+
+
   TIntegerArray = array of Integer;
 
 
@@ -923,6 +936,7 @@ Const
   TagfrmTeleEkg = 150;
   TagfrmSifreDegis = 160;
   TagfrmReceteSablon = 170;
+  TagfrmRaporSablon = 171;
   TagfrmSon6AylikTetkikSonuc = 180;
   TagfrmHastaTetkikEkle = 190;
   TagfrmKanTetkikTakip = 200;
@@ -1161,6 +1175,7 @@ Const
   DiyalizIzlemDVitamin = 1;
   DiyalizIzlemAnemi = 3;
   DiyalizIzlemCinacalset = 15;
+  KtvUrrDuzenle = 77;
 
 
 

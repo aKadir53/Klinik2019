@@ -80,6 +80,7 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
       ExceleGonder = False
+      PopupForm = False
       object DBGrid: TcxGridDBTableView
         OnDblClick = DBGridDblClick
         Navigator.Buttons.OnButtonClick = DBGridNavigatorButtonsButtonClick

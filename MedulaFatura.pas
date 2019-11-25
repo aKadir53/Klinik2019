@@ -262,6 +262,11 @@ begin
 
      datalar.QuerySelect(cxGrid4.Dataset,sql);
 
+
+
+
+
+
    //  HizmetDetayKodToplam;
    //  RenkKontrol;
 end;
@@ -332,10 +337,9 @@ var
 begin
 inherited;
 
-
-  GirisFormRecord.F_dosyaNo_ :=  _Dataset.FieldByName('dosyaNo').AsString;
-  GirisFormRecord.F_gelisNo_ := _Dataset.FieldByName('gelisNo').AsString;
-  GirisFormRecord.F_HastaAdSoyad_ := _Dataset.FieldByName('HASTA').AsString;
+  GirisFormRecord.F_dosyaNo_ :=  cxGrid4.dataset.FieldByName('dosyaNo').AsString;
+  GirisFormRecord.F_gelisNo_ := cxGrid4.dataset.FieldByName('gelisNo').AsString;
+  GirisFormRecord.F_HastaAdSoyad_ := cxGrid4.dataset.FieldByName('HASTA').AsString;
 
   case Tcontrol(sender).Tag of
   -3,-2,-1 : begin
@@ -345,7 +349,7 @@ inherited;
          FaturaList.Controller.SelectAll;
         end;
   -15 : begin
-         FaturadanCikar;  TeyitNoKontrolYap
+         FaturadanCikar;
         end;
   -16 : begin
           TeyitNoKontrolYap;
@@ -398,34 +402,22 @@ end;
 
 procedure TfrmMedulaFatura.FaturaKes;
 var
-   sql , Tip , birimfiyat ,dosyaNo,tutar,adet : string;
+   sql , sonuc : string;
+   ado : TADOQuery;
 begin
-  (*
-       Application.CreateForm(TfrmHizmetFaturasi, frmHizmetFaturasi);
-       GorselAyar(frmHizmetFaturasi,datalar.global_img_list4);
-       birimfiyat := floattostr(HizmetFiyat('P704230'));
-       frmHizmetFaturasi.t1 := tarihal(txttarih1.Date);
-       frmHizmetFaturasi.t2 := tarihal(txttarih2.Date);
+     sql := 'exec sp_kurumFatura_m3 ' + QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
+            txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
+            '4' + ',' +
+            '1' + ',' +
+            QuotedStr(datalar.AktifSirket);
+     ado := datalar.QuerySelect(sql);
+     sonuc := ado.FieldByName('sonuc').AsString;
+     if sonuc = '0'
+     Then
+      ShowMessageSkin('Fatura Kayýt Edildi','Fatura ID : ' + ado.FieldByName('FaturaId').AsString,'','info')
+     Else
+       ShowMessageSkin('Fatura Kayýt Edilemedi',sonuc,'','info');
 
-       if trim(copy(ktip.Text,1,2)) = '1'
-       then begin
-         frmHizmetFaturasi.faturaDetayDoldur('',txtAdet.Text,birimfiyat,'8',txtTOtxt_M(txtToplam.Text),'','','','');
-         frmHizmetFaturasi.ShowModal;
-         frmHizmetFaturasi := nil;
-       end;
-
-
-       if trim(copy(ktip.Text,1,2)) = '99'
-       then begin
-         dosyaNo := ADO_SQL.FieldByName('dosyaNo').AsString;
-         tutar := ADO_SQL.FieldByName('tutar').AsString;
-         adet := ADO_SQL.FieldByName('adet').AsString;
-         frmHizmetFaturasi.faturaDetayDoldur('',adet,birimfiyat,'8',txtTOtxt_M(tutar),'','','',dosyaNo);
-         frmHizmetFaturasi.ShowModal;
-         frmHizmetFaturasi := nil;
-       end;
-
-*)
 end;
 
 
@@ -434,9 +426,18 @@ var
   sql , Tip : string;
   TopluSet : TDataSetKadir;
 begin
-     frmRapor.topluset.Dataset2 := datalar.ADO_AktifSirket;
-     frmRapor.topluset.Dataset1 := datalar.ADO_aktifSirketLogo;
-     frmRapor.topluset.Dataset3 := cxGrid4.Dataset;
+     sql := 'exec sp_kurumFatura_m3 ' + QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
+            txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
+            '3' + ',' +
+            '1' + ',' +
+            QuotedStr(datalar.AktifSirket);
+
+
+     TopluSet.Dataset2 := datalar.ADO_AktifSirket;
+     TopluSet.Dataset1 := datalar.ADO_aktifSirketLogo;
+     TopluSet.Dataset3 := cxGrid4.Dataset;
+     TopluSet.Dataset4 := datalar.QuerySelect(sql);
+
      PrintYap('033','\KurumFaturaIcmali',intToStr(TagfrmMedulaFatura),TopluSet);
 end;
 

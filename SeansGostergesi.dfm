@@ -182,6 +182,7 @@ object frmSeansDagilimi: TfrmSeansDagilimi
           Caption = 'Makina'
           Value = '1'
         end>
+      ItemIndex = 0
       TabOrder = 5
       Height = 31
       Width = 138
@@ -480,6 +481,7 @@ object frmSeansDagilimi: TfrmSeansDagilimi
       Tag = 9999
       Caption = 'Kapat'
       ImageIndex = 18
+      Visible = False
       OnClick = cxKaydetClick
     end
     object Yazdr1: TMenuItem

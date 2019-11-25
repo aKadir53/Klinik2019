@@ -58,6 +58,7 @@ uses
     PersonelKart,
     FirmaKart,
     receteSablonlari,
+    raporSablonlari,
     RDS,
     KKD,
     Tedarikci,
@@ -139,7 +140,8 @@ uses
     StokKarti,
     HizliKayit,
     HastaIzlemListesi,
-    TakipKontrol;
+    TakipKontrol,
+    ktv_urrListesi;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -287,6 +289,7 @@ begin
    TagfrmPopupDBVerticalGridForm : Result := TfrmPopupDBVerticalGridForm;
    TagfrmHizliKayitPersonel, TagfrmHizliKayitDisAktarimlar : Result := TfrmHizliKayit;
    TagfrmReceteSablon : Result := TfrmReceteSablon;
+   TagfrmRaporSablon : Result := TfrmRaporSablon;
    TagfrmSorgulamalar : Result := TfrmSorgulamalar;
    TagfrmSorguCalistir : Result := TfrmRaporCalistir;
    TagfrmIsKazasi : Result := TfrmIsKazasi;
@@ -380,6 +383,7 @@ begin
    TagfrmHizliKayit : Result := TfrmHizliKayit;
    TagfrmHastaDiyalizIzlemListesi : Result := TfrmIzlem;
    TagfrmTakipKontrol : Result := TfrmTakipKontrol;
+   TagfrmKtvListesi : Result := TfrmKtvListesi;
 
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
@@ -397,6 +401,7 @@ begin
    TagfrmPopupDBVerticalGridForm : Result := frmPopupDBVerticalGridForm;
    TagfrmHizliKayitPersonel, TagfrmHizliKayitDisAktarimlar : Result := frmHizliKayit;
    TagfrmReceteSablon : Result := frmReceteSablon;
+   TagfrmRaporSablon : Result := frmRaporSablon;
    TagfrmSorgulamalar : Result := frmSorgulamalar;
    TagfrmSorguCalistir : Result := frmRaporCalistir;
    TagfrmIsKazasi : Result := frmIsKazasi;
@@ -491,6 +496,7 @@ begin
    TagfrmHizliKayit : Result := frmHizliKayit;
    TagfrmHastaDiyalizIzlemListesi : Result := frmIzlem;
    TagfrmTakipKontrol : Result := frmTakipKontrol;
+   TagfrmKtvListesi : Result := frmKtvListesi;
 
 
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
@@ -600,6 +606,7 @@ begin
      TagfrmStokKart   : frmStokKarti := TfrmStokKarti.Create(Tab);
      TagfrmHastaDiyalizIzlemListesi : frmIzlem := TfrmIzlem.Create(Tab);
      TagfrmTakipKontrol : frmTakipKontrol := TfrmTakipKontrol.Create(Tab);
+     TagfrmKtvListesi : frmKtvListesi  := TfrmKtvListesi.Create(Tab);
 
   end;
   try
@@ -776,6 +783,7 @@ begin
      TagfrmStokKart   : frmStokKarti := TfrmStokKarti.Create(Tab);
      TagfrmHastaDiyalizIzlemListesi : frmIzlem := TfrmIzlem.Create(Tab);
      TagfrmTakipKontrol : frmTakipKontrol := TfrmTakipKontrol.Create(Tab);
+     TagfrmKtvListesi : frmKtvListesi  := TfrmKtvListesi.Create(Tab);
 
   end;
   try
@@ -846,6 +854,7 @@ begin
     TagfrmReceteler : Application.CreateForm(TfrmReceteler, frmReceteler);
     TagfrmHastaRecete,TagfrmPersonelRecete : Application.CreateForm(TfrmHastaRecete,frmHastaRecete);
     TagfrmReceteSablon : Application.CreateForm(TfrmReceteSablon,frmReceteSablon);
+    TagfrmRaporSablon : Application.CreateForm(TfrmRaporSablon,frmRaporSablon);
     TagfrmUpdate :  Application.CreateForm(TfrmUpdate ,frmUpdate );
     TagfrmSorgulamalar : Application.CreateForm(TfrmSorgulamalar, frmSorgulamalar);
     TagfrmSorguCalistir : Application.CreateForm(TfrmRaporCalistir, frmRaporCalistir);
@@ -927,6 +936,7 @@ begin
     TagfrmKiloOrder : Application.CreateForm(TfrmKiloOrder,frmKiloOrder);
     TagfrmHizliKayit : Application.CreateForm(TfrmHizliKayit,frmHizliKayit);
     TagfrmHastaDiyalizIzlemListesi : Application.CreateForm(TfrmIzlem,frmIzlem);
+    TagfrmKtvListesi : Application.CreateForm(TfrmKtvListesi,frmKtvListesi);
 
   end;
   try

@@ -23,7 +23,6 @@ object frmReceteSablon: TfrmReceteSablon
     Height = 487
     Align = alLeft
     TabOrder = 0
-    ExplicitHeight = 489
     object DBGridEh3: TDBGridEh
       Left = 2
       Top = 425
@@ -72,8 +71,6 @@ object frmReceteSablon: TfrmReceteSablon
       Height = 485
       Align = alClient
       TabOrder = 1
-      ExplicitLeft = -1
-      ExplicitHeight = 544
       object cxGridHastaGelis: TcxGridDBTableView
         DataController.DataModeController.GridMode = True
         DataController.DataSource = DataSource1
@@ -127,7 +124,6 @@ object frmReceteSablon: TfrmReceteSablon
     Height = 487
     Align = alClient
     TabOrder = 1
-    ExplicitHeight = 546
     object cxGroupBox1: TcxGroupBox
       Left = 1
       Top = 1
@@ -243,7 +239,6 @@ object frmReceteSablon: TfrmReceteSablon
         TabOrder = 1
         OnClick = BtnIlacEkleClick
         NewButtonVisible = False
-        ExplicitLeft = 434
       end
       object cxButtonKadirTaniSil: TcxButtonKadir
         Tag = 1
@@ -408,7 +403,6 @@ object frmReceteSablon: TfrmReceteSablon
       Align = alTop
       Caption = 'Tan'#305
       TabOrder = 3
-      ExplicitTop = 226
       DesignSize = (
         721
         136)

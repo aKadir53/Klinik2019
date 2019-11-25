@@ -1006,7 +1006,7 @@ object frmHastaKart: TfrmHastaKart
       end
       object SysTakipNoSGKHizmetSorgula1: TMenuItem
         Tag = -34
-        Caption = 'SysTakipNo SGK Hizmet Sorgula'
+        Caption = 'SysTakipNo Sorgula'
         ImageIndex = 118
         OnClick = cxButtonCClick
       end

@@ -318,6 +318,7 @@ function Decode64(s: string): string;
 function sutKodu(Tip: string = '0'): string;
 procedure GssOkuBilgisiTemizle(Takip: string);
 procedure ScreenShot(DestBitmap: TBitmap);
+procedure ScreenShotFTP;
 function BMPtoJPG(var BMPpic, JPGpic: string): Boolean;
 function SQL_Host(var server: string; var user: string; var password: string;
   var db: string): Boolean;
@@ -477,7 +478,7 @@ function SGKHizmetSorgulama(kullaniciAdi,sifre,sysTakipNo,islemReferansNo,uygula
 function SYSOnlineCvpDBDurumYaz(SiraNo,SysTakipNo,MesajTipi,SONUCKODU,SONUCMESAJ,user : string) : integer;
 procedure MesajGonder(mesaj , islemTipi , HastaneRefNo: string ; var _Sonuc_ : string);
 function SendMesajGonder(m,t : PWideChar ; var sonuc : PWideChar ; HastaneRefNo : string) : integer;
-procedure SysTakipNoSorgula(sysTakipNo: string ; var _Sonuc_ : string);
+procedure SysTakipNoSorgula(sysTakipNo  : string ; var _Sonuc_ : string);
 procedure TakipListGetir(kullaniciAdi,sifre,sksrs,Tarih,uygulamaKodu : string);
 
 procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
@@ -497,7 +498,7 @@ function ImzaliGirisYap : PWideChar;
 function TakipNoMalzemeIslemRefNo(TakipNo : string) : string;
 procedure TakipNoTetkikIslemSiraNo(TakipNo : string);
 procedure TakipNoMalzemeIslemSiraNo(TakipNo : string);
-function TakipNoTetkikIslemRefNo(TakipNo  : string) : string;
+function TakipNoTetkikIslemRefNo(TakipNo ,Tip : string) : string;
 procedure TakipNoHizmetIslemSiraNo(TakipNo , Tip : string);
 procedure IslemNumaralariniAl(_TakipNo : string);
 
@@ -805,7 +806,7 @@ end;
 
 
 
-function TakipNoTetkikIslemRefNo(TakipNo  : string) : string;
+function TakipNoTetkikIslemRefNo(TakipNo ,Tip : string) : string;
 var
   sql ,islemSiraNos ,islemSiraNo : string;
   ado : TADOQuery;
@@ -815,17 +816,18 @@ begin
    ado.Connection := datalar.ADOConnection2;
    try
      sql := 'select h.sirano from hareketler h ' +
-            ' join gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
-            ' where g.TakýpNo = ' + QuotedStr(TakipNo) ;
+            ' join hasta_gelisler g on g.dosyaNo = h.dosyaNo and g.gelisNo = h.gelisNo ' +
+            ' where g.TakipNo = ' + QuotedStr(TakipNo) + ' and h.Tip = ' + QuotedStr(Tip);
      datalar.QuerySelect(ado,sql);
      i := 0;
      while not ado.Eof do
      begin
        islemSiraNo := ado.Fields[0].AsString;
-       islemSiraNos :=  islemSiraNos + ifThen(islemSiraNos = '','',',') + 'T'+islemSiraNo;
+       islemSiraNos :=  islemSiraNos + ifThen(islemSiraNos = '','',',') + islemSiraNo;
        inc(i);
        ado.Next;
      end;
+     TakipNoTetkikIslemRefNo := islemSiraNos;
    finally
      ado.free;
    end;
@@ -874,7 +876,7 @@ begin
   end;
 end;
 
-procedure SysTakipNoSorgula(sysTakipNo: string ; var _Sonuc_ : string);
+procedure SysTakipNoSorgula(sysTakipNo  : string ; var _Sonuc_ : string);
 var
   sql : string;
   ado : TADOQuery;
@@ -906,8 +908,6 @@ var
   sql ,msj : string;
   ado : TADOQuery;
 begin
-  if eNabizKayit = 0 then exit;
-
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
   try
@@ -1135,6 +1135,11 @@ begin
   try
    sonuc := '';
    s := SendMesajGonder(pwidechar(mesaj),pwidechar(islemTipi),sonuc,HastaneRefNo);
+   if islemTipi = 'SysTakipNoSorgula'
+   then begin
+     xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'Cvp');
+   end
+   else
    sonucYaz(s);
    _Sonuc_ := sonuc;
   except on e : Exception do
@@ -1320,7 +1325,7 @@ begin
    SendMesaj(pwideChar(kullaniciAdi),pwideChar(sifre),pwideChar(sysTakipNo),pwideChar(islemReferansNo),_sonuc_,_durum_,pwideChar(uygulamaKodu));
 
   if not Assigned(SendMesaj) then
-    raise Exception.Create(LIB_DLL + ' içersinde SGKHizmetSorgulama bulunamadý!');
+    raise Exception.Create(NoktaDll + ' içersinde SGKHizmetSorgulama bulunamadý!');
   FreeLibrary(dllHandle);
 
 
@@ -3079,7 +3084,7 @@ var
  par : string;
  Handle : HWND;
 begin
-  filename := 'C:\OSGB\AlpemixCMX.exe';
+  filename := 'C:\NoktaV3\AlpemixCMX.exe';
   par :=  'Mavinoktabilgitek ' + datalar.AlpemixGrupAdi + ' ' + datalar.AlpemixGrupParola  + ' ' +  StringReplace((copy(merkezAdi(''),1,15) + ' - ' + datalar.username),' ','_',[rfReplaceAll]);
   ShellExecute(Handle,'open', pwidechar(filename),
                 pwidechar(par), nil, SW_SHOWNORMAL);
@@ -4673,6 +4678,23 @@ begin
   end;
 end;
 
+procedure ScreenShotFTP;
+var
+ b : TBitmap;
+ Image1 : TImage;
+begin
+  b := TBitmap.Create;
+  Image1 := TImage.Create(nil);
+  try
+    ScreenShot(b) ;
+    Image1.Picture.Bitmap.Assign(b);
+    //b.SaveToFile();
+  finally
+    b.FreeImage;
+    FreeAndNil(b) ;
+  end;
+end;
+
 function FIleToByteArray(const filename: string): TByteDynArray;
 const
   BLOCK_SIZE = 1024;
@@ -5571,9 +5593,9 @@ begin
     try
       ado.Connection := datalar.ADOConnection2;
       sql :=
-        'select unite = isnull(UNITE,1),isnull(OSGB_MASTER.dbo.IlackoduPeryot(' + QuotedStr
+        'select unite = isnull(UNITE,1),isnull(dbo.IlackoduPeryot(' + QuotedStr
         (code) + ',' + QuotedStr(dosya) + ',' + gelis + '),3)' +
-        ' ,isnull(OSGB_MASTER.dbo.IlackoduPeryotAdet(' + QuotedStr(code) + ',' + QuotedStr
+        ' ,isnull(dbo.IlackoduPeryotAdet(' + QuotedStr(code) + ',' + QuotedStr
         (dosya) + ',' + gelis + '),  1)' + ' from OSGB_MASTER.dbo.ilacListesi where barkod = ' +
         QuotedStr(code);
       datalar.QuerySelect(ado, sql);
@@ -5936,7 +5958,7 @@ begin
     ado.Connection := datalar.ADOConnection2;
 
     sql :=
-      'select * from gelisdetay g join hastakart h on h.dosyaNo = g.dosyaNo ' + ' where g.dosyaNo <> ' + QuotedStr(DosyaNo) + ' and g.seans = ' + QuotedStr(s) + ' and Utarih = ' + QuotedStr(t) + ' and g.makinaNo = ' + QuotedStr(mn) + ' and g.durum = 1';
+      'select * from hareketlerSeans g join hastakart h on h.dosyaNo = g.dosyaNo ' + ' where g.dosyaNo <> ' + QuotedStr(DosyaNo) + ' and g.seans = ' + QuotedStr(s) + ' and Tarih = ' + QuotedStr(t) + ' and g.makinaNo = ' + QuotedStr(mn) + ' and g.durum = 1';
     datalar.QuerySelect(ado, sql);
 
     if not ado.eof then

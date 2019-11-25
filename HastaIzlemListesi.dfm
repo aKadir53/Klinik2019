@@ -42,24 +42,16 @@ object frmIzlem: TfrmIzlem
       Style.Font.Height = -12
       Style.Font.Name = 'Tahoma'
       Style.Font.Style = [fsBold]
-      Style.LookAndFeel.NativeStyle = False
-      Style.LookAndFeel.SkinName = 'McSkin'
       Style.Shadow = False
       Style.IsFontAssigned = True
-      StyleDisabled.LookAndFeel.NativeStyle = False
-      StyleDisabled.LookAndFeel.SkinName = 'McSkin'
-      StyleFocused.LookAndFeel.NativeStyle = False
-      StyleFocused.LookAndFeel.SkinName = 'McSkin'
-      StyleHot.LookAndFeel.NativeStyle = False
-      StyleHot.LookAndFeel.SkinName = 'McSkin'
       TabOrder = 0
-      Height = 626
+      Height = 642
       Width = 1293
       object cxGrid2: TcxGrid
         Left = 3
-        Top = 550
+        Top = 565
         Width = 1287
-        Height = 65
+        Height = 67
         Align = alBottom
         Font.Charset = TURKISH_CHARSET
         Font.Color = clWindowText
@@ -71,9 +63,9 @@ object frmIzlem: TfrmIzlem
         Visible = False
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
-        LookAndFeel.Kind = lfOffice11
-        LookAndFeel.NativeStyle = False
-        LookAndFeel.SkinName = 'McSkin'
+        ExplicitLeft = 2
+        ExplicitTop = 573
+        ExplicitWidth = 1289
         object Liste: TcxGridDBTableView
           PopupMenu = PopupMenu1
           OnDblClick = ListeDblClick
@@ -502,7 +494,7 @@ object frmIzlem: TfrmIzlem
         Left = 3
         Top = 16
         Width = 1287
-        Height = 534
+        Height = 549
         Align = alClient
         Font.Charset = TURKISH_CHARSET
         Font.Color = clWindowText
@@ -513,14 +505,13 @@ object frmIzlem: TfrmIzlem
         TabOrder = 1
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
-        LookAndFeel.Kind = lfOffice11
-        LookAndFeel.NativeStyle = False
-        LookAndFeel.SkinName = 'McSkin'
         ExcelFileName = 'IzlemListesi'
         ExceleGonder = True
         PopupForm = False
-        ExplicitTop = 39
-        ExplicitHeight = 511
+        ExplicitLeft = 2
+        ExplicitTop = -2
+        ExplicitWidth = 1289
+        ExplicitHeight = 575
         object gridHastalar: TcxGridDBBandedTableView
           PopupMenu = PopupMenu1
           DataController.DataSource = DataSource1
@@ -537,7 +528,7 @@ object frmIzlem: TfrmIzlem
               Caption = 'Hasta Bilgileri'
               FixedKind = fkLeft
               Styles.Content = cxStyle3
-              Width = 436
+              Width = 448
             end
             item
               Caption = 'Tedavi Order Bilgileri'
@@ -825,7 +816,7 @@ object frmIzlem: TfrmIzlem
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
             Styles.Content = cxStyle4
-            Width = 67
+            Width = 61
             Position.BandIndex = 0
             Position.ColIndex = 6
             Position.RowIndex = 0
@@ -839,7 +830,7 @@ object frmIzlem: TfrmIzlem
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 53
+            Width = 49
             Position.BandIndex = 0
             Position.ColIndex = 4
             Position.RowIndex = 0
@@ -853,7 +844,7 @@ object frmIzlem: TfrmIzlem
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 46
+            Width = 48
             Position.BandIndex = 0
             Position.ColIndex = 5
             Position.RowIndex = 0
@@ -939,8 +930,7 @@ object frmIzlem: TfrmIzlem
             Position.RowIndex = 0
           end
           object gridHastalarkanah: TcxGridDBBandedColumn
-            Caption = 'APH'
-            DataBinding.FieldName = 'kanah'
+            DataBinding.FieldName = 'APH'
             PropertiesClassName = 'TcxComboBoxProperties'
             Properties.Alignment.Horz = taCenter
             Properties.Alignment.Vert = taVCenter
@@ -993,6 +983,7 @@ object frmIzlem: TfrmIzlem
             Caption = 'Uzman Not'
             DataBinding.FieldName = 'digerNot'
             PropertiesClassName = 'TcxMemoProperties'
+            Properties.Alignment = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 153
@@ -1246,6 +1237,8 @@ object frmIzlem: TfrmIzlem
             Caption = 'Giri'#351' Kilo'
             DataBinding.FieldName = 'GIRISKILO'
             PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
@@ -1259,6 +1252,8 @@ object frmIzlem: TfrmIzlem
             Caption = #199#305'k'#305#351' Kilo'
             DataBinding.FieldName = 'CIKISKILO'
             PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
@@ -1291,7 +1286,7 @@ object frmIzlem: TfrmIzlem
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 101
+            Width = 92
             Position.BandIndex = 0
             Position.ColIndex = 2
             Position.RowIndex = 0
@@ -1305,7 +1300,7 @@ object frmIzlem: TfrmIzlem
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 99
+            Width = 95
             Position.BandIndex = 0
             Position.ColIndex = 3
             Position.RowIndex = 0
@@ -1374,7 +1369,7 @@ object frmIzlem: TfrmIzlem
             Caption = 'TDisID'
             DataBinding.FieldName = 'YKARTNO'
             HeaderAlignmentVert = vaCenter
-            Width = 37
+            Width = 36
             Position.BandIndex = 0
             Position.ColIndex = 7
             Position.RowIndex = 0
@@ -1386,7 +1381,7 @@ object frmIzlem: TfrmIzlem
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 70
+            Width = 67
             Position.BandIndex = 0
             Position.ColIndex = 1
             Position.RowIndex = 0
@@ -1400,16 +1395,16 @@ object frmIzlem: TfrmIzlem
     end
     object Panel4: TPanel
       Left = 1
-      Top = 627
+      Top = 643
       Width = 1293
-      Height = 41
+      Height = 25
       Align = alBottom
       TabOrder = 1
       object txtLog: TMemo
         Left = 1
         Top = 1
         Width = 1291
-        Height = 39
+        Height = 23
         Align = alClient
         Color = 8454143
         Lines.Strings = (

@@ -938,6 +938,7 @@
       TabOrder = 0
       Properties.ActivePage = SeanslarPage
       Properties.Style = 11
+      OnPageChanging = HizmetPagePageChanging
       ClientRectBottom = 563
       ClientRectLeft = 3
       ClientRectRight = 1311
@@ -1274,7 +1275,7 @@
             end
             object Listesirano: TcxGridDBBandedColumn
               Caption = 'RefNo'
-              DataBinding.FieldName = 'sirano'
+              DataBinding.FieldName = 'islemRefNo'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -2012,6 +2013,13 @@
               Position.RowIndex = 0
               IsCaptionAssigned = True
             end
+            object ListeColumn5: TcxGridDBBandedColumn
+              DataBinding.FieldName = 'HastaneRefNo'
+              Visible = False
+              Position.BandIndex = 0
+              Position.ColIndex = 6
+              Position.RowIndex = 0
+            end
           end
           object cxGrid_SeansLevel1: TcxGridLevel
             GridView = Liste
@@ -2020,7 +2028,7 @@
       end
       object TetkiklerPage: TcxTabSheet
         Caption = 'Tetkikler'
-        object cxGrid5: TcxGrid
+        object GridTetkikList: TcxGrid
           Left = 0
           Top = 0
           Width = 689
@@ -2063,7 +2071,7 @@
                 Caption = 'Hasta Geli'#351' Listesi'
                 FixedKind = fkLeft
                 Styles.Header = cxStyle2
-                Width = 665
+                Width = 680
               end>
             object GridListColumn1: TcxGridDBBandedColumn
               Caption = 'D.No'
@@ -2092,7 +2100,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 35
+              Width = 47
               Position.BandIndex = 0
               Position.ColIndex = 1
               Position.RowIndex = 0
@@ -2106,7 +2114,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 89
+              Width = 86
               Position.BandIndex = 0
               Position.ColIndex = 5
               Position.RowIndex = 0
@@ -2120,7 +2128,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 87
+              Width = 84
               Position.BandIndex = 0
               Position.ColIndex = 6
               Position.RowIndex = 0
@@ -2135,7 +2143,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 111
+              Width = 106
               Position.BandIndex = 0
               Position.ColIndex = 7
               Position.RowIndex = 0
@@ -2151,7 +2159,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 62
+              Width = 61
               Position.BandIndex = 0
               Position.ColIndex = 8
               Position.RowIndex = 0
@@ -2166,7 +2174,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 99
+              Width = 96
               Position.BandIndex = 0
               Position.ColIndex = 2
               Position.RowIndex = 0
@@ -2181,7 +2189,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 131
+              Width = 127
               Position.BandIndex = 0
               Position.ColIndex = 3
               Position.RowIndex = 0
@@ -2897,18 +2905,6 @@
     OnPopup = PopupMenu1Popup
     Left = 228
     Top = 142
-    object SeansMEdulayaKaydet1: TMenuItem
-      Tag = -1
-      Caption = 'Seanslar'#305' Medulaya Kaydet'
-      ImageIndex = 15
-      OnClick = cxKaydetClick
-    end
-    object Seansptal1: TMenuItem
-      Tag = -2
-      Caption = 'Seanslar'#305'  '#304'ptal Et'
-      ImageIndex = 13
-      OnClick = cxKaydetClick
-    end
     object H3: TMenuItem
       Tag = -18
       Caption = 'Medulada Kay'#305'tl'#305' Hizmet Kodu De'#287'i'#351'tir'
@@ -2927,12 +2923,6 @@
         Caption = 'P704234  >>  P704230'
         OnClick = cxKaydetClick
       end
-    end
-    object RaporOku1: TMenuItem
-      Tag = -3
-      Caption = 'Medula Raporlar'#305
-      ImageIndex = 67
-      OnClick = cxKaydetClick
     end
     object ahlilSonular1: TMenuItem
       Tag = -4
@@ -2958,6 +2948,46 @@
         OnClick = T2Click
       end
     end
+    object S7: TMenuItem
+      Caption = 'SGK'
+      ImageIndex = 76
+      object SeansMEdulayaKaydet1: TMenuItem
+        Tag = -1
+        Caption = 'Seanslar'#305' Medulaya Kaydet'
+        ImageIndex = 15
+        OnClick = cxKaydetClick
+      end
+      object Seansptal1: TMenuItem
+        Tag = -2
+        Caption = 'Seanslar'#305'  '#304'ptal Et'
+        ImageIndex = 13
+        OnClick = cxKaydetClick
+      end
+      object RaporOku1: TMenuItem
+        Tag = -3
+        Caption = 'Medula Raporlar'#305
+        ImageIndex = 67
+        OnClick = cxKaydetClick
+      end
+      object D1: TMenuItem
+        Tag = -8
+        Caption = 'Damar '#304'zi sorgulamas'#305' Yap'
+        ImageIndex = 106
+        OnClick = cxKaydetClick
+      end
+      object T1: TMenuItem
+        Tag = -9
+        Caption = 'Takip Bilgisi Oku'
+        ImageIndex = 68
+        OnClick = cxKaydetClick
+      end
+      object H1: TMenuItem
+        Tag = -10
+        Caption = 'Hastan'#305'n Takipleri'
+        ImageIndex = 72
+        OnClick = cxKaydetClick
+      end
+    end
     object N1: TMenuItem
       Caption = '-'
     end
@@ -2977,27 +3007,6 @@
       Tag = -7
       Caption = 'Hasta Kart'#305
       ImageIndex = 44
-      OnClick = cxKaydetClick
-    end
-    object N2: TMenuItem
-      Caption = '-'
-    end
-    object D1: TMenuItem
-      Tag = -8
-      Caption = 'Damar '#304'zi sorgulamas'#305' Yap'
-      ImageIndex = 106
-      OnClick = cxKaydetClick
-    end
-    object T1: TMenuItem
-      Tag = -9
-      Caption = 'Takip Bilgisi Oku'
-      ImageIndex = 68
-      OnClick = cxKaydetClick
-    end
-    object H1: TMenuItem
-      Tag = -10
-      Caption = 'Hastan'#305'n Takipleri'
-      ImageIndex = 72
       OnClick = cxKaydetClick
     end
     object N3: TMenuItem
@@ -3350,64 +3359,70 @@
     Parameters = <>
     SQL.Strings = (
       'exec sp_TopluTetkikGetir '#39'20180401'#39','#39'20190430'#39)
-    Left = 160
-    Top = 202
+    Left = 176
+    Top = 258
   end
   object PopupMenu2: TPopupMenu
+    Images = DATALAR.imag24png
     Left = 360
     Top = 328
-    object T2: TMenuItem
-      Caption = 'Tetkikleri Medulaya Kaydet'
-      OnClick = T2Click
+    object E6: TMenuItem
+      Caption = 'E-Nab'#305'z'
+      ImageIndex = 118
+      object E2: TMenuItem
+        Tag = 4
+        Caption = 'Tetkikleri E-Nab'#305'za Kaydet'
+        OnClick = T2Click
+      end
+      object M3: TMenuItem
+        Tag = 7
+        Caption = 'Malzemeleri E-Nab'#305'za Kaydet'
+        OnClick = T2Click
+      end
+      object s4: TMenuItem
+        Tag = 2
+        Caption = 'SysTakipNoSorgula'
+        ImageIndex = 36
+        OnClick = T2Click
+      end
+      object S5: TMenuItem
+        Tag = 3
+        Caption = 'SysTakipNo Medula Bildirim Sorgula'
+        OnClick = T2Click
+      end
     end
-    object M1: TMenuItem
-      Tag = 5
-      Caption = 'Malzemeleri Medulaya Kaydet'
-      OnClick = T2Click
-    end
-    object T4: TMenuItem
-      Tag = -9
-      Caption = 'Takip Bilgisini Oku'
-      OnClick = T2Click
-    end
-    object M4: TMenuItem
-      Caption = 'Medula Veri Silme '#304#351'lemi'
-      object T3: TMenuItem
-        Tag = 1
-        Caption = 'Tetkikleri Meduladan Sil'
+    object S8: TMenuItem
+      Caption = 'SGK'
+      ImageIndex = 76
+      object T2: TMenuItem
+        Caption = 'Tetkikleri Medulaya Kaydet'
+        ImageIndex = 15
+        OnClick = T2Click
+      end
+      object M1: TMenuItem
+        Tag = 5
+        Caption = 'Malzemeleri Medulaya Kaydet'
+        ImageIndex = 14
         OnClick = T2Click
       end
       object M2: TMenuItem
         Tag = 6
         Caption = 'Malzemeleri Meduladan Sil'
+        ImageIndex = 16
         OnClick = T2Click
       end
-    end
-    object N8: TMenuItem
-      Caption = '-'
-    end
-    object s4: TMenuItem
-      Tag = 2
-      Caption = 'SysTakipNoSorgula'
-      OnClick = T2Click
-    end
-    object S5: TMenuItem
-      Tag = 3
-      Caption = 'SysTakipNo Medula Bildirim Sorgula'
-      OnClick = T2Click
-    end
-    object N9: TMenuItem
-      Caption = '-'
-    end
-    object E2: TMenuItem
-      Tag = 4
-      Caption = 'Tetkikleri E-Nab'#305'za Kaydet'
-      OnClick = T2Click
-    end
-    object M3: TMenuItem
-      Tag = 7
-      Caption = 'Malzemeleri E-Nab'#305'za Kaydet'
-      OnClick = T2Click
+      object T3: TMenuItem
+        Tag = 1
+        Caption = 'Tetkikleri Meduladan Sil'
+        ImageIndex = 13
+        OnClick = T2Click
+      end
+      object T4: TMenuItem
+        Tag = -9
+        Caption = 'Takip Bilgisini Oku'
+        ImageIndex = 35
+        OnClick = T2Click
+      end
     end
   end
 end

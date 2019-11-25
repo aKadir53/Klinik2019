@@ -24,8 +24,6 @@ uses
 
 type
   TfrmKiloOrder = class(TGirisForm)
-    pnlOnay: TPanel;
-    txtinfo: TLabel;
     cxGrid2: TcxGridKadir;
     cxGridLevel1: TcxGridLevel;
     ado: TADOQuery;
@@ -61,9 +59,6 @@ type
     procedure K1Click(Sender: TObject);
     procedure B1Click(Sender: TObject);
     procedure adoAfterPost(DataSet: TDataSet);
-    procedure GridEkstreEditKeyDown(Sender: TcxCustomGridTableView;
-      AItem: TcxCustomGridTableItem; AEdit: TcxCustomEdit; var Key: Word;
-      Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure E1Click(Sender: TObject);
     procedure Y1Click(Sender: TObject);
@@ -170,10 +165,10 @@ begin
   cxPanel.Visible := false;
 
   TopPanel.Visible := True;
-  TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False,True);
+  TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False,False);
  // GridEkstre.DataController.DataSource := DataSource;
 
-
+   (*
    chkList.Properties.Items.Clear;
    Chk := chkList.Properties.Items.Add;
    Chk.Caption := 'Kilo Deðerleri Ýþlenmemiþ Hastalar';
@@ -184,26 +179,8 @@ begin
    Chk := chkList.Properties.Items.Add;
    Chk.Caption := 'Gelinmeyen Seanslarý Göster';
    Chk.Tag := 2;
+     *)
 
-
-end;
-
-procedure TfrmKiloOrder.GridEkstreEditKeyDown(Sender: TcxCustomGridTableView;
-  AItem: TcxCustomGridTableItem; AEdit: TcxCustomEdit; var Key: Word;
-  Shift: TShiftState);
-begin
-  inherited;
-  if AItem.Index = 6
-  then
-    if key = 13 then key := VK_TAB;
-
-  if AItem.Index = 7
-  then
-    if key = 13 then
-    begin
-     ado.Next;
-   //  Sender.Controller.FocusedItem := GridEkstreColumn3;
-    end;
 end;
 
 procedure TfrmKiloOrder.H1Click(Sender: TObject);
@@ -212,17 +189,17 @@ var
  dosyaNo : string;
  Form : TGirisForm;
 begin
-   //  satir := GridEkstre.Controller.SelectedRows[0].RecordIndex;
-     dosyaNo := _Dataset.FieldByName('dosyaNo').AsString;
-     //Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index);
-     if FindTab(AnaForm.sayfalar,'TabfrmHastaKart')
+     dosyaNo := ado.FieldByName('dosyaNo').AsString;
+
+     if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
      Then begin
        Form := TGirisForm(FormClassType(TagfrmHastaKart));
        TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := dosyaNo;
+       TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
        TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
      end
      Else begin
-      Form := FormINIT(TagfrmHastaKart,self,dosyaNo,NewTab(AnaForm.sayfalar,'TabfrmHastaKart'),ikEvet,'Giriþ');
+      Form := FormINIT(TagfrmHastaKart,self,dosyaNo,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
       if Form <> nil then Form.show;
      end;
 end;
@@ -230,42 +207,24 @@ end;
 procedure TfrmKiloOrder.K1Click(Sender: TObject);
 var
   dosyaNo , gelisNo , sira ,sql , tt , doktor: string;
-  adoSql : TADOQuery;
-  book : TBookmark;
 begin
+   dosyaNo := ado.FieldByName('dosyaNo').AsString;
+   gelisNo := ado.FieldByName('gelisNo').AsString;
+   sira := ado.FieldByName('siraNo').AsString;
 
-  dosyaNo :=_Dataset.FieldByName('dosyaNo').AsString;
-  gelisNo := _Dataset.FieldByName('gelisNo').AsString;
-  sira := _Dataset.FieldByName('siraNo').AsString;
-  tt := _Dataset.FieldByName('UTarih').AsString;
-  doktor := copy(_Dataset.FieldByName('doktor').AsString,1,4);
+   datalar.QueryExec(
+   'update hareketler set KanAlindimi = 0 where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO
+   +
+   ' update hasta_gelisler set KanAlimZamani =  NULL ' +
+   ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO);
 
-  adoSql := TADOQuery.Create(nil);
-  adoSql.Connection := datalar.ADOConnection2;
-
-  sql := 'update gelisdetay set KanAlindimi = 0 where dosyaNo = ' +
-          QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and KanAlindimi = 1 ' +
-          ' update gelisDetay set KanAlindimi = 1 where siraNo = ' + sira;
-
-  datalar.QueryExec(adoSql,sql);
-
-  sql := 'update hareketler set TarIh = ' + QuotedStr(tt) +
-         ',yapandoktor = ' + QuotedStr(doktor) +
-         ',isteyendoktor = ' + QuotedStr(doktor) +
-         ' where dosyaNo = ' +
-          QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
-  datalar.QueryExec(adoSql,sql);
+    datalar.QueryExec('update hareketler set kanAlindimi = 1 where siraNo = ' + sira
+                      +
+                      ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(FormatDateTime('YYYYMMDD',ado.FieldByName('Tarih').Asdatetime)) +
+                      ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO);
 
 
-
-  book := _Dataset.Bookmark;
-
-  _Dataset.Active := false;
-  _Dataset.Active := true;
-
-  _Dataset.GotoBookmark(book);
-
-  adoSql.Free;
+   ado.Requery();
 
 end;
 
@@ -273,8 +232,8 @@ procedure TfrmKiloOrder.TopPanelButonClick(Sender: TObject);
 var
   sql : string;
 begin
-  sql :='select HK.TCKIMLIKNO, hk.HASTAADI+'' ''+hk.HASTASOYADI hastaAdi ,Tarih,' +
-        ' hk.IdealKilo,GIRISKILO,CIKISKILO ,dbo.fn_yas(HK.dogumTARIHI) yas, ' +
+  sql :='select h.dosyaNo,h.gelisNo, h.sirano,HK.TCKIMLIKNO, hk.HASTAADI+'' ''+hk.HASTASOYADI HastaAdi ,Tarih,' +
+        ' hk.IdealKilo,GIRISKILO,CIKISKILO ,dbo.fn_yas(HK.dogumTARIHI) Yas, CINSIYETI cins,' +
         ' tanG,Tanc,NabizG,NabizC,TanGK,TanCK,KanAlindimi,h.durum ' +
         ' from hareketler h ' +
         ' join hastakart hk on hk.dosyaNo = h.dosyaNo ' +

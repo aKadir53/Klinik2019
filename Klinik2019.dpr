@@ -141,10 +141,12 @@ begin
 
   // form2.show;
 
-//  FormatSettings.ShortDateFormat := 'dd.mm.yyyy';
-//  FormatSettings.LongDateFormat := 'dd mmmm yyyy dddd';
-
-  //if pos('UYUM',paramStr(0)) > 0 then isg := 'UYUMISG.exe' else isg := 'isg.exe';
+  if not DirectoryExists('C:\NoktaV3\Http')
+  then
+    MkDir('C:\NoktaV3\Http');
+  if not DirectoryExists('C:\NoktaV3\Message')
+  then
+    MkDir('C:\NoktaV3\Message');
 
 
   datalar.programTip := copy(ExtractFileName(Application.ExeName),1,1);

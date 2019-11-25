@@ -723,7 +723,7 @@ end;
 procedure TfrmHastaKart.FotoEkle;
 var
  Fo : TFileOpenDialog;
- filename,dosyaNo : string;
+ filename,dosyaNo ,dosyaTip : string;
  jp : TJPEGImage;
 begin
   dosyaNo := TcxButtonEditKadir(FindComponent('dosyaNo')).Text;
@@ -741,22 +741,34 @@ begin
   end;
 
   Fo := TFileOpenDialog.Create(nil);
+
   try
     if not fo.Execute then Exit;
     filename := fo.FileName;
+    dosyaTip := ExtractFileExt(filename);
+    dosyaTip := StringReplace(dosyaTip,'.','',[rfReplaceAll]);
   finally
     fo.Free;
   end;
-  Foto.Picture.LoadFromFile(filename);
 
-  jp := TJpegimage.Create;
-  try
-    jp.Assign(FOTO.Picture);
-    datalar.ADO_FOTO.FieldByName('Foto').Assign(jp);
-    datalar.ADO_FOTO.Post;
-  finally
-    jp.Free;
+  if (dosyaTip = 'JPG') or
+     (dosyaTip = 'jpg')
+  then begin
+      Foto.Picture.LoadFromFile(filename);
+      jp := TJpegimage.Create;
+      try
+        jp.Assign(FOTO.Picture);
+        datalar.ADO_FOTO.FieldByName('Foto').Assign(jp);
+        datalar.ADO_FOTO.Post;
+      finally
+        jp.Free;
+      end;
+  end
+  else begin
+   ShowMessageSkin('Sadece JPG formatlarý Yüklenebilir','','','info');
+   datalar.ADO_FOTO.Cancel;
   end;
+
 end;
 
 
@@ -852,7 +864,7 @@ end;
 procedure TfrmHastaKart.GridGelislerDblClick(Sender: TObject);
 begin
   inherited;
-//    SeansKart1.Click;
+    SeansKart1.Click;
 end;
 
 procedure TfrmHastaKart.GridGelislerFocusedRecordChanged(
@@ -1473,7 +1485,7 @@ procedure TfrmHastaKart.cxButtonCClick(Sender: TObject);
 var
  List : TListeAc;
  _L_ : ArrayListeSecimler;
- _name_, tel,msj,sysTakipNo : string;
+ _name_, tel,msj,sysTakipNo,eNabizSonuc : string;
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
 begin
@@ -1669,9 +1681,11 @@ begin
          GelisSil;
        end;
  -34 : begin
-         sysTakipNo := cxGridGelis.Dataset.FieldByName('sysTakipNo').AsString;
+           sysTakipNo := cxGridGelis.Dataset.FieldByName('sysTakipNo').AsString;
         // ShowMessageSkin(
-           SGKHizmetSorgulama(datalar._userSaglikNet2_,DATALAR._passSaglikNet2_,sysTakipNo,'',ktsHbysKodu);
+          // SGKHizmetSorgulama(datalar._userSaglikNet2_,DATALAR._passSaglikNet2_,sysTakipNo,'',ktsHbysKodu);
+           SysTakipNoSorgula(sysTakipNo,eNabizSonuc);
+
        //  '','','info');
        end;
 

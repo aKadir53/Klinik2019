@@ -851,6 +851,13 @@ object frmHastaSeans: TfrmHastaSeans
               Position.RowIndex = 0
               IsCaptionAssigned = True
             end
+            object ListeSColumn6: TcxGridDBBandedColumn
+              DataBinding.FieldName = 'sysTakipNo'
+              Visible = False
+              Position.BandIndex = 0
+              Position.ColIndex = 48
+              Position.RowIndex = 0
+            end
           end
           object cxGrid2Level1: TcxGridLevel
             GridView = ListeS
@@ -996,23 +1003,34 @@ object frmHastaSeans: TfrmHastaSeans
     object N6: TMenuItem
       Caption = '-'
     end
-    object s5: TMenuItem
-      Tag = -9
-      Caption = 'Seanslar'#305' Medulaya Kaydet'
-      ImageIndex = 15
-      OnClick = cxButtonCClick
-    end
-    object S4: TMenuItem
-      Tag = -8
-      Caption = 'Seans'#305' Meduladan '#304'ptal Et'
-      ImageIndex = 13
-      OnClick = cxButtonCClick
-    end
-    object D1: TMenuItem
-      Tag = -7
-      Caption = 'Damar '#304'zi Kontrolu Yap'
-      ImageIndex = 106
-      OnClick = cxButtonCClick
+    object M1: TMenuItem
+      Tag = -100
+      Caption = 'Medula'
+      ImageIndex = 76
+      object s5: TMenuItem
+        Tag = -9
+        Caption = 'Seanslar'#305' Medulaya Kaydet'
+        ImageIndex = 15
+        OnClick = cxButtonCClick
+      end
+      object S4: TMenuItem
+        Tag = -8
+        Caption = 'Seans'#305' Meduladan '#304'ptal Et'
+        ImageIndex = 13
+        OnClick = cxButtonCClick
+      end
+      object D1: TMenuItem
+        Tag = -7
+        Caption = 'Damar '#304'zi Kontrolu Yap'
+        ImageIndex = 106
+        OnClick = cxButtonCClick
+      end
+      object T1: TMenuItem
+        Tag = -30
+        Caption = 'Takip Bilgisi Oku'
+        Visible = False
+        OnClick = cxButtonCClick
+      end
     end
     object N1: TMenuItem
       Caption = '-'
@@ -1020,6 +1038,7 @@ object frmHastaSeans: TfrmHastaSeans
     object ENabzHizmetKayt1: TMenuItem
       Tag = -22
       Caption = 'E-Nab'#305'z Hizmet Kay'#305't'
+      ImageIndex = 118
       OnClick = cxButtonCClick
     end
     object N7: TMenuItem
@@ -1043,8 +1062,13 @@ object frmHastaSeans: TfrmHastaSeans
     end
     object K1: TMenuItem
       Tag = -20
-      Caption = 'Kan Alinan Seans Olarak '#304#351'aretler'
+      Caption = 'Kan Alinan Seans Olarak '#304#351'aretle'
       ImageIndex = 117
+      OnClick = cxButtonCClick
+    end
+    object KanAlinanSeansOlarakaretle1: TMenuItem
+      Tag = -21
+      Caption = 'Kan Alimini '#304'ptal Et'
       OnClick = cxButtonCClick
     end
   end

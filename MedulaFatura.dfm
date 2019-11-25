@@ -1967,16 +1967,16 @@ object frmMedulaFatura: TfrmMedulaFatura
       OnClick = cxButtonCClick
     end
     object F5: TMenuItem
-      Caption = 'Fatura Kes'
+      Caption = 'Fatura '#304#351'lemleri'
       ImageIndex = 81
       object K1: TMenuItem
         Tag = -18
-        Caption = 'Kurum Fatura '#304'cmali'
+        Caption = 'Fatura '#304'cmali'
         OnClick = cxButtonCClick
       end
       object K2: TMenuItem
         Tag = -19
-        Caption = 'Kurum Fatura'
+        Caption = 'Fatura Olu'#351'tur'
         OnClick = cxButtonCClick
       end
     end
@@ -2067,12 +2067,12 @@ object frmMedulaFatura: TfrmMedulaFatura
       '  left JOIN gssTakipOkuDiger d ON d.islemSiraNo = fd.islemsiraNo'
       'WHERE g.BHDAT BETWEEN '#39'20150201'#39' AND '#39'20150228'#39
       'GROUP BY d.sutKodu')
-    Left = 744
+    Left = 696
     Top = 186
   end
   object DataSource3: TDataSource
     DataSet = ADO_Detay_toplam
-    Left = 800
-    Top = 194
+    Left = 760
+    Top = 186
   end
 end

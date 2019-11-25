@@ -1304,11 +1304,13 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
     object S2: TMenuItem
       Tag = -21
       Caption = 'SysTakipNo SGK Bildirim Sorgula'
+      Visible = False
       OnClick = cxKaydetClick
     end
     object S3: TMenuItem
       Tag = -22
       Caption = 'SysTakipNo Sorgula'
+      ImageIndex = 36
       OnClick = cxKaydetClick
     end
     object N2: TMenuItem
@@ -1317,7 +1319,7 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
     object G2: TMenuItem
       Tag = -19
       Caption = 'G'#252'n Sonu G'#246'nderim'
-      ImageIndex = 9
+      ImageIndex = 3
       OnClick = cxKaydetClick
     end
     object K1: TMenuItem

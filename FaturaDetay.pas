@@ -66,6 +66,7 @@ type
     TutarToplam: TcxCurrencyEdit;
     kdvToplam: TcxCurrencyEdit;
     H1: TMenuItem;
+    H2: TMenuItem;
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -213,6 +214,7 @@ begin
   Enabled;
  end;
   Result := True;
+  inherited;
 end;
 
 
@@ -229,7 +231,7 @@ end;
 procedure TfrmFaturaDetay.AfterPost(DataSet: TDataSet);
 begin
      cxPanelButtonEnabled(false,True,false);
-     FaturaGrid.Dataset.Refresh;
+     FaturaGrid.Dataset.Requery();
      FaturaToplamlari;
 
 end;
@@ -287,13 +289,21 @@ begin
             List.Free;
           end;
         end;
+  -27 : begin
+          if mrYes = ShowMessageSkin('Satýrý Silmek Ýstediðinizden Emin misiniz?','','','msg')
+          then begin
+            FaturaGrid.Dataset.Delete;
+            FaturaGrid.Dataset.Requery();
+            FaturaToplamlari;
+          end;
+        end;
   end;
 end;
 
 procedure TfrmFaturaDetay.FormCreate(Sender: TObject);
 var
   List,Faturalar : TListeAc;
-  FaturaTip,FaturaOzelKodlari : TcxImageComboKadir;
+  FaturaTip,FaturaOzelKodlari , sirketKod : TcxImageComboKadir;
   FaturaTarihi : TcxDateEditKadir;
   SirketAdi : TcxTextEditKadir;
 begin
@@ -320,7 +330,7 @@ begin
   setDataString(self,'GIBFaturaNo','Fatura GIB No',Kolon1,'FaturaID',100,False,'',True);
   setDataString(self,'Guid','Fatura Guid',Kolon1,'FaturaID',250,False,'',True);
 
-
+  (*
   List := ListeAcCreate('SIRKETLER_TNM','sirketKod,tanimi,Aktif',
                        'SirketKod,Sirket,Durum',
                        '50,250,50','SirketKod','Firma Listesi',' FirmaTip = 3',5,True);
@@ -331,8 +341,21 @@ begin
   sirketAdi.Properties.ReadOnly := True;
   //sirketAdi.Enabled := False;
   SirketAdi.TabStop := False;
-  setDataStringKontrol(self,sirketAdi,'sirketTanimi','',Kolon1,'SirketTnm',350);
+  setDataStringKontrol(self,sirketAdi,'sirketTanimi','',Kolon1,'SirketTnm',500);
  // setDataStringBLabel(self,'SirketKod',Kolon1,'SirketTnm',350,' ','','sirketTanimi');
+
+   *)
+  sirketKod := TcxImageComboKadir.Create(self);
+  sirketKod.Conn := datalar.ADOConnection2;
+  sirketKod.TableName := 'SIRKETLER_TNM';
+  sirketKod.ValueField := 'sirketKod';
+  sirketKod.DisplayField := 'tanimi';
+  sirketKod.Filter := ' FirmaTip = 3';
+  sirketKod.BosOlamaz := True;
+  setDataStringKontrol(self,sirketKod,'SirketKod','Müþteri',Kolon1,'',693);
+  OrtakEventAta(sirketKod);
+
+
 
   FaturaTip := TcxImageComboKadir.Create(self);
   FaturaTip.Conn := datalar.ADOConnection2;
@@ -365,9 +388,9 @@ begin
   FaturaGrid.Dataset.OnNewRecord := NewRecord;
   FaturaGrid.Dataset.AfterPost := AfterPost;
 
-  kolon2.Width := 0;
-  Kolon3.Width := 0;
-  Kolon4.Width := 0;
+  kolon2.Visible := false;
+  kolon3.Visible := false;
+  kolon4.Visible := false;
   setDataStringBLabel(self,'bosSatirFTop',kolon1,'FTop',538,'');
   setDataStringKontrol(self,TutarToplam,'faturaTutar','Fatura Toplam ',Kolon1,'Ftop',100);
   setDataStringBLabel(self,'bosSatirkdvTop',kolon1,'kdvTop',538,'');

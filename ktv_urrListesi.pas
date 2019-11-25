@@ -17,44 +17,38 @@ uses
 
 type
   TfrmKtvListesi = class(TGirisForm)
-    pnlTitle: TPanel;
-    pnlToolBar: TPanel;
-    pnlOnay: TPanel;
-    txtinfo: TLabel;
-    cxGrid2: TcxGridKadir;
-    GridEkstre: TcxGridDBTableView;
-    cxGridLevel1: TcxGridLevel;
-    DataSource1: TDataSource;
-    cxprogres: TcxProgressBar;
     PopupMenu1: TPopupMenu;
     K1: TMenuItem;
-    D1: TMenuItem;
-    ADO_Tetkikler: TADOQuery;
-    G1: TMenuItem;
-    T1: TMenuItem;
-    Tetkikler: TListeAc;
-    GridEkstrekod: TcxGridDBColumn;
-    GridEkstretanimi: TcxGridDBColumn;
-    GridEkstreSablonGrupKod: TcxGridDBColumn;
-    GridEkstreIkod: TcxGridDBColumn;
-    GridEkstreItanimi: TcxGridDBColumn;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure cxButtonKaydetClick(Sender: TObject);
+    GridListe: TcxGridKadir;
+    GridList: TcxGridDBTableView;
+    GridListColumn1: TcxGridDBColumn;
+    GridListColumn2: TcxGridDBColumn;
+    GridListColumn3: TcxGridDBColumn;
+    GridListColumn4: TcxGridDBColumn;
+    GridListColumn5: TcxGridDBColumn;
+    GridListColumn6: TcxGridDBColumn;
+    GridListColumn7: TcxGridDBColumn;
+    GridListColumn8: TcxGridDBColumn;
+    cxGridLevel1: TcxGridLevel;
+    H1: TMenuItem;
+    E1: TMenuItem;
+    Daugirdas21: TMenuItem;
+    Jindal1: TMenuItem;
+    Barth1: TMenuItem;
+    GridListColumn9: TcxGridDBColumn;
+    E2: TMenuItem;
     procedure DiyalizTipPropertiesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
-    procedure yeniGrupEkle;
+    procedure TopPanelButonClick(Sender: TObject);
+    procedure Hesaplat(HesapTipi : string = 'D2');
 
     procedure cxButtonCClick(Sender: TObject);
-    procedure TetkikEkle;
-    procedure TetkikSil;
-    procedure GridEkstreFocusedRecordChanged(Sender: TcxCustomGridTableView;
-      APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
-      ANewItemRecordFocusingChanged: Boolean);
   private
     { Private declarations }
   public
     { Public declarations }
+     function Init(Sender: TObject) : Boolean; override;
   end;
 
 var
@@ -65,70 +59,58 @@ implementation
      uses data_modul,AnaUnit;
 {$R *.dfm}
 
-procedure TfrmKtvListesi.TetkikEkle;
+
+
+
+
+
+procedure TfrmKtvListesi.TopPanelButonClick(Sender: TObject);
 var
-  sql : string;
-  ado : TADOQuery;
-  List : ArrayListeSecimler;
+ sql : string;
 begin
-   Tetkikler.SkinName := AnaForm.dxSkinController1.SkinName;
-   List := Tetkikler.ListeGetir;
-   if length(List) > 0 then
-   begin
-    sql := 'insert into TetkikIstemSablonItem (SablonGrupKod,kod,tanimi)' +
-          'values (' + QuotedStr(grup) + ',' +
-                       QuotedStr(List[0].kolon1) + ',' +
-                       QuotedStr(List[0].kolon2) + ')';
-    datalar.QueryExec(SelectAdo,sql);
-   ADO_Tetkikler.Active := false;
-   ADO_Tetkikler.Active := True;
-   end;
-end;
+   sql := ' exec sp_KtvListesi ' + txtTopPanelTarih1.GetSQLValue() + ',' +
+                                   txtTopPanelTarih2.GetSQLValue + ',' +
+                                   QuotedStr(datalar.AktifSirket) +
+                                   ',@tip = ' + QuotedStr('H');
+   datalar.QuerySelect(GridListe.Dataset,sql);
 
-procedure TfrmKtvListesi.TetkikSil;
-var
-  sql : string;
-  ado : TADOQuery;
-begin
-   sql := 'delete from TetkikIstemSablonItem ' +
-          'where SablonGrupKod = ' + QuotedStr(grup) +
-          ' and Kod = '+QuotedStr(kod);
-   datalar.QueryExec(SelectAdo,sql);
-
-   ADO_Tetkikler.Active := false;
-   ADO_Tetkikler.Active := True;
-
-end;
-
-procedure TfrmKtvListesi.cxButtonKaydetClick(Sender: TObject);
-var
-  sql : string;
-  ado1 : TADOQuery;
-begin
 end;
 
 procedure TfrmKtvListesi.cxButtonCClick(Sender: TObject);
 begin
+   inherited;
+
+   datalar.KtvUrr.dosyaNo := GridListe.Dataset.FieldByName('dosyaNo').AsString;
+   datalar.KtvUrr.gelisNo := GridListe.Dataset.FieldByName('gelisNo').AsString;
+   datalar.KtvUrr.hasta := GridListe.Dataset.FieldByName('ad').AsString;
+   datalar.KtvUrr.Ktv := GridListe.Dataset.FieldByName('kt_v').AsFloat;
+   datalar.KtvUrr.Urr := GridListe.Dataset.FieldByName('urr').AsFloat;
+   datalar.KtvUrr.DuzCa := GridListe.Dataset.FieldByName('DuzCa').AsFloat;
+   datalar.KtvUrr.CaxP := GridListe.Dataset.FieldByName('CaxP').AsFloat;
+   datalar.KtvUrr.TS := GridListe.Dataset.FieldByName('TS').AsFloat;
+
    case Tcontrol(sender).Tag of
-   -1 : begin
-         TetkikSil;
-        end;
+   -10 : begin
+            if mrYes = ShowPopupForm('Ktv/Urr',KtvUrrDuzenle)
+            then begin
+              datalar.QueryExec('update LabSonucDegerlendirme ' +
+                                ' set kt_v = ' + FloatTostr(datalar.KtvUrr.Ktv) + ',' +
+                                ' urr = ' + FloatTostr(datalar.KtvUrr.urr) + ',' +
+                                ' DuzCa = ' + FloatTostr(datalar.KtvUrr.DuzCa) + ',' +
+                                ' CaxP = ' + FloatTostr(datalar.KtvUrr.CaxP) + ',' +
+                                ' TS = ' + FloatTostr(datalar.KtvUrr.TS) +
+                                ' where dosyaNo = ' + QuotedStr(datalar.KtvUrr.dosyaNo)  +
+                                ' and gelisNo = ' + datalar.KtvUrr.gelisNo
+                               );
+
+              TopPanelButonClick(self);
+            end;
+         end;
    -2 : begin
-          TetkikEkle;
+          Hesaplat(TMenuItem(Sender).Hint);
         end;
    end;
 
-end;
-
-procedure TfrmKtvListesi.yeniGrupEkle;
-begin
-   (*
-     ADO_Tetkikler.Append;
-     ADO_Tetkikler.FieldByName('tanimi').AsString := InputBox('Yeni Grup','Grup Adý','');
-     ADO_Tetkikler.FieldByName('tetkikKod').AsString := '0';
-     ADO_Tetkikler.FieldByName('tetkikTanimi').AsString := '';
-     ADO_Tetkikler.Post;
-     *)
 end;
 
 procedure TfrmKtvListesi.cxKaydetClick(Sender: TObject);
@@ -139,7 +121,7 @@ inherited;
 //
    case Tcontrol(sender).Tag of
    -3 : begin
-          yeniGrupEkle;
+
         end;
    end;
 end;
@@ -154,17 +136,6 @@ begin
   *)
 end;
 
-procedure TfrmKtvListesi.FormClose(Sender: TObject;
-  var Action: TCloseAction);
-begin
-  try
-    ado.Free;
-  except
-  end;
-
-
-end;
-
 procedure TfrmKtvListesi.FormCreate(Sender: TObject);
 begin
   inherited;
@@ -173,22 +144,47 @@ begin
 //  ClientWidth := formGenislik;
 
   TableName := '';
-  cxPanel.Visible := false;
+  cxPanel.Visible := False;
+  TopPanel.Visible := true;
   cxTab.Width := 200;
   SayfaCaption('','','','','');
   Olustur(self,'','',23);
   Menu := PopupMenu1;
 end;
 
-procedure TfrmKtvListesi.GridEkstreFocusedRecordChanged(
-  Sender: TcxCustomGridTableView; APrevFocusedRecord,
-  AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
+procedure TfrmKtvListesi.Hesaplat(HesapTipi : string = 'D2');
+var
+  sql ,dosyaNo,gelisNo: string;
+  ktvHesap : string;
+  i ,satir : integer;
 begin
-   if ADO_Tetkikler.Active
-   then begin
-     grup := GridCellToString(GridEkstre,'Kod',0);
-     kod := GridCellToString(GridEkstre,'IKod',0);
-   end;
+  DurumGoster(True,True,'Hesaplamalar Yapýlýyor...',-1,GridList.Controller.SelectedRowCount);
+  try
+  if mrYes = ShowMessageSkin('Ktv,URR,CaxP,Düzenlenmil Ca deðerleri hesaplanacak','Test Sonuçlarýnýn ve giriþ çýkýþ kilolarýnýn girili olmasý gereklidir','Devam Edilsinmi','msg' )
+  Then Begin
+     for i := 0 to GridList.Controller.SelectedRowCount - 1 do
+     begin
+        satir := GridList.Controller.SelectedRows[i].RecordIndex;
+        dosyaNo := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('dosyaNo').Index);
+        gelisNo := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('gelisNo').Index);
+        sql := 'sp_KtvHesapla ' + QuotedStr(dosyaNo) + ',' + gelisNo + ',' + QuotedStr(HesapTipi);
+        datalar.QueryExec(sql);
+        pBar.Position := pBar.Position + 1;
+     end;
+     TopPanelButonClick(self);
+  End;
+  finally
+    DurumGoster(False);
+  end;
+
+end;
+
+function TfrmKtvListesi.Init(Sender: TObject): Boolean;
+begin
+//
+ inherited;
+ TapPanelElemanVisible(True,True,True,false,false,false,False,false,False,False,False,False,False);
+ Result := True;
 end;
 
 end.

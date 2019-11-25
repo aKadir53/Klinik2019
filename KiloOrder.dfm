@@ -17,33 +17,11 @@ object frmKiloOrder: TfrmKiloOrder
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object pnlOnay: TPanel
-    Left = 0
-    Top = 559
-    Width = 1029
-    Height = 38
-    Align = alBottom
-    Color = clBackground
-    TabOrder = 0
-    object txtinfo: TLabel
-      Left = 7
-      Top = 11
-      Width = 3
-      Height = 13
-      Caption = '.'
-      Font.Charset = TURKISH_CHARSET
-      Font.Color = clWhite
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-  end
   object cxGrid2: TcxGridKadir
     Left = 0
     Top = 0
     Width = 1029
-    Height = 559
+    Height = 597
     Align = alClient
     Font.Charset = TURKISH_CHARSET
     Font.Color = clWindowText
@@ -51,7 +29,7 @@ object frmKiloOrder: TfrmKiloOrder
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 0
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
     LookAndFeel.Kind = lfOffice11
@@ -60,6 +38,19 @@ object frmKiloOrder: TfrmKiloOrder
     PopupForm = False
     object GridEkstre: TcxGridDBBandedTableView
       PopupMenu = PopupMenu1
+      Navigator.Buttons.First.Visible = False
+      Navigator.Buttons.PriorPage.Visible = False
+      Navigator.Buttons.Prior.Visible = False
+      Navigator.Buttons.Next.Visible = False
+      Navigator.Buttons.NextPage.Visible = False
+      Navigator.Buttons.Last.Visible = False
+      Navigator.Buttons.Insert.Visible = False
+      Navigator.Buttons.Append.Visible = False
+      Navigator.Buttons.Delete.Visible = False
+      Navigator.Buttons.Refresh.Visible = False
+      Navigator.Buttons.GotoBookmark.Visible = False
+      Navigator.Buttons.Filter.Visible = False
+      Navigator.Visible = True
       DataController.DataSource = DataSource1
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
@@ -160,6 +151,7 @@ object frmKiloOrder: TfrmKiloOrder
             ImageIndex = 37
             Value = 0
           end>
+        Options.Editing = False
         Width = 38
         Position.BandIndex = 0
         Position.ColIndex = 7
@@ -329,12 +321,13 @@ object frmKiloOrder: TfrmKiloOrder
         Properties.Items = <
           item
             Description = 'Evet'
-            ImageIndex = 60
+            ImageIndex = 117
             Value = 1
           end
           item
             Value = 0
           end>
+        HeaderAlignmentHorz = taCenter
         Options.Editing = False
         Width = 60
         Position.BandIndex = 0
@@ -370,9 +363,9 @@ object frmKiloOrder: TfrmKiloOrder
     Left = 48
     Top = 96
     object K1: TMenuItem
+      Tag = -1
       Caption = 'Kan Al'#305'nan Seans'
       ImageIndex = 60
-      Visible = False
       OnClick = K1Click
     end
     object N1: TMenuItem
@@ -396,9 +389,9 @@ object frmKiloOrder: TfrmKiloOrder
       OnClick = E1Click
     end
     object H1: TMenuItem
+      Tag = -2
       Caption = 'Hasta Kart'#305
       ImageIndex = 44
-      Visible = False
       OnClick = H1Click
     end
   end

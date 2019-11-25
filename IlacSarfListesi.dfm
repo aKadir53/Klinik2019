@@ -316,7 +316,7 @@ object frmIlacSarf: TfrmIlacSarf
         end
         object gridIlacSarfColumn5: TcxGridDBColumn
           Caption = 'EtkenMadde.'
-          DataBinding.FieldName = 'EtkenMadde'
+          DataBinding.FieldName = 'EtkenMaddeAdi'
           PropertiesClassName = 'TcxTextEditProperties'
           Properties.Alignment.Horz = taLeftJustify
           Properties.Alignment.Vert = taVCenter

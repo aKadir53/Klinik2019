@@ -393,22 +393,23 @@ begin
            setData(x);
 
            sql := 'update hareketler set kanalindimi = 0 ' +
-            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis + ' and Tip = ''S'' '
+            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tip = ''S'' '
                   +
                   ' update hareketler set kanalindimi = 1 ' +
-            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis + ' and Tarih = ' + QuotedStr(tarih(kanAlimTarihi)) + ' and Tip = ''S'' '
+            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tarih = ' + QuotedStr(tarih(kanAlimTarihi)) + ' and Tip = ''S'' '
                   +
                   ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(tarih(kanAlimTarihi)) +
-            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
+            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
 
 
            datalar.QueryExec(sql);
        end;
 
-       ShowMessageSkin('Seanslar Oluþturuldu','','','info');
+       ShowMessageSkin('Kan Alým Tarihleri Ayarlandý ','','','info');
 
   finally
     DurumGoster(False);
+    Takipsor.Enabled := True;
   end;
 
 
@@ -442,6 +443,7 @@ begin
 
   finally
     DurumGoster(False);
+    Takipsor.Enabled := True;
   end;
 
 
@@ -535,6 +537,7 @@ begin
        ShowMessageSkin('Takipler Alýndý','','','info');
    finally
      DurumGoster(False);
+     Takipsor.Enabled := True;
    end;
 end;
 
@@ -984,7 +987,7 @@ begin
    satir := Liste.Controller.SelectedRows[0].RecordIndex;
    dosyaNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
 
-   if FindTab(AnaForm.sayfalar,'TabfrmHastaKart')
+   if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
    Then begin
      Form := TGirisForm(FormClassType(TagfrmHastaKart));
      TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := dosyaNo;
@@ -992,7 +995,7 @@ begin
      TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
    end
    Else begin
-    Form := FormINIT(TagfrmHastaKart,self,dosyaNo,NewTab(AnaForm.sayfalar,'TabfrmHastaKart'),ikEvet,'Giriþ');
+    Form := FormINIT(TagfrmHastaKart,self,dosyaNo,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
     if Form <> nil then Form.show;
    end;
 end;

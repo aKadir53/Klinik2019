@@ -68,6 +68,7 @@ type
     procedure cxFotoEkleButtonClick(Sender: TObject);
     function CalismaBilgileri(kod , tip : string) : TADOQuery;
     function CalismaBilgileriSQL(kod , tip : string ; opr : string = '=') : String;
+    procedure FormCreate(Sender: TObject);
 
   private
     { Private declarations }
@@ -93,6 +94,7 @@ function TfrmDoktorlar.Init(Sender: TObject) : Boolean;
   List : TListeAc;
   bransKodu,calismaTipi,cardType,medulaGonderimTipi,Sirketlerx : TcxImageComboKadir;
 begin
+
   Result := False;
 
   case self.Tag of
@@ -122,7 +124,7 @@ begin
         list.Where := GetUserDoktorFilter;//login olan kullanýcý admin grubunda deðilse onun doktor kodu;
         List.SkinName := 'coffee';//AnaForm.dxSkinController1.SkinName;
 
-        setDataStringB(self,'kod','Doktor/Hemþire Kodu',Kolon1,'',70,List,True,nil,'','',True,True);
+        setDataStringB(self,'kod','Doktor Kodu',Kolon1,'',70,List,True,nil,'','',True,True);
 
 
         setDataString(self,'tanimi','Adý Soyadý',Kolon1,'',200,True);
@@ -245,6 +247,7 @@ begin
          // DBGrid.DataController.CreateAllItems(True);
 
         end;
+        inherited;
     end;
 
   TagfrmIGU : begin
@@ -573,6 +576,12 @@ begin
   // if key  then
 
 
+end;
+
+procedure TfrmDoktorlar.FormCreate(Sender: TObject);
+begin
+  inherited;
+//
 end;
 
 procedure TfrmDoktorlar.cxKaydetClick(Sender: TObject);

@@ -561,7 +561,8 @@ begin
        TagfrmFaturalar :
            begin
              sql := 'exec sp_Faturalar '+ txtTopPanelTarih1.GetSQLValue + ',' +
-                                          txtTopPanelTarih2.GetSQLValue;
+                                          txtTopPanelTarih2.GetSQLValue + ',' +
+                                          QuotedStr(datalar.AktifSirket);
 
            end;
 

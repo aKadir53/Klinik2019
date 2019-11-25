@@ -648,8 +648,10 @@ begin
   setDataStringB(self,'SirketKod','Þirket Kodu',Kolon1,'',80,List,True,nil,'','',True,True,1);
 
   tehlikeSinifi := TcxImageComboKadir.Create(self);
-  tehlikeSinifi.Conn := nil;
-  tehlikeSinifi.ItemList := '1;Diyaliz Merkezi,2;Tedarikçi,3;Müþteri';
+  tehlikeSinifi.Conn := datalar.ADOConnection2;
+  tehlikeSinifi.TableName := 'FirmaTipleri';
+  tehlikeSinifi.ValueField := 'kod';
+  tehlikeSinifi.DisplayField := 'tanimi';
   tehlikeSinifi.BosOlamaz := False;
   tehlikeSinifi.Filter := '';
   setDataStringKontrol(self,tehlikeSinifi,'FirmaTip','Firma Tipi',kolon1,'',120);

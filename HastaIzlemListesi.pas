@@ -781,6 +781,8 @@ var
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
 begin
+  inherited;
+
   GirisFormRecord.F_dosyaNo_ := Hastalar.FieldByName('dosyaNo').AsString;;
   GirisFormRecord.F_gelisNo_ := Hastalar.FieldByName('gelisNo').AsString;
 

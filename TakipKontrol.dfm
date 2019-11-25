@@ -1208,7 +1208,7 @@ object frmTakipKontrol: TfrmTakipKontrol
   end
   object DataSource1: TDataSource
     DataSet = ADO_TahlillSQL
-    Left = 396
+    Left = 420
     Top = 132
   end
   object ADO_SQL: TADOQuery
@@ -1219,13 +1219,13 @@ object frmTakipKontrol: TfrmTakipKontrol
     SQL.Strings = (
       ''
       'exec sp_TakipKontrolListesi '#39'20191001'#39','#39'20191130'#39','#39'000005'#39)
-    Left = 372
-    Top = 236
+    Left = 364
+    Top = 220
   end
   object DataSource2: TDataSource
     DataSet = ADO_SQL
-    Left = 444
-    Top = 228
+    Left = 412
+    Top = 220
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 184

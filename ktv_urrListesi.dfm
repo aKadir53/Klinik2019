@@ -2,9 +2,9 @@ object frmKtvListesi: TfrmKtvListesi
   Left = 535
   Top = 72
   BorderStyle = bsDialog
-  Caption = #304'stem Gruplar'#305
+  Caption = 'Hesaplanan De'#287'erler'
   ClientHeight = 601
-  ClientWidth = 576
+  ClientWidth = 750
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,15 +13,14 @@ object frmKtvListesi: TfrmKtvListesi
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object cxGrid2: TcxGridKadir
+  object GridListe: TcxGridKadir
     Left = 0
-    Top = 53
-    Width = 576
-    Height = 519
+    Top = 0
+    Width = 750
+    Height = 601
     Align = alClient
     Font.Charset = TURKISH_CHARSET
     Font.Color = clWindowText
@@ -29,14 +28,14 @@ object frmKtvListesi: TfrmKtvListesi
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    PopupMenu = PopupMenu1
+    TabOrder = 0
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
-    ExcelFileName = 'KtvListesi'
+    ExcelFileName = 'KtvUrrListesi'
     ExceleGonder = True
-    ExplicitWidth = 456
-    ExplicitHeight = 268
-    object GridEkstre: TcxGridDBTableView
+    PopupForm = False
+    object GridList: TcxGridDBTableView
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True
       Navigator.Buttons.Prior.Visible = True
@@ -54,13 +53,14 @@ object frmKtvListesi: TfrmKtvListesi
       Navigator.Buttons.GotoBookmark.Visible = True
       Navigator.Buttons.Filter.Visible = True
       FilterBox.CustomizeDialog = False
-      OnFocusedRecordChanged = GridEkstreFocusedRecordChanged
       DataController.DataModeController.DetailInSQLMode = True
+      DataController.DataModeController.GridMode = True
       DataController.DataModeController.SyncMode = False
-      DataController.DataSource = DataSource1
+      DataController.DetailKeyFieldNames = 'takipNo'
       DataController.Filter.Active = True
       DataController.Filter.TranslateBetween = True
       DataController.Filter.TranslateLike = True
+      DataController.KeyFieldNames = 'takipNo'
       DataController.Options = [dcoAnsiSort, dcoCaseInsensitive, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <
@@ -68,215 +68,178 @@ object frmKtvListesi: TfrmKtvListesi
           Format = '#,###.##'
           Kind = skAverage
           FieldName = 'Kt_v'
+          Column = GridListColumn5
         end
         item
           Format = '#,###.##'
           Kind = skAverage
           FieldName = 'CaXP'
+          Column = GridListColumn6
         end
         item
           Format = '#,###.##'
           Kind = skAverage
           FieldName = 'TS'
+          Column = GridListColumn7
         end>
       DataController.Summary.SummaryGroups = <>
       Filtering.MRUItemsList = False
       Filtering.ColumnMRUItemsList = False
       FilterRow.InfoText = 'Arama Sat'#305'r'#305
       FilterRow.SeparatorWidth = 2
+      FilterRow.Visible = True
       FilterRow.ApplyChanges = fracImmediately
       OptionsBehavior.AlwaysShowEditor = True
       OptionsBehavior.FocusCellOnTab = True
+      OptionsCustomize.ColumnGrouping = False
       OptionsCustomize.ColumnHidingOnGrouping = False
-      OptionsCustomize.ColumnSorting = False
       OptionsCustomize.ColumnsQuickCustomization = True
-      OptionsCustomize.GroupBySorting = True
       OptionsData.Deleting = False
       OptionsData.DeletingConfirmation = False
       OptionsData.Editing = False
       OptionsData.Inserting = False
+      OptionsSelection.MultiSelect = True
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
       OptionsView.CellAutoHeight = True
+      OptionsView.Footer = True
+      OptionsView.GroupByBox = False
       OptionsView.Indicator = True
       OptionsView.RowSeparatorColor = clBlack
-      object GridEkstrekod: TcxGridDBColumn
-        DataBinding.FieldName = 'kod'
-        Visible = False
+      object GridListColumn1: TcxGridDBColumn
+        Caption = 'Dosya No'
+        DataBinding.FieldName = 'dosyaNo'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 54
       end
-      object GridEkstretanimi: TcxGridDBColumn
-        Caption = 'Grup '
-        DataBinding.FieldName = 'tanimi'
-        Visible = False
-        GroupIndex = 0
+      object GridListColumn8: TcxGridDBColumn
+        Caption = 'Gelis No'
+        DataBinding.FieldName = 'gelisNo'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 47
       end
-      object GridEkstreSablonGrupKod: TcxGridDBColumn
-        DataBinding.FieldName = 'SablonGrupKod'
-        Visible = False
+      object GridListColumn2: TcxGridDBColumn
+        Caption = 'Hasta'
+        DataBinding.FieldName = 'ad'
+        PropertiesClassName = 'TcxTextEditProperties'
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 191
       end
-      object GridEkstreIkod: TcxGridDBColumn
-        Caption = 'Tetkik Kodu'
-        DataBinding.FieldName = 'Ikod'
-        Width = 76
+      object GridListColumn3: TcxGridDBColumn
+        Caption = 'Tc Kimlik'
+        DataBinding.FieldName = 'TCKIMLIKNO'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 100
       end
-      object GridEkstreItanimi: TcxGridDBColumn
-        Caption = 'Tetkik Tan'#305'm'#305
-        DataBinding.FieldName = 'Itanimi'
+      object GridListColumn4: TcxGridDBColumn
+        DataBinding.FieldName = 'Urr'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+      end
+      object GridListColumn5: TcxGridDBColumn
+        Caption = 'Ktv'
+        DataBinding.FieldName = 'Kt_v'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+      end
+      object GridListColumn6: TcxGridDBColumn
+        DataBinding.FieldName = 'CaXP'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+      end
+      object GridListColumn9: TcxGridDBColumn
+        DataBinding.FieldName = 'DuzCa'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 49
+      end
+      object GridListColumn7: TcxGridDBColumn
+        Caption = 'Tranferrin Sat.'
+        DataBinding.FieldName = 'TS'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 79
       end
     end
     object cxGridLevel1: TcxGridLevel
       Caption = 'Hastalar'
-      GridView = GridEkstre
+      GridView = GridList
       Options.DetailFrameColor = clHighlight
     end
   end
-  object pnlTitle: TPanel
-    Left = 0
-    Top = 0
-    Width = 576
-    Height = 26
-    Align = alTop
-    Color = clBlack
-    Font.Charset = TURKISH_CHARSET
-    Font.Color = clWhite
-    Font.Height = -15
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 0
-    ExplicitWidth = 650
-  end
-  object pnlToolBar: TPanel
-    Left = 0
-    Top = 26
-    Width = 576
-    Height = 27
-    Align = alTop
-    Color = clBackground
-    Font.Charset = TURKISH_CHARSET
-    Font.Color = clBlue
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 1
-    ExplicitWidth = 650
-  end
-  object pnlOnay: TPanel
-    Left = 0
-    Top = 572
-    Width = 576
-    Height = 29
-    Align = alBottom
-    Color = clBackground
-    TabOrder = 2
-    ExplicitTop = 562
-    ExplicitWidth = 650
-    object txtinfo: TLabel
-      Left = 7
-      Top = 11
-      Width = 3
-      Height = 13
-      Caption = '.'
-      Font.Charset = TURKISH_CHARSET
-      Font.Color = clWhite
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object cxprogres: TcxProgressBar
-      Left = 5
-      Top = 4
-      ParentColor = False
-      Properties.BeginColor = 8454143
-      Properties.PeakValue = 20.000000000000000000
-      Properties.ShowTextStyle = cxtsText
-      Properties.Text = '%'
-      Style.Color = clWhite
-      Style.LookAndFeel.Kind = lfUltraFlat
-      Style.LookAndFeel.NativeStyle = True
-      Style.Shadow = False
-      Style.TransparentBorder = True
-      StyleDisabled.LookAndFeel.Kind = lfUltraFlat
-      StyleDisabled.LookAndFeel.NativeStyle = True
-      StyleFocused.LookAndFeel.Kind = lfUltraFlat
-      StyleFocused.LookAndFeel.NativeStyle = True
-      StyleHot.LookAndFeel.Kind = lfUltraFlat
-      StyleHot.LookAndFeel.NativeStyle = True
-      TabOrder = 0
-      Transparent = True
-      Width = 265
-    end
-  end
-  object DataSource1: TDataSource
-    DataSet = ADO_Tetkikler
-    Left = 96
-    Top = 8
-  end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 224
-    Top = 8
+    Left = 104
+    Top = 112
     object K1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
       ImageIndex = 18
+      Visible = False
       OnClick = cxKaydetClick
     end
-    object D1: TMenuItem
-      Tag = -3
-      Caption = 'Yeni Grup'
-      ImageIndex = 32
-      OnClick = cxKaydetClick
-    end
-    object G1: TMenuItem
+    object H1: TMenuItem
       Tag = -1
-      Caption = 'Tetkik Sil'
+      Caption = 'De'#287'erleri Hesaplat'
+      ImageIndex = 32
+      OnClick = cxButtonCClick
+      object Daugirdas21: TMenuItem
+        Tag = -2
+        Caption = 'Daugirdas2'
+        Hint = 'D2'
+        OnClick = cxButtonCClick
+      end
+      object Jindal1: TMenuItem
+        Tag = -2
+        Caption = 'Jindal'
+        Hint = 'J'
+        OnClick = cxButtonCClick
+      end
+      object Barth1: TMenuItem
+        Tag = -2
+        Caption = 'Barth'
+        Hint = 'D'
+        OnClick = cxButtonCClick
+      end
+    end
+    object E1: TMenuItem
+      Tag = -10
+      Caption = 'Manuel De'#287'er Tan'#305'mla'
+      ImageIndex = 102
       OnClick = cxButtonCClick
     end
-    object T1: TMenuItem
-      Tag = -2
-      Caption = 'Tetkik Ekle'
+    object E2: TMenuItem
+      Tag = 9997
+      Caption = 'Excele Aktar'
+      ImageIndex = 75
       OnClick = cxButtonCClick
     end
-  end
-  object ADO_Tetkikler: TADOQuery
-    Active = True
-    Connection = DATALAR.ADOConnection2
-    CursorType = ctStatic
-    Parameters = <>
-    SQL.Strings = (
-      'select G.*,'
-      'isnull(I.SablonGrupKod,'#39#39') SablonGrupKod,'
-      'isnull(I.kod,'#39#39') Ikod,'
-      'isnull(I.tanimi,'#39#39') Itanimi from tetkikIstemGrupSablon G'
-      'left join TetkikIstemSablonItem I on I.SablonGrupKod = G.kod')
-    Left = 56
-    Top = 8
-  end
-  object Tetkikler: TListeAc
-    ListeBaslik = 'Tetkik Listesi'
-    TColcount = 3
-    TColsW = '50,350,0'
-    Table = 'labtestler'
-    Conn = DATALAR.ADOConnection2
-    Filtercol = 2
-    BaslikRenk = clBackground
-    DipRenk = clBackground
-    ButtonImajIndex = 132
-    Kolonlar.Strings = (
-      'butKodu'
-      'tanimi'
-      'Tip')
-    KolonBasliklari.Strings = (
-      'But Kodu'
-      'Tanimi'
-      'Tip')
-    Calistir = fgEvet
-    BiriktirmeliSecim = False
-    Grup = False
-    GrupCol = 0
-    Left = 344
-    Top = 13
   end
 end

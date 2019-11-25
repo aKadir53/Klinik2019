@@ -1232,8 +1232,8 @@ object frmTahliltakip: TfrmTahliltakip
     end
   end
   object cxStyleRepository2: TcxStyleRepository
-    Left = 16
-    Top = 56
+    Left = 32
+    Top = 176
     PixelsPerInch = 96
     object cxStyle2: TcxStyle
       AssignedValues = [svColor, svFont]
@@ -1295,6 +1295,7 @@ object frmTahliltakip: TfrmTahliltakip
       Tag = -6
       Caption = 'Kilo Order Formu'
       ImageIndex = 105
+      Visible = False
       OnClick = K1Click
     end
     object K2: TMenuItem

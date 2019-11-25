@@ -64,22 +64,23 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
             LevelTabs.ImageBorder = 2
             LevelTabs.Style = 1
             object cxGridTetkikler: TcxGridDBTableView
-              Navigator.Buttons.First.Visible = True
-              Navigator.Buttons.PriorPage.Visible = True
-              Navigator.Buttons.Prior.Visible = True
-              Navigator.Buttons.Next.Visible = True
-              Navigator.Buttons.NextPage.Visible = True
-              Navigator.Buttons.Last.Visible = True
-              Navigator.Buttons.Insert.Visible = True
+              Navigator.Buttons.First.Visible = False
+              Navigator.Buttons.PriorPage.Visible = False
+              Navigator.Buttons.Prior.Visible = False
+              Navigator.Buttons.Next.Visible = False
+              Navigator.Buttons.NextPage.Visible = False
+              Navigator.Buttons.Last.Visible = False
+              Navigator.Buttons.Insert.Visible = False
               Navigator.Buttons.Append.Visible = False
-              Navigator.Buttons.Delete.Visible = True
+              Navigator.Buttons.Delete.Visible = False
               Navigator.Buttons.Edit.Visible = True
               Navigator.Buttons.Post.Visible = True
               Navigator.Buttons.Cancel.Visible = True
-              Navigator.Buttons.Refresh.Visible = True
-              Navigator.Buttons.SaveBookmark.Visible = True
-              Navigator.Buttons.GotoBookmark.Visible = True
-              Navigator.Buttons.Filter.Visible = True
+              Navigator.Buttons.Refresh.Visible = False
+              Navigator.Buttons.SaveBookmark.Visible = False
+              Navigator.Buttons.GotoBookmark.Visible = False
+              Navigator.Buttons.Filter.Visible = False
+              Navigator.Visible = True
               FilterBox.CustomizeDialog = False
               DataController.DataModeController.DetailInSQLMode = True
               DataController.DataSource = DataSource8
@@ -141,7 +142,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
                 Visible = False
               end
               object cxGridTetkiklerSIRANO: TcxGridDBColumn
-                DataBinding.FieldName = 'SIRANO'
+                DataBinding.FieldName = 'sirano'
                 Visible = False
               end
               object cxGridTetkiklerCODE: TcxGridDBColumn
@@ -202,7 +203,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               end
               object cxGridTetkiklerTARIH: TcxGridDBColumn
                 Caption = 'Tarih'
-                DataBinding.FieldName = 'TARIH'
+                DataBinding.FieldName = 'TARih'
                 PropertiesClassName = 'TcxDateEditProperties'
                 Properties.Alignment.Horz = taCenter
                 Properties.Alignment.Vert = taVCenter
@@ -490,8 +491,9 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               Style.Font.Style = [fsBold]
               Style.IsFontAssigned = True
               TabOrder = 3
-              ExplicitLeft = 289
-              ExplicitTop = 12
+              ExplicitLeft = 309
+              ExplicitTop = -2
+              ExplicitHeight = 45
               Width = 56
             end
             object ktv: TcxButtonKadir
@@ -551,7 +553,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               Style.Font.Style = [fsBold]
               Style.IsFontAssigned = True
               TabOrder = 7
-              ExplicitLeft = 309
+              ExplicitLeft = 389
               ExplicitTop = -2
               ExplicitHeight = 45
               Width = 56
@@ -954,11 +956,19 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
         OnClick = ItemClick
       end
     end
-    object T2: TMenuItem
-      Tag = -2
+    object T7: TMenuItem
       Caption = 'Tetkik Sil'
       ImageIndex = 42
-      OnClick = ItemClick
+      object T2: TMenuItem
+        Tag = -2
+        Caption = 'Tetkikleri Sil'
+        OnClick = ItemClick
+      end
+      object S2: TMenuItem
+        Tag = -30
+        Caption = 'Sat'#305'r'#305' Sil'
+        OnClick = ItemClick
+      end
     end
     object T5: TMenuItem
       Tag = -22

@@ -62,7 +62,10 @@ end;
 
 procedure TfrmAsiKarti.AsiSil;
 begin
-    sqlRun.Delete;
+           if gridAsilar.Controller.SelectedRowCount > 0
+           Then begin
+              sqlRun.Delete;
+           end;
 end;
 
 procedure TfrmAsiKarti.AsiEkle;
