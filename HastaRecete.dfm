@@ -412,6 +412,7 @@ object frmHastaRecete: TfrmHastaRecete
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            PopupMenu = PopupMenu2
             TabOrder = 0
             LevelTabs.ImageBorder = 2
             LevelTabs.Style = 1
@@ -813,7 +814,7 @@ object frmHastaRecete: TfrmHastaRecete
       Height = 101
       Width = 1096
       object cxGrid8: TcxGrid
-        Tag = 1
+        Tag = 2
         Left = 3
         Top = 15
         Width = 1044
@@ -1008,11 +1009,6 @@ object frmHastaRecete: TfrmHastaRecete
       ImageIndex = 94
       OnClick = cxButtonCClick
     end
-    object laRaporuEkle1: TMenuItem
-      Tag = -17
-      Caption = #304'la'#231' Raporu Ekle'
-      OnClick = cxButtonCClick
-    end
     object HastannReeteleri1: TMenuItem
       Tag = -13
       Caption = 'Hastan'#305'n Re'#231'eteleri'
@@ -1059,6 +1055,7 @@ object frmHastaRecete: TfrmHastaRecete
       object Dzenle1: TMenuItem
         Tag = -2
         Caption = 'D'#252'zenle'
+        OnClick = cxButtonCClick
       end
       object Reeteptal1: TMenuItem
         Tag = -3
@@ -1143,7 +1140,7 @@ object frmHastaRecete: TfrmHastaRecete
   end
   object DataSource4: TDataSource
     DataSet = ADO_Recete
-    Left = 370
+    Left = 402
     Top = 117
   end
   object ADO_Recete: TADOQuery
@@ -1269,7 +1266,7 @@ object frmHastaRecete: TfrmHastaRecete
   end
   object PopupMenu2: TPopupMenu
     OnPopup = PopupMenu2Popup
-    Left = 568
+    Left = 520
     Top = 408
     object ilacR2: TMenuItem
       Tag = -40
@@ -1279,6 +1276,11 @@ object frmHastaRecete: TfrmHastaRecete
     object TaniR3: TMenuItem
       Tag = -50
       Caption = 'Re'#231'ete Tan'#305' Ekle (Medula)'
+      OnClick = cxButtonCClick
+    end
+    object ilacR3: TMenuItem
+      Tag = -60
+      Caption = 'Re'#231'ete A'#231#305'klama Ekle (Medula)'
       OnClick = cxButtonCClick
     end
     object TaniR4: TMenuItem

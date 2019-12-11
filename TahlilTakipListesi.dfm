@@ -169,6 +169,10 @@ object frmTahliltakip: TfrmTahliltakip
           object TetkikDegerlendirSayfa2: TcxTabSheet
             Caption = 'Tetkik De'#287'. Ayar'
             ImageIndex = 1
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object cxGrid13: TcxGrid
               Left = 0
               Top = 0
@@ -279,7 +283,7 @@ object frmTahliltakip: TfrmTahliltakip
         TabOrder = 1
         Height = 33
         Width = 1276
-        object tarih2: TcxDateEdit
+        object tarih2: TcxDateEditKadir
           Left = 198
           Top = 2
           Align = alLeft
@@ -298,9 +302,11 @@ object frmTahliltakip: TfrmTahliltakip
           StyleFocused.LookAndFeel.NativeStyle = False
           StyleHot.LookAndFeel.NativeStyle = False
           TabOrder = 0
+          BosOlamaz = False
+          ValueTip = tvString
           Width = 121
         end
-        object tarih1: TcxDateEdit
+        object tarih1: TcxDateEditKadir
           Left = 77
           Top = 2
           Align = alLeft
@@ -319,6 +325,8 @@ object frmTahliltakip: TfrmTahliltakip
           StyleFocused.LookAndFeel.NativeStyle = False
           StyleHot.LookAndFeel.NativeStyle = False
           TabOrder = 1
+          BosOlamaz = False
+          ValueTip = tvString
           Width = 121
         end
         object DiyalizTip: TcxRadioGroup
@@ -1136,6 +1144,10 @@ object frmTahliltakip: TfrmTahliltakip
     object cxTabSheet2: TcxTabSheet
       Caption = 'LOG'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object txtHatalar: TcxMemo
         Left = 0
         Top = 0
@@ -1150,8 +1162,8 @@ object frmTahliltakip: TfrmTahliltakip
   end
   object DataSource1: TDataSource
     DataSet = ADO_TetkiklerHastaList
-    Left = 168
-    Top = 202
+    Left = 136
+    Top = 258
   end
   object ADO_TetkiklerHastaList: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1165,7 +1177,7 @@ object frmTahliltakip: TfrmTahliltakip
         'exec sp_hastaTahlilSonuclari '#39'20150301'#39','#39'20150330'#39',@tip = '#39'0'#39',@a' +
         'pm = '#39'0,1,2'#39)
     Left = 128
-    Top = 216
+    Top = 312
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 8
@@ -1267,21 +1279,25 @@ object frmTahliltakip: TfrmTahliltakip
     end
     object T2: TMenuItem
       Caption = 'Medulaya Kaydet'
+      Visible = False
       OnClick = T2Click
     end
     object N2: TMenuItem
       Caption = '-'
     end
-    object T3: TMenuItem
-      Tag = 9
-      Caption = 'Tetkik Takip Formu'
+    object T7: TMenuItem
+      Caption = 'Tetkik Takip'
       ImageIndex = 46
-      OnClick = T3Click
-    end
-    object T4: TMenuItem
-      Tag = 10
-      Caption = 'Tetkik Takip Formu Hepatit'
-      OnClick = T3Click
+      object T4: TMenuItem
+        Tag = 10
+        Caption = 'Tetkik Takip Formu Hepatit'
+        OnClick = T3Click
+      end
+      object T3: TMenuItem
+        Tag = 9
+        Caption = 'Tetkik Takip Formu'
+        OnClick = T3Click
+      end
     end
     object N3: TMenuItem
       Caption = '-'
@@ -1289,6 +1305,7 @@ object frmTahliltakip: TfrmTahliltakip
     object L1: TMenuItem
       Tag = -7
       Caption = 'Lab '#214'rnekNo Giri'#351
+      Visible = False
       OnClick = L1Click
     end
     object K1: TMenuItem
@@ -1313,6 +1330,7 @@ object frmTahliltakip: TfrmTahliltakip
     object S2: TMenuItem
       Tag = -3
       Caption = 'Sonu'#231' Takip Form'
+      Visible = False
     end
     object S3: TMenuItem
       Tag = -2

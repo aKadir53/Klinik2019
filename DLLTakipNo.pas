@@ -191,7 +191,10 @@ begin
              datalar.QueryExec(sql);
           end
           else
-          if datalar.HastaKabulWS.Cevap.sonuckodu = '0000'
+          if (datalar.HastaKabulWS.Cevap.sonuckodu = '0000')
+          or
+             (datalar.HastaKabulWS.Cevap.sonuckodu = '9000')
+
           then begin
               txtAdi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.ad + ' ' +datalar.HastaKabulWS.Cevap.hastaBilgileri.soyad;
               txtDogumTarihi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.dogumTarihi;

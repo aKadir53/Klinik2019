@@ -4169,6 +4169,11 @@ begin
     //              --ShowMessageSkin('Ýþlemler Baþarý ile Kaydedildi','','','info');
                  End
                  else
+                   if datalar.HizmetKayitWS.Cevap.sonucKodu = '9999'
+                   Then begin
+                       sonuc := datalar.HizmetKayitWS.Cevap.sonucKodu + ' - ' + datalar.HizmetKayitWS.Cevap.sonucMesaji;
+                   end
+                 else
                  begin
                    sonuc := '';
                    for r := 0 to hatali.Count - 1 do

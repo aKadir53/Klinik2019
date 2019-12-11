@@ -213,19 +213,16 @@ object frmKtvListesi: TfrmKtvListesi
       object Daugirdas21: TMenuItem
         Tag = -2
         Caption = 'Daugirdas2'
-        Hint = 'D2'
         OnClick = cxButtonCClick
       end
       object Jindal1: TMenuItem
-        Tag = -2
+        Tag = -3
         Caption = 'Jindal'
-        Hint = 'J'
         OnClick = cxButtonCClick
       end
       object Barth1: TMenuItem
-        Tag = -2
+        Tag = -4
         Caption = 'Barth'
-        Hint = 'D'
         OnClick = cxButtonCClick
       end
     end

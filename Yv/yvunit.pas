@@ -46,7 +46,7 @@ type
 
 const
   UYUM = 'UYUMOSGB.exe';
-  Nokta = 'OSGB.exe';
+  Nokta = 'Klinik2019.exe';
 
 var
   frmYv: TfrmYv;
@@ -208,76 +208,83 @@ var
  exeFile : string;
 begin
 
- KillTaskt('OSGB.exe');
+ KillTaskt('Klinik2019.exe');
 // KillTaskt('UYUMOSGB.exe');
 
 
- if ForceDirectories ('C:\OSGB') then
+ if ForceDirectories ('C:\NoktaV3') then
   begin
 
-    if FileExists('C:\OSGB\ALPEMIXCMX.exe') = False
+    if FileExists('C:\NoktaV3\ALPEMIXCMX.exe') = False
     Then begin
       try
         filename := 'ALPEMIXCMX.exe';
-        Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+        Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
       finally
       end;
     end;
 
+
      try
       filename := 'NoktaDLL.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
      end;
 
      try
       filename := 'EFaturaDLL.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
      end;
 
 
      try
       filename := 'SmsApi.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
       finally
      end;
 
 
      try
       filename := 'BouncyCastle.Crypto.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
      end;
 
      try
       filename := 'EdocLib.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
      end;
 
      try
       filename := 'Net.Pkcs11.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
      end;
 
 
      try
       filename := 'itextsharp.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
      end;
 
      try
       filename := 'Microsoft.Web.Services3.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
      end;
 
      try
       filename := 'Microsoft.VisualBasic.PowerPacks.Vs.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+     finally
+     end;
+
+     try
+      filename := Nokta;
+      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
      end;
 
@@ -291,22 +298,14 @@ begin
     //  HTTP1.Get('https://www.noktayazilim.net/SonucRaporu.rtf' ,TStream(dosya));
 
 
+    exeFile := Nokta;
 
-    if pos('UYUM',paramStr(0)) > 0 then exeFile := UYUM else exeFile := Nokta;
-     begin
-       try
-        filename := exeFile;
-        Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\OSGB\'+filename);
-       finally
-       end;
-     end;
-
-    filename := 'C:\OSGB\' + exeFile;
+    filename := 'C:\NoktaV3\' + exeFile;
     ShellExecute(Handle,'open', pwidechar(filename),
                 pwidechar(''), nil, SW_SHOWNORMAL);
 
     p := DesktopPath;
-    CreateLink('C:\OSGB\' + exeFile,'','', p+'\OSGB.lnk');
+    CreateLink('C:\NoktaV3\' + exeFile,'','', p+'\Klinik2019.lnk');
 
     halt;
     //x

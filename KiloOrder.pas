@@ -189,8 +189,9 @@ var
  dosyaNo : string;
  Form : TGirisForm;
 begin
+  if GridEkstre.Controller.SelectedRowCount > 0
+  Then begin
      dosyaNo := ado.FieldByName('dosyaNo').AsString;
-
      if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
      Then begin
        Form := TGirisForm(FormClassType(TagfrmHastaKart));
@@ -202,29 +203,33 @@ begin
       Form := FormINIT(TagfrmHastaKart,self,dosyaNo,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
       if Form <> nil then Form.show;
      end;
+  end;
 end;
 
 procedure TfrmKiloOrder.K1Click(Sender: TObject);
 var
   dosyaNo , gelisNo , sira ,sql , tt , doktor: string;
 begin
-   dosyaNo := ado.FieldByName('dosyaNo').AsString;
-   gelisNo := ado.FieldByName('gelisNo').AsString;
-   sira := ado.FieldByName('siraNo').AsString;
+  if GridEkstre.Controller.SelectedRowCount > 0
+  Then begin
+     dosyaNo := ado.FieldByName('dosyaNo').AsString;
+     gelisNo := ado.FieldByName('gelisNo').AsString;
+     sira := ado.FieldByName('siraNo').AsString;
 
-   datalar.QueryExec(
-   'update hareketler set KanAlindimi = 0 where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO
-   +
-   ' update hasta_gelisler set KanAlimZamani =  NULL ' +
-   ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO);
+     datalar.QueryExec(
+     'update hareketler set KanAlindimi = 0 where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO
+     +
+     ' update hasta_gelisler set KanAlimZamani =  NULL ' +
+     ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO);
 
-    datalar.QueryExec('update hareketler set kanAlindimi = 1 where siraNo = ' + sira
-                      +
-                      ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(FormatDateTime('YYYYMMDD',ado.FieldByName('Tarih').Asdatetime)) +
-                      ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO);
+      datalar.QueryExec('update hareketler set kanAlindimi = 1 where siraNo = ' + sira
+                        +
+                        ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(FormatDateTime('YYYYMMDD',ado.FieldByName('Tarih').Asdatetime)) +
+                        ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO);
 
 
-   ado.Requery();
+     ado.Requery();
+  end;
 
 end;
 

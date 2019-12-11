@@ -77,6 +77,7 @@ type
                       url : string;
                       cardType : PWideChar); stdcall;
 
+
   TReceteGonder = procedure(Id : integer;
                       recete : string;
                       doktorkullanici : string;
@@ -290,6 +291,7 @@ type
     SeansCaption : variant;
     doktorNot : string;
     hemsireNot : string;
+    islemSiraNo : string;
    end;
 
 type
@@ -610,6 +612,7 @@ type
     doktorAdi : string;
     protokolNo : string;
     takipNo : string;
+    sablonAdi : string;
 end;
 
 type
@@ -1170,12 +1173,14 @@ Const
   ilacTedaviIlacSil = 82;
   SKSindikatorSorgu = 83;
   raporAra = 84;
+  raporSistemeAktar = 85;
   LabHastaGonder = 1;
   LabSonucAl = 2;
   DiyalizIzlemDVitamin = 1;
   DiyalizIzlemAnemi = 3;
   DiyalizIzlemCinacalset = 15;
   KtvUrrDuzenle = 77;
+  ReceteyiSablonKaydet = 86;
 
 
 

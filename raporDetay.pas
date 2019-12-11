@@ -233,10 +233,10 @@ begin
            Then Begin
 
                sql := 'insert into raporlar (dosyaNo,raporNo,raporTarihi,verenTesisKodu,raporTakipno,turu,baslangicTarihi,bitisTarihi,' +
-                      'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,tanilar) ' +
+                      'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,tanilar,butKodu) ' +
                       ' values ( ' + QuotedStr(_dosyaNo_) + ','
                                    + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporNo').AsString) + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTarihi').AsString) + ','
+                                   + QuotedStr(NoktasizTarih(datalar.memDataRaporlar.fieldbyname('raporTarihi').AsString)) + ','
                                    + QuotedStr(datalar.memDataRaporlar.fieldbyname('verenTesis').AsString)  + ','
                                    + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTakipNo').AsString) + ','
                                    + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTuru').AsString) + ','
@@ -247,7 +247,10 @@ begin
                                    + QuotedStr(datalar.memDataRaporlar.fieldbyname('tedaviRaporTuru').AsString) + ','
                                    + datalar.memDataRaporlar.fieldbyname('seansGun').AsString + ','
                                    + datalar.memDataRaporlar.fieldbyname('seansSayi').AsString + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('Tani').AsString) + ')' ;
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('Tani').AsString) + ','
+                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('butKodu').AsString)+
+
+                                   ')' ;
                                  //  + memDataRaporlar.fieldbyname('seansSayi').AsString + ','
                                   // + memDataRaporlar.fieldbyname('Tani').AsString + ')';
 
@@ -277,8 +280,7 @@ begin
   Then begin
     datalar.RaporBilgisi.raporTakipNo := RaporGrid.Dataset.FieldByName('raporTakipNo').AsString;
     sira := RaporGrid.Dataset.FieldByName('sira').AsString;
-    if datalar.RaporBilgisi.raporTakipNo = ''
-    Then BEgin
+
        if mrYes = ShowMessageSkin('Rapor Sistemden Silinecek Eminmisini?','','','msg')
        Then Begin
         // datalar.ADOConnection2.BeginTrans;
@@ -307,7 +309,7 @@ begin
             ado.free;
           end;
        End;
-    End;
+
   end;
 end;
 
@@ -316,103 +318,52 @@ end;
 procedure TfrmRaporDetay.RaporuYazdir;
 var
    sql , dosyaNo , raporNo : string;
-
+   TopluSet : TDataSetKadir;
 begin
-      dosyaNo := datalar.RaporBilgisi.dosyaNo;
-      raporNo := datalar.RaporBilgisi.raporNo;
-{
+    raporNo := RaporGrid.Dataset.FieldByName('raporNo').AsString;
+    dosyaNo := RaporGrid.Dataset.FieldByName('dosyaNo').AsString;
+
       sql := 'exec sp_medularaporYazdir ' + QuotedStr(dosyaNo) + ','
              + QuotedStr(raporNo) + ','
              + QuotedStr('R');
-      datalar.ADO_SQL5.Close;
-      datalar.ADO_SQL5.SQL.Clear;
-      datalar.QuerySelect(datalar.ADO_SQL5,sql);
+      TopluSet.Dataset1 := datalar.QuerySelect(sql);
 
       sql := 'exec sp_medularaporYazdir ' + QuotedStr(dosyaNo) + ','
              + QuotedStr(raporNo) + ','
              + QuotedStr('RD');
-      datalar.ADO_SQL6.Close;
-      datalar.ADO_SQL6.SQL.Clear;
-      datalar.QuerySelect(datalar.ADO_SQL6,sql);
+      TopluSet.Dataset2 := datalar.QuerySelect(sql);
 
       sql := 'exec sp_medularaporYazdir ' + QuotedStr(dosyaNo) + ','
              + QuotedStr(raporNo) + ','
              + QuotedStr('Tani');
-      datalar.ADO_SQL7.Close;
-      datalar.ADO_SQL7.SQL.Clear;
-      datalar.QuerySelect(datalar.ADO_SQL7,sql);
+      TopluSet.Dataset3 := datalar.QuerySelect(sql);
 
       sql := 'exec sp_medularaporYazdir ' + QuotedStr(dosyaNo) + ','
              + QuotedStr(raporNo) + ','
              + QuotedStr('IlacTeshis');
-      datalar.ADO_SQL8.Close;
-      datalar.ADO_SQL8.SQL.Clear;
-      datalar.QuerySelect(datalar.ADO_SQL8,sql);
+      TopluSet.Dataset4 := datalar.QuerySelect(sql);
 
       sql := 'exec sp_medularaporYazdir ' + QuotedStr(dosyaNo) + ','
              + QuotedStr(raporNo) + ','
              + QuotedStr('EtkinMadde');
-      datalar.ADO_SQL11.Close;
-      datalar.ADO_SQL11.SQL.Clear;
-      datalar.QuerySelect(datalar.ADO_SQL11,sql);
+      TopluSet.Dataset7 := datalar.QuerySelect(sql);
 
       sql := 'exec sp_medularaporYazdir ' + QuotedStr(dosyaNo) + ','
              + QuotedStr(raporNo) + ','
              + QuotedStr('Aciklama');
-      datalar.ADO_SQL9.Close;
-      datalar.ADO_SQL9.SQL.Clear;
-      datalar.QuerySelect(datalar.ADO_SQL9,sql);
-     (*
-      sql := 'exec sp_medularaporYazdir ' + QuotedStr(dosyaNo) + ','
-             + QuotedStr(raporNo) + ','
-             + QuotedStr('C');
-      datalar.ADO_SQL10.Close;
-      datalar.ADO_SQL10.SQL.Clear;
-      datalar.QuerySelect(datalar.ADO_SQL10,sql);
+      TopluSet.Dataset5 := datalar.QuerySelect(sql);
 
 
 
-      sql := 'exec sp_medularaporYazdir ' + QuotedStr(dosyaNo) + ','
-             + QuotedStr(raporNo) + ','
-             + QuotedStr('Anamnez');
-      datalar.ADO_SQL4.Close;
-      datalar.ADO_SQL4.SQL.Clear;
-      datalar.QuerySelect(datalar.ADO_SQL4,sql);
-
-       *)
-
-      frmRapor.topluset.Dataset1 := datalar.ADO_SQL5;
-      frmRapor.topluset.Dataset2 := datalar.ADO_SQL6;
-      frmRapor.topluset.Dataset3 := datalar.ADO_SQL7;
-      frmRapor.topluset.Dataset4 := datalar.ADO_SQL8;
-      frmRapor.topluset.Dataset5 := datalar.ADO_SQL9;
-      frmRapor.topluset.Dataset6 := datalar.ADO_SQL10;
-      frmRapor.topluset.Dataset7 := datalar.ADO_SQL11;
-      frmRapor.topluset.Dataset8 := datalar.ADO_SQL4;
-
-
-      case strtoint(trim(copy(ADO_RAPORLAR.fieldbyname('turu').AsString,1,2))) of
-        10 :  frmRapor.raporData1(frmRapor.topluset,'116','\Rapor_ilac');
+      case strtoint(trim(copy(RaporGrid.Dataset.fieldbyname('turu').AsString,1,2))) of
+        10 :  PrintYap('053','\Rapor_ilac',intToStr(TagfrmRaporDetay),TopluSet);  //frmRapor.raporData1(frmRapor.topluset,'116','\Rapor_ilac');
          1 :  begin
-        //        if TBitBtn(sender).Tag = 8
-         //       Then
-                 frmRapor.raporData1(frmRapor.topluset,'053','\Rapor_tedavi')
-         //       Else
-             //    frmRapor.raporData1(frmRapor.topluset,'058','\FTRTekHekim');
-
+                 PrintYap('053','\Rapor_tedavi',intToStr(TagfrmRaporDetay),TopluSet);
+                 //frmRapor.raporData1(frmRapor.topluset,'053','\Rapor_tedavi')
               end;
        End;
 
-      frmRapor.ShowModal;
 
-      datalar.ADO_SQL5.close;
-      datalar.ADO_SQL6.close;
-      datalar.ADO_SQL7.close;
-      datalar.ADO_SQL8.close;
-      datalar.ADO_SQL9.close;
-
-
-   }
 end;
 
 
@@ -471,18 +422,18 @@ var
   ss : PWideChar;
   sql : string;
 begin
-  url := datalar.raporIlacURL;
+  url := raporIlacURL;
   sql := 'sp_HastaRaporToXML ' + RaporGrid.Dataset.FieldByName('sira').AsString;
   QuerySelect(sql);
   ss := 'Yok';
-  raporId := (RaporGrid.Dataset.FieldByName('id').AsInteger);
-  rapor := (RaporGrid.Dataset.FieldByName('rapor').AsString);
-  doktorKullanici := (RaporGrid.Dataset.FieldByName('doktorKullanici').AsString);
-  doktorsifre :=  (RaporGrid.Dataset.FieldByName('doktorsifre').AsString);
-  pin :=  (RaporGrid.Dataset.FieldByName('pin').AsString);
-  doktorTc :=  (RaporGrid.Dataset.FieldByName('doktorTc').AsString);
-  TesisKodu :=  (datalar._kurumKod);
-  cardType :=  RaporGrid.Dataset.FieldByName('cardType').AsString;
+  raporId := (RaporGrid.Dataset.FieldByName('sira').AsInteger);
+  rapor := (SelectAdo.FieldByName('rapor').AsString);
+  doktorKullanici := (SelectAdo.FieldByName('doktorKullanici').AsString);
+  doktorsifre :=  (SelectAdo.FieldByName('doktorsifre').AsString);
+  pin :=  (SelectAdo.FieldByName('pin').AsString);
+  doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
+  TesisKodu :=  (SelectAdo.FieldByName('tesisKodu').AsInteger);
+  cardType :=  SelectAdo.FieldByName('cardType').AsString;
 
   dllHandle := LoadLibrary(LIB_DLL);
   try
@@ -513,19 +464,19 @@ var
   ss : PWideChar;
   sql : string;
 begin
-  url := datalar.raporIlacURL;
+  url := raporIlacURL;
   sql := 'sp_HastaRaporIslemToXML ' + RaporGrid.Dataset.FieldByName('sira').AsString + ',' +
                                       QuotedStr(islem);
   QuerySelect(sql);
   ss := 'Yok';
-  raporId := (RaporGrid.Dataset.FieldByName('id').AsInteger);
-  rapor := (RaporGrid.Dataset.FieldByName('rapor').AsString);
-  doktorKullanici := (RaporGrid.Dataset.FieldByName('doktorKullanici').AsString);
-  doktorsifre :=  (RaporGrid.Dataset.FieldByName('doktorsifre').AsString);
-  pin :=  (RaporGrid.Dataset.FieldByName('pin').AsString);
-  doktorTc :=  (RaporGrid.Dataset.FieldByName('doktorTc').AsString);
+  raporId := (RaporGrid.Dataset.FieldByName('sira').AsInteger);
+  rapor := (SelectAdo.FieldByName('rapor').AsString);
+  doktorKullanici := (SelectAdo.FieldByName('doktorKullanici').AsString);
+  doktorsifre :=  (SelectAdo.FieldByName('doktorsifre').AsString);
+  pin :=  (SelectAdo.FieldByName('pin').AsString);
+  doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
   TesisKodu :=  (datalar._kurumKod);
-  cardType :=  RaporGrid.Dataset.FieldByName('cardType').AsString;
+  cardType :=  SelectAdo.FieldByName('cardType').AsString;
 
   dllHandle := LoadLibrary(LIB_DLL);
   try

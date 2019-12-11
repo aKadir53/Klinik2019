@@ -832,12 +832,13 @@ object frmMedulaFatura: TfrmMedulaFatura
         TabOrder = 1
         object DBMemo1: TDBMemo
           Left = 1
-          Top = 602
+          Top = 583
           Width = 879
-          Height = 27
+          Height = 46
           Align = alBottom
           Color = clWhite
           DataField = 'MedulaEpikriz'
+          DataSource = DataSource1
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -851,7 +852,7 @@ object frmMedulaFatura: TfrmMedulaFatura
           Left = 1
           Top = 1
           Width = 879
-          Height = 601
+          Height = 582
           Align = alClient
           Font.Charset = TURKISH_CHARSET
           Font.Color = clWindowText
@@ -1101,10 +1102,10 @@ object frmMedulaFatura: TfrmMedulaFatura
               Properties.Items = <
                 item
                   ImageIndex = 31
-                  Value = '1'
+                  Value = 1
                 end
                 item
-                  Value = '0'
+                  Value = 0
                 end
                 item
                 end>
@@ -1161,6 +1162,22 @@ object frmMedulaFatura: TfrmMedulaFatura
             object FaturaListbitisTarih: TcxGridDBColumn
               DataBinding.FieldName = 'bitisTarih'
               Visible = False
+            end
+            object FaturaListColumn2: TcxGridDBColumn
+              DataBinding.FieldName = 'sysTakipNo'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+            end
+            object FaturaListColumn3: TcxGridDBColumn
+              DataBinding.FieldName = 'HastaneRefNo'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
             end
           end
           object cxGridLevel4: TcxGridLevel
@@ -1864,47 +1881,51 @@ object frmMedulaFatura: TfrmMedulaFatura
     Images = DATALAR.imag24png
     Left = 152
     Top = 312
-    object eyitNoKontrolYap1: TMenuItem
-      Tag = -16
-      Caption = 'Teyit No Kontrol Yap'
-      ImageIndex = 7
-      OnClick = cxButtonCClick
-    end
-    object F4: TMenuItem
-      Tag = -3
-      Caption = 'Fatura Detay Oku (TeslimNo)'
-      ImageIndex = 35
-      OnClick = cxButtonCClick
-    end
-    object T2: TMenuItem
-      Tag = -2
-      Caption = 'Tutar Oku'
-      ImageIndex = 68
-      OnClick = cxButtonCClick
-    end
-    object F3: TMenuItem
-      Tag = -1
-      Caption = 'Fatura Teslim (Medula)'
+    object S2: TMenuItem
+      Caption = 'SGK'
       ImageIndex = 76
-      OnClick = cxButtonCClick
-    end
-    object FaturaptalTm1: TMenuItem
-      Tag = -7
-      Caption = 'Fatura '#304'ptal (Medula)'
-      ImageIndex = 13
-      OnClick = FaturaptalTm1Click
-    end
-    object FaturaOkuTm1: TMenuItem
-      Tag = -4
-      Caption = 'Fatura Oku'
-      ImageIndex = 6
-      OnClick = FaturaOkuTm1Click
-    end
-    object HizmetleriOku1: TMenuItem
-      Tag = -5
-      Caption = 'Hizmetleri Oku'
-      ImageIndex = 9
-      OnClick = HizmetleriOku1Click
+      object eyitNoKontrolYap1: TMenuItem
+        Tag = -16
+        Caption = 'Teyit No Kontrol Yap'
+        ImageIndex = 7
+        OnClick = cxButtonCClick
+      end
+      object F4: TMenuItem
+        Tag = -3
+        Caption = 'Fatura Detay Oku (TeslimNo)'
+        ImageIndex = 35
+        OnClick = cxButtonCClick
+      end
+      object T2: TMenuItem
+        Tag = -2
+        Caption = 'Tutar Oku'
+        ImageIndex = 68
+        OnClick = cxButtonCClick
+      end
+      object F3: TMenuItem
+        Tag = -1
+        Caption = 'Fatura Teslim (Medula)'
+        ImageIndex = 76
+        OnClick = cxButtonCClick
+      end
+      object FaturaptalTm1: TMenuItem
+        Tag = -7
+        Caption = 'Fatura '#304'ptal (Medula)'
+        ImageIndex = 42
+        OnClick = FaturaptalTm1Click
+      end
+      object FaturaOkuTm1: TMenuItem
+        Tag = -4
+        Caption = 'Fatura Oku'
+        ImageIndex = 36
+        OnClick = FaturaOkuTm1Click
+      end
+      object HizmetleriOku1: TMenuItem
+        Tag = -5
+        Caption = 'Hizmetleri Oku'
+        ImageIndex = 67
+        OnClick = HizmetleriOku1Click
+      end
     end
     object N1: TMenuItem
       Caption = '-'
@@ -1921,54 +1942,21 @@ object frmMedulaFatura: TfrmMedulaFatura
     object N6: TMenuItem
       Caption = '-'
     end
-    object F2: TMenuItem
-      Tag = -15
-      Caption = 'Faturadan '#199#305'kar'
-      ImageIndex = 43
-      OnClick = cxButtonCClick
-    end
-    object N2: TMenuItem
-      Caption = '-'
-    end
-    object utarOnayTm1: TMenuItem
-      Tag = -9
-      Caption = 'Tutar Onay'
-      ImageIndex = 31
-      OnClick = utarOnayTm1Click
-    end
-    object N4: TMenuItem
-      Caption = '-'
-    end
-    object T1: TMenuItem
-      Tag = -12
-      Caption = 'Toplu Epikriz Ekran'#305
-      ImageIndex = 98
-      OnClick = T1Click
-    end
-    object H1: TMenuItem
-      Tag = -13
-      Caption = 'Hizmet Detay (Takip Bilgisi)'
-      ImageIndex = 4
-      OnClick = H1Click
-    end
-    object N5: TMenuItem
-      Caption = '-'
-    end
     object F1: TMenuItem
       Tag = -14
       Caption = 'Tutar Oku Detay Bilgisi'
       ImageIndex = 68
       OnClick = F1Click
     end
-    object E1: TMenuItem
-      Tag = 9997
-      Caption = 'Excele G'#246'nder'
-      ImageIndex = 75
+    object F2: TMenuItem
+      Tag = -15
+      Caption = 'Faturadan '#199#305'kar'
+      ImageIndex = 43
       OnClick = cxButtonCClick
     end
     object F5: TMenuItem
       Caption = 'Fatura '#304#351'lemleri'
-      ImageIndex = 81
+      ImageIndex = 6
       object K1: TMenuItem
         Tag = -18
         Caption = 'Fatura '#304'cmali'
@@ -1984,6 +1972,47 @@ object frmMedulaFatura: TfrmMedulaFatura
       Tag = -20
       Caption = 'Seans Hakedi'#351' '#304'cmali'
       ImageIndex = 80
+      Visible = False
+      OnClick = cxButtonCClick
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object utarOnayTm1: TMenuItem
+      Tag = 9
+      Caption = 'Tutar Onay'
+      ImageIndex = 31
+      OnClick = utarOnayTm1Click
+    end
+    object T4: TMenuItem
+      Tag = 10
+      Caption = 'Tutar Onay '#304'ptal'
+      ImageIndex = 33
+      OnClick = utarOnayTm1Click
+    end
+    object N4: TMenuItem
+      Caption = '-'
+    end
+    object T1: TMenuItem
+      Tag = -12
+      Caption = 'Toplu Epikriz Ekran'#305
+      ImageIndex = 98
+      OnClick = T1Click
+    end
+    object H1: TMenuItem
+      Tag = -13
+      Caption = 'Hizmet Detay (Takip Bilgisi)'
+      ImageIndex = 4
+      Visible = False
+      OnClick = H1Click
+    end
+    object N5: TMenuItem
+      Caption = '-'
+    end
+    object E1: TMenuItem
+      Tag = 9997
+      Caption = 'Excele G'#246'nder'
+      ImageIndex = 75
       OnClick = cxButtonCClick
     end
     object H2: TMenuItem
@@ -2039,14 +2068,11 @@ object frmMedulaFatura: TfrmMedulaFatura
         Value = Null
       end>
     SQL.Strings = (
-      'select F.*,isnull(h.code,SLVV) Code,'
-      'isnull(h.Name1,'#39'Seans'#39') name,g.UTarih '
+      'select F.*,g.code,g.name1 name,g.Tarih '
       'from FaturaHizmetDetayTutarOku F'
-      'left join gelisDetay g on g.TalepSira = F.islemSiraNo'
-      'left join hareketler h on h.islemSiraNo = F.islemSiraNo'
-      'left join SeansSutKodlari Sk on Sk.SLB = g.HemodiyalizTip'
+      'left join hareketler g on g.islemSiraNo = F.islemSiraNo'
       'where F.takipNo =:@t'
-      'order by g.RTarih'
+      'order by g.Tarih'
       '')
     Left = 440
     Top = 314
@@ -2074,5 +2100,9 @@ object frmMedulaFatura: TfrmMedulaFatura
     DataSet = ADO_Detay_toplam
     Left = 760
     Top = 186
+  end
+  object DataSource1: TDataSource
+    Left = 72
+    Top = 616
   end
 end

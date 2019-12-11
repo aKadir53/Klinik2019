@@ -278,13 +278,21 @@ begin
     PrintYap('203T','Hasta Tetkik Takip Hepatit Toplu',inttostr(TagfrmHastaListe),topluset);
    end
    else begin
+
+    DurumGoster(True);
+    try
     ado := TADOQuery.Create(nil);
     sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = '''' , @yil = ' + QuotedStr(ay1) +
                   ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket);
     datalar.QuerySelect(ado,sql);
+
     topluset.Dataset0 := ado;
     PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),topluset);
-    ado.Free;
+    finally
+      DurumGoster(False);
+      ado.Free;
+    end;
+
    end;
 
 
@@ -604,6 +612,8 @@ end;
 procedure TfrmHastaListeD.TopPanelPropertiesChange(Sender: TObject);
 begin
   inherited;
+  ay1 := txtDonemTopPanel.getValueIlkTarih; //tarihal(ayaditoay(txtAy.Text));
+  ay2 := txtDonemTopPanel.getValueSonTarih; //tarihal(ayliktarih2(txtAy.Text));
 //  Bilgiler;
 end;
 

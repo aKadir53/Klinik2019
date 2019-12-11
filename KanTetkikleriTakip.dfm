@@ -31,11 +31,13 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
     TabOrder = 0
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
+    LookAndFeel.Kind = lfUltraFlat
+    LookAndFeel.NativeStyle = False
     ExcelFileName = 'KanTetkikTakip'
     ExceleGonder = True
+    PopupForm = False
     ExplicitTop = 0
-    ExplicitWidth = 1049
-    ExplicitHeight = 526
+    ExplicitHeight = 700
     object ILACKULLANIM: TcxGridDBTableView
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True
@@ -102,6 +104,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
       end
       object ILACKULLANIMColumn3: TcxGridDBColumn
         DataBinding.FieldName = 'INo'
+        Visible = False
         Styles.Content = cxStyle5
         Styles.Header = cxStyle4
         Width = 26
@@ -260,7 +263,6 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
     Style.IsFontAssigned = True
     TabOrder = 1
     OnClick = chkHepatitClick
-    ExplicitWidth = 1049
     Width = 1200
   end
   object DataSource1: TDataSource

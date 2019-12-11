@@ -462,14 +462,14 @@ begin
             Then Begin
                  if mrYes = ShowMessageSkin('Gruptaki Hizmetler Ýptal Edilecek Emin misiniz ?','','','msg')
                  Then begin
-                        i := datalar.RxYatakBilgisi.RecordCount;
+                        i := datalar.RxTaniBilgisi.RecordCount;
                         setlength(datalar.islemSiralari,0);
                         setlength(datalar.islemSiralari,i);
                         datalar.RxYatakBilgisi.First;
                         for j := 0 to i-1 do
                         begin
-                            datalar.islemSiralari[j] := datalar.RxYatakBilgisi.fieldbyname('islemsiraNo').AsString;
-                            datalar.RxYatakBilgisi.Next;
+                            datalar.islemSiralari[j] := datalar.RxTaniBilgisi.fieldbyname('islemsiraNo').AsString;
+                            datalar.RxTaniBilgisi.Next;
                         end;
                  End else exit;
             End;
@@ -481,7 +481,7 @@ begin
             if msg = '0000'
             Then Begin
                HizmetIptalSonucDBYaz;
-               ShowMessageSkin('Yatak Ýptal Edildi','','','info')
+               ShowMessageSkin('Taný Ýptal Edildi','','','info')
             End
             Else ShowMessageSkin(msg,'','','info');
 

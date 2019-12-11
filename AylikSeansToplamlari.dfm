@@ -26,9 +26,6 @@ object frmAylikSeansToplamlari: TfrmAylikSeansToplamlari
     Properties.TabPosition = tpBottom
     LookAndFeel.NativeStyle = False
     OnChange = AysayfalarChange
-    ExplicitTop = 58
-    ExplicitWidth = 519
-    ExplicitHeight = 356
     ClientRectBottom = 559
     ClientRectLeft = 3
     ClientRectRight = 867
@@ -43,7 +40,7 @@ object frmAylikSeansToplamlari: TfrmAylikSeansToplamlari
       TabOrder = 0
       LookAndFeel.NativeStyle = False
       ExceleGonder = False
-      ExplicitTop = 7
+      PopupForm = False
       object ListeS: TcxGridDBBandedTableView
         DataController.DataSource = DataSource1
         DataController.Summary.DefaultGroupSummaryItems = <>

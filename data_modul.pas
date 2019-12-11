@@ -405,7 +405,7 @@ type
    IGU, DSPers, _dosyaNo_,_gelisNo_,kontrolKod,RiskTanimBilgiEkle,
    _labkurumkod , _labkurumkodText, _laburl , _labfirma , _LabCalismaYon,_LabBarkodBasim,
    _SKRS , _saglikNetUser , _labID,_labSonucIcinGozArdiEt : string;
-   _saglikNetPass , _firmaSKRS , _usermernis , _passmernis, UserGroup, UserGroupName : string;
+   _saglikNetPass , _firmaSKRS , _usermernis , _passmernis, UserGroup, UserGroupName , Personel : string;
    _doktorReceteUser,_doktorRecetePas,_KurumSKRS_, _userSaglikNet_ , _passSaglikNet_ , _userSaglikNet2_ , _passSaglikNet2_ , itsGLN , itsUser , itsPass: string;
    _merkezAdi , _DyobKurumKodu_,_DyobSifre_,_DyobServiceKodu_ , doktorTip , bashekimKodu,hekimKodu,ImajFTPServer : string;
    _medulaOrtam_ , WanIp,WanIpURL ,_firmaKod_ , osgbKodu , programTip : string;
@@ -458,7 +458,7 @@ type
    hizmetKayitURL : string;
    receteURL :string;
    IBYSURL :string;
-   raporIlacURL :string;
+ //  raporIlacURL :string;
    DonemSonlandir :string;
    ButtonEditSecimlist : ArrayListeSecimler;
    aSahaDenetimVeri : TSahaDenetimler;

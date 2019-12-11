@@ -502,6 +502,20 @@ begin
   OrtakEventAta(DSPers);
   DSPers.Properties.OnChange := PropertiesEditValueChanged;
 
+  DSPers := TcxImageComboKadir.Create(self);
+  DSPers.Conn := Datalar.ADOConnection2;
+  DSPers.Tag := dsp;
+  DSPers.TableName := 'PersonelKartView';
+  DSPers.ValueField := 'DosyaNo';
+  DSPers.DisplayField := 'Adi';
+  DSPers.BosOlamaz := False;
+  DSPers.Filter := '';
+
+  setDataStringKontrol(self,DSPers,'Personel','Personel',kolon1,'',120);
+  OrtakEventAta(DSPers);
+  DSPers.Properties.OnChange := PropertiesEditValueChanged;
+
+
   setDataString(self,'email','e-mail',Kolon1,'',250);
 
 
@@ -736,29 +750,29 @@ var
   c : char;
 begin
 
-  case ((TcxImageComboKadir(FindComponent('Grup')).EditValue)
-       and (TcxButton(sender).Tag = Kaydet)) of
-   2 : if vartoStr(TcxImageComboKadir(FindComponent('Doktor')).EditValue) = ''
+    if (TcxImageComboKadir(FindComponent('Grup')).EditValue = '2')
+       and (TcxButton(sender).Tag = Kaydet)
        Then begin
           ShowMessageSkin('Doktor Grubu için Doktor Seçimi Yapmak Zorundasýnýz','','','info');
           TcxImageComboKadir(FindComponent('Doktor')).SetFocus;
           exit;
-       end;
-  11 : if vartoStr(TcxImageComboKadir(FindComponent('IGU')).EditValue) = ''
+       end
+       else
+    if (TcxImageComboKadir(FindComponent('Grup')).EditValue = '11')
+       and (TcxButton(sender).Tag = Kaydet)
        Then begin
           ShowMessageSkin('ÝGU Grubu için Uzman Seçimi Yapmak Zorundasýnýz','','','info');
           TcxImageComboKadir(FindComponent('IGU')).SetFocus;
           exit;
-       end;
-  10 : if vartoStr(TcxImageComboKadir(FindComponent('sirketKodu')).EditValue) = ''
+       end
+       else
+    if (TcxImageComboKadir(FindComponent('Grup')).EditValue = '10')
+       and (TcxButton(sender).Tag = Kaydet)
        Then begin
           ShowMessageSkin('OSGB Þirket Grubu için Þirket Seçimi Yapmak Zorundasýnýz','','','info');
           TcxImageComboKadir(FindComponent('sirketKodu')).SetFocus;
           exit;
        end;
-  end;
-
-
 
 
   if TcxButton(sender).Tag = 9

@@ -291,7 +291,7 @@ procedure cxCheckListSec01(cL: TcxCheckListBox; c: string);
 function protokolGuncelle(Id, protokolNo, doktor: string): Boolean;
 function doktorKlinikKoduSaglikNet(doktor: string): string;
 function EnsonRaporProtokolNo: integer;
-function EnsonSeansProtokolNo(SirketKod,SubeKod: string): string;
+function EnsonSeansProtokolNo(SirketKod,SubeKod: string ; Tip : string = 'Reçete'): string;
 function InputBoxM(const ACaption, APrompt, ADefault: string): string;
 function InputQueryM(const ACaption, APrompt: string;
   var Value: string): Boolean;
@@ -481,8 +481,10 @@ function SendMesajGonder(m,t : PWideChar ; var sonuc : PWideChar ; HastaneRefNo 
 procedure SysTakipNoSorgula(sysTakipNo  : string ; var _Sonuc_ : string);
 procedure TakipListGetir(kullaniciAdi,sifre,sksrs,Tarih,uygulamaKodu : string);
 
+procedure ENabizMuayeneKayit(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 procedure ENabizHizmetSil(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '');
+procedure ENabizTetkikKayit(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 procedure ENabizSgkBildir(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 
 
@@ -505,7 +507,7 @@ procedure IslemNumaralariniAl(_TakipNo : string);
 procedure XMLGoster(filename: string);
 
 function FotoGetir( dosyaNo : string) : TcxImage;
-
+function receteToken(receteId : string) : string;
 
 
 const
@@ -586,6 +588,22 @@ implementation
 uses message,AnaUnit,message_y,popupForm,rapor,TedaviKart,Son6AylikTetkikSonuc,DestekSorunBildir,
              HastaRecete,sifreDegis,HastaTetkikEkle,GirisUnit,SMS,LisansUzat,Update_G, DBGrids,
              UyumSoftPortal,NThermo, TransUtils;
+
+
+function receteToken(receteId : string) : string;
+var
+  sql : string;
+  ado : TADOQuery;
+begin
+  ado := TADOQuery.Create(nil);
+
+//  sql := 'exec ReceteTokenParams ' + receteId;
+  sql := 'exec RenkliReceteJson ' + receteId;
+  DATALAR.QuerySelect(ado,sql);
+  receteToken :=  ado.Fields[0].AsString;
+  ado.Free;
+end;
+
 
 function FotoGetir( dosyaNo : string) : TcxImage;
 var
@@ -1296,6 +1314,65 @@ begin
   end;
 end;
 
+procedure ENabizMuayeneKayit(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
+var
+  sql,msj : string;
+  ado : TADOQuery;
+begin
+
+  ado := TADOQuery.Create(nil);
+  ado.Connection := datalar.ADOConnection2;
+  try
+  if sysTakipNo <> '' then
+  begin
+     sql := 'select dbo.fn_SaglikNetOnlineMuayene(' + QuotedStr(sysTakipNo) +')';
+     datalar.QuerySelect(ado,sql);
+     msj := ado.Fields[0].AsString;
+     if msj <> '' then
+     begin
+        MesajGonder(msj,'Muayene Kayýt',HastaneRefNo,_Sonuc_);
+     end
+     else
+     _Sonuc_ := 'Mesaj Oluþturulamadý';
+  end
+  else
+  _Sonuc_ := 'SysTakipNo Boþ Olmaz,E-Nabýz Hasta Kayýt Yapýnýz';
+  finally
+    ado.Free;
+  end;
+end;
+
+
+procedure ENabizTetkikKayit(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
+var
+  sql,msj : string;
+  ado : TADOQuery;
+begin
+
+  ado := TADOQuery.Create(nil);
+  ado.Connection := datalar.ADOConnection2;
+  try
+  if sysTakipNo <> '' then
+  begin
+     sql := 'select dbo.fn_TETKIK_BILGISI(' + QuotedStr(sysTakipNo) + ')';
+     datalar.QuerySelect(ado,sql);
+     msj := ado.Fields[0].AsString;
+
+     if (msj <> '') and (msj <> 'YOK') and (msj <> 'SYSTakipNo Bulunamadý')
+     then
+     begin
+        MesajGonder(msj,'Tetkik Bilgisi',HastaneRefNo,_Sonuc_);
+     end
+     else
+     _Sonuc_ := 'Mesaj Oluþturulamadý';
+
+  end
+  else
+  _Sonuc_ := 'SysTakipNo Boþ Olmaz,E-Nabýz Hasta Kayýt Yapýnýz';
+  finally
+    ado.Free;
+  end;
+end;
 
 function SGKHizmetSorgulama(kullaniciAdi,sifre,sysTakipNo,islemReferansNo,uygulamaKodu : string) : String;
 var
@@ -1719,17 +1796,43 @@ var
   Dataset : TDataset;
   Table ,where : String;
 begin
-      if datalar.UserGroup = '1' then
+      if (datalar.UserGroup = '1') or
+         (datalar.UserGroup = '4') or
+         (datalar.UserGroup = '9')
+       then
       begin
-          datalar.Foto := TJpegImage.Create;
-          g := TBitmap.Create;
-          try
-            g := TBitmap.Create;
-            datalar.FotoImage.GetBitmap(2,g);
-            datalar.Foto.Assign(g);
-          finally
-           g.free;
-          end;
+         Table := 'Foto';
+         datalar.Foto := TJpegImage.Create;
+         try
+           try
+              Dataset := datalar.QuerySelect('select Adi,Foto,isnull(CINSIYETI,3) cinsiyet '  +
+                                             'from PersonelFoto  F ' +
+                                             ' join PersonelKartView P on P.dosyaNo = F.dosyaNo ' +
+                                             ' where P.dosyaNo = ' + QuotedStr(datalar.Personel));
+              datalar.userTanimi := Dataset.FieldByName('Adi').AsString;
+              datalar.Cinsiyet := Dataset.FieldByName('cinsiyet').AsInteger;
+              if not Dataset.FieldByName('foto').IsNull
+              then
+               datalar.Foto.Assign(Dataset.FieldByName('foto'))
+              else
+               datalar.Foto := nil;
+
+               if datalar.Foto = nil
+               then begin
+                try
+                   datalar.Foto := TJpegImage.Create;
+                   g := TBitmap.Create;
+                   if datalar.Cinsiyet = 0 then datalar.FotoImage.GetBitmap(2,g) else datalar.FotoImage.GetBitmap(4,g);
+                   datalar.Foto.Assign(g);
+                finally
+                 g.free;
+                end;
+               end;
+           except
+            datalar.Foto := nil;
+           end;
+         finally
+         end;
       end;
 
       if (datalar.IGU <> '') or (datalar.doktorKodu <> '')
@@ -5150,6 +5253,7 @@ var
   i : integer;
 begin
   hizmetSunucuRefNo := '';
+  if Http.Cevap.sonucKodu = '9999' then exit;
   if Http.Cevap.sonucKodu = '0000'
   Then Begin
     for i := 0 to length(Http.Cevap.islemBilgileri) - 1 do
@@ -5301,7 +5405,7 @@ begin
   try
     ado.Connection := datalar.ADOConnection2;
 
-    sql := 'select max(gelisNo) from gelisler where dosyaNo = ' + QuotedStr
+    sql := 'select max(gelisNo) from Hasta_gelisler where dosyaNo = ' + QuotedStr
       (DosyaNo);
     datalar.QuerySelect(ado, sql);
 
@@ -5512,7 +5616,7 @@ begin
   end;
 end;
 
-function EnsonSeansProtokolNo(SirketKod,SubeKod: string): string;
+function EnsonSeansProtokolNo(SirketKod,SubeKod: string ; Tip : string = 'Reçete'): string;
 var
   sql: string;
   ado: TADOQuery;
@@ -5520,8 +5624,7 @@ begin
   ado := TADOQuery.Create(nil);
   try
     ado.Connection := datalar.ADOConnection2;
-    sql := 'sp_YeniReceteProtokol ' + QuotedStr(SirketKod) + ',' +
-           QuotedStr(SubeKod);
+    sql := 'sp_YeniReceteProtokol ' + QuotedStr(SirketKod) + ',' +   QuotedStr(Tip);
     datalar.QuerySelect(ado, sql);
 
     if not ado.eof then
@@ -6844,14 +6947,14 @@ begin
     ado.Connection := datalar.ADOConnection2;
     sql := 'select TurId from Labtestler_Firma L ' +
            ' join Labtestler T on T.butKodu = L.butKodu ' +
-           'where islemkoduC = ' + QuotedStr(kod) + where;
+           'where L.islemkoduC = ' + QuotedStr(kod) + where;
 
     if datalar.QuerySelect(sql).FieldByName('TurId').AsString <> '' then
     begin
       sql :=
-        'select butKodu,minD,maxD,uygulamaAdet from Labtestler_Firma  L ' +
+        'select L.butKodu,minD,maxD,uygulamaAdet from Labtestler_Firma  L ' +
         ' join Labtestler T on T.butKodu = L.butKodu ' +
-        ' where islemkoduC = ' + QuotedStr(kod) + ' and T.TurId = ' + turId + where;
+        ' where L.islemkoduC = ' + QuotedStr(kod) + ' and T.TurId = ' + turId + where;
         datalar.QuerySelect(ado, sql);
         Result := ado.Fields[0].AsString;
         minD := ado.Fields[1].AsString;
@@ -6861,9 +6964,9 @@ begin
     else
     begin
       sql :=
-        'select butKodu,minD,maxD,uygulamaAdet from Labtestler_Firma L ' +
-        ' join Labtestler T on T.butKodu = L.butKodu ' +
-        ' where islemkoduC = ' + QuotedStr(kod) + where;
+        'select L.butKodu,minD,maxD,uygulamaAdet from Labtestler_Firma L ' +
+        ' join Labtestler T on T.butKodu = L.butKodu and T.uygulamaAdet = L.Tip ' +
+        ' where L.islemkoduC = ' + QuotedStr(kod) + where;
         datalar.QuerySelect(ado, sql);
         Result := ado.Fields[0].AsString;
         minD := ado.Fields[1].AsString;

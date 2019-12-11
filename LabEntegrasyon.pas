@@ -287,6 +287,17 @@ var
  i : integer;
 begin
   datalar.KontrolUserSet := False;
+
+  case Tcontrol(sender).tag of
+ -12 : begin
+          GirisFormRecord.F_dosyaNo_ := '';
+          GirisFormRecord.F_HastaAdSoyad_ := '';
+          GirisFormRecord.F_TC_ := '';
+          F := FormINIT(TagfrmTestAyarlari,GirisFormRecord);
+          if F <> nil then F.showModal;
+       end;
+  end;
+
   inherited;
   if datalar.KontrolUserSet = True then exit;
 
@@ -330,8 +341,7 @@ begin
       end;
 
  -12 : begin
-          F := FormINIT(TagfrmTestAyarlari,GirisFormRecord);
-          if F <> nil then F.showModal;
+
        end;
 
  -21 : begin
@@ -572,6 +582,7 @@ begin
                              ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','',''))';
            datalar.QueryExec(sql);
           _Dataset.Requery();
+
    end;
 
 end;

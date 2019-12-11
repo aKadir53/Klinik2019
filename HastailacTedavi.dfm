@@ -258,6 +258,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       Tag = -4
       Caption = 'Sms G'#246'nder'
       ImageIndex = 94
+      OnClick = cxButtonCClick
     end
     object R1: TMenuItem
       Tag = -5

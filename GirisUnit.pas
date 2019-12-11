@@ -2634,6 +2634,7 @@ begin
 end;
 
 
+
 procedure TGirisForm.cxButtonCClick(Sender: TObject);
 begin
   if KontrolUsers(inttostr(self.Tag),inttostr(TControl(sender).Tag),datalar.username) = False

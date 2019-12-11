@@ -334,6 +334,8 @@ begin
         datalar._sifre := WebErisimBilgiFirma('98','08');//datalar.ADO_AktifSirket.FieldByName('HastaKabulSifre').AsString;
         datalar._kurumKod := strToint(ifThen(datalar._tesisKodu='','0',datalar._tesisKodu));
         datalar._medulaOrtam_ := 'G';
+        datalar.receteURL := WebErisimBilgi('98','02');
+
       End
       Else
       begin
@@ -342,6 +344,7 @@ begin
         datalar._sifre := WebErisimBilgi('98','06');//datalar.ADO_AktifSirket.FieldByName('HastaKabulSifre').AsString;
         datalar._kurumKod := strToint(ifThen(datalar._tesisKodu='','0',datalar._tesisKodu));
         datalar._medulaOrtam_ := 'T';
+        datalar.receteURL := WebErisimBilgi('98','04');
       end;
 
       datalar._donemuser := WebErisimBilgiFirma('98','09');
@@ -379,7 +382,6 @@ begin
        datalar._DyobKurumKodu_ := WebErisimBilgiFirma('TDIS','00');
        datalar._DyobSifre_ := WebErisimBilgiFirma('TDIS','01');
        datalar._DyobServiceKodu_ := WebErisimBilgiFirma('TDIS','02');
-
 
     except
     end;

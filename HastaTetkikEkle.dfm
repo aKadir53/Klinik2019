@@ -929,25 +929,21 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
       object N1: TMenuItem
         Tag = -1
         Caption = 'Ayl'#305'k Ekle'
-        ImageIndex = 61
         OnClick = ItemClick
       end
       object T1: TMenuItem
         Tag = -3
         Caption = '3 Ayl'#305'k Ekle'
-        ImageIndex = 62
         OnClick = ItemClick
       end
       object N2: TMenuItem
         Tag = -6
         Caption = '6 Ayl'#305'k Ekle'
-        ImageIndex = 64
         OnClick = ItemClick
       end
       object S1: TMenuItem
         Tag = -12
         Caption = 'Y'#305'll'#305'k Ekle'
-        ImageIndex = 94
         OnClick = ItemClick
       end
       object H1: TMenuItem

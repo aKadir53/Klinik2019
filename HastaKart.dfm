@@ -139,7 +139,7 @@ object frmHastaKart: TfrmHastaKart
     TabOrder = 3
     BosOlamaz = False
     ItemList = '0;Vatanda'#351',1;Yeni Do'#287'an,2;S'#305#287#305'nmac'#305',4;Yabanc'#305',6;Kimliksiz'
-    FilterSet = fsVatandasTip
+    FilterSet = fsNone
     Width = 121
   end
   object seansGunleri: TcxCheckGroup

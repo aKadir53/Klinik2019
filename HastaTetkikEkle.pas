@@ -193,17 +193,6 @@ end;
 
 procedure TfrmHastaTetkikEkle.Sonuclar;
 begin
-  (*
-   sql := 'select h.tip ,h.tip1,h.onay,h.gd ,h.islemAciklamasi,h.kabulNo,h.Adet,h.doktor,' +
-          ' h.code,h.NAME1,h.dosyaNo,h.gelisNo,h.siraNo,h.gelisSIRANO,h.Tarih,h.ICODE,h.ISLENDIMI ' +
-          ' from hareketlerLab h ' +
-          ' join HastaKart HK on HK.dosyaNo = h.dosyaNo ' +
-          ' join labtestler t on t.butKodu = h.code and t.uygulamaAdet = h.tip1 and t.sirketKod = HK.sirketKod ' +
-          ' where h.dosyaNo = ' + #39 + _dosyaNo_ + #39 +
-          ' and gelisNo = ' + _gelisNo_ + ' and abs(t.tip) = ' + inttostr(ABS(cxTabTetkik.TabIndex+2)) + // sql1 +
-          ' order by t.sira asc,h.tip1 desc ';
-   *)
-
    sql := 'exec sp_HastaGelisTetkik ' + QuotedStr(_dosyaNo_) + ',' + _gelisNO_ + ',' + inttostr(ABS(cxTabTetkik.TabIndex+2)) ;
    datalar.QuerySelect(ADO_Tetkikler,sql);
    cxGridTetkikler.ViewData.Expand(true);
@@ -218,9 +207,6 @@ begin
      ADO_TetkikDegerlendir.FieldByName('gelisNo').AsString := _gelisNo_;
      ADO_TetkikDegerlendir.Post;
    end;
-
-
-
 end;
 
 procedure TfrmHastaTetkikEkle.TetkikSil(tag : integer);
@@ -302,22 +288,36 @@ procedure TfrmHastaTetkikEkle.GrupTetkikEkle(grup : integer);
 var
   sql : string;
   ado : TADOQuery;
+
+procedure ekle(tip : string);
 begin
-   if mrYES = ShowMessageSkin('Var Olan Tablo Silinip Yeniden Oluþturulacak , Girilmiþ Sonuçlar Varsa , Bu Ýþlem Yapýlmaz','','','msg')
-   Then Begin
      try
        sql := 'exec sp_hastaLabIsle @dosyaNo = ' + QuotedStr(_dosyaNo_) + ', @gelisNo = ' +
-               _gelisNo_ + ', @tarih = ' + QuotedStr(tarihal(date())) + ', @tip = ' + inttostr(-1*grup);
+               _gelisNo_ + ', @tarih = ' + QuotedStr(tarihal(date())) + ', @tip = ' + QuotedStr(tip);
        datalar.QueryExec(sql);
        ADO_Tetkikler.Requery();
+      ShowMessageSkin('Hizmetler Eklendi','','','info');
      except on e : Exception do
         begin
             ShowMessageSkin('Hata :' + e.Message,'','','info');
             exit;
         end;
      end;
-     ShowMessageSkin('Hizmetler Eklendi','','','info');
+
+end;
+
+begin
+
+   if grup = -5
+   then begin
+     ekle('Hepatit');
+   end
+   else
+   if mrYES = ShowMessageSkin('Var Olan Tablo Silinip Yeniden Oluþturulacak , Girilmiþ Sonuçlar Varsa , Bu Ýþlem Yapýlmaz','','','msg')
+   Then Begin
+     ekle(inttostr(-1*grup));
    End;
+
 end;
 
 
@@ -327,7 +327,7 @@ var
   F : TGirisForm;
 begin
     case TMenuItem(sender).Tag of
-   -1,-3,-6,-12 : begin
+   -1,-3,-6,-12,-5 : begin
                     GrupTetkikEkle(TMenuItem(sender).Tag);
                   end;
     -30 : begin
@@ -345,9 +345,7 @@ begin
     -4 : begin
            Kantetkikleri(_dosyaNO_,datalar.HastaBil.Tarih);
          end;
-    -5 : begin
 
-         end;
     -20 : begin
            // KTVHesapListe;
           end;
@@ -590,6 +588,8 @@ end;
 procedure TfrmHastaTetkikEkle.gridTetkikDegerlendirDblClick(Sender: TObject);
 begin
   inherited;
+   if ado_tetkikDegerlendir.Eof = False then exit;
+   
    _value_ := ado_tetkikDegerlendir.FieldByName('tedavi').AsString;
    if mrYes = ShowPopupForm('Diyaliz Ýzlem',ado_tetkikDegerlendir.FieldByName('tip').AsInteger,Self)
    then begin

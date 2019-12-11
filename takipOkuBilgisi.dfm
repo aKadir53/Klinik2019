@@ -23,7 +23,7 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
     Top = 0
     Width = 664
     Height = 529
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
     Images = DATALAR.imag24png
     TabHeight = 25
@@ -57,7 +57,7 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
         Top = 0
         Width = 656
         Height = 494
-        ActivePage = TabSheet3
+        ActivePage = TabSheet7
         Align = alClient
         Images = DATALAR.imag24png
         TabHeight = 25
@@ -243,6 +243,7 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
             FooterParams.Color = clWindow
             IndicatorOptions = [gioShowRowIndicatorEh]
             Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit]
+            PopupMenu = PopupMenu2
             TabOrder = 0
             TitleParams.MultiTitle = True
             Columns = <

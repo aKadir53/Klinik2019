@@ -330,15 +330,21 @@ var
   sql : string;
   ado : TADOQuery;
 begin
-  ado := TADOQuery.Create(nil);
-  ado.Connection := datalar.ADOConnection2;
 
-  sql := 'update Hasta_gelisler set HZLNO = ' + inttostr(TMenuItem(sender).Tag) +
-         ' where SIRANO = ' + hastalar.FieldByName('SIRANO').AsString;
+  if gridHastalar.Controller.SelectedRowCount > 0
+  Then begin
+    ado := TADOQuery.Create(nil);
+    ado.Connection := datalar.ADOConnection2;
+    try
+      sql := 'update Hasta_gelisler set HZLNO = ' + inttostr(TMenuItem(sender).Tag) +
+             ' where SIRANO = ' + hastalar.FieldByName('SIRANO').AsString;
 
-  datalar.QueryExec(ado,sql);
+      datalar.QueryExec(ado,sql);
+    finally
+      ado.free;
+    end;
 
-
+  end;
 
 end;
 

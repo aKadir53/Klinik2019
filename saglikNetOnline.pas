@@ -316,6 +316,8 @@ begin
 
  //  SNetUserTotxtFile;
 
+   DurumGoster(True,True,ad + ' ' + soyad,0,gridListe.Controller.SelectedRowCount);
+
    stop := 0;
   try
    try
@@ -329,7 +331,7 @@ begin
        msg := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,8);
     //   mesajTipi := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,12);
 
-       DurumGoster(True,True,ad + ' ' + soyad,0,gridListe.Controller.SelectedRowCount);
+       pnlDurumDurum.Caption := ad + ' ' + soyad;
        pBar.Position := pBar.Position + 1;
 
        Application.ProcessMessages;

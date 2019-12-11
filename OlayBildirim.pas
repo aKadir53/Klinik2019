@@ -39,7 +39,7 @@ type
 
 const _TableName_ = 'OlayBildirim';
       formGenislik = 500;
-      formYukseklik = 500;
+      formYukseklik = 570;
 
 var
   frmOlayBildirim: TfrmOlayBildirim;
@@ -167,6 +167,27 @@ begin
 
 
   IC := TcxImageComboKadir.Create(self);
+  IC.Conn := Datalar.ADOConnection2;
+  IC.TableName := 'PersonelKartListeView';
+  IC.ValueField := 'dosyaNO';
+  IC.DisplayField := 'Personel';
+  IC.Filter := ' aktif = 1';
+  IC.BosOlamaz := True;
+  setDataStringKontrol(self,IC,'personelDosyaNo','Personel ',kolon1,'',200);
+  OrtakEventAta(IC);
+
+  IC := TcxImageComboKadir.Create(self);
+  IC.Conn := Datalar.ADOConnection2;
+  IC.TableName := 'HastaKartView';
+  IC.ValueField := 'dosyaNO';
+  IC.DisplayField := 'Hasta';
+  IC.Filter := ' aktif = 1';
+  IC.BosOlamaz := True;
+  setDataStringKontrol(self,IC,'hastaDosyaNo','Hasta ',kolon1,'',200);
+  OrtakEventAta(IC);
+
+
+  IC := TcxImageComboKadir.Create(self);
   IC.Conn := nil;
   IC.ItemList := '0;Gerçekleþen Olay,1;Ýstenmeyen Olay';
   IC.Filter := '';
@@ -243,7 +264,23 @@ end;
 
 procedure TfrmOlayBildirim.cxKaydetClick(Sender: TObject);
 begin
+  case TcxButton(sender).Tag  of
+    0 : begin
+        // ShowMessage('Kaydet');
+        // ButonClick(self,'k');
+      //   Olustur(self,'Users');
+      //   setDataString(self,'ADISOYADI',100,10);
+
+        end;
+    Yeni : begin
+             TcxImageComboKadir(FindComponent('hastaDosyaNo')).Filter := ' Aktif = 1 ';
+             TcxImageComboKadir(FindComponent('personelDosyaNo')).Filter := ' Aktif = 1 ';
+           end;
+  end;
+
+
   inherited;
+
   case TcxButton(sender).Tag  of
     0 : begin
         // ShowMessage('Kaydet');
@@ -255,7 +292,7 @@ begin
     1 : begin
          // post;
          //ShowMessage('Ýptal');
-    end;
+        end;
   end;
 end;
 

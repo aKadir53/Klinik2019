@@ -91,6 +91,12 @@ begin
       topluset.Dataset0 := ado;
 
 
+       sql := 'exec sp_HastaTetkikTakipPIVOT @dosyaNo = ' + QuotedStr(_dosyaNo_)  +
+                                           ',@yil = ' + QuotedStr(_provizyonTarihi_) + ',@f=1,@marker=''T''' +
+                                           ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
+       datalar.QuerySelect(ADO_Tele,sql);
+
+
       if tag = -2
       Then Begin
         KanTetkikleri(_dosyaNo_,_tarih_);
@@ -133,9 +139,13 @@ begin
      end;
 
 
-     sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_provizyonTarihi_) + ',@f=-1 , @marker = ' + QuotedStr(marker);
-     ADO_Tetkikler.Connection := datalar.ADOConnection2;
+     sql := 'exec sp_HastaTetkikTakipPIVOT @dosyaNo = ' + QuotedStr(_dosyaNo_)  +
+                                          ',@yil = ' + QuotedStr(_provizyonTarihi_) +
+                                          ',@f=-1 , @marker = ' + QuotedStr(marker) +
+                                          ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
      datalar.QuerySelect(ADO_Tetkikler,sql);
+
+     Caption  := Caption + ' ' + ADO_Tetkikler.FieldByName('ay1').AsString + ' - ' + ADO_Tetkikler.FieldByName('ay2').AsString;
 
    finally
      ado.free;
@@ -150,14 +160,17 @@ var
 begin
     if chkHepatit.Checked
     Then begin
-       sql := 'exec sp_HastaTetkikTakip ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih_) + ',@f=1,@marker=''T''';
-       datalar.QuerySelect(ADO_Tele,sql);
-
-       sql := 'exec sp_HastaTetkikTakip ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih_) + ',@f=1,@marker=''E''';
+       sql := 'exec sp_HastaTetkikTakipPIVOT @dosyaNo = ' + QuotedStr(_dosyaNo_)  +
+                                           ',@yil = ' + QuotedStr(_provizyonTarihi_) + ',@f=1,@marker=''E''' +
+                                           ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
     end
-    Else
-       sql := 'exec sp_HastaTetkikTakip ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih_) + ',@f=1,@marker=' + QuotedStr(marker);
+    Else begin
 
+       sql := 'exec sp_HastaTetkikTakipPIVOT @dosyaNo = ' + QuotedStr(_dosyaNo_)  +
+                                           ',@yil = ' + QuotedStr(_provizyonTarihi_) + ',@f=-1,@marker=' + QuotedStr('H')+
+                                           ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
+
+    end;
 
     datalar.QuerySelect(ADO_Tetkikler,sql);
 
@@ -213,7 +226,7 @@ begin
   TableName := '';
   cxPanel.Visible := false;
   cxTab.Width := 200;
-  SayfaCaption('Kan Tetkik Takip','','','','');
+  SayfaCaption('Yýllýk Tetkik Takip Cetveli','','','','');
   Olustur(self,'','Hasta Tetkikleri',23);
   Menu := PopupMenu1;
 end;

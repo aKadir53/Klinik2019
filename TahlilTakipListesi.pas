@@ -79,8 +79,8 @@ type
     S3: TMenuItem;
     T5: TMenuItem;
     pnlTitle: TcxGroupBox;
-    tarih2: TcxDateEdit;
-    tarih1: TcxDateEdit;
+    tarih2: TcxDateEditKadir;
+    tarih1: TcxDateEditKadir;
     DiyalizTip: TcxRadioGroup;
     chkMisafir: TcxCheckBox;
     btnList: TcxButton;
@@ -148,6 +148,7 @@ type
     ListeColumn3: TcxGridDBBandedColumn;
     T6: TMenuItem;
     cxStyle9: TcxStyle;
+    T7: TMenuItem;
     procedure cxButtonCClick(Sender: TObject);
     procedure Tarih;
     procedure T1Click(Sender: TObject);
@@ -203,24 +204,26 @@ var
 begin
 inherited;
 
-  if ADO_TetkiklerHastaList.Eof then exit;
-  GirisRecord.F_dosyaNO_ := ADO_TetkiklerHastaList.fieldbyname('dosyaNo').AsString;
-  GirisRecord.F_gelisNO_ := ADO_TetkiklerHastaList.fieldbyname('g').AsString;
-  GirisRecord.F_HastaAdSoyad_ := ADO_TetkiklerHastaList.fieldbyname('h').AsString;
-  GirisRecord.F_TakipNo_ := ADO_TetkiklerHastaList.fieldbyname('takýpNo').AsString;
-  GirisRecord.F_BasvuruNo_ := ADO_TetkiklerHastaList.fieldbyname('basvuruNo').AsString;
+  if Liste.Controller.SelectedRowCount > 0
+  Then begin
+      GirisRecord.F_dosyaNO_ := ADO_TetkiklerHastaList.fieldbyname('dosyaNo').AsString;
+      GirisRecord.F_gelisNO_ := ADO_TetkiklerHastaList.fieldbyname('g').AsString;
+      GirisRecord.F_HastaAdSoyad_ := ADO_TetkiklerHastaList.fieldbyname('h').AsString;
+      GirisRecord.F_TakipNo_ := ADO_TetkiklerHastaList.fieldbyname('takýpNo').AsString;
+      GirisRecord.F_BasvuruNo_ := ADO_TetkiklerHastaList.fieldbyname('basvuruNo').AsString;
 
-  case Tcontrol(sender).Tag of
-  -2 : begin
-          F := FormINIT(TagfrmHastaTetkikEkle,GirisRecord);
-          if F <> nil then F.ShowModal;
-       //   F := FormINIT(TagfrmTahlilsonucGir,GirisRecord,ikHayir,'');
-      //    if F <> nil then F.show;
-       end;
-  -18 : begin
-         S3.Click;
-        end;
+      case Tcontrol(sender).Tag of
+      -2 : begin
+              F := FormINIT(TagfrmHastaTetkikEkle,GirisRecord);
+              if F <> nil then F.ShowModal;
+           //   F := FormINIT(TagfrmTahlilsonucGir,GirisRecord,ikHayir,'');
+          //    if F <> nil then F.show;
+           end;
+      -18 : begin
+             S3.Click;
+            end;
 
+      end;
   end;
 
 
@@ -376,16 +379,48 @@ end;
 
 procedure TfrmTahliltakip.T3Click(Sender: TObject);
 var
-  sql , _dosyaNo_ , _gelisNo_ , _Tarih : string;
+  sql , _dosyaNo_ , _gelisNo_ , _Tarih , m ,ay1,ay2 : string;
   ado,ado0,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
-   DatasetKadir : TDataSetKadir;
+   DatasetKadir ,topluset : TDataSetKadir;
 begin
 
   _dosyaNo_ := ADO_TetkiklerHastaList.FieldByName('dosyaNo').AsString;
   _gelisNo_ := ADO_TetkiklerHastaList.FieldByName('g').AsString;
   _Tarih := copy(tarihal(tarih1.Date),1,4);
 
+  ay1 := tarih1.GetValue; //tarihal(ayaditoay(txtAy.Text));
+  ay2 := tarih2.GetValue; //tarihal(ayliktarih2(txtAy.Text));
 
+   case TMenuItem(sender).Tag of
+    10 : m := 'E';
+    9 : m := 'H';
+   end;
+  (*
+   if TMenuItem(sender).Tag in [12]
+   then begin
+    topluset.Dataset1 := cxGrid2.Dataset;
+    PrintYap('203T','Hasta Tetkik Takip Hepatit Toplu',inttostr(TagfrmHastaListe),topluset);
+   end
+   else begin
+    *)
+    DurumGoster(True);
+    try
+      ado := TADOQuery.Create(nil);
+      sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = '''' , @yil = ' + QuotedStr(ay1) +
+                    ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket);
+      datalar.QuerySelect(ado,sql);
+
+      topluset.Dataset0 := ado;
+      PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),topluset);
+    finally
+      DurumGoster(False);
+      ado.Free;
+    end;
+
+  // end;
+
+
+(*
   if TMenuItem(sender).Tag = 9
   Then Begin
        sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',@f=-1,@marker=''H'' ';
@@ -397,11 +432,6 @@ begin
 
     sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',@f=-1,@marker=''E''';
   end;
-
-(*
-    sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = '''' , @yil = ' + QuotedStr(ay1) +
-                  ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket);
-  *)
 
   datalar.QuerySelect(ADO_Tet,sql+ ' , @sirketKod = ' + QuotedStr(datalar.AktifSirket));
 
@@ -417,7 +447,7 @@ begin
 
     if TMenuItem(sender).Tag = 9
     Then Begin
-      PrintYap('201','\Hasta Tetkik Takip',intTostr(TagfrmTahliltakip),DatasetKadir);
+      PrintYap('205','\Hasta Tetkik Takip',intTostr(TagfrmTahliltakip),DatasetKadir);
     End
     Else
     Begin
@@ -428,7 +458,7 @@ begin
   finally
     ado.Free;
   end;
-
+  *)
 
 end;
 
@@ -604,22 +634,21 @@ procedure TfrmTahliltakip.S1Click(Sender: TObject);
 var
  ado : TADOQuery;
  sql : string;
+ TopluDataset : TDataSetKadir;
 begin
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
+  try
+    sql := 'exec sp_HastaLabSonucToplu ' + QuotedStr(tarihal(tarih1.Date)) + ',' +  QuotedStr(tarihal(tarih2.Date));
+    datalar.QuerySelect(ado,sql);
+    TopluDataset.Dataset0 := ado;
 
-  sql := 'exec sp_HastaLabSonucToplu ' + QuotedStr(tarihal(tarih1.Date)) + ',' +  QuotedStr(tarihal(tarih2.Date));
-  datalar.QuerySelect(ado,sql);
-  frmRapor.topluset.Dataset0 := ado;
-  frmRapor.raporData1(frmRapor.topluset ,'112T','\Lab Sonuç Yazdýr (Toplu)');
-  frmRapor.ShowModal;
-  ado.Free;
+    PrintYap('112','\Lab Sonuç Yazdýr (Toplu)',intToStr(TagfrmTahliltakip),TopluDataset);
 
-(*
-        frmRapor.topluset.Dataset1 := ADO_Tetkikler;
-        frmRapor.raporData1(frmRapor.topluset ,'112T','\Lab Sonuç Yazdýr (Toplu)');
-        frmRapor.ShowModal;
-  *)
+  finally
+      ado.Free;
+  end;
+
 end;
 
 procedure TfrmTahliltakip.cxCheckBox1Click(Sender: TObject);

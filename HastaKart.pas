@@ -586,15 +586,19 @@ begin
   then begin
     if TcxImageComboBox(FindComponent('Aktif')).EditValue = 0
       then begin
-        TcxImageComboKadir(FindComponent('PasifSebeb')).Filter := 'tip = ''P''';
-        TdxLayoutGroup(FindComponent('dxLaAktifDegisTarih')).Visible := False;
-        TdxLayoutGroup(FindComponent('dxLaPasifDegisTarih')).Visible := True;
+         TcxImageComboKadir(FindComponent('PasifSebeb')).Filter := 'tip = ''P''';
+         TdxLayoutGroup(FindComponent('dxLaAktifDegisTarih')).Visible := False;
+         TdxLayoutGroup(FindComponent('dxLaPasifDegisTarih')).Visible := True;
+         TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
+         TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := false;
       end
       else
       begin
          TcxImageComboKadir(FindComponent('PasifSebeb')).Filter := 'tip = ''A''';
          TdxLayoutGroup(FindComponent('dxLaAktifDegisTarih')).Visible := True;
          TdxLayoutGroup(FindComponent('dxLaPasifDegisTarih')).Visible := False;
+         TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
+         TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := false;
       end;
   end;
 
@@ -604,16 +608,22 @@ begin
     then begin
        TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := True;
        TcxImageComboKadir(FindComponent('OlumNedeni')).Filter := '';
+       TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := True;
     end
-    else
+    else begin
       TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := false;
+      TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
+    end;
   end;
 
   if TcxImageComboKadir(Sender).name = 'VatandasTip'
   then begin
      if TcxImageComboKadir(FindComponent('VatandasTip')).EditValue = 0
-     then
-       TcxCustomEdit(FindComponent('UYRUGU')).EditValue := 'TR'
+     then begin
+       TcxCustomEdit(FindComponent('UYRUGU')).EditValue := 'TR';
+      // TdxLayoutGroup(FindComponent('dxLaHUVIYETTIPI')).Visible := False;
+     end;
+
 
    end;
 
@@ -1079,6 +1089,7 @@ begin
 
   setDataString(self,'HUVIYETNO','',Kolon1,'dn',45);
   setDataString(self,'TCKIMLIKNO','TC Kimlik No  ',Kolon1,'',130,True);
+  setDataString(self,'HUVIYETTIPI','PasaportNo',Kolon1,'',130);
   setDataString(self,'HASTAADI','Hasta Adý  ',Kolon1,'',130,True);
   setDataString(self,'HASTASOYADI','Soyadý  ',Kolon1,'',130,True);
   setDataString(self,'BABAADI','Baba Adý  ',Kolon1,'',130);
@@ -1092,10 +1103,26 @@ begin
   setDataStringKontrol(self,MEDENI, 'MEDENI','Medeni Hal  ',Kolon1,'',100);
 //  setDataStringCurr(self,'CocukSayi','Çocuk Say.',kolon1,'',40,'0,',1);
 
+  VatandasTip.Conn := datalar.ADOConnection2;
+  VatandasTip.TableName := 'SKRS_HASTATIPI';
+  VatandasTip.DisplayField := 'ADI';
+  VatandasTip.ValueField := 'KODU';
+  VatandasTip.Filter := '';
   setDataStringKontrol(self,VatandasTip, 'VatandasTip','Vatandaþ Tipi  ',Kolon1,'',100);
+
   UYRUK := ListeAcCreate('SKRS_ULKE_KODLARI','KODU,ADI','Kod,Ülke Adi',
                        '50,200','KODU','Ülke Kodlarý','',2);
   setDataStringB(self,'UYRUGU','Uyruk',Kolon1,'',50,UYRUK,false,nil,'ADI','',True,True);
+
+  EGITIM := TcxImageComboKadir.Create(self);
+  EGITIM.Conn := Datalar.ADOConnection2;
+  EGITIM.TableName := 'SKRS_YABANCI_HASTA_TURU';
+  EGITIM.ValueField := 'kodu';
+  EGITIM.DisplayField := 'ADI';
+  EGITIM.BosOlamaz := True;
+  EGITIM.Filter := '';
+  OrtakEventAta(EGITIM);
+  setDataStringKontrol(self,EGITIM,'YabanciHastaTuru','Y. Hasta Turu',kolon1,'',130);
 
   EGITIM := TcxImageComboKadir.Create(self);
   EGITIM.Conn := Datalar.ADOConnection2;
@@ -1199,7 +1226,19 @@ begin
 
   setDataStringKontrol(self,txtAktifPasifSebeb , 'PasifSebeb','',Kolon4,'',160);
   setDataStringKontrol(self,txtOlumNeden , 'OlumNedeni','',Kolon4,'',160);
+
+
+  muayenePeryot := TcxImageComboKadir.Create(self);
+  muayenePeryot.Conn := nil;
+  muayenePeryot.ItemList := '0;Merkez Dýþý,1;Merkez';
+  muayenePeryot.Filter := '';
+  setDataStringKontrol(self,muayenePeryot,'olumYeri','Ölüm Yeri',kolon4,'',110);
+  OrtakEventAta(muayenePeryot);
+
+
+
   TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := False;
+  TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
   TdxLayoutGroup(FindComponent('dxLaAktifDegisTarih')).Visible := False;
   TdxLayoutGroup(FindComponent('dxLaPasifDegisTarih')).Visible := False;
 
@@ -1560,7 +1599,7 @@ begin
    exit;
   end;
 
-  if (cxGridGelis.Dataset.Eof) and (TControl(sender).Tag <> -27)
+  if (cxGridGelis.Dataset.Eof) and (not TControl(sender).Tag in [abs(-27),abs(-29)])
   then begin
    ShowMessageSkin('Muayene Dosyasý Açýlmadan Bu Ýþlem Kullanýlamaz...','','','info');
    exit;

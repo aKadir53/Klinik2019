@@ -71,6 +71,8 @@ type
     PopupMenu1: TPopupMenu;
     L1: TMenuItem;
     ADOTable1: TADOQuery;
+    cxStyleRepository1: TcxStyleRepository;
+    cxStyle1: TcxStyle;
     procedure btnVazgecClick(Sender: TObject);
     procedure L1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -103,7 +105,7 @@ begin
   sql := 'select L.butKodu,L.tanimi,L.uygulamaSuresi,L.uygulamaAdet,L.tip,L.sira,L.minD,L.maxD,L.SGKTip,L.birim, ' +
          'L.hepatitMarker,L.SonucTip,L.grupKodu,L.grupKodu_Centro,L.Loinc,L.ref_aciklama,F.islemKodu,F.islemKoduC ' +
          'from LabTestler L ' +
-         'join LabTestler_Firma F on F.butKodu = L.butKodu ' +
+         'left join LabTestler_Firma F on F.butKodu = L.butKodu and F.Tip = L.UygulamaAdet ' +
          ' where F.labID = ' + QuotedStr(datalar._labID);
   datalar.QuerySelect(ADOTable1,sql);
   cxPanel.Visible := false;

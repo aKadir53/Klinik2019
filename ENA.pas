@@ -41,13 +41,16 @@ var
 begin
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
+   try
+     sql := 'update hasta_gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
+            ',LabRefId = ' + QuotedStr(refId) +
+            ' where SIRANO = ' + id;
+     datalar.QueryExec(ado,sql);
 
-   sql := 'update gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
-          ',LabRefId = ' + QuotedStr(refId) +
-          ' where SIRANO = ' + id;
-   datalar.QueryExec(ado,sql);
+   finally
+    ado.Free;
+   end;
 
-   ado.Free;
 end;
 
 
@@ -581,6 +584,12 @@ begin
 
             if length(HTSOCvp.Sonuclar) > 0
             Then Begin
+              if (HTSOCvp.Sonuclar[0] = nil) and (length(HTSOCvp.Sonuclar) = 1)
+              then  begin
+                 txtLog.Lines.Add(inttostr(HTSO.TC) + ' - Sonuç Bulunamadý');
+              end
+              else
+              begin
                 for _Sonuc_ in HTSOCvp.Sonuclar do
                 begin
                   txtLog.Lines.Add('Barkod : ' + _Sonuc_.Referans);
@@ -634,7 +643,7 @@ begin
                             sonucA := trim(StringReplace(StringReplace(SonucA,'DÜÞÜK','',[rfReplaceAll]),'düþük','',[rfReplaceAll]));
                             sonucA := trim(StringReplace(SonucA,'-','',[rfReplaceAll]));
                              *)
-                            sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _tetkikSonuc_.Sonuc + ')' +
+                            sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
                                       ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                       ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
@@ -648,7 +657,7 @@ begin
                          else
                          begin
                             try
-                             sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _tetkikSonuc_.Sonuc + ')' +
+                             sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
                                       ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
                                       ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
 
@@ -668,6 +677,7 @@ begin
                 end; // _sonuc_ for end
                 ornekdurumyaz('Sonuç Alýndý',id,_Sonuc_.Referans);
 
+              end;
             End //Sonuclar > 0 end
              else txtLog.Lines.Add(inttostr(HTSO.TC) + ' - ' +  HTSOCvp.SonucMesaji);
 

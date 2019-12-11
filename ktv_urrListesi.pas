@@ -77,6 +77,8 @@ begin
 end;
 
 procedure TfrmKtvListesi.cxButtonCClick(Sender: TObject);
+var
+  formul : string;
 begin
    inherited;
 
@@ -106,9 +108,15 @@ begin
               TopPanelButonClick(self);
             end;
          end;
-   -2 : begin
-          Hesaplat(TMenuItem(Sender).Hint);
-        end;
+   -2,-3,-4 : begin
+                case TMenuItem(Sender).Tag of
+                -2 : formul := 'D2';
+                -3 : formul := 'J';
+                -4 : formul := 'D';
+                end;
+
+                Hesaplat(formul);
+              end;
    end;
 
 end;

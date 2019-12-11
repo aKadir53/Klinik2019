@@ -81,6 +81,7 @@ type
     procedure TetkikIlacTedaviYazdir(_Tarih_ : string);
     procedure ilacEkle(islem : integer);
     procedure Yukle;override;
+    procedure SmsGonder;
 
   private
     { Private declarations }
@@ -196,6 +197,52 @@ begin
        End;
       End;
    end;
+end;
+
+procedure TfrmHastaIlacTedavi.SmsGonder;
+var
+ tel , gelis , ilaclar , msj : string;
+ ado : TADOQuery;
+begin
+  if mrYes = ShowMessageSkin('Ýlaç Kullanýmýnýz SMS ile Bildirilecek','','','msg')
+  then begin
+      ado := TADOQuery.Create(nil);
+      ado.Connection := datalar.ADOConnection2;
+      try
+        gelis := ADO_GecmisIlacTedavi.FieldByName('gelisNo').AsString;
+        sql := 'select ilacname ,' +
+               'case when peryot = 1 THEN ''Günde '' ELSE CASE WHEN peryot = 7 THEN ''Haftada '' ELSE CASE WHEN peryot = 15 THEN ''2 Haftada '' ELSE ''Ayda '' END END END '+
+               ' + cast(doz AS VARCHAR)  + '' kere '' + cast(miktar AS VARCHAR) + '' Adet'' dozperyotmiktar' +
+               ' from HastaIlacTedavi H ' +
+               ' left join ILACLAR I on I.code = H.ilac ' +
+               ' where dosyaNo = ' + QuotedStr(_dosyaNo_) +
+               ' and gelisNo = ' + gelis + ' and isnull(I.tip,1) = 1';
+        datalar.QuerySelect(ado,sql);
+
+        while not ado.eof do
+        begin
+          ilaclar := ilaclar + ' ' + copy(ado.FieldByName('ilacname').AsString,1,10)+ '[' +
+                       ado.FieldByName('dozperyotmiktar').AsString+']' + #13;
+           ado.next;
+        end;
+
+      finally
+        ado.Free;
+      end;
+
+      tel := dosyaNoTel(_dosyaNO_,_mobilTel_);
+      msj := 'Ýlaç Bilgileriniz : ' + ilaclar + #13 +
+             ' Saðlýklý Günler Dileriz';
+
+      if tel = ''
+      then begin
+        ShowMessageSkin('Mobil Telefon boþ olmamalýdýr','','','info');
+        exit;
+      end;
+      SMSSend(tel,msj,_HastaAdSoyad_);
+
+
+  end;
 end;
 
 procedure TfrmHastaIlacTedavi.Yukle;
@@ -366,6 +413,9 @@ begin
   if datalar.KontrolUserSet = True then exit;
 
     case TMenuItem(sender).Tag of
+    -4 : begin
+           SmsGonder;
+         end;
     -5 : begin
            ReceteyeEkle;
            K1.Click;

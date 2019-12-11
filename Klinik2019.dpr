@@ -112,7 +112,7 @@ uses
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 1094;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
+  AppalicationVer : integer = 4003;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
   OSGBDllVersiyon : integer = 6;     //  DLLVersiyon.txt  içine DllVersiyon deðerini yaz ftp at
                                      // isg.exe yapý deðiþikliðinden sonra buna gerek kalmýyor
 
@@ -157,20 +157,22 @@ begin
 //  Download('https://www.noktayazilim.net/' + isg,'mavinokta','nokta53Nokta','C:\OSGB\'+isg);
 
   datalar.versiyon := inttostr(AppalicationVer);
-  if ForceDirectories ('C:\NoktaV4') then
+  if ForceDirectories ('C:\NoktaV3') then
   begin
-      if FileExists('C:\NoktaV4\' + isg) = False
+      (*
+      if FileExists('C:\NoktaV3\' + isg) = False
       Then begin
         //dosya := TFileStream.Create('C:\OSGB\' + isg,fmCreate);
         try
-          Download('https://www.noktayazilim.net/isg/'+isg,'mavinokta','nokta53Nokta','C:\NoktaV4\'+isg);
-          DeleteFile('C:\NoktaV4\isg.exe');
-          CopyFile(pChar('C:\NoktaV4\'+isg),pChar('C:\NoktaV4\isg.exe'),true);
-          DeleteFile('C:\NoktaV4\'+isgOld);
+          Download('https://www.noktayazilim.net/isg/'+isg,'mavinokta','nokta53Nokta','C:\NoktaV3\'+isg);
+          DeleteFile('C:\NoktaV3\yv.exe');
+          CopyFile(pChar('C:\NoktaV3\'+isg),pChar('C:\NoktaV3\yv.exe'),true);
+          DeleteFile('C:\NoktaV3\'+isgOld);
         finally
          //dosya.Free;
         end;
-    end;
+      end;
+        *)
 
   try
     versiyon := (datalar.HTTP1.Get(VersiyonURL));

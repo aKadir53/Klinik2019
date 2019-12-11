@@ -21,24 +21,31 @@ object frmTestAyarlari: TfrmTestAyarlari
     Width = 921
     Height = 352
     Align = alClient
+    Images = DATALAR.imag24png
     TabOrder = 0
     object cxGrid1DBTableView1: TcxGridDBTableView
-      Navigator.Buttons.First.Visible = True
-      Navigator.Buttons.PriorPage.Visible = True
-      Navigator.Buttons.Prior.Visible = True
-      Navigator.Buttons.Next.Visible = True
-      Navigator.Buttons.NextPage.Visible = True
-      Navigator.Buttons.Last.Visible = True
-      Navigator.Buttons.Insert.Visible = True
+      Navigator.Buttons.First.Visible = False
+      Navigator.Buttons.PriorPage.Visible = False
+      Navigator.Buttons.Prior.Visible = False
+      Navigator.Buttons.Next.Visible = False
+      Navigator.Buttons.NextPage.Visible = False
+      Navigator.Buttons.Last.Visible = False
+      Navigator.Buttons.Insert.Visible = False
       Navigator.Buttons.Append.Visible = False
-      Navigator.Buttons.Delete.Visible = True
+      Navigator.Buttons.Delete.Visible = False
+      Navigator.Buttons.Edit.ImageIndex = 16
       Navigator.Buttons.Edit.Visible = True
+      Navigator.Buttons.Post.Hint = 'Kaydet'
+      Navigator.Buttons.Post.ImageIndex = 0
       Navigator.Buttons.Post.Visible = True
+      Navigator.Buttons.Cancel.Hint = 'Vazge'#231
+      Navigator.Buttons.Cancel.ImageIndex = 33
       Navigator.Buttons.Cancel.Visible = True
-      Navigator.Buttons.Refresh.Visible = True
-      Navigator.Buttons.SaveBookmark.Visible = True
-      Navigator.Buttons.GotoBookmark.Visible = True
-      Navigator.Buttons.Filter.Visible = True
+      Navigator.Buttons.Refresh.Visible = False
+      Navigator.Buttons.SaveBookmark.Visible = False
+      Navigator.Buttons.GotoBookmark.Visible = False
+      Navigator.Buttons.Filter.Visible = False
+      Navigator.Visible = True
       DataController.DataSource = DataSource1
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
@@ -49,11 +56,13 @@ object frmTestAyarlari: TfrmTestAyarlari
       NewItemRow.Visible = True
       OptionsBehavior.AlwaysShowEditor = True
       OptionsBehavior.FocusCellOnTab = True
+      OptionsBehavior.NavigatorHints = True
       OptionsBehavior.ExpandMasterRowOnDblClick = False
       OptionsCustomize.ColumnGrouping = False
       OptionsCustomize.ColumnHidingOnGrouping = False
       OptionsCustomize.ColumnsQuickCustomization = True
       OptionsData.Appending = True
+      OptionsView.NavigatorOffset = 20
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
       OptionsView.CellAutoHeight = True
       OptionsView.GroupByBox = False
@@ -99,7 +108,6 @@ object frmTestAyarlari: TfrmTestAyarlari
         PropertiesClassName = 'TcxImageComboBoxProperties'
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
-        Properties.Images = DATALAR.global_img_list4
         Properties.Items = <
           item
             Description = 'Ayl'#305'k'
@@ -125,11 +133,12 @@ object frmTestAyarlari: TfrmTestAyarlari
         Caption = 'GC'
         DataBinding.FieldName = 'uygulamaAdet'
         PropertiesClassName = 'TcxTextEditProperties'
-        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
+        Styles.Content = cxStyle1
         Width = 27
       end
       object cxGrid1DBTableView1tip: TcxGridDBColumn
@@ -290,6 +299,7 @@ object frmTestAyarlari: TfrmTestAyarlari
     Align = alBottom
     Color = clBackground
     TabOrder = 1
+    Visible = False
     object txtinfo: TLabel
       Left = 7
       Top = 11
@@ -718,5 +728,16 @@ object frmTestAyarlari: TfrmTestAyarlari
     Parameters = <>
     Left = 40
     Top = 136
+  end
+  object cxStyleRepository1: TcxStyleRepository
+    PixelsPerInch = 96
+    object cxStyle1: TcxStyle
+      AssignedValues = [svFont]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+    end
   end
 end

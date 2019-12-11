@@ -154,6 +154,7 @@ type
     procedure SirketlerPropertiesChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ButtonClick(Sender: TObject);
+    procedure cxFotoEkleButtonClick(Sender: TObject);
   protected
     procedure TopluPasifYap(const bPasif: boolean);
     { Private declarations }
@@ -867,6 +868,12 @@ begin
 
 end;
 
+procedure TfrmPersonelKart.cxFotoEkleButtonClick(Sender: TObject);
+begin
+  inherited;
+  FotoEkle;
+end;
+
 procedure TfrmPersonelKart.cxGridGelislerDblClick(Sender: TObject);
 begin
   inherited;
@@ -1103,10 +1110,18 @@ begin
   setDataStringKontrol(self,MEDENI, 'MEDENI','Medeni Hal  ',Kolon1,'',100);
   setDataStringCurr(self,'CocukSayi','Çocuk Say.',kolon1,'',40,'0,',1);
 
+  VatandasTip.Conn := datalar.ADOConnection2;
+  VatandasTip.TableName := 'SKRS_HASTATIPI';
+  VatandasTip.DisplayField := 'ADI';
+  VatandasTip.ValueField := 'KODU';
+  VatandasTip.Filter := '';
+  setDataStringKontrol(self,VatandasTip, 'VatandasTip','Vatandaþ Tipi  ',Kolon1,'',100);
+
   setDataStringKontrol(self,VatandasTip, 'VatandasTip','Vatandaþ Tipi  ',Kolon1,'',100);
   UYRUK := ListeAcCreate('SKRS_ULKE_KODLARI','KODU,ADI','Kod,Ülke Adi',
                        '50,200','KODU','Ülke Kodlarý','',2);
   setDataStringB(self,'UYRUGU','Uyruk',Kolon1,'',50,UYRUK,false,nil,'ADI','',True,True);
+
 
   EGITIM := TcxImageComboKadir.Create(self);
   EGITIM.Conn := Datalar.ADOConnection2;
@@ -1160,7 +1175,7 @@ begin
   Sirketlerx.ValueField := 'SirketKod';
   Sirketlerx.DisplayField := 'Tanimi';
   Sirketlerx.BosOlamaz := False;
-  Sirketlerx.Filter := SirketComboFilter;
+  Sirketlerx.Filter := '';
   Sirketlerx.EditValue := datalar.AktifSirket;
   Sirketlerx.ItemIndex := -1;
  // sirketlerx.tag := -100;
@@ -1568,8 +1583,8 @@ begin
 
   if dosyaNo.Text = ''
   then begin
-   ShowMessageSkin('Hasta Dosyasý Açýlmadan Bu Ýþlem Kullanýlamaz...','','','info');
-   exit;
+    ShowMessageSkin('Hasta Dosyasý Açýlmadan Bu Ýþlem Kullanýlamaz...','','','info');
+    exit;
   end;
 
   GirisFormRecord.F_dosyaNo_ := dosyaNo.Text;

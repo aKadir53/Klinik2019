@@ -1071,6 +1071,8 @@ object frmHastaSeans: TfrmHastaSeans
       Caption = 'Kan Alimini '#304'ptal Et'
       OnClick = cxButtonCClick
     end
+    object D2: TMenuItem
+    end
   end
   object ADO_Detay_toplam: TADOQuery
     Connection = DATALAR.ADOConnection2

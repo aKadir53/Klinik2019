@@ -60,7 +60,6 @@ type
     txtCinsiyet: TRadioGroup;
     btnKabul: TsBitBtn;
     btnVazgec: TsBitBtn;
-    txtdogumTarihi: TcxTextEdit;
     cxLabel12: TcxLabel;
     cxLabel11: TcxLabel;
     txtHastaSoyadi: TcxTextEdit;
@@ -140,6 +139,7 @@ type
     txtDevredilenKurum: TcxTextEdit;
     btnAra: TcxButton;
     Panel1: TPanel;
+    txtdogumTarihi: TcxDateEditKadir;
     procedure txtBranslarPropertiesChange(Sender: TObject);
     procedure btnKabulClick(Sender: TObject);
     procedure btnAraClick(Sender: TObject);
@@ -456,7 +456,7 @@ begin
            ',@EV_TEL2 = ' + #39 + '' + #39 +
            ',@EMAIL = ' + #39 + 'a@' + #39 +
            ',@DOGUMYERI = ' + #39 + '' + #39 +
-           ',@DOGUMTARIHI = ' + #39 + tarih(txtDogumTarihi.Text) + #39 +
+           ',@DOGUMTARIHI = ' + #39 + txtDogumTarihi.GetValue + #39 +
            ',@UYRUGU = ' + #39 + 'TR' + #39 +
            ',@TCKIMLIKNO = ' + #39 + txtTcKimlikNo.Text + #39 +
            ',@HUVIYETTIPI = ' + #39 + '1' + #39 +
@@ -509,7 +509,7 @@ begin
            ',@Na = ' + QuotedStr('') +
            ',@Boy = ' + '0' +
            ',@Tip = ' + QuotedStr('H') +
-           ',@vatandasTip = ' + QuotedStr('0') +
+           ',@vatandasTip = ' + QuotedStr('1') +
            ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
 
 
@@ -547,7 +547,7 @@ begin
                     'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,aktif) ' +
                     ' values ( ' + QuotedStr(_dosyaNo) + ','
                                  + QuotedStr(memDataRaporlar.fieldbyname('raporNo').AsString) + ','
-                                 + QuotedStr(memDataRaporlar.fieldbyname('raporTarihi').AsString) + ','
+                                 + QuotedStr(Tarih(memDataRaporlar.fieldbyname('raporTarihi').AsString)) + ','
                                  + QuotedStr(memDataRaporlar.fieldbyname('verenTesis').AsString)  + ','
                                  + QuotedStr(memDataRaporlar.fieldbyname('raporTakipNo').AsString) + ','
                                  + QuotedStr(memDataRaporlar.fieldbyname('raporTuru').AsString) + ','
@@ -610,7 +610,7 @@ begin
           datalar.HastaKabulWS.GirisParametre.provizyonTipi := copy(txtProvizyonTuru.Text,1,1);
           datalar.HastaKabulWS.GirisParametre.sigortaliTuru := varToStr(txtSigortaliTuru.EditValue);
           datalar.HastaKabulWS.GirisParametre.hastaTCKimlikNo := txtTcKimlikNoAra.Text;
-          datalar.HastaKabulWS.GirisParametre.bransKodu := KurumBransi;
+          datalar.HastaKabulWS.GirisParametre.bransKodu := datalar.KurumBransi;
           datalar.HastaKabulWS.GirisParametre.provizyonTarihi := txtTakipTarihi.Text;
           datalar.HastaKabulWS.GirisParametre.takipNo := txtilkTakip.Text;
           datalar.HastaKabulWS.GirisParametre.hastaTelefon :=   '0123456789';
@@ -629,7 +629,7 @@ begin
           txtHastaAdi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.ad;
           txtHastaSoyadi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.soyad;
           txtTcKimlikNo.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.tcKimlikNo;
-          txtdogumTarihi.Text := datalar.HastaKabulWS.Cevap.hastaBilgileri.dogumTarihi;
+          txtdogumTarihi.EditValue := strTodate(datalar.HastaKabulWS.Cevap.hastaBilgileri.dogumTarihi);
           txtCinsiyet.ItemIndex := strtoint(ifThen(datalar.HastaKabulWS.Cevap.hastaBilgileri.cinsiyet = 'E','0','1'));
           btnKabul.Enabled := true;
           txtSigortaliTuru.EditValue := datalar.HastaKabulWS.Cevap.hastaBilgileri.sigortaliTuru;

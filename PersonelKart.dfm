@@ -37,12 +37,10 @@ object frmPersonelKart: TfrmPersonelKart
     Properties.Items = <
       item
         Description = 'Bay'
-        ImageIndex = 3
         Value = '0'
       end
       item
         Description = 'Bayan'
-        ImageIndex = 2
         Value = '1'
       end>
     Style.LookAndFeel.NativeStyle = False
@@ -51,24 +49,15 @@ object frmPersonelKart: TfrmPersonelKart
     StyleHot.LookAndFeel.NativeStyle = False
     TabOrder = 1
     BosOlamaz = False
-    FilterSet = fsNone
+    ItemList = '0;Bay,1;Bayan'
+    FilterSet = fsCinsiyet
     Width = 121
   end
   object MEDENI: TcxImageComboKadir
     Left = 144
     Top = 35
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = 'Evli'
-        ImageIndex = 4
-        Value = '0'
-      end
-      item
-        Description = 'Bekar'
-        ImageIndex = 5
-        Value = '1'
-      end>
+    Properties.Items = <>
     TabOrder = 2
     BosOlamaz = False
     FilterSet = fsNone
@@ -78,24 +67,7 @@ object frmPersonelKart: TfrmPersonelKart
     Left = 296
     Top = 8
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = #199'al'#305#351'an'
-        ImageIndex = 0
-        Value = '1'
-      end
-      item
-        Description = 'Emekli'
-        Value = '2'
-      end
-      item
-        Description = 'SSK Kurum Personeli'
-        Value = '3'
-      end
-      item
-        Description = 'Di'#287'er'
-        Value = '4'
-      end>
+    Properties.Items = <>
     TabOrder = 3
     Visible = False
     BosOlamaz = False
@@ -106,28 +78,7 @@ object frmPersonelKart: TfrmPersonelKart
     Left = 296
     Top = 35
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = 'Vatanda'#351
-        ImageIndex = 0
-        Value = '0'
-      end
-      item
-        Description = 'Yeni Do'#287'an'
-        Value = '1'
-      end
-      item
-        Description = 'S'#305#287#305'nmac'#305
-        Value = '2'
-      end
-      item
-        Description = 'Yabanc'#305
-        Value = '3'
-      end
-      item
-        Description = 'Kimliksiz'
-        Value = '6'
-      end>
+    Properties.Items = <>
     TabOrder = 4
     BosOlamaz = False
     FilterSet = fsNone
@@ -189,6 +140,7 @@ object frmPersonelKart: TfrmPersonelKart
       Left = 3
       Top = 15
       Align = alClient
+      Properties.ClearKey = 46
       Properties.PopupMenuLayout.MenuItems = []
       Properties.Stretch = True
       TabOrder = 0
@@ -208,7 +160,7 @@ object frmPersonelKart: TfrmPersonelKart
       Align = alBottom
       Caption = 'Ekle'
       TabOrder = 1
-      OnClick = cxButtonCClick
+      OnClick = cxFotoEkleButtonClick
       ExplicitLeft = 2
       ExplicitTop = 119
       ExplicitWidth = 106

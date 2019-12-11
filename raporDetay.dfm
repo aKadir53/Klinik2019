@@ -357,13 +357,13 @@ object frmRaporDetay: TfrmRaporDetay
         OnClick = cxButtonCClick
       end
       object B1: TMenuItem
-        Tag = -3
+        Tag = 13
         Caption = 'Ba'#351'hekim Onay'#305' Ver'
         ImageIndex = 49
         OnClick = cxButtonCClick
       end
       object B2: TMenuItem
-        Tag = -2
+        Tag = 14
         Caption = 'Ba'#351'hekim Onay'#305' Red'
         ImageIndex = 50
         OnClick = cxButtonCClick

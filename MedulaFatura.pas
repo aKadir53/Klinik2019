@@ -164,6 +164,11 @@ type
     N6: TMenuItem;
     ENabzSGKBildirimPaketiGnder1: TMenuItem;
     ENabzGnderim1: TMenuItem;
+    T4: TMenuItem;
+    S2: TMenuItem;
+    DataSource1: TDataSource;
+    FaturaListColumn2: TcxGridDBColumn;
+    FaturaListColumn3: TcxGridDBColumn;
     procedure TopPanelButonClick(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure txtKurumTipiChange(Sender: TObject);
@@ -235,6 +240,11 @@ function TfrmMedulaFatura.Init(Sender: TObject) : Boolean;
 begin
  inherited;
 
+   txtDonemTopPanel.Yil := copy(tarihal(date()),1,4);
+   txtDonemTopPanel.EditValue := copy(tarihal(date()),5,2);
+   KurumTipTopPanel.EditValue := 1;
+   chkList.EditValue := '10';
+
    Result := True;
 end;
 
@@ -256,14 +266,11 @@ begin
 
      sql := 'exec sp_kurumFatura_m3 ' + QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
             txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
-            islemTip + ',' +
-            onayTip + ',' +
+            QuotedStr(islemTip) + ',' +
+            QuotedStr(onayTip) + ',' +
             QuotedStr(datalar.AktifSirket);
 
      datalar.QuerySelect(cxGrid4.Dataset,sql);
-
-
-
 
 
 
@@ -278,7 +285,7 @@ var
   tip , msj , _bv_ , sql , teslimNo,_tn_ : string;
   state : boolean;
   ado : TADOQuery;
-  sysTakipNo,islemRefNo,mesajTipi,HastaneRefNo,eNabizSonuc ,dosyaNO,gelisNo: string;
+  sysTakipNo,islemRefNo,mesajTipi,HastaneRefNo,eNabizSonuc ,dosyaNO,gelisNo,hasta: string;
   FileSTR : TMemo;
 begin
 
@@ -289,16 +296,24 @@ begin
      begin
          Application.ProcessMessages;
          satir := FaturaList.Controller.SelectedRows[x].RecordIndex;
-         sleep(2000);
+         sleep(1000);
          dosyaNo := FaturaList.DataController.GetValue(satir,FaturaList.DataController.GetItemByFieldName('dosyaNo').Index);
          gelisNo := FaturaList.DataController.GetValue(satir,FaturaList.DataController.GetItemByFieldName('gelisNo').Index);
          sysTakipNo := varToStr(FaturaList.DataController.GetValue(satir,FaturaList.DataController.GetItemByFieldName('sysTakipNo').Index));
+         HastaneRefNo := varToStr(FaturaList.DataController.GetValue(satir,FaturaList.DataController.GetItemByFieldName('HastaneRefNo').Index));
+         Hasta := varToStr(FaturaList.DataController.GetValue(satir,FaturaList.DataController.GetItemByFieldName('Hasta').Index));
+         pnlDurumDurum.Caption := Hasta + ' - 700 Sgk Bildirim Pakete Gönderiliyor..';
          try
            try deleteFile('C:\NoktaV3\SGK ISLEM BILDIRCvp.xml');except end;
+           ENabizMuayeneKayit(HastaneRefNo,sysTakipNo,eNabizSonuc,'');
+           txtLog.Lines.Add('ENabýz Muayene Kayýt : ' + sysTakipNo + '-' + eNabizSonuc);
            ENabizHizmetKayit(HastaneRefNo,sysTakipNo,eNabizSonuc,'');
            txtLog.Lines.Add('ENabýz Hizmet Kayýt : ' + sysTakipNo + '-' + eNabizSonuc);
+           ENabizTetkikKayit(HastaneRefNo,sysTakipNo,eNabizSonuc,'');
+           txtLog.Lines.Add('ENabýz Tetkik Kayýt : ' + sysTakipNo + '-' + eNabizSonuc);
            ENabizSgkBildir(HastaneRefNo,sysTakipNo,eNabizSonuc,islemRefNo);
            txtLog.Lines.Add('ENabýz 700 SGK Bildirim Kayýt : ' + sysTakipNo + '-' + eNabizSonuc);
+           txtLog.Lines.Add('-----------------------------------------------------------------------');
          except on e : exception do
           begin
             txtLog.Lines.Add(sysTakipNo + ' : ' + e.Message);
@@ -366,14 +381,15 @@ inherited;
            HakedisIcmal;
          end;
   -25 : begin
-           if FindTab(AnaForm.sayfalar,'TabfrmHastaKart')
+           if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
            Then begin
              Form := TGirisForm(FormClassType(TagfrmHastaKart));
              TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := _Dataset.FieldByName('dosyaNo').AsString;
+             TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
              TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
            end
            Else begin
-            Form := FormINIT(TagfrmHastaKart,self,_Dataset.FieldByName('dosyaNo').AsString,NewTab(AnaForm.sayfalar,'TabfrmHastaKart'),ikEvet,'Giriþ');
+            Form := FormINIT(TagfrmHastaKart,self,_Dataset.FieldByName('dosyaNo').AsString,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
             if Form <> nil then Form.show;
            end;
         end;
@@ -484,13 +500,13 @@ begin
          Application.ProcessMessages;
          pnlDurum.Caption := FaturaList.DataController.GetValue(
                                           FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('HASTA').Index);
-         basvuruNo := FaturaList.DataController.GetValue(
-                                        FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('basvuruNo').Index);
-         teslimNo := FaturaList.DataController.GetValue(
-                                          FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('GSSFaturaTeslimNo').Index);
+         basvuruNo := varToStr(FaturaList.DataController.GetValue(
+                                        FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('basvuruNo').Index));
+         teslimNo := varToStr(FaturaList.DataController.GetValue(
+                                          FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('GSSFaturaTeslimNo').Index));
 
-          _tn_ := FaturaList.DataController.GetValue(
-                                          FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('takipNo').Index);
+          _tn_ := varToStr(FaturaList.DataController.GetValue(
+                                          FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('takipNo').Index));
 
          if _Tag_ = -1  // Fatura Teslim
          Then Begin
@@ -656,8 +672,8 @@ begin
              gelisNo := FaturaList.DataController.GetValue(
                                       FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('gelisNo').Index);
              try
-             teslimNo := FaturaList.DataController.GetValue(
-                                      FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('GSSFaturaTeslimNo').Index);
+             teslimNo := varToStr(FaturaList.DataController.GetValue(
+                                      FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('GSSFaturaTeslimNo').Index));
              except on e : Exception do
                begin
                  teslimNo := '';
@@ -1124,7 +1140,7 @@ begin
                                     FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('GSSFaturaTeslimNo').Index,'');
                    txtLog.Lines.Add('Fatura Ýptal Edildi');
               End
-              Else txtLog.Lines.Add(sonuc + ' - Fatura Ýptal Edilmedi');
+              Else txtLog.Lines.Add('Fatura Ýptal Edilmedi - ' + datalar.FaturaKayitWS.FaturaIptalCevap.sonucMesaji);
 
          End; // while End
          cxGrid4.Dataset.Requery();
@@ -1150,7 +1166,8 @@ begin
    TopPanel.Visible := True;
    TapPanelElemanVisible(True,True,True,false,false,false,True,false,False,False,false,True,True);
 
-   chkList.Properties.OnEditValueChanged := nil;
+//   chkList.Properties.OnEditValueChanged := PropertiesEditValueChanged;
+
 
    chkList.Properties.Items.Clear;
    Chk := chkList.Properties.Items.Add;
@@ -1159,23 +1176,10 @@ begin
    Chk := chkList.Properties.Items.Add;
    Chk.Caption := 'Kontrol Onay';
    Chk.Tag := 1;
-   chkList.EditValue := '10';
-   chkList.Width := 250;
-   txtDonemTopPanel.Yil := copy(tarihal(date()),1,4);
+   chkList.Width := 300;
 
- //  FaturaList.DataController.DataSource := DataSource;
+   DataSource1.DataSet := cxGrid4.Dataset;
 
-(*
-  inherited;
-  setDataStringKontrol(self,txttarih1, 'Tarih1','Tarih Aralýðý',Kolon1,'trh',110);
-  setDataStringKontrol(self,txttarih2, 'Tarih2','',Kolon1,'trh',110);
-  setDataStringKontrol(self,txtAylar, 'Donem','Dönem',Kolon1,'trh',110);
-  setDataStringKontrol(self,txtDosyaNo, 'DosyaNo','Dosya No',Kolon1,'trh',110);
-  setDataStringKontrol(self,hastaTip, 'hastaTip','',Kolon1,'trh',110);
-  setDataStringKontrol(self,ktip, 'ktip','',Kolon1,'trh',110);
-
-  addButton(self,btnListe,'btnListe', '','Liste',Kolon1,'trh',60);
-  *)
 end;
 
 procedure TfrmMedulaFatura.txtLogKeyDown(Sender: TObject; var Key: Word;
@@ -1248,9 +1252,10 @@ end;
 
 procedure TfrmMedulaFatura.utarOnayTm1Click(Sender: TObject);
 var
-  x : integer;
+  x , onay : integer;
   state : boolean;
 begin
+
      _stop := 1;
      DurumGoster;
      try
@@ -1258,13 +1263,16 @@ begin
          begin
                   if _stop = 0 then Break;
                   Application.ProcessMessages;
+
+                  onay := 10 - TMenuItem(Sender).Tag;
+
                   pnlDurum.Caption :=  GridCellToString(FaturaList,'HASTA',x);
                                  // FaturaList.DataController.GetValue(
                                  // FaturaList.Controller.SelectedRows[x].RecordIndex,2);
 
                   FaturaList.Controller.FocusedRow := FaturaList.Controller.SelectedRows[x];
                   cxGrid4.Dataset.Edit;
-                  GridCellSetValue(FaturaList,'Kontrol',x,'1');
+                  GridCellSetValue(FaturaList,'Kontrol',x,onay);
                   //FaturaList.DataController.SetValue(
                   //FaturaList.Controller.SelectedRows[x].RecordIndex,16,'O');
 
@@ -1275,6 +1283,7 @@ begin
 
                   cxGrid4.Dataset.Post;
          End; // for End
+         cxGrid4.Dataset.Requery();
      finally
        DurumGoster(False);
      end;
@@ -1288,11 +1297,11 @@ procedure TfrmMedulaFatura.FaturaListFocusedRecordChanged(
 begin
   inherited;
 
-(*
-  ado_detay.Close;
-  ADO_Detay.Parameters[0].Value := _Dataset.FieldByName('takipNo').AsString;
-  ADO_Detay.Open;
-  *)
+
+    ado_detay.Close;
+    ADO_Detay.Parameters[0].Value := cxGrid4.Dataset.FieldByName('takipNo').AsString;
+    ADO_Detay.Open;
+
 
 end;
 

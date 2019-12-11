@@ -711,24 +711,6 @@ object frmHizliKayit: TfrmHizliKayit
             ImageIndex = 131
             Images = DATALAR.global_img_list4
           end
-          object txtdogumTarihi: TcxTextEdit
-            Left = 120
-            Top = 96
-            Properties.ReadOnly = True
-            Style.BorderStyle = ebsUltraFlat
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
-            Style.TextStyle = [fsBold]
-            Style.TransparentBorder = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 3
-            Width = 105
-          end
           object cxLabel12: TcxLabel
             Left = 9
             Top = 101
@@ -774,7 +756,7 @@ object frmHizliKayit: TfrmHizliKayit
             StyleFocused.LookAndFeel.SkinName = 'mcskin'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 6
+            TabOrder = 5
             Width = 196
           end
           object txtHastaAdi: TcxTextEdit
@@ -792,7 +774,7 @@ object frmHizliKayit: TfrmHizliKayit
             StyleFocused.LookAndFeel.SkinName = 'mcskin'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 7
+            TabOrder = 6
             Width = 196
           end
           object TcxLabel
@@ -840,7 +822,7 @@ object frmHizliKayit: TfrmHizliKayit
             StyleFocused.LookAndFeel.SkinName = 'mcskin'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 10
+            TabOrder = 9
             Width = 106
           end
           object txtBasvuruNo: TcxTextEdit
@@ -858,7 +840,7 @@ object frmHizliKayit: TfrmHizliKayit
             StyleFocused.LookAndFeel.SkinName = 'mcskin'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 11
+            TabOrder = 10
             Width = 88
           end
           object cxLabel7: TcxLabel
@@ -896,7 +878,7 @@ object frmHizliKayit: TfrmHizliKayit
             StyleFocused.LookAndFeel.SkinName = 'mcskin'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 14
+            TabOrder = 13
             Width = 106
           end
           object cxLabel13: TcxLabel
@@ -919,7 +901,7 @@ object frmHizliKayit: TfrmHizliKayit
             Top = 119
             Properties.ClearKey = 46
             Properties.Items = <>
-            TabOrder = 16
+            TabOrder = 15
             BosOlamaz = False
             FilterSet = fsNone
             Width = 106
@@ -935,8 +917,16 @@ object frmHizliKayit: TfrmHizliKayit
             StyleFocused.LookAndFeel.SkinName = 'mcskin'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 17
+            TabOrder = 16
             Width = 105
+          end
+          object txtdogumTarihi: TcxDateEditKadir
+            Left = 120
+            Top = 97
+            TabOrder = 17
+            BosOlamaz = False
+            ValueTip = tvString
+            Width = 106
           end
         end
         object cxTabSheet2: TcxTabSheet

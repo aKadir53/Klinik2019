@@ -435,6 +435,12 @@ begin
            finally
            end;
           end;
+
+   raporSistemeAktar
+        : begin
+            btnYes.Click;
+          end;
+
   -20   : begin
               if varTostr(TcxTextEdit(FindComponent('TakipNo')).EditValue) <> ''
               then begin
@@ -747,14 +753,25 @@ begin
 
    SKSindikatorSorgu :
             begin
-                DurumGoster(True);
-                sql := 'exec sp_istatistikSKS ' + TcxDateEditKadir(FindComponent('SKSSorguIlkTarih')).GetSQLValue + ',' +
-                                                  TcxDateEditKadir(FindComponent('SKSSorguSonTarih')).GetSQLValue + ',' +
-                                                  QuotedStr(datalar.AktifSirket);
+                DurumGoster(True,False,'Ýndikatörler Sorgulanýyor , Lütfen Bekleyiniz');
+                try
+                  sql := 'exec sp_istatistikSKS ' + TcxDateEditKadir(FindComponent('SKSSorguIlkTarih')).GetSQLValue + ',' +
+                                                    TcxDateEditKadir(FindComponent('SKSSorguSonTarih')).GetSQLValue + ',' +
+                                                    QuotedStr(datalar.AktifSirket);
+                  TopluDataset.Dataset0 := datalar.QuerySelect(sql);
 
-                TopluDataset.Dataset0 := datalar.QuerySelect(sql);
-                PrintYap('900','Sks Ýndikatör Sorgula','',TopluDataset,pTNone);
-                DurumGoster(False);
+                  sql := 'exec sp_istatistikSKSHastalar ' + TcxDateEditKadir(FindComponent('SKSSorguIlkTarih')).GetSQLValue + ',' +
+                                                            TcxDateEditKadir(FindComponent('SKSSorguSonTarih')).GetSQLValue + ',' +
+                                                            QuotedStr(datalar.AktifSirket);
+                  TopluDataset.Dataset1 := datalar.QuerySelect(sql);
+
+
+                  PrintYap('900','Sks Ýndikatör Sorgula','',TopluDataset,pTNone);
+
+                finally
+                      DurumGoster(False);
+                end;
+
             end;
 
       SeansTarihiUpdate   :
@@ -812,7 +829,8 @@ begin
 
       SeansDoktorUpdate :
             begin
-              datalar.SeansBilgi.drTescilNo := datalar.Ado_Doktorlar.FieldByName('kod').AsString;
+              //datalar.SeansBilgi.drTescilNo := TcxTextEdit(FindComponent('doktor')).EditValue;
+              datalar.SeansBilgi.doktor := TcxTextEdit(FindComponent('doktor')).EditValue;
             end;
       SeansInsert :
             begin
@@ -867,6 +885,10 @@ begin
               datalar.YeniRecete.doktorAdi := TcxLabel(FindComponent('Labelkod')).Caption;
               datalar.YeniRecete.protokolNo := TcxTextEditKadir(FindComponent('ProtokolNo')).EditValue;
               datalar.YeniRecete.takipNo := TcxTextEditKadir(FindComponent('eReceteNo')).EditValue;
+            end;
+      ReceteyiSablonKaydet :
+            begin
+               datalar.YeniRecete.sablonAdi := TcxTextEditKadir(FindComponent('sablonAdi')).EditValue;
             end;
       TeleEkgDuzenle :
             begin
@@ -1411,7 +1433,8 @@ inherited;
                   TcxTextEdit(FindComponent('KisiBilgisi')).EditValue := _value_;
 
                   addButton(self,nil,'btnRaporBul','','Ara',Kolon1,'btn',40,ButtonClick,raporAra);
-                  addButton(self,nil,'btnRaporSistemAktar','','Sisteme Aktar',Kolon1,'btn',100,ButtonClick,-20);
+                  addButton(self,nil,'btnRaporSistemAktar','','Sisteme Aktar',Kolon1,'btn',100,ButtonClick,raporSistemeAktar);
+
 
                   SetGrid(CreateGrid('cxGridHastaRaporlari',frmPopup,False,DataSource1,False),'RaporNo,RaporTarihi,baslangicTarihi,bitisTarihi,VerenTesis,raporTakipNo,SeansGun,SeansSayi',
                                'TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
@@ -1526,6 +1549,15 @@ inherited;
             TcxComboBox(FindComponent('ackKodu')).EditValue := datalar.ReceteAciklama.ackKod;
             TcxTextEdit(FindComponent('ack')).EditValue := datalar.ReceteAciklama.ack;
           end;
+
+       end;
+  ReceteyiSablonKaydet :
+       begin
+          Olustur(self,'',_caption_,62,'');
+          cxTab.Width := 150;
+          ClientHeight := 200;
+          ClientWidth := 380;
+          setDataString(self,'SablonAdi','Þablon Adý',Kolon1,'',250);
 
        end;
   ReceteYeni,ReceteDuzenle :
@@ -2906,6 +2938,17 @@ ptPersonelTetkikleri :
 
              end;
 
+  SeansDoktorUpdate
+              :
+       begin
+            cxTab.Width := 150;
+            ClientHeight := 200;
+            ClientWidth := 300;
+            setDataStringIC(self,'doktor','Doktor',Kolon1,'BB',150,'DoktorlarT','Kod','Tanimi',' sirketKod = ' + QuotedStr(datalar.AktifSirket));
+            TcxImageComboKadir(FindComponent('doktor')).EditValue := datalar.SeansBilgi.doktor;
+
+       end;
+
   SeansInsert :
        begin
           Olustur(self,'','Seans Oluþtur',9,'');
@@ -3047,8 +3090,15 @@ ptPersonelTetkikleri :
           TcxTextEdit(FindComponent('hekimGozlemDdiger')).EditValue := datalar.SeansBilgi.hemsireNot;
 
 
+          if Datalar.SeansBilgi.islemSiraNo <> ''
+          then begin
+             Disabled(self,False);// else Enabled;
+             BorderIcons := [biSystemMenu];
+          end;
+
 
           SayfaCaption('Tedavi Order','Hemþire Gözlem','','','');
+
 
         end;
 
@@ -3141,6 +3191,7 @@ ptPersonelTetkikleri :
             datalar.RaporBilgisi.verenTesisKodu := inttostr(datalar._kurumKod);
             datalar.RaporBilgisi.duzenlemeTuru := '1';
             datalar.RaporBilgisi.duzenleyenDoktor := '';
+            datalar.RaporBilgisi.protokolNo := EnsonSeansProtokolNo(_firmaKod_,_sube_,'Rapor');
           end;
 
 
@@ -3179,6 +3230,8 @@ ptPersonelTetkikleri :
 
           setDataString(self,'protokolNo','Protokol No',Kolon1,'tr',100);
           TcxTextEdit(FindComponent('protokolNo')).EditValue := datalar.RaporBilgisi.protokolNo;
+
+
 
           setDataString(self,'raporTakipNo','Rapor TakipNo',Kolon1,'',100);
           TcxTextEdit(FindComponent('raporTakipNo')).EditValue := datalar.RaporBilgisi.raporTakipNo;

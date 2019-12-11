@@ -62,9 +62,6 @@ object frmTopluEpikriz: TfrmTopluEpikriz
       Style.Font.Style = [fsBold]
       Style.IsFontAssigned = True
       TabOrder = 1
-      ExplicitLeft = 78
-      ExplicitTop = 2
-      ExplicitHeight = 21
       Width = 121
     end
     object txtYil: TcxComboBox
@@ -82,9 +79,6 @@ object frmTopluEpikriz: TfrmTopluEpikriz
       Style.Font.Style = [fsBold]
       Style.IsFontAssigned = True
       TabOrder = 2
-      ExplicitLeft = 3
-      ExplicitTop = 2
-      ExplicitHeight = 21
       Width = 73
     end
     object btnList: TcxButton
@@ -96,9 +90,6 @@ object frmTopluEpikriz: TfrmTopluEpikriz
       Caption = 'Listele'
       TabOrder = 3
       OnClick = btnListClick
-      ExplicitLeft = 211
-      ExplicitTop = 0
-      ExplicitHeight = 25
     end
   end
   object cxGrid2: TcxGridKadir
@@ -117,8 +108,7 @@ object frmTopluEpikriz: TfrmTopluEpikriz
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
     ExceleGonder = False
-    ExplicitTop = 27
-    ExplicitHeight = 459
+    PopupForm = False
     object Detay: TcxGridDBTableView
       Navigator.Buttons.Images = DATALAR.imag24png
       Navigator.Buttons.First.Visible = True
@@ -129,7 +119,8 @@ object frmTopluEpikriz: TfrmTopluEpikriz
       Navigator.Buttons.Last.Visible = True
       Navigator.Buttons.Insert.Visible = False
       Navigator.Buttons.Append.Visible = False
-      Navigator.Buttons.Delete.Visible = False
+      Navigator.Buttons.Delete.ImageIndex = 42
+      Navigator.Buttons.Delete.Visible = True
       Navigator.Buttons.Edit.Visible = True
       Navigator.Buttons.Post.ImageIndex = 0
       Navigator.Buttons.Post.Visible = True
@@ -158,7 +149,6 @@ object frmTopluEpikriz: TfrmTopluEpikriz
       OptionsCustomize.ColumnGrouping = False
       OptionsCustomize.ColumnHidingOnGrouping = False
       OptionsCustomize.ColumnsQuickCustomization = True
-      OptionsData.Deleting = False
       OptionsData.DeletingConfirmation = False
       OptionsData.Inserting = False
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'

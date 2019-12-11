@@ -320,6 +320,7 @@ begin
       datalar.DSPers := login.FieldByName('DigerSaglikPers').AsString;
       datalar.UserGroup := login.FieldByName('Grup').AsString;
       datalar.UserGroupName := login.FieldByName('GrupTanimi').AsString;
+      datalar.Personel := login.FieldByName('Personel').AsString;
       RegYaz('OSGB_Userdescription', datalar.usernameAdi + ' (' + datalar.UserGroupName + ')');
       dxStatusBar1.Panels [1].Text := datalar.usernameAdi + ' (' + datalar.UserGroupName + ')';
       dxStatusBar1.Panels [1].Width := Length (dxStatusBar1.Panels [1].Text) * 8;

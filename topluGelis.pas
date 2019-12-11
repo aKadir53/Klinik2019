@@ -496,12 +496,12 @@ end;
 procedure TfrmTopluGelis.TakipAl;
 var
   x : integer;
-  gelis , sonuc , sql , dosyaNo : string;
+  sonuc , sql , msj , takip , basvuru : string;
   ado : TADOQuery;
 begin
 
        Takipsor.Enabled := false;
-       DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
+       DurumGoster(True,True,islemYapiliyor,-1,Liste.Controller.SelectedRowCount);
    try
        for x := 0 to Liste.Controller.SelectedRowCount - 1 do
        begin
@@ -512,29 +512,46 @@ begin
 
           haksahibiBosalt(x);
           haksahibi(x);
-          sql := 'select * from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis + ' and isnull(TakipNO,'''') = ' + QuotedStr('');
+          sql := 'select * from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and isnull(TakipNO,'''') = ' + QuotedStr('');
 
           if not datalar.QuerySelect(sql).Eof
           then
              datalar.HastaKabulWS.TakipAl_3KimlikDorulama;
 
 
-         if datalar.HastaKabulWS.Cevap.sonucKodu = '0000'
+         if datalar.HastaKabulWS.Cevap.sonuckodu = '0543'
+         then begin
+             msj := datalar.HastaKabulWS.Cevap.sonucMesaji;
+             takip := copy(msj,pos('[',msj)+1,7);
+             datalar.HastaKabulWS.TakipOkuGiris.saglikTesisKodu := datalar._kurumKod;
+             datalar.HastaKabulWS.TakipOkuGiris.takipNo := takip;
+             datalar.HastaKabulWS.KabulOku;
+             basvuru := datalar.HastaKabulWS.Takip.hastaBasvuruNo;
+             sql := 'Update Hasta_Gelisler ' +
+                    ' set TakipNo = ' + QuotedStr(takip) +
+                    ',BasvuruNo = ' + QuotedStr(basvuru) +
+                    ' where DosyaNo = ' + QuotedStr(dosyaNo) + ' and GelisNo = ' + gelisNo;
+             datalar.QueryExec(sql);
+         end
+         else
+         if (datalar.HastaKabulWS.Cevap.sonucKodu = '0000')
+            or
+            (datalar.HastaKabulWS.Cevap.sonucKodu = '9000')
          Then begin
                 sql := 'update Hasta_gelisler ' +
-                       ' set TakipNo = ' + QuotedStr(datalar.HastaKabulWS.Cevap.TakipNo) + ',basvuruNo = ' + QuotedStr(datalar.HastaKabulWS.Cevap.hastaBasvuruNo) +
-                       'where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
+                       ' set TakipNo = ' + QuotedStr(datalar.HastaKabulWS.Cevap.TakipNo) +
+                       ',basvuruNo = ' + QuotedStr(datalar.HastaKabulWS.Cevap.hastaBasvuruNo) +
+                       ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
 
                 datalar.QueryExec(ado,sql);
-         txtHatalar.Lines.Add(gridAktif.Cells[3,x] + ': Takip No : ' + datalar.HastaKabulWS.Cevap.TakipNo + ' Baþvuru : ' + datalar.HastaKabulWS.Cevap.hastaBasvuruNo);
+         txtLog.Lines.Add(AD + ' : ' + datalar.HastaKabulWS.Cevap.TakipNo + ' Baþvuru : ' + datalar.HastaKabulWS.Cevap.hastaBasvuruNo);
          End
          else
-          txtHatalar.Lines.Add(gridAktif.Cells[3,x] + ' :  ' + sonuc);
+         txtLog.Lines.Add(AD + ' : ' + datalar.HastaKabulWS.Cevap.sonucMesaji);
 
 
        end;
 
-       ShowMessageSkin('Takipler Alýndý','','','info');
    finally
      DurumGoster(False);
      Takipsor.Enabled := True;
@@ -801,14 +818,17 @@ end;
 procedure TfrmTopluGelis.haksahibi(x : integer);
 var
  kurum,sigortaliTuru,provizyonTarihi,TC,Brans,Tel,Adres : string;
+ satir : integer;
 begin
-    kurum := Liste.DataController.GetValue(x,Liste.DataController.GetItemByFieldName('kurumTip').Index);
-    sigortaliTuru := Liste.DataController.GetValue(x,Liste.DataController.GetItemByFieldName('Durum').Index);
-    TC := Liste.DataController.GetValue(x,Liste.DataController.GetItemByFieldName('TCKIMLIKNO').Index);
-    Brans := Liste.DataController.GetValue(x,Liste.DataController.GetItemByFieldName('Brans').Index);
-    Tel := Liste.DataController.GetValue(x,Liste.DataController.GetItemByFieldName('EV_TEL1').Index);
-    Adres := Liste.DataController.GetValue(x,Liste.DataController.GetItemByFieldName('EV_ADRES').Index);
-    provizyonTarihi := Liste.DataController.GetValue(x,Liste.DataController.GetItemByFieldName('provizyonTarihi').Index);
+   if Liste.Controller.SelectedRowCount = 0 then exit;
+    satir := Liste.Controller.SelectedRows[x].RecordIndex;
+    kurum := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('kurumTip').Index);
+    sigortaliTuru := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Durum').Index);
+    TC := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('TCKIMLIKNO').Index);
+    Brans := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Brans').Index);
+    Tel := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('EV_TEL1').Index);
+    Adres := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('EV_ADRES').Index);
+    provizyonTarihi := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('provizyonTarihi').Index);
 
     datalar.HastaKabulWS.GirisParametre.saglikTesisKodu := datalar._kurumKod;
     datalar.HastaKabulWS.GirisParametre.takipTipi := 'N';
@@ -819,7 +839,7 @@ begin
     datalar.HastaKabulWS.GirisParametre.provizyonTarihi := provizyonTarihi;
     datalar.HastaKabulWS.GirisParametre.sigortaliTuru := sigortaliTuru;
     datalar.HastaKabulWS.GirisParametre.hastaTCKimlikNo := TC;
-    datalar.HastaKabulWS.GirisParametre.bransKodu := KurumBransi;
+    datalar.HastaKabulWS.GirisParametre.bransKodu := Brans;
     datalar.HastaKabulWS.GirisParametre.takipNo := '';
     datalar.HastaKabulWS.GirisParametre.hastaTelefon :=   Tel;
     datalar.HastaKabulWS.GirisParametre.hastaAdres :=   TrtoEng(Adres);

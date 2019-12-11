@@ -1167,6 +1167,7 @@
             OnCellDblClick = ListeCellDblClick
             DataController.DataModeController.SmartRefresh = True
             DataController.DataSource = DataSource1
+            DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding]
             DataController.Summary.DefaultGroupSummaryItems = <>
             DataController.Summary.FooterSummaryItems = <
               item
@@ -1190,6 +1191,7 @@
             OptionsSelection.MultiSelect = True
             OptionsView.NoDataToDisplayInfoText = 'Listelenecek Kay'#305't Yok'
             OptionsView.DataRowHeight = 35
+            OptionsView.Footer = True
             OptionsView.GridLines = glHorizontal
             OptionsView.GroupByBox = False
             OptionsView.HeaderHeight = 33
@@ -1200,13 +1202,13 @@
                 Caption = 'Hasta Bilgileri'
                 FixedKind = fkLeft
                 Styles.Header = cxStyle2
-                Width = 196
+                Width = 277
               end
               item
                 Caption = 'Geli'#351' Bilgisi'
                 FixedKind = fkLeft
                 Styles.Header = cxStyle2
-                Width = 229
+                Width = 314
               end
               item
                 Caption = 'Seans Bilgileri'
@@ -1268,7 +1270,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 137
+              Width = 164
               Position.BandIndex = 0
               Position.ColIndex = 2
               Position.RowIndex = 0
@@ -1331,7 +1333,6 @@
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
-              Options.Filtering = False
               Options.Sorting = False
               Styles.Content = cxStyle5
               Width = 140
@@ -1881,7 +1882,7 @@
                   Value = '0'
                 end>
               Options.Editing = False
-              Width = 30
+              Width = 32
               Position.BandIndex = 0
               Position.ColIndex = 1
               Position.RowIndex = 0
@@ -1941,7 +1942,7 @@
               Options.Sorting = False
               Styles.Content = cxStyle4
               Styles.Header = cxStyle3
-              Width = 29
+              Width = 27
               Position.BandIndex = 0
               Position.ColIndex = 4
               Position.RowIndex = 0
@@ -2018,6 +2019,28 @@
               Visible = False
               Position.BandIndex = 0
               Position.ColIndex = 6
+              Position.RowIndex = 0
+            end
+            object ListeColumn7: TcxGridDBBandedColumn
+              DataBinding.FieldName = 'hemsire'
+              Visible = False
+              Position.BandIndex = 0
+              Position.ColIndex = 7
+              Position.RowIndex = 0
+            end
+            object ListeDevKurum: TcxGridDBBandedColumn
+              Caption = 'Dev. Kurum'
+              DataBinding.FieldName = 'DevKurum'
+              PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.Items = <>
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Styles.Header = cxStyle3
+              Width = 54
+              Position.BandIndex = 0
+              Position.ColIndex = 8
               Position.RowIndex = 0
             end
           end
@@ -2913,7 +2936,7 @@
       object P1: TMenuItem
         Tag = -704234
         Caption = 'P704230  >>  P704234'
-        OnClick = cxKaydetClick
+        OnClick = cxButtonCClick
       end
       object N6: TMenuItem
         Caption = '-'
@@ -2921,14 +2944,15 @@
       object P2: TMenuItem
         Tag = -704230
         Caption = 'P704234  >>  P704230'
-        OnClick = cxKaydetClick
+        OnClick = cxButtonCClick
       end
     end
     object ahlilSonular1: TMenuItem
       Tag = -4
       Caption = 'Tahlil Sonu'#231'lar'#305
       ImageIndex = 45
-      OnClick = cxKaydetClick
+      Visible = False
+      OnClick = cxButtonCClick
     end
     object E3: TMenuItem
       Caption = 'E-Nab'#305'z'
@@ -2955,59 +2979,60 @@
         Tag = -1
         Caption = 'Seanslar'#305' Medulaya Kaydet'
         ImageIndex = 15
-        OnClick = cxKaydetClick
+        OnClick = cxButtonCClick
       end
       object Seansptal1: TMenuItem
         Tag = -2
         Caption = 'Seanslar'#305'  '#304'ptal Et'
         ImageIndex = 13
-        OnClick = cxKaydetClick
+        OnClick = cxButtonCClick
       end
       object RaporOku1: TMenuItem
         Tag = -3
         Caption = 'Medula Raporlar'#305
         ImageIndex = 67
-        OnClick = cxKaydetClick
+        OnClick = cxButtonCClick
       end
       object D1: TMenuItem
         Tag = -8
         Caption = 'Damar '#304'zi sorgulamas'#305' Yap'
         ImageIndex = 106
-        OnClick = cxKaydetClick
+        OnClick = cxButtonCClick
       end
       object T1: TMenuItem
         Tag = -9
         Caption = 'Takip Bilgisi Oku'
         ImageIndex = 68
-        OnClick = cxKaydetClick
+        OnClick = cxButtonCClick
       end
       object H1: TMenuItem
         Tag = -10
         Caption = 'Hastan'#305'n Takipleri'
         ImageIndex = 72
-        OnClick = cxKaydetClick
+        OnClick = cxButtonCClick
       end
     end
     object N1: TMenuItem
       Caption = '-'
     end
     object SeansGzlem1: TMenuItem
-      Tag = -5
+      Tag = -12
       Caption = 'Seans G'#246'zlem'
       ImageIndex = 51
-      OnClick = cxKaydetClick
+      OnClick = cxButtonCClick
     end
     object edaviKart1: TMenuItem
       Tag = -6
       Caption = 'Tedavi Kart'#305
       ImageIndex = 49
-      OnClick = cxKaydetClick
+      Visible = False
+      OnClick = cxButtonCClick
     end
     object H2: TMenuItem
       Tag = -7
       Caption = 'Hasta Kart'#305
       ImageIndex = 44
-      OnClick = cxKaydetClick
+      OnClick = cxButtonCClick
     end
     object N3: TMenuItem
       Caption = '-'
@@ -3016,40 +3041,42 @@
       Tag = -11
       Caption = 'Kan Al'#305'nan Seans Yap'
       ImageIndex = 60
-      OnClick = cxKaydetClick
+      OnClick = cxButtonCClick
     end
     object S1: TMenuItem
-      Tag = -12
+      Tag = -12666
       Caption = 'Seans D'#252'zenle'
       ImageIndex = 73
-      OnClick = cxKaydetClick
+      Visible = False
+      OnClick = cxButtonCClick
     end
     object D2: TMenuItem
       Tag = -13
       Caption = 'Doktor Bilgisi De'#287'i'#351'tir'
       ImageIndex = 74
-      Visible = False
-      OnClick = cxKaydetClick
+      OnClick = cxButtonCClick
     end
     object N4: TMenuItem
       Caption = '-'
     end
     object N5: TMenuItem
       Tag = -14
-      Caption = #304'zlem Formlar'#305'n'#305' Yazd'#305'r'
+      Caption = #304'zlem Form Yazd'#305'r'
       ImageIndex = 28
-      OnClick = cxKaydetClick
+      OnClick = cxButtonCClick
     end
     object U1: TMenuItem
       Tag = -15
       Caption = 'Uzman G'#246'zlem Yazd'#305'r'
       ImageIndex = 28
-      OnClick = cxKaydetClick
+      Visible = False
+      OnClick = cxButtonCClick
     end
     object E1: TMenuItem
       Tag = 9997
       Caption = 'Excel'#39'e G'#246'nder'
       ImageIndex = 75
+      OnClick = cxButtonCClick
     end
     object N7: TMenuItem
       Caption = '-'
@@ -3065,13 +3092,13 @@
       Tag = -20
       Caption = 'Se'#231'ili Seanslar'#305' Onayla'
       ImageIndex = 31
-      OnClick = cxKaydetClick
+      OnClick = cxButtonCClick
     end
     object S3: TMenuItem
       Tag = -21
       Caption = 'Se'#231'ili Seanslar'#305'n Onay Vazge'#231
       ImageIndex = 33
-      OnClick = cxKaydetClick
+      OnClick = cxButtonCClick
     end
   end
   object HTTPRIO1: THTTPRIO

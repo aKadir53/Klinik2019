@@ -88,7 +88,12 @@ begin
          sqlRun.Next;
      end;
 
-     List;
+     if Aysayfalar.Tabs.Count > 0
+     then
+       List
+     else
+       ShowMessageSkin('Seans Bulunamadý','','','info');
+
      Result := True;
 end;
 
@@ -98,35 +103,14 @@ var
    i , j , toplam : integer;
 begin
 
+
      yil := copy(Aysayfalar.Tabs.Strings[Aysayfalar.tabindex],1,4);
 
      sqlRun.close;
      sql := 'exec sp_YillikSeansGostergesi' + QuotedStr(yil) + ',''1'',' + QuotedStr(datalar.AktifSirket) ;
      datalar.QuerySelect(sqlRun,sql);
      DataSource1.DataSet := sqlRun;
-  (*
-     Grid_Temizle(gridSeansToplam);
 
-     for i := 1 to sqlRun.RecordCount  do
-     begin
-
-         toplam := sqlRun.fieldbyname('Gtoplam').AsInteger;
-
-         gridSeansToplam.Cells[1,i] := sqlRun.fieldbyname('ayadi').AsString;
-         gridSeansToplam.FontStyles[1,i] := gridSeansToplam.FontStyles[1,i] + [fsBold];
-         gridSeansToplam.ints[2,i] := sqlRun.fieldbyname('toplam').AsInteger;
-         gridSeansToplam.FontStyles[2,i] := gridSeansToplam.FontStyles[2,i] + [fsBold];
-         gridSeansToplam.Alignments[2,i] := taRightJustify;
-         try
-            gridSeansToplam.ints[3,i] := round((sqlRun.fieldbyname('toplam').AsInteger / toplam) * 100);
-            gridSeansToplam.AddProgressEx(3,i,clblue,clblack,clwhite,clblack);
-         except
-
-         end;
-         sqlRun.Next;
-         gridSeansToplam.AddRow;
-     end;
-     *)
 end;
 
 end.

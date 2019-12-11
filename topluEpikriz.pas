@@ -57,6 +57,9 @@ var
  _tarih_ : Tdate;
 
 begin
+
+   if (varToStr(txtDonem.EditValue) = '') or (varToStr(txtYil.EditValue) = '') then exit;
+
    ay1 := formatfloat('00',txtDonem.ItemIndex);
    txtTarih1 := txtYil.Text + ay1 + '01';
    _tarih_ := tarihyap(txtTarih1);

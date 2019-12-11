@@ -802,7 +802,7 @@ begin
   addButton(self,nil,'btnTopluPasif','','Firma Personeli Toplu Pasif Yap',Kolon3,'',230,ButtonClick);
   *)
 
-  tableColumnDescCreate;
+ // tableColumnDescCreate;
 
 
  // cxpnlHastaGelisler.Align := alBottom;
