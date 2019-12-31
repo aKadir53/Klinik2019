@@ -395,6 +395,8 @@ type
     procedure DataModuleDestroy(Sender: TObject);
     procedure LabAfterExecute(const MethodName: string; SOAPResponse: TStream);
     procedure LabBeforeExecute(const MethodName: string; SOAPRequest: TStream);
+    procedure DYOBAfterExecute(const MethodName: string; SOAPResponse: TStream);
+    procedure DYOBBeforeExecute(const MethodName: string; SOAPRequest: TStream);
   private
 
     { Private declarations }
@@ -486,7 +488,7 @@ type
    DefaultTedaviTipi : string;
    KurumBransi : string;
    eNabizKayit : string;
-
+   IlacTedavisi : TIlacTedavi;
 
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
     function MasterBaglan : Boolean; overload;
@@ -1109,6 +1111,53 @@ begin
       INTERNET_OPTION_SEND_TIMEOUT,
       Pointer(@TimeOut),
       SizeOf(TimeOut));
+end;
+
+procedure TDATALAR.DYOBAfterExecute(const MethodName: string;
+  SOAPResponse: TStream);
+var
+  memo : Tmemo;
+  m : TStringList;
+  R: UTF8String;
+  XMLDoc: IXMLDocument;
+begin
+   SetLength(R, SOAPResponse.Size);
+   SOAPResponse.Position := 0;
+   SOAPResponse.Read(R[1], Length(R));
+   memo := Tmemo.Create(nil);
+   try
+    memo.Parent := AnaForm;
+    memo.Lines.Add(FormatXMLData(R));
+    memo.Lines.SaveToFile(HTTP_XMLDosya_Name +'_Cevap.XML');
+    TenayMNTRequest := memo.Lines.Text;
+   finally
+     memo.Free;
+   end;
+end;
+
+procedure TDATALAR.DYOBBeforeExecute(const MethodName: string;
+  SOAPRequest: TStream);
+var
+  memo : Tmemo;
+  m : TStringList;
+  R: UTF8String;
+  met : string;
+begin
+   met := MethodName;
+   SetLength(R, SOAPRequest.Size);
+   SOAPRequest.Position := 0;
+   SOAPRequest.Read(R[1], Length(R));
+
+   memo := Tmemo.Create(nil);
+   try
+     memo.Parent := AnaForm;
+     memo.Lines.Add(FormatXMLData(R));
+     memo.Lines.SaveToFile(HTTP_XMLDosya_Name+'.XML');
+   finally
+     memo.Free;
+   end;
+
+
 end;
 
 end.

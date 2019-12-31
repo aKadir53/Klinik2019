@@ -271,7 +271,7 @@ begin
                  End;
 
                      DATALAR.ADOConnection2.BeginTrans;
-
+                     try
                      sql := 'exec sp_HastaGelisKaydet ' +
                             '@dosyaNo = ' + #39 + dosyaNo + #39 + ',' +
                             '@gelisNo = ' + '0' + ',' +
@@ -289,16 +289,18 @@ begin
                             '@kanAlimTarihi = ' + tarih(kanAlimTarihi) ;
 
                        datalar.QuerySelect(sqlRun,sql);
-
                        gelis := sqlRun.fieldbyname('Gelis').AsString;
                        error := sqlRun.fieldbyname('error').AsString;
+                     except
+                       Datalar.ADOConnection2.RollbackTrans;
+                     end;
 
 
                        if gelis = '-1'
                        then begin
                           //ShowMessageSkin(error,'','','info');
                          // raise Exception.Create(error);
-                          Datalar.ADOConnection2.RollbackTrans;
+                          if Datalar.ADOConnection2.InTransaction then Datalar.ADOConnection2.RollbackTrans;
                           Hata := ' Hata ';
                           SonucMesaj := SonucMesaj + ' Gelis Açýlamadý : ' + error;
                           txtLog.Lines.Add(Hata + ' ' + SonucMesaj);
@@ -307,39 +309,13 @@ begin
                        else
                        begin
                         gelisSiraNo := sqlRun.fieldbyname('GelisSIRANO').AsString;
-                        Datalar.ADOConnection2.CommitTrans;
+                        if Datalar.ADOConnection2.InTransaction then Datalar.ADOConnection2.CommitTrans;
                        end;
                       SonucMesaj := SonucMesaj + '  Gelis Açýldý ';
                       Takip := '';
                       txtLog.Lines.Add(Hata + ' ' + SonucMesaj);
 
-                      (*    bu iþlemler artýk [sp_HastaGelisKaydet] içinde yapýlýyor
 
-                      sql := 'delete from hareketler where dosyaNo = ' + QuotedStr(dosyaNo) +
-                      ' and gelisNo = ' + gelisNo;
-                      datalar.QueryExec(sql);
-
-
-                      sql := 'exec sp_hastaLabIsle ' + QuotedStr(dosyaNo) + ',' +
-                                                       gelisNo + ',' +
-                                                       gelisSiraNo + ',' +
-                                                       QuotedStr(tarih(provizyonTarihi));
-                      datalar.QueryExec(sql);
-
-
-                      sql := 'exec sp_TaniEkle ' + QuotedStr(dosyaNo) + ',' +
-                                                       gelisNo + ',' +
-                                                       gelisSiraNo;
-
-                      datalar.QueryExec(sql);
-
-
-
-                      SeansDetay(31,seansGunleri,FormattedTarih(ilkS),FormattedTarih(sonS),
-                                 dosyaNo,gelisNo,doktor,
-                                 mNo,
-                                 seansNo);
-                                 *)
                    (*
 
                      if sureKontrol

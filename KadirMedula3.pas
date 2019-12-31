@@ -263,6 +263,7 @@ begin
     //  datalar.RaporIslemWS.Password := datalar._doktorRecetePas;
 
      // datalar.RaporIslemWS.
+
       datalar.RaporIslemWS.RaporAra;
 
       if datalar.RaporIslemWS.RaporAraCevap.sonucKodu = 0
@@ -325,9 +326,12 @@ begin
                datalar.memDataRaporlar.FieldByName('protokolTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolTarihi;
                datalar.memDataRaporlar.FieldByName('Aciklama').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.aciklama;
   //            memDataRaporlar.FieldByName('tani').AsString :=
+               if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 1
+               then begin
                datalar.memDataRaporlar.FieldByName('seansGun').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansGun;
                datalar.memDataRaporlar.FieldByName('seansSayi').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansSayi;
                datalar.memDataRaporlar.FieldByName('butKodu').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.butKodu;
+               end;
                _tanilar_ := '';
 
                if Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) > 0

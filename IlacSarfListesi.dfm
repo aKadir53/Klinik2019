@@ -425,14 +425,14 @@ object frmIlacSarf: TfrmIlacSarf
           DataBinding.FieldName = 'ETKENMADDE'
           HeaderAlignmentHorz = taCenter
           Options.Editing = False
-          Width = 91
+          Width = 83
         end
         object cxGridDBColumn2: TcxGridDBColumn
           Caption = #304'la'#231' Ad'#305
           DataBinding.FieldName = 'Formu'
           HeaderAlignmentHorz = taCenter
           Options.Editing = False
-          Width = 184
+          Width = 167
         end
         object EklenenColumn1: TcxGridDBColumn
           Caption = 'Doz'
@@ -460,13 +460,39 @@ object frmIlacSarf: TfrmIlacSarf
             '4x3'
             '4x4')
           HeaderAlignmentHorz = taCenter
-          Width = 89
+          Width = 81
         end
         object EklenenColumn3: TcxGridDBColumn
           Caption = 'Adet'
           DataBinding.FieldName = 'adet'
           HeaderAlignmentHorz = taCenter
-          Width = 42
+          Width = 38
+        end
+        object EklenenColumn5: TcxGridDBColumn
+          Caption = 'Peryot'
+          DataBinding.FieldName = 'peryot'
+          PropertiesClassName = 'TcxImageComboBoxProperties'
+          Properties.Alignment.Horz = taCenter
+          Properties.Alignment.Vert = taVCenter
+          Properties.Items = <
+            item
+              Description = 'G'#252'n'
+              ImageIndex = 0
+              Value = 3
+            end
+            item
+              Description = 'Hafta'
+              Value = 4
+            end
+            item
+              Description = 'Ay'
+              Value = 5
+            end
+            item
+              Description = 'Y'#305'l'
+              Value = 6
+            end>
+          Width = 38
         end
         object EklenenColumn2: TcxGridDBColumn
           Caption = 'Kul.Yolu'
@@ -496,7 +522,7 @@ object frmIlacSarf: TfrmIlacSarf
           Properties.ReadOnly = True
           Properties.OnButtonClick = EklenenColumn4PropertiesButtonClick
           HeaderAlignmentHorz = taCenter
-          Width = 86
+          Width = 85
         end
       end
       object cxGridLevel1: TcxGridLevel
@@ -542,6 +568,9 @@ object frmIlacSarf: TfrmIlacSarf
     end
     object Eklenenlertani: TStringField
       FieldName = 'tani'
+    end
+    object Eklenenlerperyot: TIntegerField
+      FieldName = 'peryot'
     end
   end
   object cxStyleRepository1: TcxStyleRepository

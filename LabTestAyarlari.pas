@@ -156,8 +156,14 @@ begin
                             ' and Tip = ' + QuotedStr(Test.uygulamaAdet) +
                             ' end ';
 
+          try
           datalar.QueryExec(sql);
 
+          except on e : exception do
+           begin
+              ShowMessage(e.Message);
+           end;
+          end;
           pBar.Position := pBar.Position + 1;
           Application.ProcessMessages;
        end;

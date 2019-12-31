@@ -126,8 +126,7 @@ type
     ListeSColumn6: TcxGridDBBandedColumn;
     KanAlinanSeansOlarakaretle1: TMenuItem;
     M1: TMenuItem;
-    T1: TMenuItem;
-    D2: TMenuItem;
+    ListeSColumn7: TcxGridDBBandedColumn;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxTextEditKeyDown(Sender: TObject; var Key: Word;
@@ -513,10 +512,12 @@ begin
                  ',IgneV = ' +  QuotedStr(Datalar.SeansBilgi.IgneV) +
                  ',Durum = ' +  intToStr(Datalar.SeansBilgi.Durum) +
                  ',hekimgozlemDdiger = ' + QuotedStr(datalar.SeansBilgi.hemsireNot) +
+                 ',itaki = ' + QuotedStr(datalar.SeansBilgi.itakiString) +
                  ' where siraNo = ' + Datalar.SeansBilgi.hizmetSunucuRefNo +
 
                  ' update Hareketler set raporTakipNo = ' + QuotedStr(Datalar.SeansBilgi.raporTakipNo) +
                  ',Doktor = ' +  QuotedStr(Datalar.SeansBilgi.doktor) +
+                 ',itaki = ' + QuotedStr(Datalar.SeansBilgi.itakiString) +
                  ' where dosyaNo = ' + QuotedStr(Datalar.SeansBilgi.dosyaNo) +
                  ' and gelisNo = ' + Datalar.SeansBilgi.gelisNo + ' and Durum = 0 and Tip = ''S''';
 
@@ -985,6 +986,10 @@ begin
   Datalar.SeansBilgi.islemSiraNo := cxGrid_Seans.Dataset.FieldByName('islemSiraNo').AsString;
   Datalar.SeansBilgi.SeansCaption := _HastaAdSoyad_ + ' - ' + cxGrid_Seans.Dataset.FieldByName('seansGunu').AsString +
                                      ' (' + cxGrid_Seans.Dataset.FieldByName('islemRefNo').AsString + ')';
+
+  datalar.SeansBilgi.itakiString := cxGrid_Seans.Dataset.FieldByName('itaki').AsString;
+  datalar.SeansBilgi.itakiDeger := cxGrid_Seans.Dataset.FieldByName('itakiDeger').AsString;
+  datalar.SeansBilgi.yas := datalar.Bilgi.yas;
 
   case TControl(sender).Tag of
   -1 : begin

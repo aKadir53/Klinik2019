@@ -141,7 +141,8 @@ uses
     HizliKayit,
     HastaIzlemListesi,
     TakipKontrol,
-    ktv_urrListesi;
+    ktv_urrListesi,
+    MakinaDurumP;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -384,6 +385,7 @@ begin
    TagfrmHastaDiyalizIzlemListesi : Result := TfrmIzlem;
    TagfrmTakipKontrol : Result := TfrmTakipKontrol;
    TagfrmKtvListesi : Result := TfrmKtvListesi;
+   TagfrmMakinaDurumP : Result := TfrmMakinaDurumP;
 
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
@@ -497,6 +499,7 @@ begin
    TagfrmHastaDiyalizIzlemListesi : Result := frmIzlem;
    TagfrmTakipKontrol : Result := frmTakipKontrol;
    TagfrmKtvListesi : Result := frmKtvListesi;
+   TagfrmMakinaDurumP : Result := frmMakinaDurumP;
 
 
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
@@ -607,6 +610,7 @@ begin
      TagfrmHastaDiyalizIzlemListesi : frmIzlem := TfrmIzlem.Create(Tab);
      TagfrmTakipKontrol : frmTakipKontrol := TfrmTakipKontrol.Create(Tab);
      TagfrmKtvListesi : frmKtvListesi  := TfrmKtvListesi.Create(Tab);
+     TagfrmMakinaDurumP : frmMakinaDurumP  := TfrmMakinaDurumP.Create(Tab);
 
   end;
   try
@@ -784,6 +788,7 @@ begin
      TagfrmHastaDiyalizIzlemListesi : frmIzlem := TfrmIzlem.Create(Tab);
      TagfrmTakipKontrol : frmTakipKontrol := TfrmTakipKontrol.Create(Tab);
      TagfrmKtvListesi : frmKtvListesi  := TfrmKtvListesi.Create(Tab);
+     TagfrmMakinaDurumP : frmMakinaDurumP  := TfrmMakinaDurumP.Create(Tab);
 
   end;
   try
@@ -982,6 +987,8 @@ begin
     TGirisForm(Form)._TedaviTuru_ := Value.F_TedaviTuru_;
     TGirisForm(Form)._SeansBilgi := Value.F_SeansBilgi;
     TGirisForm(Form)._sysTakipNo_ := Value.F_sysTakipNo;
+    TGirisForm(Form).GonderenForm := Nil;
+
   except
   end;
 

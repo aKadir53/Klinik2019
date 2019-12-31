@@ -72,9 +72,9 @@ type
                       doktrsifre : PWideChar;
                       pin : PWideChar;
                       doktorTc : PWideChar;
-                      TesisKodu : integer;
+                      TesisKodu : PWideChar;
                        var sonuc : PWideChar;
-                      url : string;
+                      url : PWideChar;
                       cardType : PWideChar); stdcall;
 
 
@@ -292,6 +292,9 @@ type
     doktorNot : string;
     hemsireNot : string;
     islemSiraNo : string;
+    itakiString : string;
+    itakiDeger : string;
+    yas : variant;
    end;
 
 type
@@ -909,6 +912,13 @@ type
      hasta : string;
   end;
 
+  TIlacTedavi = record
+     id : string;
+     ilacname : string;
+     doz : string;
+     miktar : string;
+  end;
+
 
   TIntegerArray = array of Integer;
 
@@ -975,6 +985,7 @@ Const
   TagfrmHemsireler = 440;
   TagfrmMakina = 450;
   TagfrmMakinaBakim = 460;
+  TagfrmMakinaDurumP = 461;
   TagfrmTestAyarlari = 470;
   TagfrmKiloOrder = 480;
   TagfrmHizliKayitPersonel = 490;
@@ -1071,6 +1082,8 @@ Const
   SYNEVO = 11;
   REFERANSLAB = 21;
   SYNLAB = 2;
+  CentroLab = 3;
+  SISTEMTIP = 10;
 
   ExceleGonder = 9997;
   SeansTarihiUpdate = 0;
@@ -1181,6 +1194,8 @@ Const
   DiyalizIzlemCinacalset = 15;
   KtvUrrDuzenle = 77;
   ReceteyiSablonKaydet = 86;
+  ilacTedaviUygula = 87;
+  ilacTedaviIptal = 88;
 
 
 

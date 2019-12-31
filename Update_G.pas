@@ -194,7 +194,7 @@ begin
     pnlBilgi.Caption := 'Son Güncelleme : ' + FormattedTarih(datalar.ADO_SQL.FieldList[1].AsString) +
                         ' Güncelleme ID :' + datalar.ADO_SQL.FieldList[2].AsString;
 
-
+     (*
       if datalar.ADOConnection1.Connected = false
       then begin
                deneme := 1;
@@ -219,8 +219,8 @@ begin
                          exit;
                     end;
       end;
-
-    sql := 'select * from UPDATE_CMD_OSGB where ID > ' + IntToStr (FSonGuncelleme) + ' and Modul = ''O''' + ' and ID <= ' + IntToStr (FSonYayinlananGuncelleme) +
+      *)
+    sql := 'select * from OSGB_MASTER.dbo.UPDATE_CMD where ID > ' + IntToStr (FSonGuncelleme) + ' and Modul = ''O''' + ' and ID <= ' + IntToStr (FSonYayinlananGuncelleme) +
            ' Order by ID ';
     datalar.QuerySelect(datalar.Ado_Guncellemeler,sql);
 
@@ -295,8 +295,6 @@ var
   i, iThermo, iBaslangicTranCount, iIslemTranCount : integer;
   xDonguBasarili, bHataOldu : Boolean;
 begin
-  datalar.ADO_SQL3.Close;
-  datalar.ADO_SQL3.SQL.Clear;
 
   if datalar.Ado_Guncellemeler.RecordCount <= 0 then
   begin
@@ -320,11 +318,11 @@ begin
         begin
           try
             sql := gridDetay.Cells[5,i];//ADO_SQL1.Fieldbyname('SQL_CMD').AsString;
-            datalar.QueryExec(datalar.ADO_SQL3,sql);
+            datalar.QueryExec(sql);
             sql := 'update Parametreler set SLT = ' + #39 + tarihal(date()) + #39 +
                    ',SLX = ' + datalar.Ado_Guncellemeler.fieldbyname('ID').AsString +
                    ' where SLK = ''GT'' and SLB =''0000''';
-            datalar.QueryExec(datalar.ADO_SQL3,sql);
+            datalar.QueryExec(sql);
 
             gridDetay.Row := i;
 
@@ -335,7 +333,7 @@ begin
                                  QuotedStr(gridDetay.Cells[1,i]) + ',' +
                                  gridDetay.Cells[2,i] + ',' +
                                  QuotedStr('Ok') + ')';
-            datalar.QueryExec(datalar.ADO_SQL3,sql);
+            datalar.QueryExec(sql);
           except on e : Exception do
             begin
               //bhataoldu deðiþkeni true yap.
@@ -416,7 +414,7 @@ begin
   TcxButton (Sender).Enabled := False;
   try
     guncellemeIslemi := 'No';
-    GuncellemeBilgileri;
+ //   GuncellemeBilgileri;
     try
     //FTP sunucudaki text dosyayý oku
       FSonYayinlananGuncelleme := SonYayinlananGuncellemeNumarasi;

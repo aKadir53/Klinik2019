@@ -195,6 +195,7 @@ type
     MuayeneTutanaklarnYazdr1: TMenuItem;
     ExceleGnder1: TMenuItem;
     gridHastalarColumn3: TcxGridDBBandedColumn;
+    H2: TMenuItem;
 
     procedure TopPanelButonClick(Sender: TObject);
     procedure HastalarAfterScroll(DataSet: TDataSet);
@@ -225,6 +226,7 @@ type
     procedure cxButtonCClick(Sender: TObject);
     Procedure TDISKaydet(islem : integer);
     procedure FormCreate(Sender: TObject);
+    procedure H2Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -241,7 +243,8 @@ implementation
 
 {$R *.dfm}
 
-uses rapor;
+uses rapor,AnaUnit;
+
 procedure TfrmIzlem.K1Click(Sender: TObject);
 begin
   inherited;
@@ -410,7 +413,10 @@ begin
 
 
         VeriSetiDoldur(DiyalizTedavi,dosyaNo,gelisNo,Tarih);
+        if not DirectoryExists('C:\NoktaV3\DYOB')
+        then MkDir('C:\NoktaV3\DYOB');
 
+        datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\DYOB\'+dosyaNo+'_'+gelisNo;
         try
 
           case islem of
@@ -586,7 +592,7 @@ begin
 
       Tc := StrToInt64(ado.FieldByName('TC').AsString);
 
-      BHDAT := ado.FieldByName('Tarih').AsString;
+      BHDAT := tarihal(ado.FieldByName('Tarih').AsDateTime);
       Tarih := TXSDateTime.Create;
       Tarih.Year := strtoint(copy(BHDAT,1,4));
       Tarih.Month := strtoint(copy(BHDAT,5,2));
@@ -652,9 +658,9 @@ begin
     datalar.QuerySelect(ado,sql);
 
     UTarih := TXSDateTime.Create;
-    UTarih.Year := strtoint(copy(ado.FieldByName('UTARIH').AsString,1,4));
-    UTarih.Month := strtoint(copy(ado.FieldByName('UTARIH').AsString,5,2));
-    UTarih.Day := strtoint(copy(ado.FieldByName('UTARIH').AsString,7,2));
+    UTarih.Year := strtoint(copy(tarihal(ado.FieldByName('UTARIH').AsDateTime),1,4));
+    UTarih.Month := strtoint(copy(tarihal(ado.FieldByName('UTARIH').AsDateTime),5,2));
+    UTarih.Day := strtoint(copy(tarihal(ado.FieldByName('UTARIH').AsDateTime),7,2));
 
     HASTASEANS.TARIH := UTarih;
    // HASTASEANS.INSERTTARIHI := UTarih;
@@ -724,9 +730,9 @@ begin
          HASTATEST := DISWS.HASTATEST.Create;
          HASTATEST.TEST_ID := ado.FieldByName('ID').AsInteger;
          TTarih := TXSDateTime.Create;
-         TTarih.Year := strtoint(copy(ado.FieldByName('TARIH').AsString,1,4));
-         TTarih.Month := strtoint(copy(ado.FieldByName('TARIH').AsString,5,2));
-         TTarih.Day := strtoint(copy(ado.FieldByName('TARIH').AsString,7,2));
+         TTarih.Year := strtoint(copy(tarihal(ado.FieldByName('TARIH').AsDateTime),1,4));
+         TTarih.Month := strtoint(copy(tarihal(ado.FieldByName('TARIH').AsDateTime),5,2));
+         TTarih.Day := strtoint(copy(tarihal(ado.FieldByName('TARIH').AsDateTime),7,2));
          HASTATEST.TARIH := TTarih;
         // HASTATEST.INSERTTARIHI := TTarih;
        //  HASTATEST.UPDATETARIHI := TTarih;
@@ -791,10 +797,11 @@ begin
 
   GirisFormRecord.F_dosyaNo_ := Hastalar.FieldByName('dosyaNo').AsString;;
   GirisFormRecord.F_gelisNo_ := Hastalar.FieldByName('gelisNo').AsString;
-
+  GirisFormRecord.F_HastaAdSoyad_ := Hastalar.FieldByName('HASTAADI').AsString + ' ' +
+                                     Hastalar.FieldByName('HASTASOYADI').AsString;
 
   case Tcontrol(sender).tag of
- -10,11 : begin
+ -10,-11 : begin
             TDISKaydet(Tcontrol(sender).tag);
           end;
 
@@ -807,7 +814,7 @@ begin
           F := FormINIT(TagfrmUzmanMuayene,GirisFormRecord,ikEvet);
           //  F._Foto_ := foto;
           if F <> nil then F.ShowModal;
-          Hastalar.Requery();
+
        end;
   end;
 
@@ -892,17 +899,8 @@ begin
 end;
 
 procedure TfrmIzlem.gridHastalarDblClick(Sender: TObject);
-var
-  dosyaNo,gelisNo,hasta : string;
 begin
-(*     dosyaNo := Hastalar.fieldbyname('dosyaNo').AsString;
-     gelisNo := Hastalar.fieldbyname('gelisNo').AsString;
-     hasta := Hastalar.fieldbyname('HASTAADI').AsString + ' ' + Hastalar.fieldbyname('HASTASOYADI').AsString;
-
-     Application.CreateForm(TfrmTahlilsonucGir, frmTahlilsonucGir);
-     frmTahlilsonucGir.HastaSonuc(dosyaNo,gelisNo,hasta);
-     frmTahlilsonucGir.ShowModal;
-     frmTahlilsonucGir := nil;    *)
+  U1.Click;
 end;
 
 procedure TfrmIzlem.gridHastalarInitEdit(Sender: TcxCustomGridTableView;
@@ -991,6 +989,28 @@ begin
 
 end;
 
+procedure TfrmIzlem.H2Click(Sender: TObject);
+var
+ r ,satir : integer;
+ Form : TGirisForm;
+ dosyaNo : string;
+begin
+   satir := gridHastalar.Controller.SelectedRows[0].RecordIndex;
+   dosyaNo := varTostr(gridHastalar.DataController.GetValue(satir,gridHastalar.DataController.GetItemByFieldName('dosyaNo').Index));
+
+   if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
+   Then begin
+     Form := TGirisForm(FormClassType(TagfrmHastaKart));
+     TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := dosyaNo;
+     TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
+     TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
+   end
+   Else begin
+    Form := FormINIT(TagfrmHastaKart,self,dosyaNo,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
+    if Form <> nil then Form.show;
+   end;
+end;
+
 procedure TfrmIzlem.HastalarAfterScroll(DataSet: TDataSet);
 var
   sql : string;
@@ -1005,6 +1025,7 @@ end;
 
 procedure TfrmIzlem.HastalarBeforePost(DataSet: TDataSet);
 begin
+
   if (copy(hastalar.FieldByName('tedaviSeyri').AsString,1,1) = '8') or
      (copy(hastalar.FieldByName('tedaviSeyri').AsString,1,1) = '3')
   then begin

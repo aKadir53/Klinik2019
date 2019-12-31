@@ -57,7 +57,7 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
         Top = 0
         Width = 656
         Height = 494
-        ActivePage = TabSheet7
+        ActivePage = TabSheet6
         Align = alClient
         Images = DATALAR.imag24png
         TabHeight = 25

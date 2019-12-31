@@ -61,6 +61,11 @@ type
     List: TListeAc;
     cxGroupBox2: TcxGroupBox;
     cxGroupBox5: TcxGroupBox;
+    DataSource3: TDataSource;
+    SablonAciklama: TADOTable;
+    cxGroupBox6: TcxGroupBox;
+    btnAckKaydet: TcxButton;
+    R1: TMenuItem;
     procedure btnSendClick(Sender: TObject);
     procedure TabloAc(doktor : string);
     procedure FormCreate(Sender: TObject);
@@ -69,6 +74,7 @@ type
     procedure cxButtonKadirTaniEkleClick(Sender: TObject);
     procedure cxButtonKadirTaniSilClick(Sender: TObject);
     procedure Sablontaniekle;
+    procedure btnAckKaydetClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -90,6 +96,7 @@ begin
   Sablonlar.Active := true;
   SablonDetay.Active := true;
   Tani.Active := true;
+  SablonAciklama.Active := True;
 
 end;
 
@@ -176,6 +183,12 @@ begin
   close;
 end;
 
+procedure TfrmRaporSablon.btnAckKaydetClick(Sender: TObject);
+begin
+  inherited;
+  SablonAciklama.Post;
+end;
+
 procedure TfrmRaporSablon.cxButtonKadirTaniEkleClick(Sender: TObject);
 begin
   inherited;
@@ -246,6 +259,7 @@ begin
   Sablonlar.Active := true;
   SablonDetay.Active := true;
   Tani.Active := true;
+  SablonAciklama.Active := True;
   cxGridHastaGelisdoktor.Properties := doktorlar.Properties;
   cxGridDBTableView1kullanZamanUnit.Properties := pBirim.Properties;
 
@@ -256,31 +270,87 @@ var
   sql : string;
   ado : TADOQuery;
 begin
-  if MrYes = ShowMessageSkin('Þablon Ýptal Ediliyor Emin misiniz ?','','','msg')
-  Then Begin
-    try
-      datalar.ADOConnection2.BeginTrans;
-      ado := TADOQuery.Create(nil);
-      try
-        sql := 'delete from IlacRaporTeshislerSablon where SablonId = ' + Sablonlar.fieldbyname('Id').AsString;
-        datalar.QueryExec(ado,sql);
-        sql := 'delete from IlacRaporAciklamaSablon where SablonId = ' + Sablonlar.fieldbyname('Id').AsString;
-        datalar.QueryExec(ado,sql);
-        sql := 'delete from IlacRaporEtkenMaddelerSablon where sablonId = ' + Sablonlar.fieldbyname('Id').AsString;
-        datalar.QueryExec(ado,sql);
-        Sablonlar.Delete;
-        datalar.ADOConnection2.CommitTrans;
-        ShowMessageSkin('Þablon Ýptal Edildi','','','info');
-      finally
-            ado.Free;
-      end;
-    except on e : exception do
-      begin
-        datalar.ADOConnection2.RollbackTrans;
-        ShowMessageSkin('Hata',e.Message,'','info');
-      end;
-    end;
-  End;
+
+  case TMenuItem(sender).Tag of
+   -1 : begin
+          if MrYes = ShowMessageSkin('Þablon Ýptal Ediliyor Emin misiniz ?','','','msg')
+          Then Begin
+            try
+              datalar.ADOConnection2.BeginTrans;
+              ado := TADOQuery.Create(nil);
+              try
+                sql := 'delete from IlacRaporTeshislerSablon where SablonId = ' + Sablonlar.fieldbyname('Id').AsString;
+                datalar.QueryExec(ado,sql);
+                sql := 'delete from IlacRaporAciklamaSablon where SablonId = ' + Sablonlar.fieldbyname('Id').AsString;
+                datalar.QueryExec(ado,sql);
+                sql := 'delete from IlacRaporEtkenMaddelerSablon where sablonId = ' + Sablonlar.fieldbyname('Id').AsString;
+                datalar.QueryExec(ado,sql);
+                Sablonlar.Delete;
+                datalar.ADOConnection2.CommitTrans;
+                ShowMessageSkin('Þablon Ýptal Edildi','','','info');
+              finally
+                    ado.Free;
+              end;
+            except on e : exception do
+              begin
+                datalar.ADOConnection2.RollbackTrans;
+                ShowMessageSkin('Hata',e.Message,'','info');
+              end;
+            end;
+          End;
+   end;
+  -2 : begin
+           if _ResourceID <> ''
+           then begin
+                 datalar.ADOConnection2.BeginTrans;
+                 try
+                     Tani.First;
+                     while not Tani.Eof do
+                     Begin
+                       datalar.QueryExec('insert into IlacRaporTeshisler(RaporSira,teshiskodu,ICD10Kodu) ' +
+                                         'values(' + _ResourceID + ','
+                                                   + QuotedStr(Tani.FieldByName('teshisKodu').AsString) + ','
+                                                   + QuotedStr(Tani.FieldByName('ICD10Kodu').AsString) + ')');
+
+                       Tani.Next;
+                     End;
+
+                     SablonDetay.First;
+                     while not SablonDetay.Eof do
+                     Begin
+
+                       datalar.QueryExec('insert into IlacRaporEtkenMaddeler(RaporSira,etkenMaddeKodu,etkenMaddeAdi,kullanimDoz1,kullanimDoz2,kullanimDozBirim,kullanimPeriyot,kullanimPeriyotBirim) ' +
+                                         'values(' + _ResourceID + ','
+                                                   + QuotedStr(SablonDetay.FieldByName('etkenMaddeKodu').AsString) + ','
+                                                   + QuotedStr(SablonDetay.FieldByName('etkenMaddeAdi').AsString) + ','
+                                                   + QuotedStr(SablonDetay.FieldByName('kullanimDoz1').AsString) + ','
+                                                   + QuotedStr(SablonDetay.FieldByName('kullanimDoz2').AsString) + ','
+                                                   + QuotedStr(SablonDetay.FieldByName('kullanimDozBirim').AsString) + ','
+                                                   + QuotedStr(SablonDetay.FieldByName('kullanimPeriyot').AsString) + ','
+                                                   + QuotedStr(SablonDetay.FieldByName('kullanimPeriyotBirim').AsString) + ')'
+                                                   );
+
+                       SablonDetay.Next;
+                     End;
+
+                     SablonAciklama.First;
+                     datalar.QueryExec('Update Raporlar set Aciklama = ' + QuotedStr(SablonAciklama.FieldByName('aciklama').AsString) +
+                                       ' where sira = ' + _ResourceID);
+                     datalar.ADOConnection2.CommitTrans;
+                 except on e : Exception do
+                   begin
+                    datalar.ADOConnection2.RollbackTrans;
+                    ShowMessageSkin(e.Message,'','','info');
+                   end;
+                 end;
+           end;
+
+       end;
+
+  end;
+
+
+
 end;
 
  procedure TfrmRaporSablon.Sablontaniekle;

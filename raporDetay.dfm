@@ -36,6 +36,7 @@ object frmRaporDetay: TfrmRaporDetay
     ExceleGonder = False
     PopupForm = False
     object ListeRaporlar: TcxGridDBTableView
+      PopupMenu = PopupMenu3
       OnDblClick = ListeRaporlarDblClick
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True
@@ -332,6 +333,19 @@ object frmRaporDetay: TfrmRaporDetay
       end
       object N5: TMenuItem
         Caption = #350'ablonlar'
+        ImageIndex = 70
+        OnClick = N5Click
+      end
+      object R2: TMenuItem
+        Tag = 1
+        Caption = 'Raporu '#350'ablon Olarak Kaydet'
+        ImageIndex = 29
+        OnClick = N5Click
+      end
+      object R3: TMenuItem
+        Tag = 2
+        Caption = 'Raporu '#350'ablondan Doldur'
+        ImageIndex = 9
         OnClick = N5Click
       end
     end

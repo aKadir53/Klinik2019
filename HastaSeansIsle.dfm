@@ -152,8 +152,6 @@ object frmHastaSeans: TfrmHastaSeans
               Caption = 'Seans ID'
               DataBinding.FieldName = 'islemRefNo'
               PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
               Visible = False
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
@@ -858,6 +856,13 @@ object frmHastaSeans: TfrmHastaSeans
               Position.ColIndex = 48
               Position.RowIndex = 0
             end
+            object ListeSColumn7: TcxGridDBBandedColumn
+              DataBinding.FieldName = 'itaki'
+              Visible = False
+              Position.BandIndex = 0
+              Position.ColIndex = 49
+              Position.RowIndex = 0
+            end
           end
           object cxGrid2Level1: TcxGridLevel
             GridView = ListeS
@@ -1025,12 +1030,6 @@ object frmHastaSeans: TfrmHastaSeans
         ImageIndex = 106
         OnClick = cxButtonCClick
       end
-      object T1: TMenuItem
-        Tag = -30
-        Caption = 'Takip Bilgisi Oku'
-        Visible = False
-        OnClick = cxButtonCClick
-      end
     end
     object N1: TMenuItem
       Caption = '-'
@@ -1070,8 +1069,6 @@ object frmHastaSeans: TfrmHastaSeans
       Tag = -21
       Caption = 'Kan Alimini '#304'ptal Et'
       OnClick = cxButtonCClick
-    end
-    object D2: TMenuItem
     end
   end
   object ADO_Detay_toplam: TADOQuery

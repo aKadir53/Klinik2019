@@ -240,6 +240,7 @@ type
     _fieldsEdit_,_fields_ ,_fieldBaslik_,_fieldTips_,_fieldFormats_,_spSQL_,_ICParams_,_fieldReadOnly_ : string;
     indexFieldValue : string;
     sqlTip : sqlType;
+    GonderenForm : TGirisForm;
    // _dosyaNo_,_gelisNo_,TakipNo,BasvuruNo : string;
     procedure Olustur(sender : TObject;Table,Tabbaslik : string ; imageindex : integer;
                       sqlInsert : string = '';sqlUpdate : string = '';sqlDelete : string = '';indexField : string = '');
@@ -903,20 +904,20 @@ begin
     ComboDoldur3('select tanimi from Diyaliz_Heparin',D,0,-1);
 
     setDataStringC(self,'HEPARINTIP','Heparin Tip',Grp,'',120,'Standart,DüþükMolekül,Diðer');
-    setDataStringC(self,'HEPARIN','Heparin',Grp,'Hep',120,D.Properties.Items);
-    setDataString(self,'HEPARINUYG','Heprin Uyg.',Grp,'',120);
+    setDataStringC(self,'HEPARIN','Heparin / Uyg.',Grp,'Hep',50,D.Properties.Items);
+    setDataString(self,'HEPARINUYG','',Grp,'Hep',60);
 
     D.name := 'txtAPH';
     ComboDoldur3('select tanimi from Diyaliz_APH',D,0,-1);
 
     setDataStringC(self,'HCOOO','HCO3',Grp,'',70,'25,26,27,28,29,30,31,32,33,34,35');
-    setDataStringC(self,'APH','APH',Grp,'',70,D.Properties.Items);
-    setDataStringC(self,'Na','Na',Grp,'',70,'136,138,140,142,144,146');
+    setDataStringC(self,'APH','APH',Grp,'aphNa',50,D.Properties.Items);
+    setDataStringC(self,'Na','Na',Grp,'aphNa',50,'136,138,140,142,144,146');
 
     D.name := 'txtIgne';
     ComboDoldur3('select tanimi from Diyaliz_Igne',D,0,-1);
-    setDataStringC(self,'Igne','A.Ýðne',Grp,'',70,D.Properties.Items);
-    setDataStringC(self,'IgneV','V.Ýðne',Grp,'',70,D.Properties.Items);
+    setDataStringC(self,'Igne','Ýðne A',Grp,'Ign',50,D.Properties.Items);
+    setDataStringC(self,'IgneV','V ',Grp,'Ign',50,D.Properties.Items);
 
     TcxImageComboKadir(FindComponent('DiyalizorCinsi')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
     TcxImageComboKadir(FindComponent('DiyalizorTipi')).Properties.OnEditValueChanged := PropertiesEditValueChanged;

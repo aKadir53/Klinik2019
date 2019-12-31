@@ -26,7 +26,7 @@ uses
   dxSkinOffice2010Blue, dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven,
   dxSkinSharp, dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
   dxSkinValentine, dxSkinXmas2008Blue, Vcl.ActnList, Soap.InvokeRegistry,
-  Soap.Rio, Soap.SOAPHTTPClient;
+  Soap.Rio, Soap.SOAPHTTPClient,DelphiZXingQRCode;
 
 
 
@@ -113,6 +113,7 @@ type
     txtOlumNeden: TcxImageComboKadir;
     txtAktif: TcxImageComboKadir;
     H2: TMenuItem;
+    T4: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxButtonCClick(Sender: TObject);
@@ -123,7 +124,7 @@ type
     procedure cxEditEnter(Sender: TObject);
     procedure cxEditExit(Sender: TObject);
     procedure seansGunleriPropertiesEditValueChanged(Sender: TObject);
-    procedure FotoEkle;
+    procedure FotoEkle(islem : integer = 0);
     procedure FotoNewRecord;
     procedure cxButtonEditPropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);override;
@@ -358,6 +359,17 @@ begin
      exit;
    end;
 
+   if not datalar.QuerySelect('select * from hareketler where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
+                          ' and gelisNo = ' + _gelisNo_ + ' and isnull(islemSiraNo,'''') <> '''' ').Eof
+   then begin
+     ShowMessageSkin('Medulaya Kayýtlý Hizmet Var','','','info');
+     exit;
+   end;
+
+   if  mrYes <> ShowMessageSkin('Geliþe Ait Tüm Bilgiler Silinecek, Emin misiniz?','','','msg')
+   then begin
+      exit;
+   end;
 
    ado := TADOQuery.Create(nil);
    try
@@ -366,14 +378,34 @@ begin
        bSucc := False;
        BeginTrans (ado.Connection);
        try
+         sql := 'Delete from hareketler where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
+                ' and gelisNo = ' + _gelisNo_;
+         datalar.QueryExec(ado, sql);
+
+         sql := 'Delete from labsonucdegerlendirme where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
+                ' and gelisNo = ' + _gelisNo_;
+         datalar.QueryExec(ado, sql);
+
+         sql := 'Delete from UzmanGozlem where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
+                ' and gelisNo = ' + _gelisNo_;
+         datalar.QueryExec(ado, sql);
+
+         sql := 'Delete from HastaIlacTedaviUygulama where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
+                ' and gelisNo = ' + _gelisNo_;
+         datalar.QueryExec(ado, sql);
+
+         sql := 'Delete from HastaIlacTedavi where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
+                ' and gelisNo = ' + _gelisNo_;
+         datalar.QueryExec(ado, sql);
+
          sql := 'Delete from Hasta_Gelisler where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
                 ' and gelisNo = ' + _gelisNo_;
          datalar.QueryExec(ado, sql);
+
          bSucc := True;
        finally
          if bSucc then CommitTrans(ado.Connection)
          else RollbackTrans(ado.Connection);
-
        end;
        cxGridGelis.Dataset.Requery();
        cxGridGelis.Dataset.Next;
@@ -730,7 +762,7 @@ begin
 
 end;
 
-procedure TfrmHastaKart.FotoEkle;
+procedure TfrmHastaKart.FotoEkle(islem : integer = 0);
 var
  Fo : TFileOpenDialog;
  filename,dosyaNo ,dosyaTip : string;
@@ -749,6 +781,9 @@ begin
     datalar.ADO_FOTO.FieldByName('dosyaNo').AsString := dosyaNo;
     datalar.ADO_FOTO.FieldByName('tip').AsString := 'H';
   end;
+
+  if islem = 1 then exit;
+  
 
   Fo := TFileOpenDialog.Create(nil);
 
@@ -1527,6 +1562,7 @@ var
  _name_, tel,msj,sysTakipNo,eNabizSonuc : string;
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
+ TopluDataset : TDataSetKadir;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -1575,6 +1611,8 @@ begin
 
 
     _TakipNo_ := cxGridGelis.Dataset.FieldByName('TakipNo').AsString;
+    sysTakipNo := cxGridGelis.Dataset.FieldByName('sysTakipNo').AsString;
+
   except
   end;
 
@@ -1717,10 +1755,14 @@ begin
          // TetkikEkle(dosyaNo.Text,_gelisNo_,datalar.HastaBil.Tarih);
        end;
  -33 : begin
-         GelisSil;
+         if (_TakipNo_ = '') and (sysTakipNo = '')
+         then
+           GelisSil
+         else
+           ShowMessageSkin('TakipNo yada SysTakipNo Var ,Geliþ Silinemez','','','info');
        end;
  -34 : begin
-           sysTakipNo := cxGridGelis.Dataset.FieldByName('sysTakipNo').AsString;
+
         // ShowMessageSkin(
           // SGKHizmetSorgulama(datalar._userSaglikNet2_,DATALAR._passSaglikNet2_,sysTakipNo,'',ktsHbysKodu);
            SysTakipNoSorgula(sysTakipNo,eNabizSonuc);
@@ -1769,6 +1811,20 @@ begin
             if F <> nil then F.ShowModal;
 
 
+       end;
+-100 : begin
+              if DirectoryExists('C:\NoktaV3\QR') = False
+              then
+                MkDir('C:\NoktaV3\QR');
+
+              FotoEkle(1);
+              QRBarkod('http://185.99.199.39:8079?dosyaNo=' + dosyaNo.EditText,'C:\NoktaV3\QR\' + dosyaNo.EditText+'.jpg');
+              QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\QR\' + dosyaNo.EditText+'.jpg');
+              TopluDataset.Dataset0 := sqlRun;
+              TopluDataset.Dataset1 := datalar.ADO_FOTO;
+              TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+              TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
+              PrintYap('PKB','Hasta Kart','',TopluDataset,kadirType.pTNone);
        end;
 
  130 : begin

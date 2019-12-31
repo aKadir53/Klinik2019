@@ -260,6 +260,7 @@ begin
       datalar.QuerySelect(ado,sql);
       Guncel := ado.Fieldbyname('SLX').AsString;
 
+      (*
       if datalar.ADOConnection1.Connected = false
       then begin
                deneme := 1;
@@ -278,10 +279,10 @@ begin
                   exit;
                end;
       end;
-
+        *)
       try
-        datalar.Ado_Guncellemeler.Connection := datalar.ADOConnection1;
-        sql := 'select * from UPDATE_CMD where ID > ' + guncel + ' and Modul = ''D''' +
+        datalar.Ado_Guncellemeler.Connection := datalar.ADOConnection2;
+        sql := 'select * from OSGB_Master.dbo.UPDATE_CMD where ID > ' + guncel + ' and Modul = ''D''' +
                ' Order by ID ';
         datalar.QuerySelect(datalar.Ado_Guncellemeler,sql);
       except on e : Exception do
@@ -379,9 +380,9 @@ begin
        datalar.DefaultTedaviTuru := WebErisimBilgi('98','12');
        datalar.DefaultTedaviTipi := WebErisimBilgi('98','13');
 
-       datalar._DyobKurumKodu_ := WebErisimBilgiFirma('TDIS','00');
-       datalar._DyobSifre_ := WebErisimBilgiFirma('TDIS','01');
-       datalar._DyobServiceKodu_ := WebErisimBilgiFirma('TDIS','02');
+       datalar._DyobKurumKodu_ := WebErisimBilgiFirma('TDS','00');
+       datalar._DyobSifre_ := WebErisimBilgiFirma('TDS','01');
+       datalar._DyobServiceKodu_ := WebErisimBilgiFirma('TDS','02');
 
     except
     end;
@@ -803,6 +804,7 @@ begin
     then begin
        GuncellemeBaslat(True);
     end;
+
 
   UserTable.Active := True;
   if UserRight('Kullanýcý Ýþlemleri', 'Herkesin Ýþ Planýný Görsün') = True

@@ -32,7 +32,7 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
       Height = 346
       Align = alClient
       TabOrder = 0
-      Properties.ActivePage = cxTabHastaGelis
+      Properties.ActivePage = cxTabHastaListe
       Properties.TabPosition = tpBottom
       ClientRectBottom = 316
       ClientRectLeft = 3

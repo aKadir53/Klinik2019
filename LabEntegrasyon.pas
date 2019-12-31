@@ -134,7 +134,8 @@ implementation
   GemSoftBIYOTIP,
   TenaySynevo,
   Referans,
-  TenaySYNLAB;
+  TenaySYNLAB,
+  TenaySISTEMTIP;
 
 {$R *.dfm}
 
@@ -191,7 +192,17 @@ REFERANSLAB : begin
                   DurumGoster(False);
                 end;
                end;
+
+   CentroLab : begin
+                DurumGoster(True,True);
+                try
+                   //TenaySonucAlCENTRO(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
   end;
+
 
 end;
 
@@ -241,6 +252,14 @@ begin
                       DurumGoster(True,True);
                       try
                         TenaySonucAlTCdenSYNLAB('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar);
+                      finally
+                        DurumGoster(False);
+                      end;
+                  end;
+     SISTEMTIP :  begin
+                      DurumGoster(True,True);
+                      try
+                        TenaySonucAlTCdenSISTEM('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar);
                       finally
                         DurumGoster(False);
                       end;
@@ -414,16 +433,30 @@ begin
  //  IslemItemSub3.OnClick :=  IslemItemSubClick;
   // IslemItemSub1.OnClick :=  IslemItemSubClick;
 
-   if strToint(datalar._labID) in [ENALAB,SYNEVO]
+   if strToint(datalar._labID) in [ENALAB,SYNEVO,SYNLAB,SISTEMTIP]
    then begin
+     if datalar._LabCalismaYon = '2'
+     Then BEgin
+        IslemItemSub1.Caption := 'Hasta Kaydet';
+        IslemItemSub2.Caption := 'Sonuç Al';
+        IslemItemSub1.Visible := True;
+        IslemItemSub2.Visible := True;
+        IslemItemSub3.Visible := False;
+        IslemItem.Visible := True;
+        KaydetItem.Visible := False;
+        SonucAlItem.Visible := False;
+     End
+     else
+     begin
       IslemItemSub1.Caption := 'Hasta Kaydet';
       IslemItemSub2.Caption := 'Sonuç Al';
-      IslemItemSub1.Visible := True;
+      IslemItemSub1.Visible := False;
       IslemItemSub2.Visible := True;
       IslemItemSub3.Visible := False;
       IslemItem.Visible := True;
-      KaydetItem.Visible := False;
+      KaydetItem.Visible := false;
       SonucAlItem.Visible := False;
+     end;
    end
    else
    if strToint(datalar._labID) = BIYOTIP
@@ -449,7 +482,7 @@ begin
       KaydetItem.Visible := false;
       SonucAlItem.Visible := False;
    end;
-
+ (*
    if strToint(datalar._labID) = SYNLAB
    then begin
       IslemItemSub1.Caption := 'Hasta Kaydet';
@@ -461,8 +494,18 @@ begin
       KaydetItem.Visible := false;
       SonucAlItem.Visible := False;
    end;
-
-
+   if strToint(datalar._labID) = SISTEMTIP
+   then begin
+      IslemItemSub1.Caption := 'Hasta Kaydet';
+      IslemItemSub2.Caption := 'Sonuç Al';
+      IslemItemSub1.Visible := False;
+      IslemItemSub2.Visible := True;
+      IslemItemSub3.Visible := False;
+      IslemItem.Visible := True;
+      KaydetItem.Visible := false;
+      SonucAlItem.Visible := False;
+   end;
+   *)
    inherited;
 
 end;

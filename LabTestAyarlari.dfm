@@ -62,6 +62,7 @@ object frmTestAyarlari: TfrmTestAyarlari
       OptionsCustomize.ColumnHidingOnGrouping = False
       OptionsCustomize.ColumnsQuickCustomization = True
       OptionsData.Appending = True
+      OptionsData.Deleting = False
       OptionsView.NavigatorOffset = 20
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
       OptionsView.CellAutoHeight = True

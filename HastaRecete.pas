@@ -229,7 +229,13 @@ var
 begin
   url := (datalar.receteURL);
   if not CheckReceteStatus (True, False, True, True, True) then Exit;
+
+  if Tag = TagfrmPersonelRecete
+  then
+   sql := 'sp_PersonelReceteToXML ' + ADO_Recete.FieldByName('id').AsString
+  else
   sql := 'sp_HastaReceteToXML ' + ADO_Recete.FieldByName('id').AsString;
+
   QuerySelect(sql);
 
 
@@ -249,7 +255,7 @@ begin
 
     @imzala := findMethod(dllHandle, 'ReceteImzalaGonder');
     if addr(imzala) <> nil then
-    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),TesisKodu,ss,url,PWidechar(cardType));
+    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType));
 
     ReceteImzalaGonder := ss;
 
@@ -267,8 +273,8 @@ function TfrmHastaRecete.ReceteIlacAckImzalaGonder : string;
 var
   imzala : TReceteImzala;
   dllHandle: Cardinal;
-  receteDetayId,TesisKodu: integer;
-  recete,doktorKullanici,doktorsifre,pin,url,cardType : string;
+  receteDetayId: integer;
+  recete,doktorKullanici,doktorsifre,pin,url,cardType ,TesisKodu: string;
   doktorTc : string;
   ss : PWideChar;
   sql : string;
@@ -286,7 +292,7 @@ begin
   doktorsifre :=  (SelectAdo.FieldByName('doktorsifre').AsString);
   pin :=  (SelectAdo.FieldByName('pin').AsString);
   doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
-  TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsInteger);
+  TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsString);
   cardType :=  SelectAdo.FieldByName('cardType').AsString;
 
   dllHandle := LoadLibrary(LIB_DLL);
@@ -295,7 +301,7 @@ begin
 
     @imzala := findMethod(dllHandle, 'ReceteImzalaIlacAckEkle');
     if addr(imzala) <> nil then
-    imzala(receteDetayId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),TesisKodu,ss,url,PWidechar(cardType));
+    imzala(receteDetayId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType));
 
     ReceteIlacAckImzalaGonder := ss;
 
@@ -313,8 +319,8 @@ function TfrmHastaRecete.ReceteAckImzalaGonder : string;
 var
   imzala : TReceteImzala;
   dllHandle: Cardinal;
-  receteId,TesisKodu: integer;
-  recete,doktorKullanici,doktorsifre,pin,url,cardType : string;
+  receteId: integer;
+  recete,doktorKullanici,doktorsifre,pin,url,cardType,TesisKodu : string;
   doktorTc : string;
   ss : PWideChar;
   sql : string;
@@ -332,7 +338,7 @@ begin
   doktorsifre :=  (SelectAdo.FieldByName('doktorsifre').AsString);
   pin :=  (SelectAdo.FieldByName('pin').AsString);
   doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
-  TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsInteger);
+  TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsString);
   cardType :=  SelectAdo.FieldByName('cardType').AsString;
 
   dllHandle := LoadLibrary(LIB_DLL);
@@ -341,7 +347,7 @@ begin
 
     @imzala := findMethod(dllHandle, 'ReceteImzalaAckEkle');
     if addr(imzala) <> nil then
-    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),TesisKodu,ss,url,PWidechar(cardType));
+    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType));
 
     ReceteAckImzalaGonder := ss;
 
@@ -359,8 +365,8 @@ function TfrmHastaRecete.ReceteTaniImzalaGonder : string;
 var
   imzala : TReceteImzala;
   dllHandle: Cardinal;
-  receteId,TesisKodu: integer;
-  recete,doktorKullanici,doktorsifre,pin,url,cardType : string;
+  receteId: integer;
+  recete,doktorKullanici,doktorsifre,pin,url,cardType ,TesisKodu: string;
   doktorTc : string;
   ss : PWideChar;
   sql : string;
@@ -378,7 +384,7 @@ begin
   doktorsifre :=  (SelectAdo.FieldByName('doktorsifre').AsString);
   pin :=  (SelectAdo.FieldByName('pin').AsString);
   doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
-  TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsInteger);
+  TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsString);
   cardType :=  SelectAdo.FieldByName('cardType').AsString;
 
   dllHandle := LoadLibrary(LIB_DLL);
@@ -387,7 +393,7 @@ begin
 
     @imzala := findMethod(dllHandle, 'ReceteImzalaTaniEkle');
     if addr(imzala) <> nil then
-    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),TesisKodu,ss,url,PWidechar(cardType));
+    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType));
 
     ReceteTaniImzalaGonder := ss;
 
@@ -453,7 +459,13 @@ var
 begin
   url := datalar.receteURL;
   if not CheckReceteStatus (True, True, False, True, True) then Exit;
-  sql := 'sp_HastaReceteSilToXML ' + ADO_Recete.FieldByName('id').AsString;
+
+  if Tag = TagfrmPersonelRecete
+  then
+      sql := 'sp_PersonelReceteSilToXML ' + ADO_Recete.FieldByName('id').AsString
+  else
+      sql := 'sp_HastaReceteSilToXML ' + ADO_Recete.FieldByName('id').AsString;
+
   QuerySelect(sql);
 
   ss := '';
@@ -1005,7 +1017,7 @@ var
 begin
     datalar.YeniRecete.doktor := datalar.doktorKodu;
     datalar.YeniRecete.doktorAdi := doktorAdi(datalar.doktorKodu);
-    datalar.YeniRecete.protokolNo := EnsonSeansProtokolNo(_firmaKod_,_sube_,'Reçete');
+    datalar.YeniRecete.protokolNo := EnsonSeansProtokolNo(datalar.AktifSirket,'','Reçete');
     datalar.YeniRecete.Tarih := datetostr(date);
     datalar.YeniRecete.ReceteTuru := '1';
     datalar.YeniRecete.ReceteAltTuru := '1';
@@ -1557,6 +1569,7 @@ begin
            //   path := 'D:\Projeler\VS\c#\RenkliReceteToken2\ReceteToken\WindowsFormsApplication1\bin\Debug\ReceteToken.exe';
               path := 'C:\NoktaV3\ReceteToken2.exe';
               tokenParams := receteToken(ADO_Recete.FieldByName('id').AsString);
+              ShowMessageSkin(tokenParams,'','','info');
               StrToFile('C:\NoktaV3\ReceteToken2.txt',tokenParams);
               WinExec(PAnsiChar(AnsiString(path + ' ' + tokenParams +' 1 G')),SW_SHOW);
               exit;

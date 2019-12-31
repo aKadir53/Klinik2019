@@ -14,7 +14,8 @@ uses
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
   cxGridCustomView, cxGrid, GridsEh, DBGridEh, Vcl.DBCtrls, cxGroupBox,
   Data.Win.ADODB, Vcl.Menus, cxCheckBox, KadirLabel, cxTextEdit, cxSplitter,
-  cxGridBandedTableView, cxGridDBBandedTableView;
+  cxGridBandedTableView, cxGridDBBandedTableView, cxPCdxBarPopupMenu, cxPC,
+  cxImageComboBox;
 
 type
   TfrmIlacEtkenMaddeSutKural = class(TGirisForm)
@@ -77,12 +78,33 @@ type
     gridSutKuralbDozPeryotAdet: TcxGridDBBandedColumn;
     gridSutKuraliDozPeryotAdet: TcxGridDBBandedColumn;
     gridSutKuralAciklama: TcxGridDBBandedColumn;
+    cxPageControl1: TcxPageControl;
+    sayfa_EtkenMadde: TcxTabSheet;
+    sayfa_Ilac: TcxTabSheet;
+    cxGroupBox3: TcxGroupBox;
+    cxGrid4: TcxGrid;
+    ilacList: TcxGridDBTableView;
+    cxGridDBColumn1: TcxGridDBColumn;
+    cxGridDBColumn2: TcxGridDBColumn;
+    cxGridLevel3: TcxGridLevel;
+    cxGroupBox7: TcxGroupBox;
+    cxCheckBoxKadir1: TcxCheckBoxKadir;
+    txtIlacAra: TcxTextEdit;
+    ado_ilaclar: TADOQuery;
+    DataSource2: TDataSource;
+    ilacListColumn1: TcxGridDBColumn;
+    ilacListColumn2: TcxGridDBColumn;
+    ilacListColumn3: TcxGridDBColumn;
+    ilacListColumn4: TcxGridDBColumn;
+    ilacListColumn5: TcxGridDBColumn;
+    ilacListColumn6: TcxGridDBColumn;
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
     procedure ado_BransKodlariAfterScroll(DataSet: TDataSet);
     procedure ADO_EtkenMaddeSUTNewRecord(DataSet: TDataSet);
     procedure ADO_EtkenMaddeTetkikNewRecord(DataSet: TDataSet);
     procedure EtkenMaddeGetir(kod : string = '');
+    procedure IlacGetir(kod: string = '');
     procedure chkTumuPropertiesEditValueChanged(Sender: TObject);
     procedure gridIlacSarfFocusedRecordChanged(Sender: TcxCustomGridTableView;
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
@@ -137,16 +159,26 @@ end;
 procedure TfrmIlacEtkenMaddeSutKural.Edit1KeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  inherited;
+
   if key = 13
-  then
-   EtkenMaddeGetir(Edit1.Text);
+  then begin
+   DurumGoster;
+   try
+     if TcxTextEdit(sender).Name = 'txtIlacAra'
+     then
+       IlacGetir(txtIlacAra.Text)
+     else
+       EtkenMaddeGetir(Edit1.Text);
+   finally
+     DurumGoster(false);
+   end;
+  end;
 end;
 
 procedure TfrmIlacEtkenMaddeSutKural.Edit1KeyPress(Sender: TObject;
   var Key: Char);
 begin
-  inherited;
+
 
 
     (*
@@ -167,6 +199,16 @@ begin
      ado_BransKodlari.Active := True;
      _Focus_ := 1;
 end;
+
+procedure TfrmIlacEtkenMaddeSutKural.IlacGetir(kod: string = '');
+begin
+     _Focus_ := 0;
+     ado_ilaclar.active := False;
+     ado_ilaclar.Parameters[0].Value := kod + '%';
+     ado_ilaclar.Active := True;
+     _Focus_ := 1;
+end;
+
 
 procedure TfrmIlacEtkenMaddeSutKural.FormCreate(Sender: TObject);
 begin

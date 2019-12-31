@@ -38,8 +38,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
       TabOrder = 0
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
-      ExplicitTop = 15
-      ExplicitHeight = 547
+      ExplicitLeft = 90
+      ExplicitTop = 40
       object gridTetkikList: TcxGridDBTableView
         Navigator.Buttons.First.Visible = True
         Navigator.Buttons.PriorPage.Visible = True
@@ -248,7 +248,6 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
       Caption = 'Test Normalleri Kontrol'
       Properties.Alignment = taLeftJustify
       TabOrder = 1
-      ExplicitTop = 14
       Width = 477
     end
   end

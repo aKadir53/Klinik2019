@@ -45,11 +45,12 @@ object frmIzlem: TfrmIzlem
       Style.Shadow = False
       Style.IsFontAssigned = True
       TabOrder = 0
-      Height = 642
+      ExplicitHeight = 642
+      Height = 623
       Width = 1293
       object cxGrid2: TcxGrid
         Left = 3
-        Top = 565
+        Top = 546
         Width = 1287
         Height = 67
         Align = alBottom
@@ -494,7 +495,7 @@ object frmIzlem: TfrmIzlem
         Left = 3
         Top = 16
         Width = 1287
-        Height = 549
+        Height = 530
         Align = alClient
         Font.Charset = TURKISH_CHARSET
         Font.Color = clWindowText
@@ -514,11 +515,14 @@ object frmIzlem: TfrmIzlem
         ExplicitHeight = 575
         object gridHastalar: TcxGridDBBandedTableView
           PopupMenu = PopupMenu1
+          OnDblClick = gridHastalarDblClick
           DataController.DataSource = DataSource1
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <>
           OptionsData.Deleting = False
+          OptionsData.Editing = False
+          OptionsData.Inserting = False
           OptionsSelection.MultiSelect = True
           OptionsView.DataRowHeight = 51
           OptionsView.GroupByBox = False
@@ -1395,21 +1399,22 @@ object frmIzlem: TfrmIzlem
     end
     object Panel4: TPanel
       Left = 1
-      Top = 643
+      Top = 624
       Width = 1293
-      Height = 25
+      Height = 44
       Align = alBottom
       TabOrder = 1
       object txtLog: TMemo
         Left = 1
         Top = 1
         Width = 1291
-        Height = 23
+        Height = 42
         Align = alClient
         Color = 8454143
         Lines.Strings = (
           '')
         TabOrder = 0
+        ExplicitHeight = 22
       end
     end
   end
@@ -1460,8 +1465,14 @@ object frmIzlem: TfrmIzlem
     object N1: TMenuItem
       Caption = '-'
     end
+    object H2: TMenuItem
+      Caption = 'Hasta Kart'#305
+      ImageIndex = 44
+      OnClick = H2Click
+    end
     object T1: TMenuItem
       Caption = 'Tahlil Sonu'#231'lar'#305
+      Visible = False
       OnClick = T1Click
     end
     object K1: TMenuItem
@@ -1490,13 +1501,13 @@ object frmIzlem: TfrmIzlem
       OnClick = cxButtonCClick
     end
     object DSVerileriniGnder1: TMenuItem
-      Tag = -10
+      Tag = -11
       Caption = 'TD'#304'S Verilerini G'#246'nder'
       ImageIndex = 15
       OnClick = cxButtonCClick
     end
     object DSVerileriniGncelle1: TMenuItem
-      Tag = -11
+      Tag = -10
       Caption = 'TD'#304'S Verilerini G'#252'ncelle'
       ImageIndex = 14
       OnClick = cxButtonCClick

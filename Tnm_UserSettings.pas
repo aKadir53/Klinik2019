@@ -752,6 +752,7 @@ begin
 
     if (TcxImageComboKadir(FindComponent('Grup')).EditValue = '2')
        and (TcxButton(sender).Tag = Kaydet)
+       and (TcxImageComboKadir(FindComponent('Grup')).EditValue = Null)
        Then begin
           ShowMessageSkin('Doktor Grubu için Doktor Seçimi Yapmak Zorundasýnýz','','','info');
           TcxImageComboKadir(FindComponent('Doktor')).SetFocus;

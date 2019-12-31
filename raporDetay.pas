@@ -74,6 +74,8 @@ type
     M1: TMenuItem;
     N4: TMenuItem;
     N5: TMenuItem;
+    R2: TMenuItem;
+    R3: TMenuItem;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
@@ -164,6 +166,7 @@ type
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
     procedure N5Click(Sender: TObject);
+    procedure SablonKaydet;
   private
     { Private declarations }
    function findMethod(dllHandle: Cardinal; methodName: string): FARPROC;
@@ -1498,8 +1501,27 @@ var
  GirisFormRecord : TGirisFormRecord;
 begin
   inherited;
-  Form := FormINIT(TagfrmRaporSablon,GirisFormRecord);
-  if Form <> nil then Form.showModal;
+
+  case TMenuItem(sender).Tag of
+   0 : begin
+        GirisFormRecord.F_ResourceID_ := '';
+        Form := FormINIT(TagfrmRaporSablon,GirisFormRecord);
+        if Form <> nil then Form.showModal;
+   end;
+
+   1 : begin
+        SablonKaydet;
+       end;
+
+   2 : begin
+          GirisFormRecord.F_ResourceID_ := RaporGrid.Dataset.FieldByName('sira').AsString;
+          Form := FormINIT(TagfrmRaporSablon,GirisFormRecord);
+          if Form <> nil then Form.showModal;
+
+       end;
+
+  end;
+
 end;
 
 procedure TfrmRaporDetay.TedaviRaporu;
@@ -2535,6 +2557,97 @@ begin
  //  txtXML.Clear;
  //  txtXML.Lines.Add(SOAPRequest);
  //  txtXML.Lines.SaveToFile('RaporXML.xml');
+end;
+
+procedure TfrmRaporDetay.SablonKaydet;
+var
+  sql , sablon , id, idd ,doz1,doz2 ,peryot , raporNo,Sira : string;
+  ado ,ADO_ILACTESHISLER ,ADO_ILACETKENMADDE : TADOQuery;
+begin
+
+
+   ADO_ILACTESHISLER := TADOQuery.Create(nil);
+   ADO_ILACETKENMADDE := TADOQuery.Create(nil);
+   ado := TADOQuery.Create(nil);
+   ado.Connection := datalar.ADOConnection2;
+
+ try
+   raporNo := raporGrid.Dataset.FieldByName('raporNo').AsString;
+   Sira := raporGrid.Dataset.FieldByName('sira').AsString;
+   datalar.QuerySelect(ADO_ILACTESHISLER ,'select * from IlacRaporTeshisler where RaporSira = ' + Sira);
+   datalar.QuerySelect(ADO_ILACETKENMADDE ,'select * from IlacRaporEtkenMaddeler where RaporSira = ' + Sira);
+
+
+   sablon := InputBox('Teþhis , Etken Madde Þablon','Þablon Tanýmý Giriniz','Sablon1');
+   if sablon <> ''
+   then begin
+
+     datalar.ADOConnection2.BeginTrans;
+
+     try
+       sql := 'insert into IlacRaporSablon(SablonTanimi) ' +
+              'values ( ' + QuotedStr(sablon) + ') select SCOPE_IDENTITY() as id ';
+       datalar.QuerySelect(ado,sql);
+       id := ado.fieldbyname('id').AsString;
+
+       ADO_ILACTESHISLER.First;
+       while not ADO_ILACTESHISLER.Eof do
+       begin
+         sql := 'insert into IlacRaporTeshislerSablon (sablonId,teshisKodu,ICD10Kodu) ' +
+                'values(' + id + ',' +
+                QuotedStr(ADO_ILACTESHISLER.FieldByName('teshisKodu').AsString) + ',' +
+                QuotedStr(ADO_ILACTESHISLER.FieldByName('ICD10Kodu').AsString) + ')';
+         datalar.QueryExec(ado,sql);
+         ADO_ILACTESHISLER.Next;
+       end;
+
+
+       ADO_ILACETKENMADDE.First;
+       while not ADO_ILACETKENMADDE.Eof do
+       begin
+         doz1 := ifThen(ADO_ILACETKENMADDE.FieldByName('kullanimDoz1').AsString = '','1',ADO_ILACETKENMADDE.FieldByName('kullanimDoz1').AsString);
+         doz2 := ifThen(ADO_ILACETKENMADDE.FieldByName('kullanimDoz2').AsString = '','1',ADO_ILACETKENMADDE.FieldByName('kullanimDoz2').AsString);
+         peryot := ifThen(ADO_ILACETKENMADDE.FieldByName('kullanimPeriyot').AsString = '','3',ADO_ILACETKENMADDE.FieldByName('kullanimPeriyot').AsString);
+
+         sql := 'insert into IlacRaporEtkenMaddelerSablon (sablonId,etkenMaddeKodu,etkenMaddeAdi,kullanimDoz1,' +
+                ' kullanimDoz2,kullanimDozBirim,kullanimPeriyot,kullanimPeriyotBirim) ' +
+                'values(' + id + ',' +
+                QuotedStr(ADO_ILACETKENMADDE.FieldByName('etkenMaddeKodu').AsString) + ',' +
+                QuotedStr(ADO_ILACETKENMADDE.FieldByName('etkenMaddeAdi').AsString) +  ',' +
+                doz1 + ',' +
+                doz2 + ',' +
+                QuotedStr(ADO_ILACETKENMADDE.FieldByName('kullanimDozBirim').AsString) + ',' +
+                peryot + ',' +
+                QuotedStr(ADO_ILACETKENMADDE.FieldByName('kullanimPeriyotBirim').AsString) +  ')';
+         datalar.QueryExec(ado,sql);
+         ADO_ILACETKENMADDE.Next;
+       end;
+
+       sql := 'insert into IlacRaporAciklamaSablon (sablonId,Aciklama) ' +
+              'values(' + id + ',' +
+              QuotedStr(raporGrid.Dataset.FieldByName('aciklama').AsString) + ')';
+       datalar.QueryExec(ado,sql);
+
+
+       datalar.ADOConnection2.CommitTrans;
+       ShowMessageSkin('Þablon Kayýt Edildi','','','info');
+
+     except on e : Exception do
+      begin
+        ShowMessageSkin(e.Message,'','','info');
+        datalar.ADOConnection2.RollbackTrans;
+      end;
+     end;
+   end;
+
+   finally
+     ado.Free;
+     ADO_ILACTESHISLER.Free;
+     ADO_ILACETKENMADDE.Free;
+   end;
+
+
+
 end;
 
 procedure TfrmRaporDetay.cxButtonTESHISClick(Sender: TObject);

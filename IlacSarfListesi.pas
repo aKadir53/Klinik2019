@@ -71,6 +71,8 @@ type
     cxStyleRepository3: TcxStyleRepository;
     cxStyle3: TcxStyle;
     TaniListe: TListeAc;
+    Eklenenlerperyot: TIntegerField;
+    EklenenColumn5: TcxGridDBColumn;
     procedure txtHizmetGruplariCheckListItemToText(sender: TObject;
       var aText: String);
     procedure btnSendClick(Sender: TObject);
@@ -270,17 +272,16 @@ begin
 
               frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimAdet2').AsString := doz1;
 
-              try
-
-                frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString := '3';
-                frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := '1';
-
-              except
-              end;
 
               unite :=  strtofloat(doz2) *
                       IlacKoduToUnite(Eklenenler.fieldbyname('ETKENMADDE').AsString,_dosyaNo_,_gelisNo_,peryot,peryotAdet);
 
+              try
+               // peryot := ifThen(peryot = '',Eklenenler.fieldbyname('peryot').AsString,peryot);
+                frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString := peryot;
+                frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := peryotAdet;
+              except
+              end;
 
               frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString := floattostr(unite);
               //Eklenenler.fieldbyname('doz').AsString[3];
@@ -567,6 +568,15 @@ begin
      doz1 := copy(Eklenenler.fieldbyname('doz').AsString,1,pos('x',Eklenenler.fieldbyname('doz').AsString)-1);
      doz2 := copy(Eklenenler.fieldbyname('doz').AsString,pos('x',Eklenenler.fieldbyname('doz').AsString)+1,5);
 
+     case Eklenenler.fieldbyname('peryot').AsInteger of
+      3 : peryot := '1';
+      4 : peryot := '7';
+      5 : peryot := '30';
+      else
+      peryot := '1';
+     end;
+
+
      sql := 'insert into HastaIlacTedavi (dosyaNo,gelisNo,ilac,ilacname,doz,miktar,peryot) ' +
             ' values (' + QuotedStr(_dosyaNo_) + ','
                         + _gelisNo_ + ','
@@ -574,7 +584,7 @@ begin
                         + QuotedStr(Eklenenler.fieldbyname('Formu').AsString) + ','
                         + doz1 + ','
                         + doz2 + ','
-                        + '1' + ')';
+                        + peryot + ')';
 
      datalar.QueryExec(sql);
 

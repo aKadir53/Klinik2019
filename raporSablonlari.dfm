@@ -3,7 +3,7 @@ object frmRaporSablon: TfrmRaporSablon
   Top = 81
   BorderStyle = bsDialog
   Caption = 'frmRaporSablon'
-  ClientHeight = 521
+  ClientHeight = 545
   ClientWidth = 988
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object frmRaporSablon: TfrmRaporSablon
     Left = 0
     Top = 0
     Width = 305
-    Height = 521
+    Height = 545
     Align = alLeft
     TabOrder = 0
     object DBGridEh3: TDBGridEh
@@ -68,10 +68,9 @@ object frmRaporSablon: TfrmRaporSablon
       Left = 1
       Top = 1
       Width = 303
-      Height = 519
+      Height = 543
       Align = alClient
       TabOrder = 1
-      ExplicitWidth = 263
       object cxGridHastaGelis: TcxGridDBTableView
         Navigator.Buttons.First.Visible = False
         Navigator.Buttons.PriorPage.Visible = False
@@ -119,18 +118,15 @@ object frmRaporSablon: TfrmRaporSablon
     Left = 305
     Top = 0
     Width = 683
-    Height = 521
+    Height = 545
     Align = alClient
     TabOrder = 1
-    ExplicitLeft = 265
-    ExplicitWidth = 723
     object cxGroupBox1: TcxGroupBox
       Left = 1
       Top = 1
       Align = alTop
       Caption = ' Etken Madde'
       TabOrder = 0
-      ExplicitWidth = 721
       Height = 256
       Width = 681
       object cxGrid2: TcxGrid
@@ -140,9 +136,9 @@ object frmRaporSablon: TfrmRaporSablon
         Height = 231
         Align = alClient
         TabOrder = 0
-        ExplicitLeft = -118
-        ExplicitTop = 30
-        ExplicitWidth = 717
+        ExplicitLeft = 2
+        ExplicitTop = -2
+        ExplicitWidth = 632
         ExplicitHeight = 256
         object cxGridDBTableView1: TcxGridDBTableView
           DataController.DataModeController.GridMode = True
@@ -226,7 +222,9 @@ object frmRaporSablon: TfrmRaporSablon
         Align = alRight
         PanelStyle.Active = True
         TabOrder = 1
-        ExplicitLeft = 673
+        ExplicitLeft = 634
+        ExplicitTop = -2
+        ExplicitHeight = 256
         Height = 231
         Width = 45
         object BtnIlacEkle: TcxButtonKadir
@@ -240,9 +238,6 @@ object frmRaporSablon: TfrmRaporSablon
           TabOrder = 0
           OnClick = BtnIlacEkleClick
           NewButtonVisible = False
-          ExplicitLeft = -12
-          ExplicitTop = 18
-          ExplicitWidth = 42
         end
         object cxButtonKadirTaniSil: TcxButtonKadir
           Tag = 2
@@ -255,33 +250,45 @@ object frmRaporSablon: TfrmRaporSablon
           TabOrder = 1
           OnClick = cxButtonKadirTaniSilClick
           NewButtonVisible = False
-          ExplicitLeft = -12
-          ExplicitTop = 54
-          ExplicitWidth = 42
         end
       end
     end
     object cxGroupBox3: TcxGroupBox
       Left = 1
       Top = 387
-      Align = alTop
+      Align = alClient
       Caption = 'A'#231#305'klama'
       TabOrder = 1
-      ExplicitLeft = 0
-      ExplicitTop = 437
-      Height = 80
+      Height = 157
       Width = 681
       object cxDBMemo1: TcxDBMemo
         Left = 3
         Top = 15
         Align = alClient
         DataBinding.DataField = 'Aciklama'
-        DataBinding.DataSource = DataSource1
+        DataBinding.DataSource = DataSource3
         TabOrder = 0
-        ExplicitWidth = 715
-        ExplicitHeight = 71
-        Height = 55
-        Width = 675
+        Height = 132
+        Width = 630
+      end
+      object cxGroupBox6: TcxGroupBox
+        Left = 633
+        Top = 15
+        Align = alRight
+        PanelStyle.Active = True
+        TabOrder = 1
+        Height = 132
+        Width = 45
+        object btnAckKaydet: TcxButton
+          Left = 2
+          Top = 2
+          Width = 41
+          Height = 39
+          Align = alTop
+          Caption = 'Kaydet'
+          TabOrder = 0
+          OnClick = btnAckKaydetClick
+        end
       end
     end
     object cxGroupBox4: TcxGroupBox
@@ -290,7 +297,6 @@ object frmRaporSablon: TfrmRaporSablon
       Align = alTop
       Caption = 'Te'#351'hi'#351
       TabOrder = 2
-      ExplicitTop = 353
       Height = 130
       Width = 681
       object cxGrid5: TcxGrid
@@ -300,9 +306,9 @@ object frmRaporSablon: TfrmRaporSablon
         Height = 105
         Align = alClient
         TabOrder = 0
-        ExplicitLeft = -190
-        ExplicitTop = 14
-        ExplicitWidth = 717
+        ExplicitLeft = 2
+        ExplicitTop = -2
+        ExplicitWidth = 632
         ExplicitHeight = 130
         object cxGridDBTableView4: TcxGridDBTableView
           DataController.DataModeController.GridMode = True
@@ -341,7 +347,9 @@ object frmRaporSablon: TfrmRaporSablon
         Align = alRight
         PanelStyle.Active = True
         TabOrder = 1
-        ExplicitLeft = 673
+        ExplicitLeft = 634
+        ExplicitTop = -2
+        ExplicitHeight = 130
         Height = 105
         Width = 45
         object cxButtonKadirTaniEkle: TcxButtonKadir
@@ -355,9 +363,6 @@ object frmRaporSablon: TfrmRaporSablon
           TabOrder = 0
           OnClick = BtnIlacEkleClick
           NewButtonVisible = False
-          ExplicitLeft = -12
-          ExplicitTop = 19
-          ExplicitWidth = 42
         end
         object cxButtonKadirTanisil1: TcxButtonKadir
           Tag = 4
@@ -370,9 +375,6 @@ object frmRaporSablon: TfrmRaporSablon
           TabOrder = 1
           OnClick = cxButtonKadirTaniEkleClick
           NewButtonVisible = False
-          ExplicitLeft = -12
-          ExplicitTop = 55
-          ExplicitWidth = 42
         end
       end
     end
@@ -411,13 +413,13 @@ object frmRaporSablon: TfrmRaporSablon
     MasterFields = 'id'
     MasterSource = DataSource1
     TableName = 'IlacRaporTeshislerSablon'
-    Left = 64
-    Top = 281
+    Left = 88
+    Top = 241
   end
   object DataSource5: TDataSource
     DataSet = Tani
-    Left = 120
-    Top = 281
+    Left = 144
+    Top = 241
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
@@ -440,6 +442,12 @@ object frmRaporSablon: TfrmRaporSablon
       ImageIndex = 34
       Visible = False
     end
+    object R1: TMenuItem
+      Tag = -2
+      Caption = 'Rapora Aktar'
+      ImageIndex = 9
+      OnClick = S1Click
+    end
   end
   object List: TListeAc
     TColcount = 0
@@ -461,5 +469,20 @@ object frmRaporSablon: TfrmRaporSablon
     GrupCol = 0
     Left = 336
     Top = 88
+  end
+  object DataSource3: TDataSource
+    DataSet = SablonAciklama
+    Left = 144
+    Top = 305
+  end
+  object SablonAciklama: TADOTable
+    Connection = DATALAR.ADOConnection2
+    CursorType = ctStatic
+    IndexFieldNames = 'SablonId'
+    MasterFields = 'id'
+    MasterSource = DataSource1
+    TableName = 'IlacRaporAciklamaSablon'
+    Left = 88
+    Top = 305
   end
 end

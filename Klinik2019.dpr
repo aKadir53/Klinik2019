@@ -107,12 +107,13 @@ uses
   TenaySYNLAB in 'WebReferans\TenaySYNLAB.pas',
   hizliKayit in 'hizliKayit.pas' {frmHizliKayit},
   HastaIzlemListesi in 'HastaIzlemListesi.pas' {frmIzlem},
-  TakipKontrol in 'TakipKontrol.pas' {frmTakipKontrol};
+  TakipKontrol in 'TakipKontrol.pas' {frmTakipKontrol},
+  TenaySISTEMTIP in 'WebReferans\TenaySISTEMTIP.pas';
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 4003;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
+  AppalicationVer : integer = 4012;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
   OSGBDllVersiyon : integer = 6;     //  DLLVersiyon.txt  içine DllVersiyon deðerini yaz ftp at
                                      // isg.exe yapý deðiþikliðinden sonra buna gerek kalmýyor
 
@@ -136,7 +137,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDATALAR, DATALAR);
   Application.CreateForm(TAnaForm, AnaForm);
-
   // Application.CreateForm(TfrmGunSonuOzet, frmGunSonuOzet);
 
   // form2.show;

@@ -14,7 +14,7 @@ uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Vcl.Controls, Con
   cxCheckListBox,cxGridCustomTableView, cxGridTableView, cxGridBandedTableView,cxGridDBBandedTableView, cxClasses,
   cxGroupBox, cxRadioGroup,cxGridLevel, cxGrid, cxCheckBox, cxImageComboBox, cxTextEdit, cxButtonEdit,
   cxCalendar,dxLayoutContainer, dxLayoutControl,cxPC, cxImage,superobject,
-  frxExportPDF ,CSGBService,IOUtils;
+  frxExportPDF ,CSGBService,IOUtils,DelphiZXingQRCode,cxMaskEdit;
 
 
 procedure SMSSend(tel : string; Msj : string = '';Kisi : string ='');
@@ -473,7 +473,7 @@ procedure RevOnay(item : string ; Dataset : TDataset);
 
 function CreateGrid(name : string; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil ; DataEditing : Boolean = True)  : TcxGridKadir;
 procedure SetGrid(cxGrid : TcxGrid ; Colums,ColumnsPropertiesClassName,
-                  ColumsCaption,ColumnsWidth,ColumsPropertiesItems,ColumsReadOnly : String);
+                  ColumsCaption,ColumnsWidth,ColumsPropertiesItems,ColumsReadOnly : String ; ColumsMaskItems : String = '');
 function SGKHizmetSorgulama(kullaniciAdi,sifre,sysTakipNo,islemReferansNo,uygulamaKodu : string) : String;
 function SYSOnlineCvpDBDurumYaz(SiraNo,SysTakipNo,MesajTipi,SONUCKODU,SONUCMESAJ,user : string) : integer;
 procedure MesajGonder(mesaj , islemTipi , HastaneRefNo: string ; var _Sonuc_ : string);
@@ -508,7 +508,8 @@ procedure XMLGoster(filename: string);
 
 function FotoGetir( dosyaNo : string) : TcxImage;
 function receteToken(receteId : string) : string;
-
+procedure QRBarkod(Text , JpgFilename : string);
+procedure QRYukle(Dataset : Tdataset;field : string;fielName : string;maxSize : longint = 60000000);
 
 const
   //LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
@@ -590,18 +591,83 @@ uses message,AnaUnit,message_y,popupForm,rapor,TedaviKart,Son6AylikTetkikSonuc,D
              UyumSoftPortal,NThermo, TransUtils;
 
 
+procedure QRYukle(Dataset : Tdataset;field : string;fielName : string;maxSize : longint = 60000000);
+var
+  Blob : TADOBlobStream;
+  dosyaTip : string;
+  dosyaBoyutu : integer;
+  myFile : File of Word;
+begin
+    Dataset.Edit;
+    try
+      Blob := TADOBlobStream.Create(TBlobField(Dataset.FieldByName(field)),bmwrite);
+      try
+        Blob.LoadFromFile(fielName);
+        Blob.Position := 0;
+        TBlobField(Dataset.FieldByName(field)).LoadFromStream(Blob);
+        Blob.Free;
+        Dataset.Post;
+      except
+        Dataset.Cancel;
+      end;
+    except
+      Dataset.Cancel;
+      raise;
+    end;
+end;
+
+
+procedure QRBarkod(Text , JpgFilename : string);
+var
+  QRCodeBitmap: TBitmap;
+  QRCode: TDelphiZXingQRCode;
+  Row, Column: Integer;
+begin
+  QRCodeBitmap := TBitmap.Create;
+  QRCode := TDelphiZXingQRCode.Create;
+  try
+    QRCode.Data := Text;
+    QRCode.Encoding := qrAuto; //TQRCodeEncoding(cmbEncoding.ItemIndex);
+    QRCode.QuietZone := 4;//StrToIntDef(edtQuietZone.Text, 4);
+    QRCodeBitmap.SetSize(QRCode.Rows, QRCode.Columns);
+    for Row := 0 to QRCode.Rows - 1 do
+    begin
+      for Column := 0 to QRCode.Columns - 1 do
+      begin
+        if (QRCode.IsBlack[Row, Column]) then
+        begin
+          QRCodeBitmap.Canvas.Pixels[Column, Row] := clBlack;
+        end else
+        begin
+          QRCodeBitmap.Canvas.Pixels[Column, Row] := clWhite;
+        end;
+      end;
+    end;
+    QRCodeBitmap.SaveToFile(JpgFilename);
+  finally
+    QRCode.Free;
+    QRCodeBitmap.Free;
+  end;
+
+end;
+
+
 function receteToken(receteId : string) : string;
 var
   sql : string;
   ado : TADOQuery;
 begin
   ado := TADOQuery.Create(nil);
+  try
+  //  sql := 'exec ReceteTokenParams ' + receteId;
+    sql := 'exec RenkliReceteJson ' + receteId;
+    DATALAR.QuerySelect(ado,sql);
+    receteToken :=  ado.Fields[0].AsString;
+  finally
+   ado.Free;
+  end;
 
-//  sql := 'exec ReceteTokenParams ' + receteId;
-  sql := 'exec RenkliReceteJson ' + receteId;
-  DATALAR.QuerySelect(ado,sql);
-  receteToken :=  ado.Fields[0].AsString;
-  ado.Free;
+
 end;
 
 
@@ -1597,7 +1663,7 @@ end;
 
 
 procedure SetGrid(cxGrid : TcxGrid ; Colums,ColumnsPropertiesClassName,
-                  ColumsCaption,ColumnsWidth,ColumsPropertiesItems,ColumsReadOnly : String);
+                  ColumsCaption,ColumnsWidth,ColumsPropertiesItems,ColumsReadOnly : String ; ColumsMaskItems : String = '');
 var
  Kolonlar : TStringList;
  KolonProperties : TStringList;
@@ -1605,11 +1671,13 @@ var
  KolonGenislik : TStringList;
  KolonReadOnly : TStringList;
  KolonItems : TStringList;
+ KolonMasks : TStringList;
  items : TStringList;
  item : String;
  i,r,j : integer;
  Grid : TcxGridDBTableView;
  ic : TcxImageComboKadir;
+ msk : TcxMaskEdit;
 begin
 
    Grid := TcxGridDBTableView(cxGrid.Levels[0].GridView);
@@ -1627,7 +1695,8 @@ begin
        ExtractStrings([','],[],PChar(ColumsReadOnly),KolonReadOnly);
        KolonItems := TStringList.Create;
        ExtractStrings([','],[],PChar(ColumsPropertiesItems),KolonItems);
-
+       KolonMasks := TStringList.Create;
+       ExtractStrings([','],[],PChar(ColumsMaskItems),KolonMasks);
 
        Grid.ClearItems;
        for i := 0 to Kolonlar.Count - 1 do
@@ -1643,7 +1712,13 @@ begin
               PropertiesClassName := KolonProperties[i];
             //  Properties.Alignment.Horz := taCenter;
               Properties.ReadOnly := StrToBool(KolonReadOnly[i]);
+              Options.Editing := not StrToBool(KolonReadOnly[i]);
             //  Properties.Alignment.Vert := taVCenter;
+
+             if (KolonProperties[i] = 'TcxMaskEditProperties')
+             Then Begin
+               TcxMaskEditProperties(Properties).EditMask := KolonMasks[i];
+             end;
 
              if (KolonProperties[i] = 'TcxImageComboBoxProperties')
              Then Begin
@@ -6061,7 +6136,7 @@ begin
     ado.Connection := datalar.ADOConnection2;
 
     sql :=
-      'select * from hareketlerSeans g join hastakart h on h.dosyaNo = g.dosyaNo ' + ' where g.dosyaNo <> ' + QuotedStr(DosyaNo) + ' and g.seans = ' + QuotedStr(s) + ' and Tarih = ' + QuotedStr(t) + ' and g.makinaNo = ' + QuotedStr(mn) + ' and g.durum = 1';
+      'select * from hareketlerSeans g join hastakart h on h.dosyaNo = g.dosyaNo ' + ' where g.dosyaNo <> ' + QuotedStr(DosyaNo) + ' and g.seans = ' + QuotedStr(s) + ' and Tarih = ' + QuotedStr(tarih(t)) + ' and g.makinaNo = ' + QuotedStr(mn) + ' and g.durum = 1';
     datalar.QuerySelect(ado, sql);
 
     if not ado.eof then
@@ -8533,7 +8608,7 @@ begin
     ado := TADOQuery.Create(nil);
     try
       ado.Connection := datalar.ADOConnection2;
-      sql := 'select SLX from parametreler where SLK = ' + QuotedStr ('GT');
+      sql := 'select SLX from parametreler where SLK = ' + QuotedStr ('GT') + ' and SLB = ''0000''';
       datalar.QuerySelect(ado, sql);
       _sonSQLID := SonYayinlananGuncellemeNumarasi;
       if ado.Fields[0].AsInteger < _sonSQLID then
@@ -12257,8 +12332,8 @@ begin
   end;
   *)
   try
-   Download('https://www.noktayazilim.net/Klinik2019Update.txt','mavinokta','nokta53Nokta','C:\NoktaV4\Klinik2019Update.txt');
-   sTmp := FileToString('C:\NoktaV4\Klinik2019Update.txt');
+   Download('https://www.noktayazilim.net/Klinik2019Update.txt','mavinokta','nokta53Nokta','C:\NoktaV3\Klinik2019Update.txt');
+   sTmp := FileToString('C:\NoktaV3\Klinik2019Update.txt');
    Result := strToint(sTmp);
   except
     Result := 0;

@@ -847,6 +847,12 @@ object frmHastaKart: TfrmHastaKart
     object N1: TMenuItem
       Caption = '-'
     end
+    object T4: TMenuItem
+      Tag = -100
+      Caption = 'Hasta Tan'#305'm Kart'#305' Yazd'#305'r'
+      ImageIndex = 6
+      OnClick = cxButtonCClick
+    end
     object SmsGnder1: TMenuItem
       Tag = -28
       Caption = 'Sms G'#246'nder'

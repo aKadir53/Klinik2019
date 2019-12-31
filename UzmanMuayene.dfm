@@ -22,9 +22,9 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     Height = 571
   end
   object chkSistemSorgu: TcxCheckListBox
-    Left = 35
-    Top = 39
-    Width = 846
+    Left = 372
+    Top = 28
+    Width = 429
     Height = 178
     Columns = 4
     Items = <
@@ -250,13 +250,13 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     Top = 0
     PanelStyle.Active = True
     TabOrder = 2
-    Height = 500
-    Width = 351
+    Height = 430
+    Width = 250
     object cxPageControl1: TcxPageControl
       Left = 2
       Top = 2
-      Width = 347
-      Height = 496
+      Width = 246
+      Height = 426
       Align = alClient
       BiDiMode = bdLeftToRight
       Color = 13750737
@@ -273,23 +273,17 @@ object frmUzmanMuayene: TfrmUzmanMuayene
       ShowHint = False
       TabOrder = 0
       Properties.ActivePage = cxTabSheet2
+      Properties.HideTabs = True
       Properties.MultiLine = True
       Properties.Options = [pcoAlwaysShowGoDialogButton, pcoGoDialog, pcoGradient, pcoGradientClientArea]
       Properties.Style = 11
-      ExplicitLeft = 58
-      ExplicitTop = 3
-      ExplicitHeight = 567
-      ClientRectBottom = 489
-      ClientRectLeft = 3
-      ClientRectRight = 340
-      ClientRectTop = 26
+      ClientRectBottom = 425
+      ClientRectLeft = 1
+      ClientRectRight = 245
+      ClientRectTop = 1
       object cxTabSheet2: TcxTabSheet
-        Caption = 'Diyaliz '#304'zlem'
+        Caption = #304'zlem'
         ImageIndex = 1
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object cxGroupBoxAnemi: TcxGroupBox
           Left = 0
           Top = 45
@@ -305,11 +299,11 @@ object frmUzmanMuayene: TfrmUzmanMuayene
           Style.IsFontAssigned = True
           TabOrder = 0
           Height = 88
-          Width = 337
+          Width = 244
           object txtAnemi: TcxCheckListBox
             Left = 3
             Top = 15
-            Width = 331
+            Width = 238
             Height = 63
             Align = alClient
             Columns = 2
@@ -334,17 +328,16 @@ object frmUzmanMuayene: TfrmUzmanMuayene
                 Text = 'Demir Preperat'#305
               end>
             TabOrder = 0
-            ExplicitHeight = 71
           end
         end
         object cxGroupBoxAciklama: TcxGroupBox
           Left = 0
-          Top = 368
+          Top = 355
           Align = alClient
           Caption = 'A'#231#305'klama'
           TabOrder = 1
-          Height = 95
-          Width = 337
+          Height = 69
+          Width = 244
           object txtDAciklama: TcxMemo
             Left = 3
             Top = 15
@@ -352,14 +345,13 @@ object frmUzmanMuayene: TfrmUzmanMuayene
             Lines.Strings = (
               '')
             TabOrder = 0
-            ExplicitHeight = 129
-            Height = 69
-            Width = 331
+            Height = 44
+            Width = 238
           end
         end
         object cxGroupBoxSinekalset: TcxGroupBox
           Left = 0
-          Top = 233
+          Top = 220
           Align = alTop
           Caption = 'Sinekalset'
           PanelStyle.BorderWidth = 1
@@ -374,9 +366,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
           Style.TransparentBorder = True
           Style.IsFontAssigned = True
           TabOrder = 2
-          ExplicitTop = 241
           Height = 45
-          Width = 337
+          Width = 244
           object txtSinekalset: TcxComboBox
             Left = 3
             Top = 15
@@ -389,13 +380,13 @@ object frmUzmanMuayene: TfrmUzmanMuayene
             Text = '2 - Kullanm'#305'yor'
             ExplicitLeft = 2
             ExplicitTop = -2
-            ExplicitWidth = 333
-            Width = 331
+            ExplicitWidth = 240
+            Width = 238
           end
         end
         object cxGroupBoxAntihiper: TcxGroupBox
           Left = 0
-          Top = 278
+          Top = 265
           Align = alTop
           Caption = 'Antihipertansif '#304'la'#231
           ParentFont = False
@@ -406,9 +397,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
           Style.Font.Style = [fsBold]
           Style.IsFontAssigned = True
           TabOrder = 3
-          ExplicitTop = 286
           Height = 45
-          Width = 337
+          Width = 244
           object txtAntihipertansif: TcxComboBox
             Left = 3
             Top = 15
@@ -430,8 +420,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
             Text = '1 - Kullanm'#305'yor'
             ExplicitLeft = 2
             ExplicitTop = -2
-            ExplicitWidth = 333
-            Width = 331
+            ExplicitWidth = 240
+            Width = 238
           end
         end
         object cxGroupBoxAktifD: TcxGroupBox
@@ -449,7 +439,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
           Style.IsFontAssigned = True
           TabOrder = 4
           Height = 45
-          Width = 337
+          Width = 244
           object txtDVitaminKul: TcxComboBox
             Left = 3
             Top = 15
@@ -464,13 +454,13 @@ object frmUzmanMuayene: TfrmUzmanMuayene
             Text = '1 - Ihtiyac'#305' Yok'
             ExplicitLeft = 2
             ExplicitTop = -2
-            ExplicitWidth = 333
-            Width = 331
+            ExplicitWidth = 240
+            Width = 238
           end
         end
         object cxGroupBoxTedaviSeyri: TcxGroupBox
           Left = 0
-          Top = 323
+          Top = 310
           Align = alTop
           Caption = 'Tedavinin Seyri'
           ParentFont = False
@@ -481,9 +471,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
           Style.Font.Style = [fsBold]
           Style.IsFontAssigned = True
           TabOrder = 5
-          ExplicitTop = 331
           Height = 45
-          Width = 337
+          Width = 244
           object txtedaviSeyri: TcxComboBox
             Left = 3
             Top = 15
@@ -504,8 +493,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
             Text = '7 - Diyaliz Tedavisi Devam Ediyor'
             ExplicitLeft = 2
             ExplicitTop = -2
-            ExplicitWidth = 333
-            Width = 331
+            ExplicitWidth = 240
+            Width = 238
           end
         end
         object cxGroupBoxFosfor: TcxGroupBox
@@ -525,14 +514,13 @@ object frmUzmanMuayene: TfrmUzmanMuayene
           Style.TransparentBorder = True
           Style.IsFontAssigned = True
           TabOrder = 6
-          ExplicitTop = 141
-          Height = 100
-          Width = 337
+          Height = 87
+          Width = 244
           object txtFosfor: TcxCheckListBox
             Left = 3
             Top = 15
-            Width = 331
-            Height = 75
+            Width = 238
+            Height = 62
             Align = alClient
             Columns = 2
             Items = <
@@ -566,10 +554,11 @@ object frmUzmanMuayene: TfrmUzmanMuayene
       object cxTabSheet1: TcxTabSheet
         Caption = 'Epikriz A'#231#305'klama'
         ImageIndex = 0
+        TabVisible = False
         ExplicitLeft = 0
         ExplicitTop = 0
         ExplicitWidth = 0
-        ExplicitHeight = 0
+        ExplicitHeight = 494
         object cxGroupBoxEpikrizAck: TcxGroupBox
           Left = 0
           Top = 0
@@ -584,14 +573,13 @@ object frmUzmanMuayene: TfrmUzmanMuayene
           StyleHot.LookAndFeel.NativeStyle = False
           StyleHot.LookAndFeel.SkinName = 'UserSkin'
           TabOrder = 0
-          ExplicitHeight = 530
-          Height = 463
-          Width = 337
+          Height = 424
+          Width = 244
           object txtAciklama: TAdvMemo
             Left = 3
             Top = 15
-            Width = 331
-            Height = 438
+            Width = 238
+            Height = 399
             Cursor = crIBeam
             ActiveLineSettings.ShowActiveLine = False
             ActiveLineSettings.ShowActiveLineIndicator = False
@@ -705,10 +693,414 @@ object frmUzmanMuayene: TfrmUzmanMuayene
             UseStyler = False
             Version = '3.0.2.0'
             WordWrap = wwClientWidth
-            ExplicitHeight = 505
+            ExplicitHeight = 469
           end
         end
       end
+    end
+  end
+  object GridTetkikler: TcxGridKadir
+    Left = 680
+    Top = 244
+    Width = 225
+    Height = 244
+    Font.Charset = TURKISH_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+    LevelTabs.ImageBorder = 2
+    LevelTabs.Style = 1
+    ExceleGonder = False
+    PopupForm = False
+    object gridTetkikList: TcxGridDBTableView
+      Navigator.Buttons.First.Visible = True
+      Navigator.Buttons.PriorPage.Visible = True
+      Navigator.Buttons.Prior.Visible = True
+      Navigator.Buttons.Next.Visible = True
+      Navigator.Buttons.NextPage.Visible = True
+      Navigator.Buttons.Last.Visible = True
+      Navigator.Buttons.Insert.Visible = True
+      Navigator.Buttons.Append.Visible = False
+      Navigator.Buttons.Delete.Visible = True
+      Navigator.Buttons.Edit.Visible = True
+      Navigator.Buttons.Post.Visible = True
+      Navigator.Buttons.Cancel.Visible = True
+      Navigator.Buttons.Refresh.Visible = True
+      Navigator.Buttons.SaveBookmark.Visible = True
+      Navigator.Buttons.GotoBookmark.Visible = True
+      Navigator.Buttons.Filter.Visible = True
+      FilterBox.CustomizeDialog = False
+      DataController.DataModeController.DetailInSQLMode = True
+      DataController.Filter.Options = [fcoCaseInsensitive]
+      DataController.Filter.Active = True
+      DataController.Filter.TranslateBetween = True
+      DataController.Filter.TranslateLike = True
+      DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+      DataController.Summary.DefaultGroupSummaryItems = <>
+      DataController.Summary.FooterSummaryItems = <>
+      DataController.Summary.SummaryGroups = <>
+      Filtering.MRUItemsList = False
+      Filtering.ColumnMRUItemsList = False
+      FilterRow.InfoText = 'Arama Sat'#305'r'#305
+      FilterRow.SeparatorWidth = 2
+      FilterRow.ApplyChanges = fracImmediately
+      NewItemRow.InfoText = 'Kay'#305't Ekle'
+      OptionsBehavior.CellHints = True
+      OptionsBehavior.FocusCellOnTab = True
+      OptionsCustomize.ColumnGrouping = False
+      OptionsCustomize.ColumnHidingOnGrouping = False
+      OptionsCustomize.ColumnsQuickCustomization = True
+      OptionsData.Deleting = False
+      OptionsData.Editing = False
+      OptionsData.Inserting = False
+      OptionsView.NavigatorOffset = 20
+      OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+      OptionsView.CellAutoHeight = True
+      OptionsView.GroupByBox = False
+      OptionsView.HeaderHeight = 25
+      OptionsView.Indicator = True
+      OptionsView.RowSeparatorColor = clBlack
+      object cxGridDBColumn2: TcxGridDBColumn
+        DataBinding.FieldName = 'TetkikKodu'
+        Visible = False
+        Width = 56
+      end
+      object cxGridDBColumn3: TcxGridDBColumn
+        DataBinding.FieldName = 'Tetkik'
+        Width = 94
+      end
+      object ARALIK: TcxGridDBColumn
+        DataBinding.FieldName = 'ARALIK'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 30
+      end
+      object KASIM: TcxGridDBColumn
+        DataBinding.FieldName = 'KASIM'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object EKIM: TcxGridDBColumn
+        DataBinding.FieldName = 'EKIM'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object EYLUL: TcxGridDBColumn
+        DataBinding.FieldName = 'EYLUL'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object AGUSTOS: TcxGridDBColumn
+        DataBinding.FieldName = 'AGUSTOS'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 35
+      end
+      object TEMMUZ: TcxGridDBColumn
+        DataBinding.FieldName = 'TEMMUZ'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object HAZIRAN: TcxGridDBColumn
+        DataBinding.FieldName = 'HAZIRAN'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object MAYIS: TcxGridDBColumn
+        DataBinding.FieldName = 'MAYIS'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object NISAN: TcxGridDBColumn
+        DataBinding.FieldName = 'NISAN'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object MART: TcxGridDBColumn
+        DataBinding.FieldName = 'MART'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object SUBAT: TcxGridDBColumn
+        DataBinding.FieldName = 'SUBAT'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object OCAK: TcxGridDBColumn
+        DataBinding.FieldName = 'OCAK'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+      end
+      object cxGridDBColumn4: TcxGridDBColumn
+        DataBinding.FieldName = 'INo'
+        Visible = False
+        Width = 26
+      end
+    end
+    object cxGridLevel3: TcxGridLevel
+      Caption = 'Hastalar'
+      GridView = gridTetkikList
+      Options.DetailFrameColor = clBlack
+      Options.DetailFrameWidth = 0
+    end
+  end
+  object GridIlaclar: TcxGridKadir
+    Left = 392
+    Top = 247
+    Width = 265
+    Height = 244
+    Font.Charset = TURKISH_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    LevelTabs.ImageBorder = 2
+    LevelTabs.Style = 1
+    ExceleGonder = False
+    PopupForm = False
+    object cxGridIlacTedaviPlani: TcxGridDBTableView
+      PopupMenu = PopupIlac
+      Navigator.Buttons.First.Visible = True
+      Navigator.Buttons.PriorPage.Visible = True
+      Navigator.Buttons.Prior.Visible = True
+      Navigator.Buttons.Next.Visible = True
+      Navigator.Buttons.NextPage.Visible = True
+      Navigator.Buttons.Last.Visible = True
+      Navigator.Buttons.Insert.Visible = True
+      Navigator.Buttons.Append.Visible = False
+      Navigator.Buttons.Delete.Visible = True
+      Navigator.Buttons.Edit.Visible = True
+      Navigator.Buttons.Post.Visible = True
+      Navigator.Buttons.Cancel.Visible = True
+      Navigator.Buttons.Refresh.Visible = True
+      Navigator.Buttons.SaveBookmark.Visible = True
+      Navigator.Buttons.GotoBookmark.Visible = True
+      Navigator.Buttons.Filter.Visible = True
+      FilterBox.CustomizeDialog = False
+      DataController.DataModeController.DetailInSQLMode = True
+      DataController.Filter.Options = [fcoCaseInsensitive]
+      DataController.Filter.Active = True
+      DataController.Filter.TranslateBetween = True
+      DataController.Filter.TranslateLike = True
+      DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+      DataController.Summary.DefaultGroupSummaryItems = <>
+      DataController.Summary.FooterSummaryItems = <>
+      DataController.Summary.SummaryGroups = <>
+      Filtering.MRUItemsList = False
+      Filtering.ColumnMRUItemsList = False
+      FilterRow.InfoText = 'Arama Sat'#305'r'#305
+      FilterRow.SeparatorWidth = 2
+      FilterRow.ApplyChanges = fracImmediately
+      NewItemRow.InfoText = 'Kay'#305't Ekle'
+      OptionsBehavior.CellHints = True
+      OptionsBehavior.FocusCellOnTab = True
+      OptionsCustomize.ColumnHidingOnGrouping = False
+      OptionsCustomize.ColumnSorting = False
+      OptionsCustomize.ColumnsQuickCustomization = True
+      OptionsData.CancelOnExit = False
+      OptionsData.Deleting = False
+      OptionsData.DeletingConfirmation = False
+      OptionsData.Editing = False
+      OptionsData.Inserting = False
+      OptionsSelection.MultiSelect = True
+      OptionsView.NavigatorOffset = 20
+      OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+      OptionsView.GroupByBox = False
+      OptionsView.IndicatorWidth = 0
+      OptionsView.RowSeparatorColor = clBlack
+      Styles.Group = cxStyle1
+      object cxGridIlacTedaviPlanigk: TcxGridDBColumn
+        DataBinding.FieldName = 'gk'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniust: TcxGridDBColumn
+        DataBinding.FieldName = 'ust'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniilac: TcxGridDBColumn
+        DataBinding.FieldName = 'ilac'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniname1: TcxGridDBColumn
+        Caption = #304'la'#231' Ad'#305
+        DataBinding.FieldName = 'ilacName'
+        HeaderAlignmentHorz = taCenter
+        Width = 294
+      end
+      object cxGridIlacTedaviPlanigrup: TcxGridDBColumn
+        DataBinding.FieldName = 'grup'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniname2: TcxGridDBColumn
+        DataBinding.FieldName = 'name2'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniperyot: TcxGridDBColumn
+        Caption = 'Peryot'
+        DataBinding.FieldName = 'peryot'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Items = <
+          item
+            Description = 'G'#252'n'
+            ImageIndex = 0
+            Value = 1
+          end
+          item
+            Description = 'Hafta'
+            Value = 7
+          end
+          item
+            Description = 'Ay'
+            Value = 30
+          end>
+        Width = 37
+      end
+      object cxGridIlacTedaviPlanimiktar: TcxGridDBColumn
+        Caption = 'P.Miktar'
+        DataBinding.FieldName = 'miktar'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Width = 40
+      end
+      object cxGridIlacTedaviPlanidoz: TcxGridDBColumn
+        Caption = 'Doz'
+        DataBinding.FieldName = 'doz'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        HeaderAlignmentHorz = taCenter
+        Width = 36
+      end
+      object cxGridIlacTedaviPlanidozperyotmiktar: TcxGridDBColumn
+        DataBinding.FieldName = 'dozperyotmiktar'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlanidonem: TcxGridDBColumn
+        DataBinding.FieldName = 'donem'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniid: TcxGridDBColumn
+        DataBinding.FieldName = 'id'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlanigelisNo: TcxGridDBColumn
+        DataBinding.FieldName = 'gelisNo'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniColumn1: TcxGridDBColumn
+        DataBinding.FieldName = 'tip'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Items = <
+          item
+            Description = 'Merkez'
+            ImageIndex = 0
+            Value = '0'
+          end
+          item
+            Description = 'Ev'
+            Value = '1'
+          end>
+        Visible = False
+        Options.Editing = False
+        Width = 50
+      end
+      object cxGridIlacTedaviPlaniColumn2: TcxGridDBColumn
+        DataBinding.FieldName = 'ilacName'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniColumn3: TcxGridDBColumn
+        DataBinding.FieldName = 'Kyol'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniColumn4: TcxGridDBColumn
+        DataBinding.FieldName = 'adet'
+        Visible = False
+      end
+      object cxGridIlacTedaviPlaniColumn5: TcxGridDBColumn
+        DataBinding.FieldName = 'donemAdi'
+        Visible = False
+        GroupIndex = 0
+        IsCaptionAssigned = True
+      end
+    end
+    object cxGridLevel15: TcxGridLevel
+      Caption = 'Hastalar'
+      GridView = cxGridIlacTedaviPlani
+      Options.DetailFrameColor = clBlack
+      Options.DetailFrameWidth = 0
     end
   end
   object PopupMenu1: TPopupMenu
@@ -734,6 +1126,11 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         Caption = 'Formu Yazd'#305'r'
         OnClick = cxButtonCClick
       end
+      object N2: TMenuItem
+        Tag = -10
+        Caption = #304'la'#231' Tedavi Order'
+        OnClick = cxButtonCClick
+      end
     end
     object N3: TMenuItem
       Caption = '-'
@@ -745,14 +1142,19 @@ object frmUzmanMuayene: TfrmUzmanMuayene
       ImageIndex = 45
       OnClick = cxButtonCClick
     end
+    object M1: TMenuItem
+      Caption = 'Muayene '#304'ptal'
+      ImageIndex = 43
+      OnClick = M1Click
+    end
   end
   object ADO_UzmanMuayene: TADOQuery
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
     LockType = ltBatchOptimistic
     Parameters = <>
-    Left = 80
-    Top = 224
+    Left = 120
+    Top = 312
   end
   object DataSource7: TDataSource
     DataSet = ADO_UzmanMuayene
@@ -802,6 +1204,20 @@ object frmUzmanMuayene: TfrmUzmanMuayene
       AssignedValues = [svColor, svTextColor]
       Color = clYellow
       TextColor = clBlack
+    end
+  end
+  object PopupIlac: TPopupMenu
+    Left = 536
+    Top = 312
+    object E1: TMenuItem
+      Tag = 80
+      Caption = 'Ekle'
+      OnClick = E1Click
+    end
+    object S1: TMenuItem
+      Tag = 82
+      Caption = 'Sil'
+      OnClick = E1Click
     end
   end
 end

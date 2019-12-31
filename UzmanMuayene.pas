@@ -56,13 +56,61 @@ type
     cxTabSheet1: TcxTabSheet;
     cxGroupBoxEpikrizAck: TcxGroupBox;
     txtAciklama: TAdvMemo;
+    GridTetkikler: TcxGridKadir;
+    gridTetkikList: TcxGridDBTableView;
+    cxGridDBColumn2: TcxGridDBColumn;
+    cxGridDBColumn3: TcxGridDBColumn;
+    ARALIK: TcxGridDBColumn;
+    KASIM: TcxGridDBColumn;
+    EKIM: TcxGridDBColumn;
+    EYLUL: TcxGridDBColumn;
+    AGUSTOS: TcxGridDBColumn;
+    TEMMUZ: TcxGridDBColumn;
+    HAZIRAN: TcxGridDBColumn;
+    MAYIS: TcxGridDBColumn;
+    NISAN: TcxGridDBColumn;
+    MART: TcxGridDBColumn;
+    SUBAT: TcxGridDBColumn;
+    OCAK: TcxGridDBColumn;
+    cxGridDBColumn4: TcxGridDBColumn;
+    cxGridLevel3: TcxGridLevel;
+    GridIlaclar: TcxGridKadir;
+    cxGridIlacTedaviPlani: TcxGridDBTableView;
+    cxGridIlacTedaviPlanigk: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniust: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniilac: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniname1: TcxGridDBColumn;
+    cxGridIlacTedaviPlanigrup: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniname2: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniperyot: TcxGridDBColumn;
+    cxGridIlacTedaviPlanimiktar: TcxGridDBColumn;
+    cxGridIlacTedaviPlanidoz: TcxGridDBColumn;
+    cxGridIlacTedaviPlanidozperyotmiktar: TcxGridDBColumn;
+    cxGridIlacTedaviPlanidonem: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniid: TcxGridDBColumn;
+    cxGridIlacTedaviPlanigelisNo: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn1: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn2: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn3: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn4: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn5: TcxGridDBColumn;
+    cxGridLevel15: TcxGridLevel;
+    N2: TMenuItem;
+    PopupIlac: TPopupMenu;
+    E1: TMenuItem;
+    S1: TMenuItem;
+    M1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure gelisSikayetSec(cL : TcxCheckListBox ; c : string);
     function gelisSikayetSecili(c : TcxCheckListBox) : string;
     procedure ItemClick(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure Yukle;override;
+    procedure TetkikSonucGridKolonGizle;
     procedure cxKaydetClick(Sender: TObject);override;
+    procedure E1Click(Sender: TObject);
+    procedure ilacEkle(islem: integer);
+    procedure M1Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -72,8 +120,8 @@ type
   end;
 
 const _TableName_ = 'UzmanGozlem';
-      formGenislik = 1010;
-      formYukseklik = 700;
+      formGenislik = 1450;
+      formYukseklik = 820;
 var
   frmUzmanMuayene: TfrmUzmanMuayene;
   _islem_ : integer;
@@ -81,6 +129,50 @@ var
 implementation
       uses Data_Modul,AnaUnit,HastaRecete,IlacSarfListesi;
 {$R *.dfm}
+
+
+procedure TfrmUzmanMuayene.ilacEkle(islem: integer);
+begin
+   if islem = ilacTedaviIlacEkle
+   then Begin
+     try
+      Application.CreateForm(TfrmIlacSarf, frmIlacSarf);
+      try
+        frmIlacSarf._dosyaNO_ := _dosyaNo_;//ADO_GecmisIlacTedavi.FieldByName('dosyaNo').AsString; //_dosyaNo_;
+        frmIlacSarf._gelisNO_ := _gelisNo_;//ADO_GecmisIlacTedavi.FieldByName('gelisNo').AsString;//_gelisNo_;
+        frmilacsarf._islem_ := islem;
+        frmIlacSarf.Tanilar (False);
+        frmIlacSarf.Tag := TagfrmIlacSarf;
+        frmIlacSarf.cxTab.Tabs[0].Caption := 'Ýlaçlar';
+        frmIlacSarf.cxTab.Tabs[0].ImageIndex := 50;
+        frmIlacSarf.ShowModal;
+      finally
+        FreeAndNil(frmIlacSarf);
+      end;
+     except
+     end;
+   End;
+
+
+   if islem = ilacTedaviIlacDuzenle
+   then
+    if mrYes = ShowPopupForm('Tedavi Ýlaç Duzenle',islem)
+    then begin
+
+    end;
+
+   if islem = ilacTedaviIlacSil
+   then begin
+     if mrYes = ShowMessageSkin('Ýlaç Tedaviden Çýkartýlacak , Emin misiniz?','','','msg')
+     then begin
+       sql := 'delete from HastaIlacTedavi where id = ' +  GridIlaclar.Dataset.FieldByName('id').AsString;
+       datalar.QueryExec(sql);
+     end;
+   end;
+
+
+
+end;
 
 function TfrmUzmanMuayene.gelisSikayetSecili(c : TcxCheckListBox) : string;
 var
@@ -122,12 +214,34 @@ begin
 end;
 
 
+procedure TfrmUzmanMuayene.TetkikSonucGridKolonGizle;
+begin
+  OCAK.Visible := False;
+  SUBAt.Visible := False;
+  MART.Visible := False;
+  NISAN.Visible := False;
+  MAYIS.Visible := False;
+  HAZIRAN.Visible := False;
+  TEMMUZ.Visible := False;
+  AGUSTOS.Visible := False;
+  EYLUL.Visible := False;
+  EKIM.Visible := False;
+  KASIM.Visible := False;
+  ARALIK.Visible := False;
+end;
+
+
 procedure TfrmUzmanMuayene.Yukle;
+var
+ _Tarih : String;
+ i : integer;
+ ado : TADOQuery;
 begin
  // inherited;
    sql := 'select * from uzmanGozlem ug ' +
           ' left join Hasta_gelisler g on g.dosyaNo = ug.dosyaNo and g.gelisNo = ug.gelisNo ' +
           ' left join DoktorlarT d on d.kod = substring(ug.doktor,1,4) ' +
+          ' join HastaKart h on h.dosyaNo = ug.dosyaNo ' +
           ' where ug.dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and ug.gelisNo = ' + QuotedStr(_gelisNo_);
    datalar.QuerySelect(ADO_UzmanMuayene,sql);
 
@@ -172,6 +286,12 @@ begin
     TcxComboBox(FindComponent('IgneV')).EditValue:= ADO_UzmanMuayene.fieldbyname('IgneV').AsString;
 
 
+    TcxImageComboKadir(FindComponent('HbsAg')).EditValue  := ADO_UzmanMuayene.fieldbyname('HbsAg').AsString;
+    TcxImageComboKadir(FindComponent('AntiHbs')).EditValue  := ADO_UzmanMuayene.fieldbyname('AntiHbs').AsString;
+    TcxImageComboKadir(FindComponent('AntiHCV')).EditValue  := ADO_UzmanMuayene.fieldbyname('AntiHCV').AsString;
+    TcxImageComboKadir(FindComponent('HIV')).EditValue  := ADO_UzmanMuayene.fieldbyname('HIV').AsString;
+
+
  //  txtMalzemeSablon.Text := ADO_UzmanMuayene.fieldbyname('malzemeSablon').AsString;
  //  txtISI.Text := ADO_UzmanMuayene.fieldbyname('ISI').AsString;
 
@@ -180,7 +300,7 @@ begin
 
     txtDVitaminKul.text  := ADO_UzmanMuayene.fieldbyname('Dvitamin').AsString;
     txtSinekalset.Text := ADO_UzmanMuayene.fieldbyname('Sinekalset').AsString;
-    txtAntihipertansif.Text := ADO_UzmanMuayene.fieldbyname('Antihipertansif').AsString;
+    txtAntihipertansif.EditValue := ADO_UzmanMuayene.fieldbyname('Antihipertansif').AsString;
 
     try
       gelisSikayetSec(txtFosfor,ADO_UzmanMuayene.fieldbyname('FosforBagAjan').AsString);
@@ -216,10 +336,6 @@ begin
 
    // txtCa.Text := datalar.ADO_SQL.fieldbyname('Ca').AsString;
 
-
-
-
-
    if not ADO_UzmanMuayene.Eof
    then begin
        cxKaydet.Enabled := True;
@@ -229,6 +345,39 @@ begin
     cxIptal.Enabled := False;
    end;
 
+
+   _Tarih := NoktasizTarih(_provizyonTarihi_);
+   sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '1,''H'',' + QuotedStr(datalar.AktifSirket);
+   datalar.QuerySelect(GridTetkikler.Dataset,sql);
+
+    TetkikSonucGridKolonGizle;
+
+    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '0,''H'',' + QuotedStr(datalar.AktifSirket);
+    ado := TADOQuery.Create(nil);
+    try
+      datalar.QuerySelect(ado,sql);
+      while not ado.Eof do
+      begin
+        i := gridTetkikList.GetColumnByFieldName(ado.fieldbyname('ad').AsString).Index;
+        gridTetkikList.Columns[i].Visible := True;
+        gridTetkikList.Columns[i].Width := 50;
+        gridTetkikList.Columns[i].Index := ado.RecNo + 2;
+        ado.Next;
+      end;
+    finally
+      ado.Free;
+    end;
+
+    sql :=  ' exec sp_GecmisDonemIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' +QuotedStr(NoktasizTarih(_provizyonTarihi_));
+    datalar.QuerySelect(GridIlaclar.Dataset,sql);
+    cxGridIlacTedaviPlani.DataController.Groups.FullExpand;
+
+
+
+  sql := 'select S.Tarih, H.* from HemsireTakip H  join hareketlerSeans S on S.sirano = H.siraNo ' +
+         ' where dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + QuotedStr(_gelisNO_) +
+         ' order by Tarih desc,saat';
+  datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridHemsireTakip')).Dataset,sql);
 
 end;
 
@@ -249,6 +398,12 @@ begin
 
          end;
     end;
+end;
+
+procedure TfrmUzmanMuayene.M1Click(Sender: TObject);
+begin
+  inherited;
+   cxIptal.Click;
 end;
 
 procedure TfrmUzmanMuayene.cxButtonCClick(Sender: TObject);
@@ -320,6 +475,16 @@ begin
               //  Son6AylikTetkikSonuc(_dosyaNO_,_provizyonTarihi_);
 
             end;
+    -10  : begin
+               sql := 'exec  sp_IlacTedaviTakipPIVOT @dosyaNo = ' + QuotedStr(_dosyaNo_) +
+                                                   ',@yil = ' + QuotedStr(NoktasizTarih(_provizyonTarihi_)) +
+                                                   ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
+                Datasets.Dataset1 := datalar.QuerySelect(sql);
+
+                PrintYap('051','Ýlaç Tedavi Form','',Datasets,pTNone);
+
+           end;
+
 
     end;
 
@@ -331,6 +496,10 @@ procedure TfrmUzmanMuayene.cxKaydetClick(Sender: TObject);
 var
   sql : string;
 begin
+  datalar.KontrolUserSet := False;
+  if FormInputZorunluKontrol(self) Then Abort;
+  if datalar.KontrolUserSet = True then exit;
+
 
 case TControl(sender).Tag  of
  Kaydet : begin
@@ -416,6 +585,14 @@ case TControl(sender).Tag  of
                   TcxTextEdit(FindComponent('id')).Text := datalar.QuerySelect(sql).FieldByName('id').AsString;
                 end;
 
+                datalar.QueryExec('update hastaKart set ' +
+                                  'HbsAg = ' + QuotedStr(VarToStr(TcxImageComboKadir(FindComponent('HbsAg')).EditValue)) +
+                                  ',AntiHbs = ' + QuotedStr(VarToStr(TcxImageComboKadir(FindComponent('AntiHbs')).EditValue)) +
+                                  ',AntiHCV = ' + QuotedStr(VarToStr(TcxImageComboKadir(FindComponent('AntiHCV')).EditValue)) +
+                                  ',Hiv = ' + QuotedStr(VarToStr(TcxImageComboKadir(FindComponent('Hiv')).EditValue)) +
+                                  ' where dosyaNO = ' + QuotedStr(_dosyaNo_));
+
+
                 ShowMessageskin('Kayýt Yapýldý','','','info');
                except on e : exception do
                 begin
@@ -437,6 +614,19 @@ case TControl(sender).Tag  of
 
 end;
 
+procedure TfrmUzmanMuayene.E1Click(Sender: TObject);
+begin
+    case TMenuItem(sender).Tag of
+       ilacTedaviIlacEkle,
+       ilacTedaviIlacDuzenle,
+       ilacTedaviIlacSil
+       : begin
+            ilacEkle(TMenuItem(sender).Tag);
+            GridIlaclar.Dataset.Requery();
+         end;
+    end;
+end;
+
 function TfrmUzmanMuayene.Init(Sender : TObject) : Boolean;
 begin
   Result := False;
@@ -453,6 +643,7 @@ var
   Ts,Ts1 : TStringList;
   List,List1 : TListeAc;
   _Tarih_ : TcxDateEditKadir;
+  sql : string;
 begin
  //cxYeni.Visible := false;
   inherited;
@@ -463,40 +654,81 @@ begin
   indexFieldName := 'id';
   TableName := _TableName_;
   cxPanel.Visible := True;
-  cxPanelButtonVisible(False,True,True,False);
+  cxPanelButtonVisible(False,True,False,False);
   cxTab.Width := 200;
   Menu := PopupMenu1;
 
 
   _Tarih_ := TcxDateEditKadir.Create(self);
   Tarih.Name := '_Tarih_';
-  setDataStringKontrol(self,_Tarih_, 'Tarih','Uzman Muayene Tarih',Kolon1,'bb',100);
+  setDataStringKontrol(self,_Tarih_, 'Tarih','Uzman Muayene Tarih',Kolon1,'bb',80);
  // TcxTextEdit(FindComponent('Tarih')).EditValue := date;
 
-  setDataStringIC(self,'doktor','Doktor',Kolon1,'bb',120,'DoktorlarT','kod','tanimi',' sirketKod = ' + QuotedStr(datalar.AktifSirket));
+  setDataStringIC(self,'doktor','Doktor',Kolon1,'bb',110,'DoktorlarT','kod','tanimi',' sirketKod = ' + QuotedStr(datalar.AktifSirket));
   setDataString(self,'id','',Kolon1,'bb',40,False,'',True,-100);
 
-  setDataStringKontrol(self,chkSistemSorgu, 'chkSistemSorgu','Sistem Sorgularý',Kolon1,'',660,250);
-  setDataStringMemo(self,'digerNot','Uzman Not',Kolon1,'',550,50);
-  setDataStringBLabel(self,'lblBostatir1',Kolon1,'',660,'Fiziki Muayene','','',True,255,taCenter);
-  setDataStringMemo(self,'basboyun','Baþ Boyun',Kolon1,'',550,50);
-  setDataStringMemo(self,'akciger','Akciðer',Kolon1,'',550,50);
-  setDataStringMemo(self,'kalp','Kalp',Kolon1,'',550,50);
-  setDataStringMemo(self,'abdomen','Abdomen',Kolon1,'',550,50);
-  setDataStringMemo(self,'Ekst','Ekstremiteler',Kolon1,'',550,50);
-  setDataStringMemo(self,'psiko','Diyatisten ',Kolon1,'',550,50);
+  setDataStringKontrol(self,chkSistemSorgu, 'chkSistemSorgu','Sistem Sorgularý',Kolon1,'pnl',400,250);
+
+  setDataStringBLabel(self,'lblBostatirMarker',Kolon2,'',500,'Marker','','',True,255,taCenter);
+  setDataStringIC(self,'HbsAg','HbsAg',Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
+  setDataStringIC(self,'AntiHbs','AntiHbs',Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
+  setDataStringIC(self,'AntiHCV','AntiHCV',Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
+  setDataStringIC(self,'HIV','AntiHIV',Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
+
+ // TcxImageComboKadir(FindComponent('HbsAg')).Properties.Buttons[0].Enabled := False;
+ // TcxImageComboKadir(FindComponent('AntiHbs')).Properties.Buttons[0].Enabled  := False;
+ // TcxImageComboKadir(FindComponent('AntiHCV')).Properties.Buttons[0].Enabled  := False;
+ // TcxImageComboKadir(FindComponent('HIV')).Properties.Buttons[0].Enabled  := False;
+
+  setDataStringBLabel(self,'GridTetkiklerBaslik',Kolon2,'',500,'Son 6 Aylýk Tetkik Sonuç', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,GridTetkikler, 'GridTetkikler','',Kolon2,'',500,250);
+  setDataStringBLabel(self,'GridIlaclarBaslik',Kolon2,'',500,'Ýlaç Tedavi Order', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,GridIlaclar, 'GridIlaclar','',Kolon2,'',500,500);
 
 
-  setDataStringBLabel(self,'tedaviOrder',Sayfa2_Kolon1,'',350,'Tedavi Order', '', '', True, clRed, taCenter);
-  setDataStringCurr(self,'kurukilo','Kuru Kilo',Sayfa2_Kolon1,'',80,'0.00',1);
-  DiyalizTedaviControlleriniFormaEkle(Sayfa2_Kolon1,False);
 
-  setDataStringBLabel(self,'izlemOrder',Sayfa2_Kolon2,'',350,'Ýzlem Order', '', '', True, clRed, taCenter);
-  setDataStringKontrol(self,izlemPanel, 'izlemPanel','',Sayfa2_Kolon2,'',350,500);
 
-  sayfa2_Kolon3.Visible := false;
+  sql := 'select S.Tarih, H.* from HemsireTakip H  join hareketlerSeans S on S.sirano = H.siraNo ' +
+         ' where dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + QuotedStr(_gelisNO_) +
+         ' order by Tarih desc,saat';
 
-  SayfaCaption('Uzman Muayene','Tedavi/Ýzlem Order','','','');
+  SetGrid(CreateGrid('cxGridHemsireTakip',self),'Tarih,Saat,TA_NABIZ,TA_NABIZ_K,NABIZ,ARTPON,VENBAS,ARTBAS,UF,Na,ISI,gozlem',
+               'TcxTextEditProperties,TcxTimeEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,'+
+               'TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+               'Tarih,Saat,TANS.,TANSK.,NABIZ,ARTPON,VENBAS,ARTBAS,UF,Na,ISI,HemþireNot',
+               '80,80,50,50,50,50,50,50,50,50,50,200',
+               '0,0,0,0,0,0,0,0,0,0,0,0',
+               'True,True,True,True,True,True,True,True,True,True,True,True',
+               '0,0,0,0,0,0,0,0,0,0,0,0'
+               );
+               //  '!999-00#;1; ';
+  setDataStringBLabel(self,'cxGridHemsireTakip',Kolon1,'',400,'Hemþire Gözlem', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHemsireTakip')) ,'cxGridHemsireTakip','',Kolon1,'',400,250);
+  datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridHemsireTakip')).Dataset,sql);
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridHemsireTakip')).Levels[0].GridView).Navigator.Visible := False;
+  TcxGridKadir(FindComponent('cxGridHemsireTakip')).Dataset.Name := 'cxGridHemsireTakipDS';
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridHemsireTakip')).Levels[0].GridView).Columns[0].GroupBy(0);
+
+  setDataStringMemo(self,'digerNot','Uzman Not',Kolon1,'u',290,40);
+  setDataStringBLabel(self,'lblBostatir1',Kolon1,'',400,'Fiziki Muayene','','',True,255,taCenter);
+  setDataStringMemo(self,'basboyun','Baþ Boyun',Kolon1,'',290,40);
+  setDataStringMemo(self,'akciger','Akciðer',Kolon1,'',290,40);
+  setDataStringMemo(self,'kalp','Kalp',Kolon1,'',290,40);
+  setDataStringMemo(self,'abdomen','Abdomen',Kolon1,'',290,40);
+  setDataStringMemo(self,'Ekst','Ekstremiteler',Kolon1,'',290,40);
+  setDataStringMemo(self,'psiko','Diyatisten ',Kolon1,'',290,40);
+
+
+  setDataStringBLabel(self,'tedaviOrder',Kolon3,'',250,'Diyaliz Order', '', '', True, clRed, taCenter);
+  setDataStringCurr(self,'kurukilo','Kuru Kilo',Kolon3,'',80,'0.00',1);
+  DiyalizTedaviControlleriniFormaEkle(Kolon3,False);
+
+  setDataStringBLabel(self,'izlemOrder',Kolon3,'',250,'Tedavi Ýzlem', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,izlemPanel, 'izlemPanel','',Kolon3,'',250,430);
+
+  Kolon4.Visible := false;
+
+  SayfaCaption('Uzman Muayene','','','','');
 
 
 end;
