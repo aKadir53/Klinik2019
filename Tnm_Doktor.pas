@@ -198,6 +198,14 @@ begin
         setDataStringC(self,'uzman','Uzman mý?',Kolon1,'',80,'Evet,Hayýr');
         setDataStringC(self,'durum','Durum',Kolon1,'',80,'Aktif,Pasif');
 
+        medulaGonderimTipi := TcxImageComboKadir.Create(self);
+        medulaGonderimTipi.Conn := nil;
+        medulaGonderimTipi.BosOlamaz := True;
+        medulaGonderimTipi.ItemList := '0;Hayýr,1;Evet';
+        medulaGonderimTipi.Filter := '';
+        OrtakEventAta(medulaGonderimTipi);
+        setDataStringKontrol(self,medulaGonderimTipi,'MesulMudur','BaþHekim mi?',kolon1,'',100);
+
         Sirketlerx := TcxImageComboKadir.Create(self);
         Sirketlerx.Conn := Datalar.ADOConnection2;
         Sirketlerx.TableName := 'SIRKETLER_TNM';
@@ -586,28 +594,30 @@ end;
 
 procedure TfrmDoktorlar.cxKaydetClick(Sender: TObject);
 begin
-  inherited;
+
   case TcxButton(sender).Tag  of
-    0 : begin
-        // ShowMessage('Kaydet');
-        // ButonClick(self,'k');
-      //   Olustur(self,'Users');
-      //   setDataString(self,'ADISOYADI',100,10);
+    sil : begin
+          end;
+    Kaydet : begin
+               if TcxImageComboKadir(FindComponent('MesulMudur')).EditValue = 1
+               then begin
+                 datalar.QueryExec('set nocount off update DoktorlarT set MesulMudur = 0 set nocount on');
+               end;
 
-        end;
-    1 : begin
-         // post;
-         //ShowMessage('Ýptal');
-    end;
-    2 : begin
-         case self.Tag of
-          TagfrmDoktorlar : TcxButtonEditKadir(FindComponent('Kod')).EditValue := dosyaNoYeniNumaraAl('DR');
-          TagfrmIGU : TcxButtonEditKadir(FindComponent('Kod')).EditValue := dosyaNoYeniNumaraAl('IG');
-          TagfrmDigerSaglikPers : TcxButtonEditKadir(FindComponent('Kod')).EditValue := dosyaNoYeniNumaraAl('DS');
+             end;
+    yeni : begin
+            case self.Tag of
+             TagfrmDoktorlar : TcxButtonEditKadir(FindComponent('Kod')).EditValue := dosyaNoYeniNumaraAl('DR');
+             TagfrmIGU : TcxButtonEditKadir(FindComponent('Kod')).EditValue := dosyaNoYeniNumaraAl('IG');
+             TagfrmDigerSaglikPers : TcxButtonEditKadir(FindComponent('Kod')).EditValue := dosyaNoYeniNumaraAl('DS');
 
-         end;
-        end;
+            end;
+           end;
   end;
+
+  inherited;
+
+
 end;
 
 end.

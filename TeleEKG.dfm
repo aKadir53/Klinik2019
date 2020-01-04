@@ -22,7 +22,7 @@ object frmTeleEKG: TfrmTeleEKG
   PixelsPerInch = 96
   TextHeight = 13
   object cxGrid2: TcxGridKadir
-    Left = 316
+    Left = 276
     Top = 104
     Width = 401
     Height = 177
@@ -32,12 +32,15 @@ object frmTeleEKG: TfrmTeleEKG
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    PopupMenu = PopupMenu2
     TabOrder = 0
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
     ExcelFileName = 'TeleEKG'
     ExceleGonder = True
+    PopupForm = False
     object Liste: TcxGridDBTableView
+      PopupMenu = PopupMenu2
       OnDblClick = ListeDblClick
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True
@@ -100,6 +103,9 @@ object frmTeleEKG: TfrmTeleEKG
       end
       object ListeHasta: TcxGridDBColumn
         DataBinding.FieldName = 'Hasta'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
@@ -108,6 +114,9 @@ object frmTeleEKG: TfrmTeleEKG
       object ListeColumn2: TcxGridDBColumn
         Caption = 'Tetkik Tan'#305'm'#305
         DataBinding.FieldName = 'NAME1'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
@@ -117,6 +126,8 @@ object frmTeleEKG: TfrmTeleEKG
         Caption = 'Tarih'
         DataBinding.FieldName = 'TARIH'
         PropertiesClassName = 'TcxDateEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
@@ -171,23 +182,28 @@ object frmTeleEKG: TfrmTeleEKG
     StyleFocused.LookAndFeel.NativeStyle = False
     StyleHot.LookAndFeel.NativeStyle = False
     TabOrder = 1
+    Visible = False
     Height = 21
     Width = 242
   end
-  object tarih1: TcxDateEdit
+  object tarih1: TcxDateEditKadir
     Left = 47
     Top = 26
     Anchors = [akLeft]
     Style.TextColor = clBlack
     TabOrder = 2
+    BosOlamaz = False
+    ValueTip = tvString
     Width = 121
   end
-  object tarih2: TcxDateEdit
+  object tarih2: TcxDateEditKadir
     Left = 170
     Top = 26
     Anchors = [akLeft]
     Style.TextColor = clBlack
     TabOrder = 3
+    BosOlamaz = False
+    ValueTip = tvString
     Width = 121
   end
   object btnListele: TcxButtonKadir
@@ -273,7 +289,9 @@ object frmTeleEKG: TfrmTeleEKG
       OnClick = cxButtonCClick
     end
     object D1: TMenuItem
+      Tag = -5
       Caption = 'D'#252'zenle'
+      OnClick = cxButtonCClick
     end
   end
 end

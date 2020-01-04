@@ -555,10 +555,6 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         Caption = 'Epikriz A'#231#305'klama'
         ImageIndex = 0
         TabVisible = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 494
         object cxGroupBoxEpikrizAck: TcxGroupBox
           Left = 0
           Top = 0
@@ -693,7 +689,6 @@ object frmUzmanMuayene: TfrmUzmanMuayene
             UseStyler = False
             Version = '3.0.2.0'
             WordWrap = wwClientWidth
-            ExplicitHeight = 469
           end
         end
       end
@@ -1146,6 +1141,11 @@ object frmUzmanMuayene: TfrmUzmanMuayene
       Caption = 'Muayene '#304'ptal'
       ImageIndex = 43
       OnClick = M1Click
+    end
+    object K2: TMenuItem
+      Caption = 'Kaydet'
+      ImageIndex = 29
+      OnClick = cxKaydetClick
     end
   end
   object ADO_UzmanMuayene: TADOQuery

@@ -1255,7 +1255,7 @@ begin
    SendMesajGonder := Basarili;
 
   if not Assigned(SendMesaj) then
-    raise Exception.Create(LIB_DLL + ' içersinde SendMesajMethod bulunamadý!');
+    raise Exception.Create(NoktaDll + ' içersinde SendMesajMethod bulunamadý!');
   FreeLibrary(dllHandle);
 
 end;
@@ -1578,7 +1578,7 @@ begin
    SendMesaj(pwideChar(kullaniciAdi),pwideChar(sifre),pwideChar(sksrs),pwideChar(Tarih),_sonuc_,_durum_,pwideChar(uygulamaKodu));
 
   if not Assigned(SendMesaj) then
-    raise Exception.Create(LIB_DLL + ' içersinde UssServisMethodTakipListele bulunamadý!');
+    raise Exception.Create(NoktaDll + ' içersinde UssServisMethodTakipListele bulunamadý!');
   FreeLibrary(dllHandle);
 
 
@@ -2131,7 +2131,7 @@ begin
     EgitimHash := imzali;
 
     if not Assigned(hash) then
-      raise Exception.Create(LIB_DLL + ' içersinde EgitimXMLHash bulunamadý!');
+      raise Exception.Create(NoktaDll + ' içersinde EgitimXMLHash bulunamadý!');
 
   finally
     FreeLibrary(dllHandle);
@@ -4115,6 +4115,7 @@ begin
 
 
    datalar.QuerySelect(ado,sql);
+
    Result := ado.RecordCount;
 end;
 

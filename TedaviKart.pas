@@ -388,7 +388,7 @@ end;
 
 procedure TfrmTedaviBilgisi.FormShow(Sender: TObject);
 var
-  tt,dosyaNo : string;
+  tt,dosyaNo , gelisNo: string;
   g : TGraphic;
 begin
    inherited;
@@ -410,8 +410,12 @@ begin
        tt := 'gelisler';
    end;
 
-
+   gelisNO := _gelisNO_;
    HastaGelisSelect(_dosyaNo_,AdoHastaGelis,tt);
+   AdoHastaGelis.Locate('gelisNo',gelisNO,[]);
+
+   cxGrid1.SetFocus;
+   cxGridHastaGelis.DataController.SetFocus;
    cxTab.Tabs[0].Caption := self._HastaAdSoyad_;// datalar.HastaBil.Adi + ' ' + datalar.HastaBil.SoyAdi;
 end;
 

@@ -134,6 +134,14 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
           item
             Description = 'Di'#287'er'
             Value = 2
+          end
+          item
+            Description = '15504'
+            Value = 4
+          end
+          item
+            Description = '27001'
+            Value = 3
           end>
         Visible = False
         GroupIndex = 0

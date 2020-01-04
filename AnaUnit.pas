@@ -384,6 +384,9 @@ begin
        datalar._DyobSifre_ := WebErisimBilgiFirma('TDS','01');
        datalar._DyobServiceKodu_ := WebErisimBilgiFirma('TDS','02');
 
+       datalar.AlpemixRun := WebErisimBilgi('UD','03');
+       datalar.AlpemixGrupAdi := WebErisimBilgiFirma('UD','00');
+       datalar.AlpemixGrupParola := WebErisimBilgiFirma('UD','01');
     except
     end;
 
@@ -809,7 +812,7 @@ begin
   UserTable.Active := True;
   if UserRight('Kullanýcý Ýþlemleri', 'Herkesin Ýþ Planýný Görsün') = True
   then begin
-       UserTable.Filter := '';
+       UserTable.Filter := 'Aktif = 1';
   end
   else
    UserTable.Filter := 'Kullanici = ' + QuotedStr(datalar.username);
@@ -817,6 +820,9 @@ begin
   EventsTable.Active := True;
 
   AjandaAltPage.ActivePageIndex := 0;
+
+  if datalar.AlpemixRun = 'Evet' then OnlineDestekOpen;
+
 
 (*
   MainMenuKadir1.Left := -1 * MainMenuKadir1.Width;
@@ -1060,6 +1066,7 @@ begin
      else
         if FormID > 0 then
         begin
+          GirisRecord.F_HastaAdSoyad_ := '';
           if ShowTip  =  0
           then begin
               if FindTab(sayfalar,FormID) Then Exit;
@@ -1075,6 +1082,7 @@ begin
           end
           else
           begin
+              GirisRecord.F_HastaAdSoyad_ := '';
               F := FormINIT(FormID,GirisRecord,ikEvet,'');
               if F <> nil then F.ShowModal;
           end;

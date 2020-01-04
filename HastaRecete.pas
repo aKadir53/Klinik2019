@@ -191,7 +191,7 @@ type
 
 const
       formGenislik = 1100;
-      formYukseklik = 750;
+      formYukseklik = 700;
 
 const
  LIB_DLL = 'NoktaDLL.dll';
@@ -373,7 +373,8 @@ var
 begin
   url := (datalar.receteURL);
  // if not CheckReceteStatus (True, False, True, True, True) then Exit;
-  sql := 'sp_HastaReceteTaniEkleToXML ' + ADO_RECETE.FieldByName('id').AsString;
+  sql := 'sp_HastaReceteTaniEkleToXML ' + ADO_RECETE.FieldByName('id').AsString + ',' +
+         QuotedStr(ADO_receteTani.FieldByName('taniKodu').AsString);
   QuerySelect(sql);
 
 
@@ -1569,7 +1570,7 @@ begin
            //   path := 'D:\Projeler\VS\c#\RenkliReceteToken2\ReceteToken\WindowsFormsApplication1\bin\Debug\ReceteToken.exe';
               path := 'C:\NoktaV3\ReceteToken2.exe';
               tokenParams := receteToken(ADO_Recete.FieldByName('id').AsString);
-              ShowMessageSkin(tokenParams,'','','info');
+             // ShowMessageSkin(tokenParams,'','','info');
               StrToFile('C:\NoktaV3\ReceteToken2.txt',tokenParams);
               WinExec(PAnsiChar(AnsiString(path + ' ' + tokenParams +' 1 G')),SW_SHOW);
               exit;

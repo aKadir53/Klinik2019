@@ -1151,6 +1151,7 @@ end;
 procedure TfrmRaporDetay.raporDuzenle;
 var
   sql : string;
+  Book : TBookmark;
 begin
 // a
     datalar.RaporBilgisi.sira := RaporGrid.Dataset.FieldByName('sira').AsString;
@@ -1194,8 +1195,14 @@ begin
                  'where sira = ' + datalar.RaporBilgisi.sira;
 
           datalar.QueryExec(sql);
-          RaporGrid.Dataset.Requery();
-          RaporGrid.Dataset.Next;
+
+          Book := RaporGrid.Dataset.Bookmark;
+          datalar.QuerySelect(RaporGrid.Dataset, 'select * from Raporlar where dosyaNo = ' + QuotedStr(_dosyaNO_) + ' order by bitisTarihi desc' );
+          RaporGrid.Dataset.GotoBookmark(Book);
+          ListeRaporlar.Controller.GridView.ViewData.Expand(True);
+
+       //   RaporGrid.Dataset.Requery();
+       //   RaporGrid.Dataset.Next;
     End;
 
 

@@ -1694,10 +1694,11 @@ inherited;
           setDataStringKontrol(self,mevcutTarih_, 'Tarih','Tarih',Kolon1,'',100);
           setDataStringMemo(self,'islemAciklamasi','Sonuç',Kolon1,'',270,70);
           TcxTextEdit(FindComponent('islemAciklamasi')).Properties.MaxLength := 200;
-          setDataStringBLabel(self,'ackLabel',Kolon1,'',50,'','Kalan Karakter : ');
+          setDataStringBLabel(self,'ackLabel',Kolon1,'',200,'','Kalan Karakter : ');
           TcxMemo(FindComponent('islemAciklamasi')).Properties.OnChange := cxMemoPropertiesChange;
           mevcutTarih_.Date := datalar.TeleEkg.Tarih;
           TcxTextEdit(FindComponent('islemAciklamasi')).Text := datalar.TeleEkg.ack;
+          cxTab.Width := 280;
           ClientHeight := 270;
           ClientWidth := 400;
        end;
@@ -3328,13 +3329,17 @@ ptPersonelTetkikleri :
 
           if TfrmPopup(self).islem_ = raporInsert
           Then begin
+            datalar.RaporBilgisi.sira := '';
             datalar.RaporBilgisi.raporNo := '';
             datalar.RaporBilgisi.raporTarihi := datetoStr(date);
+            datalar.RaporBilgisi.baslangicTarihi := '';
+            datalar.RaporBilgisi.bitisTarihi := '';
             datalar.RaporBilgisi.Turu := '10';
             datalar.RaporBilgisi.tedaviRaporTuru := '';
             datalar.RaporBilgisi.verenTesisKodu := inttostr(datalar._kurumKod);
-            datalar.RaporBilgisi.duzenlemeTuru := '1';
-            datalar.RaporBilgisi.duzenleyenDoktor := '';
+            datalar.RaporBilgisi.duzenlemeTuru := '2';
+            datalar.RaporBilgisi.duzenleyenDoktor := datalar.doktorKodu;
+            datalar.RaporBilgisi.aciklama := '';
             datalar.RaporBilgisi.protokolNo := EnsonSeansProtokolNo(datalar.AktifSirket,'','Rapor');
           end;
 

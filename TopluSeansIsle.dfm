@@ -1350,7 +1350,6 @@
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
-              Options.Filtering = False
               Options.Sorting = False
               Styles.Content = cxStyle4
               Width = 94
@@ -1454,6 +1453,7 @@
               Properties.OnButtonClick = ListeraporTakipNoPropertiesButtonClick
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Options.FilteringPopup = False
               Options.Sorting = False
               Styles.Content = cxStyle5
@@ -1994,20 +1994,17 @@
               Properties.Images = DATALAR.imag24png
               Properties.Items = <
                 item
-                  ImageIndex = 0
+                  ImageIndex = 106
                   Value = 1
                 end
                 item
-                  ImageIndex = 37
                   Value = 0
-                end
-                item
-                  ImageIndex = 36
                 end>
               HeaderAlignmentHorz = taCenter
               HeaderGlyphAlignmentHorz = taCenter
               HeaderHint = 'Kimlik Do'#287'rulama'
               HeaderImageIndex = 106
+              Options.Editing = False
               Width = 30
               Position.BandIndex = 2
               Position.ColIndex = 35

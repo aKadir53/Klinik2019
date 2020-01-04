@@ -384,11 +384,21 @@ begin
 
   _IC_ := TcxImageComboKadir.Create(self);
   _IC_.Conn := Datalar.ADOConnection2;
-  _IC_.TableName := 'SKS_DokumanKapsamlari';
+  _IC_.TableName := 'SKS_DokumanTip';
   _IC_.ValueField := 'kod';
   _IC_.DisplayField := 'tanimi';
   _IC_.BosOlamaz := True;
   _IC_.Filter := '';
+  setDataStringKontrol(self,_IC_,'dokumanTip','Döküman Tip',kolon1,'',100);
+  OrtakEventAta(_IC_);
+
+  _IC_ := TcxImageComboKadir.Create(self);
+  _IC_.Conn := Datalar.ADOConnection2;
+  _IC_.TableName := 'SKS_DokumanKapsamlari';
+  _IC_.ValueField := 'kod';
+  _IC_.DisplayField := 'tanimi';
+  _IC_.BosOlamaz := True;
+  _IC_.Filter := '';// DokumanTipKodu = ' + TcxImageComboKadir(FindComponent;
   setDataStringKontrol(self,_IC_,'kapsam','Kapsam',kolon1,'kk',130);
   OrtakEventAta(_IC_);
 
@@ -433,15 +443,7 @@ begin
   setDataStringKontrol(self,_IC_,'denetci','Denetçi',kolon1,'',100);
   OrtakEventAta(_IC_);
 
-  _IC_ := TcxImageComboKadir.Create(self);
-  _IC_.Conn := Datalar.ADOConnection2;
-  _IC_.TableName := 'SKS_DokumanTip';
-  _IC_.ValueField := 'kod';
-  _IC_.DisplayField := 'tanimi';
-  _IC_.BosOlamaz := True;
-  _IC_.Filter := '';
-  setDataStringKontrol(self,_IC_,'dokumanTip','Döküman Tip',kolon1,'',100);
-  OrtakEventAta(_IC_);
+
 
 
   _IC_ := TcxImageComboKadir.Create(self);
@@ -497,6 +499,11 @@ var
 begin
   inherited;
 
+  if TcxImageComboKadir(Sender).name = 'dokumanTip'
+  Then begin
+    TcxImageComboKadir(FindComponent('kapsam')).Filter := ' DokumanTipKodu = ' + TcxImageComboKadir(FindComponent('dokumanTip')).EditValue;
+  end
+  else
   if (TcxImageComboKadir(Sender).name = 'kapsam') or
      (TcxImageComboKadir(Sender).name = 'tur') or
      (TcxCurrencyEdit(Sender).name = 'sira')

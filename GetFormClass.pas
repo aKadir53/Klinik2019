@@ -142,7 +142,9 @@ uses
     HastaIzlemListesi,
     TakipKontrol,
     ktv_urrListesi,
-    MakinaDurumP;
+    MakinaDurumP,
+    raporDetayToplu,
+    TeleEKG;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -386,6 +388,8 @@ begin
    TagfrmTakipKontrol : Result := TfrmTakipKontrol;
    TagfrmKtvListesi : Result := TfrmKtvListesi;
    TagfrmMakinaDurumP : Result := TfrmMakinaDurumP;
+   TagfrmHastaRaporlari : Result := TfrmHastaRaporlari;
+   TagfrmTeleEkg : Result := TfrmTeleEkg;
 
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
@@ -500,6 +504,8 @@ begin
    TagfrmTakipKontrol : Result := frmTakipKontrol;
    TagfrmKtvListesi : Result := frmKtvListesi;
    TagfrmMakinaDurumP : Result := frmMakinaDurumP;
+   TagfrmHastaRaporlari : Result := frmHastaRaporlari;
+   TagfrmTeleEkg : Result := frmTeleEkg;
 
 
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
@@ -611,6 +617,8 @@ begin
      TagfrmTakipKontrol : frmTakipKontrol := TfrmTakipKontrol.Create(Tab);
      TagfrmKtvListesi : frmKtvListesi  := TfrmKtvListesi.Create(Tab);
      TagfrmMakinaDurumP : frmMakinaDurumP  := TfrmMakinaDurumP.Create(Tab);
+     TagfrmHastaRaporlari : frmHastaRaporlari  := TfrmHastaRaporlari.Create(Tab);
+     TagfrmTeleEkg : frmTeleEkg  := TfrmTeleEkg.Create(Tab);
 
   end;
   try
@@ -789,6 +797,8 @@ begin
      TagfrmTakipKontrol : frmTakipKontrol := TfrmTakipKontrol.Create(Tab);
      TagfrmKtvListesi : frmKtvListesi  := TfrmKtvListesi.Create(Tab);
      TagfrmMakinaDurumP : frmMakinaDurumP  := TfrmMakinaDurumP.Create(Tab);
+     TagfrmHastaRaporlari : frmHastaRaporlari  := TfrmHastaRaporlari.Create(Tab);
+     TagfrmTeleEkg : frmTeleEkg  := TfrmTeleEkg.Create(Tab);
 
   end;
   try

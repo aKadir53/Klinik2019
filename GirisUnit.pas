@@ -2893,7 +2893,6 @@ begin
 
   cxPanelButtonEnabled(True,false,false);
   if _HastaBilgileriniCaptionGoster_ then
-
    cxTab.Tabs[0].Caption := self._HastaAdSoyad_;// datalar.HastaBil.Adi + ' ' + datalar.HastaBil.SoyAdi;
 
   for i := 0 to self.ComponentCount - 1 do

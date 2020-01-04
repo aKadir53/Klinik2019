@@ -100,6 +100,7 @@ type
     E1: TMenuItem;
     S1: TMenuItem;
     M1: TMenuItem;
+    K2: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure gelisSikayetSec(cL : TcxCheckListBox ; c : string);
     function gelisSikayetSecili(c : TcxCheckListBox) : string;
@@ -120,8 +121,8 @@ type
   end;
 
 const _TableName_ = 'UzmanGozlem';
-      formGenislik = 1450;
-      formYukseklik = 820;
+      formGenislik = 1300;
+      formYukseklik = 700;
 var
   frmUzmanMuayene: TfrmUzmanMuayene;
   _islem_ : integer;
@@ -632,6 +633,7 @@ begin
   Result := False;
   if not inherited Init(Sender) then exit;
 //  _HastaBilgileriniCaptionGoster_ := True;
+
   yukle;
   Result := True;
 end;
@@ -653,8 +655,8 @@ begin
 
   indexFieldName := 'id';
   TableName := _TableName_;
-  cxPanel.Visible := True;
-  cxPanelButtonVisible(False,True,False,False);
+  cxPanel.Visible := False;
+ // cxPanelButtonVisible(False,True,False,False);
   cxTab.Width := 200;
   Menu := PopupMenu1;
 
@@ -669,24 +671,22 @@ begin
 
   setDataStringKontrol(self,chkSistemSorgu, 'chkSistemSorgu','Sistem Sorgularý',Kolon1,'pnl',400,250);
 
-  setDataStringBLabel(self,'lblBostatirMarker',Kolon2,'',500,'Marker','','',True,255,taCenter);
-  setDataStringIC(self,'HbsAg','HbsAg',Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
-  setDataStringIC(self,'AntiHbs','AntiHbs',Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
-  setDataStringIC(self,'AntiHCV','AntiHCV',Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
-  setDataStringIC(self,'HIV','AntiHIV',Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
 
- // TcxImageComboKadir(FindComponent('HbsAg')).Properties.Buttons[0].Enabled := False;
- // TcxImageComboKadir(FindComponent('AntiHbs')).Properties.Buttons[0].Enabled  := False;
- // TcxImageComboKadir(FindComponent('AntiHCV')).Properties.Buttons[0].Enabled  := False;
- // TcxImageComboKadir(FindComponent('HIV')).Properties.Buttons[0].Enabled  := False;
-
-  setDataStringBLabel(self,'GridTetkiklerBaslik',Kolon2,'',500,'Son 6 Aylýk Tetkik Sonuç', '', '', True, clRed, taCenter);
-  setDataStringKontrol(self,GridTetkikler, 'GridTetkikler','',Kolon2,'',500,250);
-  setDataStringBLabel(self,'GridIlaclarBaslik',Kolon2,'',500,'Ýlaç Tedavi Order', '', '', True, clRed, taCenter);
-  setDataStringKontrol(self,GridIlaclar, 'GridIlaclar','',Kolon2,'',500,500);
+  setDataStringMemo(self,'digerNot','Uzman Not',Kolon1,'u',290,85);
+  setDataStringBLabel(self,'lblBostatir1',Kolon2,'',465,'Fiziki Muayene','','',True,255,taCenter);
+  setDataStringMemo(self,'basboyun','Baþ Boyun',Kolon2,'',400,60);
+  setDataStringMemo(self,'akciger','Akciðer',Kolon2,'',400,60);
+  setDataStringMemo(self,'kalp','Kalp',Kolon2,'',400,60);
+  setDataStringMemo(self,'abdomen','Abdomen',Kolon2,'',400,60);
+  setDataStringMemo(self,'Ekst','Ekstremiteler',Kolon2,'',400,60);
+  setDataStringMemo(self,'psiko','Diyatisten ',Kolon2,'',400,60);
 
 
 
+
+  setDataStringBLabel(self,'tedaviOrder',sayfa2_Kolon1,'',250,'Diyaliz Order', '', '', True, clRed, taCenter);
+  setDataStringCurr(self,'kurukilo','Kuru Kilo',sayfa2_Kolon1,'',80,'0.00',1);
+  DiyalizTedaviControlleriniFormaEkle(sayfa2_Kolon1,False);
 
   sql := 'select S.Tarih, H.* from HemsireTakip H  join hareketlerSeans S on S.sirano = H.siraNo ' +
          ' where dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + QuotedStr(_gelisNO_) +
@@ -702,33 +702,39 @@ begin
                '0,0,0,0,0,0,0,0,0,0,0,0'
                );
                //  '!999-00#;1; ';
-  setDataStringBLabel(self,'cxGridHemsireTakip',Kolon1,'',400,'Hemþire Gözlem', '', '', True, clRed, taCenter);
-  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHemsireTakip')) ,'cxGridHemsireTakip','',Kolon1,'',400,250);
+  setDataStringBLabel(self,'cxGridHemsireTakip',sayfa2_Kolon1,'',300,'Hemþire Gözlem', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHemsireTakip')) ,'cxGridHemsireTakip','',sayfa2_Kolon1,'',300,250);
   datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridHemsireTakip')).Dataset,sql);
   TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridHemsireTakip')).Levels[0].GridView).Navigator.Visible := False;
   TcxGridKadir(FindComponent('cxGridHemsireTakip')).Dataset.Name := 'cxGridHemsireTakipDS';
   TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridHemsireTakip')).Levels[0].GridView).Columns[0].GroupBy(0);
 
-  setDataStringMemo(self,'digerNot','Uzman Not',Kolon1,'u',290,40);
-  setDataStringBLabel(self,'lblBostatir1',Kolon1,'',400,'Fiziki Muayene','','',True,255,taCenter);
-  setDataStringMemo(self,'basboyun','Baþ Boyun',Kolon1,'',290,40);
-  setDataStringMemo(self,'akciger','Akciðer',Kolon1,'',290,40);
-  setDataStringMemo(self,'kalp','Kalp',Kolon1,'',290,40);
-  setDataStringMemo(self,'abdomen','Abdomen',Kolon1,'',290,40);
-  setDataStringMemo(self,'Ekst','Ekstremiteler',Kolon1,'',290,40);
-  setDataStringMemo(self,'psiko','Diyatisten ',Kolon1,'',290,40);
+
+  setDataStringBLabel(self,'lblBostatirMarker',sayfa2_Kolon2,'',250,'Marker','','',True,255,taCenter);
+  setDataStringIC(self,'HbsAg','HbsAg',sayfa2_Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
+  setDataStringIC(self,'AntiHbs','AntiHbs',sayfa2_Kolon2,'m',80,'','','','',1,'1;Pozitif,-1;Negatif');
+  setDataStringIC(self,'AntiHCV','AntiHCV',sayfa2_Kolon2,'mm',80,'','','','',1,'1;Pozitif,-1;Negatif');
+  setDataStringIC(self,'HIV','AntiHIV',sayfa2_Kolon2,'mm',80,'','','','',1,'1;Pozitif,-1;Negatif');
+
+  setDataStringBLabel(self,'izlemOrder',sayfa2_Kolon2,'',250,'Tedavi Ýzlem', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,izlemPanel, 'izlemPanel','',sayfa2_Kolon2,'',250,450);
 
 
-  setDataStringBLabel(self,'tedaviOrder',Kolon3,'',250,'Diyaliz Order', '', '', True, clRed, taCenter);
-  setDataStringCurr(self,'kurukilo','Kuru Kilo',Kolon3,'',80,'0.00',1);
-  DiyalizTedaviControlleriniFormaEkle(Kolon3,False);
 
-  setDataStringBLabel(self,'izlemOrder',Kolon3,'',250,'Tedavi Ýzlem', '', '', True, clRed, taCenter);
-  setDataStringKontrol(self,izlemPanel, 'izlemPanel','',Kolon3,'',250,430);
+ // TcxImageComboKadir(FindComponent('HbsAg')).Properties.Buttons[0].Enabled := False;
+ // TcxImageComboKadir(FindComponent('AntiHbs')).Properties.Buttons[0].Enabled  := False;
+ // TcxImageComboKadir(FindComponent('AntiHCV')).Properties.Buttons[0].Enabled  := False;
+ // TcxImageComboKadir(FindComponent('HIV')).Properties.Buttons[0].Enabled  := False;
+
+  setDataStringBLabel(self,'GridTetkiklerBaslik',sayfa2_Kolon3,'',450,'Son 6 Aylýk Tetkik Sonuç', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,GridTetkikler, 'GridTetkikler','',sayfa2_Kolon3,'',450,250);
+  setDataStringBLabel(self,'GridIlaclarBaslik',sayfa2_Kolon3,'',450,'Ýlaç Tedavi Order', '', '', True, clRed, taCenter);
+  setDataStringKontrol(self,GridIlaclar, 'GridIlaclar','',sayfa2_Kolon3,'', 450,250);
+
 
   Kolon4.Visible := false;
 
-  SayfaCaption('Uzman Muayene','','','','');
+  SayfaCaption('Uzman Muayene','Tedavi','','','');
 
 
 end;

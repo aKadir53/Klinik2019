@@ -17,8 +17,8 @@ uses
 
 type
   TfrmTeleEKG = class(TGirisForm)
-    tarih1: TcxDateEdit;
-    tarih2: TcxDateEdit;
+    tarih1: TcxDateEditKadir;
+    tarih2: TcxDateEditKadir;
     DiyalizTip: TcxRadioGroup;
     memData: TdxMemData;
     memDatadosyaNo: TStringField;
@@ -104,18 +104,18 @@ begin
     datalar.TeleEkg.code := ADO_SQL.FieldByName('code').AsString;
     _dosyaNO_ := ADO_SQL.FieldByName('dosyaNo').AsString;
     _gelisNo_ := ADO_SQL.FieldByName('gelisNo').AsString;
+    _HastaAdSoyad_ := ADO_SQL.FieldByName('Hasta').AsString + ' ('+ADO_SQL.FieldByName('Name1').AsString + ')';
 
-    if mrYes = ShowPopupForm('Düzenle',TeleEkgDuzenle)
+    if mrYes = ShowPopupForm(_HastaAdSoyad_,TeleEkgDuzenle)
     Then Begin
-          ado := TADOQuery.Create(nil);
           sql := 'update hareketler set islemAciklamasi = ' + QuotedStr(datalar.TeleEkg.ack) +
-                ',TARIH = ' + tarihal(datalar.TeleEkg.Tarih) +
+                ',TARiH = ' + QuotedStr(FormatDateTime('YYYYMMDD',datalar.TeleEkg.Tarih)) +
                 ' where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNo_ +
                 ' and code = ' + QuotedStr(datalar.TeleEkg.code);
-          datalar.QueryExec(ado,sql);
+          datalar.QueryExec(sql);
 
-          ADO_SQL.Refresh;
-          ado.Free;
+          ADO_SQL.Requery();
+
     End;
 end;
 
@@ -123,6 +123,7 @@ procedure TfrmTeleEKG.Yazdir;
 var
   sql , tarih1_ , tarih2_ : string;
   ado : TADOQuery;
+   DatasetKadir : TDataSetKadir;
 begin
    KayitDegis := False;
    memData.Active := false;
@@ -130,21 +131,23 @@ begin
 
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
+   try
+     tarih1_ := tarihal(tarih1.date);
+     tarih2_ := tarihal(tarih2.date);
 
-   tarih1_ := tarihal(tarih1.date);
-   tarih2_ := tarihal(tarih2.date);
+     sql := 'sp_TeleEKGPIVOT @tarih1 = ' + QuotedStr(tarih1_) + ',@tarih2 = ' + QuotedStr(tarih2_) +
+                             ',@tip = ' + inttostr(DiyalizTip.ItemIndex) +
+                             ',@Hasta = ' + QuotedStr('');
+     datalar.QuerySelect(ado,sql);
+     memData.LoadFromDataSet(ado);
 
-   sql := 'sp_TeleEKGPIVOT @tarih1 = ' + QuotedStr(tarih1_) + ',@tarih2 = ' + QuotedStr(tarih2_) +
-                           ',@tip = ' + inttostr(DiyalizTip.ItemIndex) +
-                           ',@Hasta = ' + QuotedStr('');
-   datalar.QuerySelect(ado,sql);
-   memData.LoadFromDataSet(ado);
+     DatasetKadir.Dataset0 := memData;
+     PrintYap('EKG01','\Ekg Sonuç Takip Formu',intTostr(TagfrmTeleEkg),DatasetKadir);
+   finally
+       ado.Free;
+       memData.Active := false;
+   end;
 
-
-   frmRapor.topluset.Dataset1 := memData;
-   frmRapor.raporData1(frmRapor.topluset ,'EKG01','\Ekg Sonuç Takip Formu');
-   frmRapor.ShowModal;
-   ado.Free;
 
 end;
 procedure TfrmTeleEKG.cxKaydetClick(Sender: TObject);
@@ -160,7 +163,9 @@ inherited;
   -1 : begin
          yazdir;
        end;
-
+  -5 : begin
+         Duzenle;
+       end;
 
   end;
 
@@ -179,13 +184,14 @@ var
   ado : TADOQuery;
 begin
 
-   tarih1_ := tarihal(tarih1.date);
-   tarih2_ := tarihal(tarih2.date);
+   tarih1_ := tarih1.GetValue;
+   tarih2_ := tarih2.GetValue;
 
-   sql := 'select code,hk.HASTAADI+'' ''+hk.HASTASOYADI Hasta,hk.dosyaNo,gelisno, NAME1,cast(TARIH as datetime) TARIH,islemAciklamasi sonuc from hareketler h' +
+   sql := 'select code,hk.HASTAADI+'' ''+hk.HASTASOYADI Hasta,hk.dosyaNo,gelisno, NAME1,Tarih TARIH,islemAciklamasi sonuc from hareketler h' +
           ' join hastakart hk on hk.dosyaNo = h.dosyaNo ' +
-          ' where code in (''530100'',''801840'') and TARIH between ' + QuotedStr(tarih1_) +
+          ' where code in (''530100'',''801840'') and h.Tarih between ' + QuotedStr(tarih1_) +
           ' and ' + QuotedStr(tarih2_) + ' and hk.HASTAADI like ' + QuotedStr(''+'%') +
+          ' and h.Tip = ''L''' +
           ' order by hk.HASTAADI,hk.HASTASOYADI,dosyano,gelisNo';
 
    datalar.QuerySelect(ado_sql,sql);
@@ -197,8 +203,9 @@ begin
 
   setDataStringKontrol(self,tarih1, 'Tarih1','Tarih Aralýðý',Kolon1,'trh',110);
   setDataStringKontrol(self,tarih2, 'Tarih2','',Kolon1,'trh',110);
-  setDataStringKontrol(self,DiyalizTip, 'DiyalizTip','',Kolon1,'',290);
+ // setDataStringKontrol(self,DiyalizTip, 'DiyalizTip','',Kolon1,'',290);
   addButton(self,btnListele,'btnListele', '','Liste',Kolon1,'trh',60);
+  TcxButton(FindComponent('btnListele')).OnClick := btnListeleClick;
   setDataStringKontrol(self,cxGrid2, 'cxGrid2','',Kolon1,'',750,0,alLeft);
 
 end;

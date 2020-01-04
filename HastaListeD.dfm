@@ -448,6 +448,12 @@ object frmHastaListeD: TfrmHastaListeD
     Images = DATALAR.imag24png
     Left = 384
     Top = 110
+    object R1: TMenuItem
+      Tag = -8
+      Caption = 'Rapor'
+      ImageIndex = 98
+      OnClick = cxButtonCClick
+    end
     object Recete: TMenuItemModul
       Tag = -7
       Caption = 'Re'#231'ete'

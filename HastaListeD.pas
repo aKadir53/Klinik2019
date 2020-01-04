@@ -70,6 +70,7 @@ type
     N2: TMenuItem;
     ListeColumn2: TcxGridDBColumn;
     E2: TMenuItem;
+    R1: TMenuItem;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -159,7 +160,7 @@ begin
   GirisFormRecord.F_Doktor_ := _Dataset.FieldByName('doktor').AsString;
   GirisFormRecord.F_Makina_ := _Dataset.FieldByName('MakinaNo').AsString;
   GirisFormRecord.F_Seans_ := _Dataset.FieldByName('Seans').AsString;
-
+  GirisFormRecord.F_mobilTel_ := _Dataset.FieldByName('EV_TEL1').AsString;
   if _Dataset.RecordCount = 0 then exit;
 
   case Tcontrol(sender).tag of
@@ -182,6 +183,13 @@ begin
           if F <> nil then F.ShowModal;
        // ReceteForm(ado_BransKodlari.FieldByName('dosyaNo').AsString,ado_BransKodlari.FieldByName('gelisNo').AsString);
       end;
+
+ -8 : begin
+          F := FormINIT(TagfrmRaporDetay,GirisFormRecord,ikEvet,'');
+          F._foto_ := _foto_;
+          if F <> nil then F.ShowModal;
+      end;
+
 
  -20 : begin
         //

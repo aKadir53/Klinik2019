@@ -284,6 +284,11 @@ begin
             ShowMessageSkin('Kullanýcý Adý Hatalý','','','info');
             Exit;
           end;
+          if login.FieldValues['Aktif'] = 0 then
+          begin
+            ShowMessageSkin('Kullanýcý Pasif Durumda','','','info');
+            Exit;
+          end;
           if IsNull (trim(login.FieldValues['password'])) then
           begin
             ShowMessageSkin('Kullanýcý Adý Kullanýma Kapalý','','','info');
@@ -359,6 +364,12 @@ begin
         datalar.LoginInOut.Login := lgnIn;
         if not UpdateThermo (7, iThermo, 'Log kaydý yazýlýyor') then Exit;
         datalar.LoginInOut.Execute;
+
+
+ //       datalar.AlpemixRun := datalar.QuerySelect('select SLX from parametreler where slk = ''00'' and SLB = ''UD''').FieldByName('SLX').AsString;
+
+
+
       finally
         FreeThermo (iThermo);
       end;

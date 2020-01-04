@@ -243,7 +243,8 @@ begin
         ' from hareketler h ' +
         ' join hastakart hk on hk.dosyaNo = h.dosyaNo ' +
         ' where Tarih between ' + txtTopPanelTarih1.GetSQLValue('YYYY-MM-DD') + ' and ' + txtTopPanelTarih2.GetSQLValue('YYYY-MM-DD') +
-        ' and hk.sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and h.Tip = ''S''';
+        ' and hk.sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and h.Tip = ''S''' +
+        ' and h.Seans = ' + QuotedStr(txtSeansTopPanel.Text);
 
   datalar.QuerySelect(ado,sql);
 

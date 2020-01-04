@@ -525,6 +525,14 @@ begin
   pnlUserGrup.Align := alClient;
 //  setDataStringKontrol(self,pnlUserGrup,'pnlUserGrup','',sayfa2_kolon1,'',350,350);
 
+  Grup := TcxImageComboKadir.Create(self);
+  Grup.Conn := nil;
+  Grup.ItemList := '0;Pasif,1;Aktif';
+  Grup.Filter := '';
+  setDataStringKontrol(self,Grup,'Aktif','Durum',kolon1,'',70);
+  OrtakEventAta(Grup);
+
+
 
   SetGrid(CreateGrid('cxGridUserFirma',self,False),'kullanici,sirketKod,Tanimi',
                'TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
