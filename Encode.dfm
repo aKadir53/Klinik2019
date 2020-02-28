@@ -1,0 +1,60 @@
+object Form12: TForm12
+  Left = 0
+  Top = 0
+  Caption = 'Form12'
+  ClientHeight = 137
+  ClientWidth = 527
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object txtOrd: TcxTextEdit
+    Left = 120
+    Top = 30
+    ParentFont = False
+    Style.Font.Charset = DEFAULT_CHARSET
+    Style.Font.Color = clWindowText
+    Style.Font.Height = -16
+    Style.Font.Name = 'Tahoma'
+    Style.Font.Style = [fsBold]
+    Style.IsFontAssigned = True
+    TabOrder = 0
+    Width = 393
+  end
+  object txtNew: TcxTextEdit
+    Left = 120
+    Top = 67
+    ParentFont = False
+    Style.Font.Charset = DEFAULT_CHARSET
+    Style.Font.Color = clWindowText
+    Style.Font.Height = -16
+    Style.Font.Name = 'Tahoma'
+    Style.Font.Style = [fsBold]
+    Style.IsFontAssigned = True
+    TabOrder = 1
+    Width = 393
+  end
+  object btnSifrele: TcxButton
+    Left = 120
+    Top = 100
+    Width = 105
+    Height = 25
+    Caption = #350'ifrele'
+    TabOrder = 2
+    OnClick = btnSifreleClick
+  end
+  object cxButton1: TcxButton
+    Left = 231
+    Top = 100
+    Width = 105
+    Height = 25
+    Caption = #199#246'z'
+    TabOrder = 3
+    OnClick = cxButton1Click
+  end
+end

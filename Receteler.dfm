@@ -53,9 +53,9 @@ object frmReceteler: TfrmReceteler
       ImageIndex = 0
       object cxGrid2: TcxGrid
         Left = 0
-        Top = 201
+        Top = 209
         Width = 902
-        Height = 278
+        Height = 270
         Align = alClient
         Font.Charset = TURKISH_CHARSET
         Font.Color = clWindowText
@@ -66,6 +66,9 @@ object frmReceteler: TfrmReceteler
         TabOrder = 0
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
+        ExplicitLeft = 136
+        ExplicitTop = 217
+        ExplicitHeight = 278
         object ReceteDetay: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -91,14 +94,8 @@ object frmReceteler: TfrmReceteler
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
             item
-              Format = '#,###.#0'
-              Kind = skSum
-              FieldName = 'borc'
-            end
-            item
-              Format = '#,###.#0'
-              Kind = skSum
-              FieldName = 'alacak'
+              Kind = skCount
+              Column = ReceteDetayilacKodu
             end>
           DataController.Summary.SummaryGroups = <>
           Filtering.MRUItemsList = False
@@ -119,6 +116,7 @@ object frmReceteler: TfrmReceteler
           OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
           OptionsView.CellAutoHeight = True
           OptionsView.ColumnAutoWidth = True
+          OptionsView.Footer = True
           OptionsView.GroupByBox = False
           OptionsView.Indicator = True
           OptionsView.RowSeparatorColor = clBlack
@@ -364,7 +362,6 @@ object frmReceteler: TfrmReceteler
         TabOrder = 1
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
-        ExplicitTop = -6
         object Recete: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -392,7 +389,8 @@ object frmReceteler: TfrmReceteler
           DataController.Summary.FooterSummaryItems = <
             item
               Kind = skCount
-              FieldName = 'DosyaNo'
+              FieldName = 'HASTAADI'
+              Column = ReceteHASTAADI
             end>
           DataController.Summary.SummaryGroups = <>
           Filtering.MRUItemsList = False
@@ -463,7 +461,7 @@ object frmReceteler: TfrmReceteler
           end
           object Recetedoktor: TcxGridDBColumn
             Caption = 'Doktor'
-            DataBinding.FieldName = 'doktor'
+            DataBinding.FieldName = 'DoktorAdi'
             Width = 107
           end
           object ReceteDosyaNo: TcxGridDBColumn
@@ -508,6 +506,14 @@ object frmReceteler: TfrmReceteler
           GridView = Recete
           Options.DetailFrameColor = clHighlight
         end
+      end
+      object cxSplitter1: TcxSplitter
+        Left = 0
+        Top = 201
+        Width = 902
+        Height = 8
+        AlignSplitter = salTop
+        ExplicitWidth = 278
       end
     end
     object cxTabSheet2: TcxTabSheet
@@ -554,14 +560,8 @@ object frmReceteler: TfrmReceteler
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
             item
-              Format = '#,###.#0'
-              Kind = skSum
-              FieldName = 'borc'
-            end
-            item
-              Format = '#,###.#0'
-              Kind = skSum
-              FieldName = 'alacak'
+              Kind = skCount
+              Column = cxGridDBTableView1ilacKodu
             end>
           DataController.Summary.SummaryGroups = <>
           Filtering.MRUItemsList = False
@@ -582,6 +582,7 @@ object frmReceteler: TfrmReceteler
           OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
           OptionsView.CellAutoHeight = True
           OptionsView.ColumnAutoWidth = True
+          OptionsView.Footer = True
           OptionsView.GroupByBox = False
           OptionsView.Indicator = True
           OptionsView.RowSeparatorColor = clBlack
@@ -796,9 +797,9 @@ object frmReceteler: TfrmReceteler
       end
       object cxGrid4: TcxGrid
         Left = 0
-        Top = 233
+        Top = 241
         Width = 902
-        Height = 246
+        Height = 238
         Align = alClient
         Font.Charset = TURKISH_CHARSET
         Font.Color = clWindowText
@@ -809,6 +810,9 @@ object frmReceteler: TfrmReceteler
         TabOrder = 1
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
+        ExplicitLeft = 184
+        ExplicitTop = 265
+        ExplicitHeight = 246
         object cxGridDBTableView2: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -834,14 +838,8 @@ object frmReceteler: TfrmReceteler
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
             item
-              Format = '#,###.#0'
-              Kind = skSum
-              FieldName = 'borc'
-            end
-            item
-              Format = '#,###.#0'
-              Kind = skSum
-              FieldName = 'alacak'
+              Kind = skCount
+              Column = cxGridDBColumn14
             end>
           DataController.Summary.SummaryGroups = <>
           Filtering.MRUItemsList = False
@@ -862,6 +860,7 @@ object frmReceteler: TfrmReceteler
           OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
           OptionsView.CellAutoHeight = True
           OptionsView.ColumnAutoWidth = True
+          OptionsView.Footer = True
           OptionsView.GroupByBox = False
           OptionsView.Indicator = True
           OptionsView.RowSeparatorColor = clBlack
@@ -1103,6 +1102,14 @@ object frmReceteler: TfrmReceteler
           GridView = cxGridDBTableView2
           Options.DetailFrameColor = clHighlight
         end
+      end
+      object cxSplitter2: TcxSplitter
+        Left = 0
+        Top = 233
+        Width = 902
+        Height = 8
+        AlignSplitter = salTop
+        ExplicitWidth = 246
       end
     end
     object cxTabSheet3: TcxTabSheet
@@ -1600,18 +1607,18 @@ object frmReceteler: TfrmReceteler
       'sum (kullanimAdet*kullanimadet2) toplamDoz from recete R'
       'join receteDetay RD on R.id = RD.receteId'
       'group by ilacKodu,ilacAdi')
-    Left = 560
+    Left = 728
     Top = 114
   end
   object DataSource2: TDataSource
     DataSet = ADO_toplam
-    Left = 614
+    Left = 782
     Top = 114
   end
   object DataSource3: TDataSource
     DataSet = ADO_Hast
-    Left = 710
-    Top = 130
+    Left = 582
+    Top = 362
   end
   object ADO_Hast: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1622,8 +1629,8 @@ object frmReceteler: TfrmReceteler
       'sum (kullanimAdet*kullanimadet2) toplamDoz from recete R'
       'join receteDetay RD on R.id = RD.receteId'
       'group by ilacKodu,ilacAdi')
-    Left = 712
-    Top = 82
+    Left = 624
+    Top = 362
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 40

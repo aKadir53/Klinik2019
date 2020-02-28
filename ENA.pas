@@ -767,7 +767,7 @@ begin
           sql := 'select h.name1,h.Tarih,l.islemKodu from hareketlerLab h ' +
                  ' join labtestler_firma l on l.butKodu = h.code and h.tip1 = l.tip and l.LabID = ' + QuotedStr(datalar._labID) +
                  ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis +
-                 ' and charindex(''.'',h.code) = 0';
+                 ' and charindex(''.'',h.code) = 0 and h.tip1 = l.tip';
 
                 (*
                  ' union all ' +

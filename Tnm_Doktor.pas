@@ -217,6 +217,10 @@ begin
         Sirketlerx.ItemIndex := -1;
         setDataStringKontrol(self,Sirketlerx,'SirketKod','Þirket',kolon1,'',120);
 
+        setDataString(self,'TDisID','TDisID',Kolon1,'TDis',80);
+        addButton(self,nil,'btnTDisID','','TDisID Getir',Kolon1,'TDis',120,ButtonClick,10);
+
+
 (*
         setDataStringBLabel(self,'CalismaBilgisi',sayfa2_Kolon1,'',290,'Seans Çalýþma Bilgisi', '', '', True, clRed, taCenter);
         setDataStringC(self,'pazartesi','Pazatesi',sayfa2_Kolon1,'',80,'0,1,1-2,1-3,2,2-3,3');
@@ -227,17 +231,19 @@ begin
         setDataStringC(self,'cumartesi','Cumartesi',sayfa2_Kolon1,'',80,'0,1,1-2,1-3,2,2-3,3');
   *)
        // setDataImage(self,'foto','Foto',Kolon2,'',120,100);
+       (*
         if Datalar.UserGroup = '1'
         then begin
           addButton(self,nil,'btnFirmalar','','Doktora Firma Ata',sayfa2_Kolon1,'btn',120,ButtonClick,0);
           addButton(self,nil,'btnFirmaIptal','','Firmayý Serbest Býrak',sayfa2_Kolon1,'btn',120,ButtonClick,1);
         end;
         setDataStringKontrol(self,GridFirmalar,'GridFirmalar','',sayfa2_Kolon1,'',1,1,alClient);
+         *)
 
         setDataStringKontrol(self,cxFotoPanel , 'cxFotoPanel','',Kolon2,'',121);
         Foto.Properties.OnEditValueChanged := PropertiesEditValueChanged;
 
-        SayfaCaption('Taným Bilgileri','Çalýþma Bilgileri','','','');
+        SayfaCaption('Taným Bilgileri','','','','');
         sayfa2_Kolon2.Width := 0;
         sayfa2_Kolon3.Width := 0;
         sayfa2_kolon2.Visible := false;
@@ -468,6 +474,7 @@ var
   List : TListeAc;
   L : ArrayListeSecimler;
   Lst : ListeSecimler;
+  doktorTc : string;
 begin
   //TcxTextEditKadir(FindComponent('TDisID')).EditValue := ID;
 
@@ -532,6 +539,18 @@ begin
                    );
      end;
 
+    10 : begin
+            ID := 0;
+            doktorTc := TcxTextEdit(FindComponent('tcKimlikNo')).EditValue;
+            TDISDoktorIDGetir(doktorTc,ID);
+            TcxTextEdit(FindComponent('TDisID')).EditValue := ID;
+
+            datalar.QueryExec('update DoktorlarT set ' +
+                              'TDisID = ' + QuotedStr(intTostr(ID)) +
+                              ' where tcKimlikNo = ' + QuotedStr(doktorTc));
+
+         end;
+
      end;
 
 end;
@@ -553,20 +572,39 @@ end;
 procedure TfrmDoktorlar.cxFotoEkleButtonClick(Sender: TObject);
 var
  Fo : TFileOpenDialog;
- filename,dosyaNo : string;
- //jp : TJPEGImage;
+ filename,dosyaNo ,dosyaTip : string;
+ image : TcxImage;
 begin
   inherited;
   case TcxButton(Sender).tag of
   -50 : begin
-          Fo := TFileOpenDialog.Create(nil);
-          try
-            if not fo.Execute then Exit;
-            filename := fo.FileName;
-          finally
-            fo.Free;
-          end;
-          Foto.Picture.LoadFromFile(filename);
+            Fo := TFileOpenDialog.Create(nil);
+            try
+              if not fo.Execute then Exit;
+              filename := fo.FileName;
+              dosyaTip := ExtractFileExt(filename);
+              dosyaTip := StringReplace(dosyaTip,'.','',[rfReplaceAll]);
+            finally
+              fo.Free;
+            end;
+
+            if (dosyaTip = 'JPG') or
+               (dosyaTip = 'jpg') or
+               (dosyaTip = 'jpeg') or
+               (dosyaTip = 'JPEG')
+            then begin
+                image := TcxImage.Create(nil);
+                try
+                  image.Picture.LoadFromFile(filename);
+                  StretchImage(image,stHerDurumdaStretch,160,240);
+                  Foto.Picture := image.Picture;
+                finally
+                  image.free;
+                end;
+            end
+            else begin
+             ShowMessageSkin('Sadece JPG formatlarý Yüklenebilir','','','info');
+            end;
         end;
   -51 : begin
           Foto.Clear;
@@ -601,7 +639,7 @@ begin
     Kaydet : begin
                if TcxImageComboKadir(FindComponent('MesulMudur')).EditValue = 1
                then begin
-                 datalar.QueryExec('set nocount off update DoktorlarT set MesulMudur = 0 set nocount on');
+                // datalar.QueryExec('set nocount on update DoktorlarT set MesulMudur = 0 set nocount off');
                end;
 
              end;

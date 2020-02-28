@@ -140,6 +140,10 @@ type
     btnAra: TcxButton;
     Panel1: TPanel;
     txtdogumTarihi: TcxDateEditKadir;
+    txtTel: TcxTextEdit;
+    cxLabel14: TcxLabel;
+    txtAdres: TcxTextEdit;
+    cxLabel15: TcxLabel;
     procedure txtBranslarPropertiesChange(Sender: TObject);
     procedure btnKabulClick(Sender: TObject);
     procedure btnAraClick(Sender: TObject);
@@ -449,10 +453,10 @@ begin
            ',@HASTASOYADI = ' + #39 + txtHastaSoyAdi.Text + #39 +
            ',@BABAADI = ' + #39 + '' + #39 +
            ',@ANAADI = ' + #39 + '' + #39 +
-           ',@EV_ADRES = ' + #39 + '' + #39 +
+           ',@EV_ADRES = ' + #39 + txtAdres.Text + #39 +
            ',@EV_PK = ' + #39 + '' + #39 +
            ',@EV_SEHIR = ' + #39 + '' + #39 +
-           ',@EV_TEL1 = ' + #39 + '' + #39 +
+           ',@EV_TEL1 = ' + #39 + txtTel.Text + #39 +
            ',@EV_TEL2 = ' + #39 + '' + #39 +
            ',@EMAIL = ' + #39 + 'a@' + #39 +
            ',@DOGUMYERI = ' + #39 + '' + #39 +
@@ -567,9 +571,8 @@ begin
        Else
          ShowMessageSkin('Rapor Sistemde Kayýtlý','','','info');
    end;
-
-  // close;
    datalar.ADOConnection2.CommitTrans;
+   close;
   except on e : Exception do
     begin
         datalar.ADOConnection2.RollbackTrans;
@@ -594,6 +597,14 @@ var
  // RaporCvpR : RaporIslemleriWS.RaporCevapDVO;
 begin
 
+   if (txtTel.Text = '') or
+      (txtAdres.Text = '') or
+      (txtTcKimlikNoAra.Text = '') or
+      (txtTakipTarihi.Text = '')
+   then begin
+     ShowMessageSkin('Sorgulama Bilgileri Eksik','','','info');
+     exit;
+   end;
 
 
    if RbTc.Checked
@@ -613,8 +624,8 @@ begin
           datalar.HastaKabulWS.GirisParametre.bransKodu := datalar.KurumBransi;
           datalar.HastaKabulWS.GirisParametre.provizyonTarihi := txtTakipTarihi.Text;
           datalar.HastaKabulWS.GirisParametre.takipNo := txtilkTakip.Text;
-          datalar.HastaKabulWS.GirisParametre.hastaTelefon :=   '0123456789';
-          datalar.HastaKabulWS.GirisParametre.hastaAdres :=   'Yeni Kayit';
+          datalar.HastaKabulWS.GirisParametre.hastaTelefon :=  txtTel.Text;
+          datalar.HastaKabulWS.GirisParametre.hastaAdres :=   txtAdres.Text;
 
           //HastaKabul.GirisParametre.yeniDoganBilgisi := nil;
 
@@ -719,29 +730,37 @@ begin
      txtHastaAdi.Text := '';
      txtHastaSoyadi.Text := '';
      txtdogumTarihi.Text := '';
-
      memDataRaporlar.Close;
-
      ShowMessageSkin('Takip Ýptal Edildi','','','info');
-
+     close;
    End
    Else
    Begin
      cxPageControl2.ActivePageIndex := 1; 
      txtHata.Lines.Add(cvp);
-
    End;
+
+
 end;
 
 procedure TfrmHizliKayit.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+   inherited;
 
    if key = vk_f5
    Then btnAra.Click;
 
    if key = vk_f4
    Then btnKabul.Click;
+
+ (*
+  if (key = VK_ESCAPE) and (Shift = [ssCtrl])
+  then begin
+     close;
+  end;
+   *)
+
 
 
 end;

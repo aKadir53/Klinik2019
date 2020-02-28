@@ -1,6 +1,7 @@
 object frmHizliKayit: TfrmHizliKayit
   Left = 303
   Top = 93
+  BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'frmHizliKayit'
   ClientHeight = 496
@@ -329,7 +330,7 @@ object frmHizliKayit: TfrmHizliKayit
       Style.Font.Style = [fsBold]
       Style.IsFontAssigned = True
       TabOrder = 0
-      Height = 90
+      Height = 133
       Width = 335
       object cxLabel1: TcxLabel
         Left = 9
@@ -531,8 +532,8 @@ object frmHizliKayit: TfrmHizliKayit
         Width = 121
       end
       object cxLabel8: TcxLabel
-        Left = 265
-        Top = 127
+        Left = 220
+        Top = 124
         AutoSize = False
         Caption = 'Servis'
         ParentColor = False
@@ -620,10 +621,72 @@ object frmHizliKayit: TfrmHizliKayit
         TabOrder = 16
         Width = 84
       end
+      object txtTel: TcxTextEdit
+        Left = 120
+        Top = 79
+        Style.BorderStyle = ebsUltraFlat
+        Style.LookAndFeel.NativeStyle = False
+        Style.LookAndFeel.SkinName = 'mcskin'
+        Style.TransparentBorder = True
+        StyleDisabled.LookAndFeel.NativeStyle = False
+        StyleDisabled.LookAndFeel.SkinName = 'mcskin'
+        StyleFocused.LookAndFeel.NativeStyle = False
+        StyleFocused.LookAndFeel.SkinName = 'mcskin'
+        StyleHot.LookAndFeel.NativeStyle = False
+        StyleHot.LookAndFeel.SkinName = 'mcskin'
+        TabOrder = 17
+        Width = 121
+      end
+      object cxLabel14: TcxLabel
+        Left = 8
+        Top = 83
+        AutoSize = False
+        Caption = 'Telefon'
+        ParentColor = False
+        Style.Color = clSilver
+        Style.LookAndFeel.NativeStyle = True
+        Style.TextStyle = [fsBold]
+        StyleDisabled.LookAndFeel.NativeStyle = True
+        StyleFocused.LookAndFeel.NativeStyle = True
+        StyleHot.LookAndFeel.NativeStyle = True
+        Height = 17
+        Width = 110
+      end
+      object txtAdres: TcxTextEdit
+        Left = 120
+        Top = 101
+        Style.BorderStyle = ebsUltraFlat
+        Style.LookAndFeel.NativeStyle = False
+        Style.LookAndFeel.SkinName = 'mcskin'
+        Style.TransparentBorder = True
+        StyleDisabled.LookAndFeel.NativeStyle = False
+        StyleDisabled.LookAndFeel.SkinName = 'mcskin'
+        StyleFocused.LookAndFeel.NativeStyle = False
+        StyleFocused.LookAndFeel.SkinName = 'mcskin'
+        StyleHot.LookAndFeel.NativeStyle = False
+        StyleHot.LookAndFeel.SkinName = 'mcskin'
+        TabOrder = 19
+        Width = 210
+      end
+      object cxLabel15: TcxLabel
+        Left = 9
+        Top = 105
+        AutoSize = False
+        Caption = 'Adres'
+        ParentColor = False
+        Style.Color = clSilver
+        Style.LookAndFeel.NativeStyle = True
+        Style.TextStyle = [fsBold]
+        StyleDisabled.LookAndFeel.NativeStyle = True
+        StyleFocused.LookAndFeel.NativeStyle = True
+        StyleHot.LookAndFeel.NativeStyle = True
+        Height = 17
+        Width = 110
+      end
     end
     object cxGroupBox2: TcxGroupBox
       Left = 1
-      Top = 91
+      Top = 134
       Align = alClient
       Caption = 'Sorgulama Sonu'#231'lar'#305
       ParentFont = False
@@ -634,17 +697,17 @@ object frmHizliKayit: TfrmHizliKayit
       Style.Font.Style = [fsBold]
       Style.IsFontAssigned = True
       TabOrder = 1
-      Height = 368
+      Height = 325
       Width = 335
       object cxPageControl2: TcxPageControl
         Left = 3
         Top = 15
         Width = 329
-        Height = 343
+        Height = 300
         Align = alClient
         TabOrder = 0
         Properties.ActivePage = cxTabSheet1
-        ClientRectBottom = 336
+        ClientRectBottom = 293
         ClientRectLeft = 3
         ClientRectRight = 322
         ClientRectTop = 26
@@ -947,7 +1010,7 @@ object frmHizliKayit: TfrmHizliKayit
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'mcskin'
             TabOrder = 0
-            Height = 310
+            Height = 267
             Width = 319
           end
         end

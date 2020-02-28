@@ -82,8 +82,8 @@ object frmIlacSarf: TfrmIlacSarf
     ParentFont = False
     TabOrder = 1
     object chkDoz: TcxCheckBox
-      Left = 423
-      Top = 0
+      Left = 183
+      Top = -1
       Caption = 'Detay G'#246'ster'
       ParentFont = False
       Style.Font.Charset = TURKISH_CHARSET
@@ -94,7 +94,6 @@ object frmIlacSarf: TfrmIlacSarf
       Style.IsFontAssigned = True
       TabOrder = 0
       Transparent = True
-      Visible = False
       OnClick = chkDozClick
       Width = 110
     end
@@ -118,9 +117,9 @@ object frmIlacSarf: TfrmIlacSarf
   end
   object pnlOnay: TPanel
     Left = 0
-    Top = 676
+    Top = 662
     Width = 654
-    Height = 32
+    Height = 46
     Align = alBottom
     Color = clBackground
     TabOrder = 2
@@ -141,7 +140,7 @@ object frmIlacSarf: TfrmIlacSarf
       Left = 578
       Top = 1
       Width = 75
-      Height = 30
+      Height = 44
       Align = alRight
       Caption = 'Vazge'#231
       TabOrder = 0
@@ -157,9 +156,12 @@ object frmIlacSarf: TfrmIlacSarf
       Left = 503
       Top = 1
       Width = 75
-      Height = 30
+      Height = 44
+      Hint = 'Re'#231'eteye Ekle'
       Align = alRight
       Caption = '&i'#351'le'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       Font.Charset = TURKISH_CHARSET
       Font.Color = clWindowText
@@ -169,12 +171,52 @@ object frmIlacSarf: TfrmIlacSarf
       ParentFont = False
       OnClick = btnSendClick
     end
+    object btnSIKcikar: TcxButton
+      Left = 76
+      Top = 1
+      Width = 75
+      Height = 44
+      Hint = #304'lac'#305' S'#305'k Kullan'#305'm Listesinden '#199#305'kar'
+      Align = alLeft
+      Caption = 'S'#305'k Kullan'#305'mdan '#199#305'kar'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+      Font.Charset = TURKISH_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+      OnClick = btnSIKcikarClick
+    end
+    object btnSIKEkle: TcxButton
+      Left = 1
+      Top = 1
+      Width = 75
+      Height = 44
+      Hint = #304'lac'#305' S'#305'k Kullan'#305'm Listesine Ekle'
+      Align = alLeft
+      Caption = 'S'#305'k Kullan'#305'ma Ekle'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+      Font.Charset = TURKISH_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+      OnClick = btnSIKEkleClick
+    end
   end
   object GroupBox2: TGroupBox
     Left = 0
     Top = 53
     Width = 654
-    Height = 623
+    Height = 609
     Align = alClient
     Caption = #304'la'#231'lar  '
     Font.Charset = DEFAULT_CHARSET
@@ -226,7 +268,7 @@ object frmIlacSarf: TfrmIlacSarf
       Left = 2
       Top = 15
       Width = 650
-      Height = 444
+      Height = 343
       Align = alTop
       TabOrder = 0
       object gridIlacSarf: TcxGridDBTableView
@@ -360,6 +402,27 @@ object frmIlacSarf: TfrmIlacSarf
           DataBinding.FieldName = 'YOL'
           Visible = False
         end
+        object gridIlacSarfColumn9: TcxGridDBColumn
+          DataBinding.FieldName = 'EtkenMadde'
+          Visible = False
+        end
+        object gridIlacSarfColumn10: TcxGridDBColumn
+          Caption = 'Alerji'
+          DataBinding.FieldName = 'AlerjiVar'
+          PropertiesClassName = 'TcxImageComboBoxProperties'
+          Properties.Items = <
+            item
+              Description = 'Evet'
+              Value = 1
+            end
+            item
+              Value = 0
+            end>
+          HeaderAlignmentHorz = taCenter
+          HeaderAlignmentVert = vaCenter
+          Styles.Header = cxStyle3
+          Width = 45
+        end
       end
       object cxGrid1Level1: TcxGridLevel
         GridView = gridIlacSarf
@@ -367,7 +430,7 @@ object frmIlacSarf: TfrmIlacSarf
     end
     object DBNavigator1: TDBNavigator
       Left = 2
-      Top = 603
+      Top = 589
       Width = 650
       Height = 18
       DataSource = DataSource2
@@ -379,9 +442,9 @@ object frmIlacSarf: TfrmIlacSarf
     end
     object cxGrid2: TcxGrid
       Left = 2
-      Top = 459
+      Top = 366
       Width = 650
-      Height = 144
+      Height = 223
       Align = alClient
       TabOrder = 4
       object Eklenen: TcxGridDBTableView
@@ -529,6 +592,14 @@ object frmIlacSarf: TfrmIlacSarf
         GridView = Eklenen
       end
     end
+    object cxSplitter1: TcxSplitter
+      Left = 2
+      Top = 358
+      Width = 650
+      Height = 8
+      AlignSplitter = salTop
+      Control = cxGrid1
+    end
   end
   object DataSource1: TDataSource
     Left = 228
@@ -536,15 +607,15 @@ object frmIlacSarf: TfrmIlacSarf
   end
   object DataSource2: TDataSource
     DataSet = Eklenenler
-    Left = 84
-    Top = 585
+    Left = 12
+    Top = 465
   end
   object Eklenenler: TdxMemData
     Active = True
     Indexes = <>
     SortOptions = []
-    Left = 128
-    Top = 584
+    Left = 48
+    Top = 467
     object EklenenlerETKENMADDE: TStringField
       DisplayWidth = 50
       FieldName = 'ETKENMADDE'
@@ -571,6 +642,9 @@ object frmIlacSarf: TfrmIlacSarf
     end
     object Eklenenlerperyot: TIntegerField
       FieldName = 'peryot'
+    end
+    object EklenenlerEtkenMaddeKodu: TStringField
+      FieldName = 'EtkenMaddeKodu'
     end
   end
   object cxStyleRepository1: TcxStyleRepository

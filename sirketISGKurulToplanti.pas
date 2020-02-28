@@ -101,7 +101,7 @@ type
       AButtonIndex: Integer);
     function CreateRotatedFont: HFONT;
     procedure SirketlerPropertiesChange(Sender: TObject);
-    function Ekip : TDataset;
+    function Ekip(EkipId : string = '') : TDataset;
     function Maddeler : TDataset;
     procedure SatirlarNavigatorButtonsButtonClick(Sender: TObject;
       AButtonIndex: Integer; var ADone: Boolean);
@@ -130,6 +130,7 @@ const
   gercek = 'https://efatura.uyumsoft.com.tr/Services/Integration';
 var
   frmISGKurulToplanti: TfrmISGKurulToplanti;
+  ilkYukleme : integer;
 
 implementation
 
@@ -137,16 +138,16 @@ uses data_modul, StrUtils, Jpeg;
 
 {$R *.dfm}
 
-function TfrmISGKurulToplanti.Ekip : TDataset;
+function TfrmISGKurulToplanti.Ekip(EkipId : string = '') : TDataset;
 begin
   Ekip := nil;
   KurulEkipGrid.Dataset.Connection := Datalar.ADOConnection2;
   KurulEkipGrid.Dataset.Active := False;
   KurulEkipGrid.Dataset.SQL.Text :=
-  'select AdiSoyadi,tanimi GorevTanim,eMail,Telefon from SirketISGKurulToplantiEkibi E ' +
+  'select AdiSoyadi,Gorevi,eMail,Telefon from SirketISGKurulToplantiEkibi E ' +
   ' join SIRKET_SUBE_EKIP_View SE on SE.kod = E.EkipID ' +
-  ' where ISGEkipId = 10 and SirketKod = ' +
-  QuotedStr(vartoStr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue)) +
+  ' where SirketKod = ' +
+  QuotedStr(datalar.AktifSirket) +
   ' and E.ISGKurulToplantiID = ' + QuotedStr(vartoStr(TcxButtonEditKadir(FindComponent('id')).EditValue));
   KurulEkipGrid.Dataset.Active := True;
   Ekip := KurulEkipGrid.Dataset;
@@ -337,32 +338,18 @@ var
   sql : string;
   dataset : Tdataset;
 begin
+   if ilkYukleme = 0
+   then begin
 
-   sql :=
-      ' select I.kod IGUKod,I.tanimi IGUAdi,D.kod DoktorKod,D.tanimi DoktorAdi from SIRKETLER_TNM S ' +
-      ' join SIRKET_SUBE_TNM SB on SB.sirketKod = S.sirketKod ' +
-      ' left join IGU I on I.kod = SB.IGU ' +
-      ' left join DoktorlarT D on D.kod = SB.subeDoktor ' +
-      ' where S.sirketKod = ' +
-       QuotedStr(vartostr(TcxImageComboKadir(FindComponent('SirketKod')).EditingValue));
-     //   +
-    //  ' and SB.subeKod = ' +
-    //   QuotedStr(vartostr(TcxImageComboKadir(FindComponent('subeKod')).EditingValue));
+     datalar.QueryExec('delete from SirketISGKurulToplantiEkibi where ISGKurulToplantiID = ' + TcxImageComboKadir(FindComponent('id')).EditValue );
+     sql :=
+     'insert into SirketISGKurulToplantiEkibi(ISGKurulToplantiID,EkipId) ' +
+     'select ' + varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) +
+        ',id from SIRKET_SUBE_EKIP where ISGEkipId = ' + TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue;
+     datalar.QueryExec(sql);
+     Ekip;
 
-       dataset := datalar.QuerySelect(sql);
-
-      TcxImageComboKadir(FindComponent('hekim')).EditValue := dataset.FieldByName('DoktorKod').AsString;
-      TcxImageComboKadir(FindComponent('igu')).EditValue := dataset.FieldByName('IGUKod').AsString;
-  (*
-      TcxImageComboKadir(FindComponent('calisanTemsilci')).TableTip := tpSp;
-      TcxImageComboKadir(FindComponent('calisanTemsilci')).TableName := 'exec sp_ISGFirmaEkip 10 ,' +
-                                                                         QuotedStr(vartostr(TcxImageComboKadir(FindComponent('SirketKod')).EditingValue));
-      TcxImageComboKadir(FindComponent('calisanTemsilci')).Filter := '';
-      TcxImageComboKadir(FindComponent('idariIslerGorevli')).Properties.Items :=
-      TcxImageComboKadir(FindComponent('calisanTemsilci')).Properties.Items;
-      TcxImageComboKadir(FindComponent('ustabasi')).Properties.Items :=
-      TcxImageComboKadir(FindComponent('calisanTemsilci')).Properties.Items;
-      *)
+   end;
 end;
 
 procedure TfrmISGKurulToplanti.cxKaydetClick(Sender: TObject);
@@ -374,7 +361,7 @@ begin
 
   case TControl(sender).Tag  of
 Kaydet : begin
-          Ekip;
+          Ekip(TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue);
         end;
   Yeni : begin
           TcxDateEditKadir(FindComponent('kararTarihi')).EditValue := date;
@@ -386,42 +373,13 @@ end;
 procedure TfrmISGKurulToplanti.cxButtonEditPropertiesButtonClick(Sender: TObject;
   AButtonIndex: Integer);
 begin
+    ilkYukleme := 1;
     inherited;
     Enabled;
-    Ekip;
-
+    Ekip('');
     Maddeler;
+    ilkYukleme := 0;
 
-(*
-    if (TcxTextEditKadir(FindComponent('hazirlayan')).Text <>
-       datalar.username) and
-       TcxImageComboKadir(FindComponent('Onay')).EditValue = 1
-    then begin
-       Satirlar.OptionsData.Editing := False;
-       Satirlar.OptionsData.Inserting := False;
-       Satirlar.OptionsData.Deleting := False;
-
-       TcxImageComboKadir(FindComponent('SirketKod')).Enabled := False;
-       TcxTextEditKadir(FindComponent('hazirlayan')).Enabled := False;
-       TcxImageComboKadir(FindComponent('date_create')).Enabled := False;
-       TcxImageComboKadir(FindComponent('isveren')).Enabled := False;
-       TcxImageComboKadir(FindComponent('Onay')).Enabled := False;
-
-    end
-    else
-    begin
-       Satirlar.OptionsData.Editing := True;
-       Satirlar.OptionsData.Inserting := True;
-       Satirlar.OptionsData.Deleting := True;
-
-       TcxImageComboKadir(FindComponent('SirketKod')).Enabled := True;
-       TcxTextEditKadir(FindComponent('hazirlayan')).Enabled := True;
-       TcxImageComboKadir(FindComponent('date_create')).Enabled := True;
-       TcxImageComboKadir(FindComponent('isveren')).Enabled := True;
-       TcxImageComboKadir(FindComponent('Onay')).Enabled := True;
-    end;
-
-  *)
 end;
 
 function TfrmISGKurulToplanti.Init(Sender : TObject) : Boolean;
@@ -471,6 +429,7 @@ begin
   TopluDataset.Dataset0 := datalar.QuerySelect('select * from SirketISGKurulToplanti_view where id = ' +
                                                         varTostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
   TopluDataset.Dataset1 := KurulEkipGrid.Dataset;
+  TopluDataset.Dataset2 := KurulMaddeler.Dataset;
 
   case Tcontrol(sender).Tag of
   -20 : begin
@@ -489,7 +448,8 @@ begin
           if (mailGonder(FB.isgKurulEkibiMailBilgileri,
                         'Toplantý Çaðrý Formu',
                         'Toplantý Çaðrý Formu , ekteki dosyada bilginize sunulmuþtur',
-                        'Toplantý Çaðrý Formu.PDF')
+                        'Toplantý Çaðrý Formu.PDF',
+                        'Toplantý Çaðrý')
                = '0000')
              Then ShowMessageSkin('Email Bilgilendirmesi Yapýldý','','','info')
               else ShowMessageSkin('Email Bilgilendirmesi Yapýlamadý','','','info')
@@ -559,89 +519,28 @@ begin
   sirketlerx.DisplayField := 'Tanimi';
   sirketlerx.BosOlamaz := False;
   sirketlerx.Filter := '';//datalar.sirketlerUserFilter;
-  setDataStringKontrol(self,sirketlerx,'SirketKod','Þirket',Kolon1,'',300,0,alNone,'');
-  TcxImageComboKadir(FindComponent('SirketKod')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
+  setDataStringKontrol(self,sirketlerx,'SirketKod','Þirket',Kolon1,'',150,0,alNone,'');
+  TcxImageComboKadir(FindComponent('SirketKod')).EditValue := datalar.AktifSirket;
+  TcxImageComboKadir(FindComponent('dxLaSirketKod')).Visible := False;
 
   setDataString(self,'isveren','Ýþveren',Kolon1,'',150,false,'');
 
-  igu := TcxImageComboKadir.Create(self);
-  igu.Conn := Datalar.ADOConnection2;
-  igu.TableName := 'IGU';
-  igu.ValueField := 'kod';
-  igu.DisplayField := 'Tanimi';
-  igu.BosOlamaz := False;
-  igu.Enabled := False;
-  igu.Filter := ' durum = ''Aktif''';
-  setDataStringKontrol(self,igu,'igu','Ýþ Güvenlik Uzm',Kolon1,'',150,0,alNone,'');
+
+  sirketlerx := TcxImageComboKadir.Create(self);
+  sirketlerx.Conn := Datalar.ADOConnection2;
+  sirketlerx.TableName := 'FirmaISGEkipTnm';
+  sirketlerx.ValueField := 'kod';
+  sirketlerx.DisplayField := 'Tanimi';
+  sirketlerx.BosOlamaz := False;
+  sirketlerx.Filter := '';//datalar.sirketlerUserFilter;
+  setDataStringKontrol(self,sirketlerx,'IsgEkipID','Ekip',Kolon1,'',150,0,alNone,'');
+  TcxImageComboKadir(FindComponent('IsgEkipID')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
 
 
-//  setDataString(self,'hazirlayan','Ýþ Güvenlik Uzm',Kolon1,'hz',120,false,'',True);
+  setDataStringKontrol(self,KurulEkipGrid,'KurulEkipGrid',' ',Kolon1,'',410,250,alNone,'',clLeft);
 
-  hekim := TcxImageComboKadir.Create(self);
-  hekim.Conn := Datalar.ADOConnection2;
-  hekim.TableName := 'DoktorlarT';
-  hekim.ValueField := 'kod';
-  hekim.DisplayField := 'Tanimi';
-  hekim.BosOlamaz := False;
-  hekim.Filter := ' durum = ''Aktif''';
-  hekim.Enabled := False;
-  setDataStringKontrol(self,hekim,'hekim','Ýþyeri Hekimi',Kolon1,'',150,0,alNone,'');
+  setDataStringKontrol(self,KurulMaddeler,'KurulMaddeler',' ',Kolon2,'',540,360,alNone,'',clLeft);
 
-(*
-  hekim := TcxImageComboKadir.Create(self);
-  hekim.Conn := Datalar.ADOConnection2;
-  hekim.TableTip := tpSp;
-  hekim.TableName := 'exec sp_ISGFirmaEkip 10 ,' + QuotedStr('0000') ;
-  hekim.ValueField := 'kod';
-  hekim.DisplayField := 'AdiSoyadi';
-  hekim.BosOlamaz := False;
-  hekim.Filter := '';
-  hekim.Enabled := False;
-  setDataStringKontrol(self,hekim,'calisanTemsilci','Çalýþan Temsilcisi',Kolon1,'',150,0,alNone,'');
-
-
-//  setDataString(self,'calisanTemsilci','Çalýþan Temsilcisi',Kolon1,'',150,false,'');
-
-
-  hekim := TcxImageComboKadir.Create(self);
-  hekim.Conn := Datalar.ADOConnection2;
-  hekim.TableTip := tpSp;
-  hekim.TableName := 'exec sp_ISGFirmaEkip 10 ,' + QuotedStr('0000') ;
-  hekim.ValueField := 'kod';
-  hekim.DisplayField := 'AdiSoyadi';
-  hekim.BosOlamaz := False;
-  hekim.Filter := '';
-  hekim.Enabled := False;
-  setDataStringKontrol(self,hekim,'ustaBasi','Ustabaþý',Kolon1,'',150,0,alNone,'');
-
-  hekim := TcxImageComboKadir.Create(self);
-  hekim.Conn := Datalar.ADOConnection2;
-  hekim.TableTip := tpSp;
-  hekim.TableName := 'exec sp_ISGFirmaEkip 10 ,' + QuotedStr('0000') ;
-  hekim.ValueField := 'kod';
-  hekim.DisplayField := 'AdiSoyadi';
-  hekim.BosOlamaz := False;
-  hekim.Filter := '';
-  hekim.Enabled := False;
-  setDataStringKontrol(self,hekim,'idariIslerGorevli','Ýdari Ýþler Görevlisi',Kolon1,'',150,0,alNone,'');
- *)
-
-  setDataStringKontrol(self,KurulEkipGrid,'KurulEkipGrid',' ',Kolon1,'',450,140,alNone,'',clLeft);
-
-  setDataStringKontrol(self,KurulMaddeler,'KurulMaddeler',' ',Kolon1,'',900,140,alNone,'',clLeft);
-
-//  setDataStringMemo(self,'GundemMaddeleri','Gundem Maddeleri',kolon1,'',450,145);
-
-//  setDataStringMemo(self,'KonuveKararlar','Alýnan Kararlar',kolon2,'',450,400);
-
-(*
-  Onay := TcxImageComboKadir.Create(self);
-  Onay.Conn := nil;
-  Onay.ItemList := '1;Evet,0;Hayýr';
-  Onay.Filter := '';
-  setDataStringKontrol(self,Onay,'Onay','Onay',kolon4,'trh',50);
-  OrtakEventAta(Onay);
- *)
 
 
 

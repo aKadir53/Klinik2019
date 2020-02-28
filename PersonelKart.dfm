@@ -57,10 +57,27 @@ object frmPersonelKart: TfrmPersonelKart
     Left = 144
     Top = 35
     Properties.ClearKey = 46
-    Properties.Items = <>
+    Properties.Items = <
+      item
+        Description = 'Evli'
+        Value = '0'
+      end
+      item
+        Description = 'Bekar'
+        Value = '1'
+      end
+      item
+        Description = 'Bo'#351'anm'#305#351
+        Value = '2'
+      end
+      item
+        Description = 'Dul'
+        Value = '3'
+      end>
     TabOrder = 2
     BosOlamaz = False
-    FilterSet = fsNone
+    ItemList = '0;Evli,1;Bekar,2;Bo'#351'anm'#305#351',3;Dul'
+    FilterSet = fsMedeniHal
     Width = 121
   end
   object DURUM: TcxImageComboKadir

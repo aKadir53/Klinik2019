@@ -54,7 +54,6 @@ object frmKtvListesi: TfrmKtvListesi
       Navigator.Buttons.Filter.Visible = True
       FilterBox.CustomizeDialog = False
       DataController.DataModeController.DetailInSQLMode = True
-      DataController.DataModeController.GridMode = True
       DataController.DataModeController.SyncMode = False
       DataController.DetailKeyFieldNames = 'takipNo'
       DataController.Filter.Active = True

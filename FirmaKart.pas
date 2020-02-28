@@ -836,6 +836,7 @@ begin
     end;
 
     inherited;
+
     if datalar.KontrolUserSet then exit;
     if not cxKaydetResult then Exit;
 

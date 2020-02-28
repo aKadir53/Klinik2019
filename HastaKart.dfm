@@ -191,36 +191,59 @@ object frmHastaKart: TfrmHastaKart
     Top = 8
     Caption = 'Foto'
     TabOrder = 6
-    Height = 201
-    Width = 161
+    Height = 210
+    Width = 130
     object Foto: TcxImage
       Tag = -1
       Left = 3
       Top = 15
       Align = alClient
+      Properties.GraphicClassName = 'TJPEGImage'
       Properties.PopupMenuLayout.MenuItems = []
       Properties.Stretch = True
       TabOrder = 0
       ExplicitLeft = 2
       ExplicitTop = -2
-      ExplicitWidth = 157
-      ExplicitHeight = 173
-      Height = 148
-      Width = 155
+      ExplicitWidth = 126
+      ExplicitHeight = 180
+      Height = 155
+      Width = 124
     end
-    object cxFotoEkleButton: TcxButton
-      Tag = -50
+    object Panel1: TPanel
       Left = 3
-      Top = 163
-      Width = 155
-      Height = 28
+      Top = 170
+      Width = 124
+      Height = 30
       Align = alBottom
-      Caption = 'Ekle'
       TabOrder = 1
-      OnClick = cxButtonCClick
       ExplicitLeft = 2
-      ExplicitTop = 171
-      ExplicitWidth = 157
+      ExplicitTop = 178
+      ExplicitWidth = 126
+      object cxFotoEkleButton: TcxButton
+        Tag = -50
+        Left = 1
+        Top = 1
+        Width = 60
+        Height = 28
+        Hint = 'Ekle'
+        Align = alLeft
+        Caption = 'Ekle'
+        TabOrder = 0
+        OnClick = cxButtonCClick
+      end
+      object cxFotoSilButton: TcxButton
+        Tag = -50
+        Left = 61
+        Top = 1
+        Width = 62
+        Height = 28
+        Hint = 'Sil'
+        Align = alClient
+        Caption = 'Sil'
+        TabOrder = 1
+        OnClick = cxButtonCClick
+        ExplicitWidth = 64
+      end
     end
   end
   object dosyaNo: TcxButtonEditKadir
@@ -321,12 +344,12 @@ object frmHastaKart: TfrmHastaKart
     Width = 121
   end
   object txtSeansSikayet: TcxCheckGroup
-    Left = 416
-    Top = 184
+    Left = 8
+    Top = 331
     Alignment = alCenterCenter
-    EditValue = '011000000'
+    EditValue = ';1,2'
     Properties.Columns = 3
-    Properties.EditValueFormat = cvfStatesString
+    Properties.ItemAlignment = taRightJustify
     Properties.Items = <
       item
         Caption = 'Alkol'
@@ -358,7 +381,7 @@ object frmHastaKart: TfrmHastaKart
     Properties.OnEditValueChanged = seansGunleriPropertiesEditValueChanged
     TabOrder = 9
     Height = 64
-    Width = 89
+    Width = 774
   end
   object MESLEK: TcxButtonEditKadir
     Left = 480
@@ -614,6 +637,8 @@ object frmHastaKart: TfrmHastaKart
         Default = True
         Kind = bkEllipsis
       end>
+    Properties.ReadOnly = True
+    Properties.OnButtonClick = txtBobrekHastaligiPropertiesButtonClick
     TabOrder = 12
     Width = 177
   end
@@ -706,8 +731,8 @@ object frmHastaKart: TfrmHastaKart
     Width = 161
   end
   object txtAktif: TcxImageComboKadir
-    Left = 627
-    Top = 215
+    Left = 624
+    Top = 296
     Properties.ClearKey = 46
     Properties.Items = <
       item
@@ -726,6 +751,22 @@ object frmHastaKart: TfrmHastaKart
     BosOlamaz = False
     ItemList = '0;Pasif,1;Aktif,2;Misafir'
     FilterSet = fsNone
+    Width = 121
+  end
+  object Tip: TcxImageComboBox
+    Left = 17
+    Top = 304
+    Properties.Items = <
+      item
+        Description = 'Hemodiyaliz'
+        ImageIndex = 0
+        Value = 'H'
+      end
+      item
+        Description = 'Periton'
+        Value = 'P'
+      end>
+    TabOrder = 19
     Width = 121
   end
   object cxStyleRepository1: TcxStyleRepository
@@ -772,6 +813,7 @@ object frmHastaKart: TfrmHastaKart
     Calistir = fgEvet
     BiriktirmeliSecim = False
     SiralamaKolonu = 'tani'
+    SkinName = 'Lilian'
     Grup = False
     GrupCol = 0
     Left = 384
@@ -853,10 +895,22 @@ object frmHastaKart: TfrmHastaKart
       ImageIndex = 6
       OnClick = cxButtonCClick
     end
+    object D1: TMenuItem
+      Tag = -101
+      Caption = 'D'#305#351'ardan Gelen Belge'
+      ImageIndex = 9
+      OnClick = cxButtonCClick
+    end
     object SmsGnder1: TMenuItem
       Tag = -28
       Caption = 'Sms G'#246'nder'
       ImageIndex = 94
+      OnClick = cxButtonCClick
+    end
+    object K1: TMenuItem
+      Tag = 200
+      Caption = 'Konsultasyon Bilgileri'
+      ImageIndex = 93
       OnClick = cxButtonCClick
     end
     object AKart1: TMenuItem
@@ -1017,5 +1071,26 @@ object frmHastaKart: TfrmHastaKart
         OnClick = cxButtonCClick
       end
     end
+  end
+  object List: TListeAc
+    TColcount = 0
+    TColsW = '20,300'
+    Conn = DATALAR.ADOConnection2
+    Filtercol = 0
+    BaslikRenk = clBlack
+    DipRenk = clBlack
+    Kolonlar.Strings = (
+      'kod'
+      'tanimi')
+    KolonBasliklari.Strings = (
+      'Kod'
+      'Risk Tanimi')
+    Calistir = fgEvet
+    BiriktirmeliSecim = False
+    SkinName = 'lilian'
+    Grup = False
+    GrupCol = 0
+    Left = 536
+    Top = 272
   end
 end

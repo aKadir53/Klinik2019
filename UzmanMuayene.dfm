@@ -22,10 +22,10 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     Height = 571
   end
   object chkSistemSorgu: TcxCheckListBox
-    Left = 372
-    Top = 28
-    Width = 429
-    Height = 178
+    Left = 262
+    Top = 8
+    Width = 750
+    Height = 249
     Columns = 4
     Items = <
       item
@@ -244,6 +244,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         Text = 'Di'#287'er'
       end>
     TabOrder = 1
+    Visible = False
   end
   object izlemPanel: TcxGroupBox
     Left = 8
@@ -695,8 +696,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     end
   end
   object GridTetkikler: TcxGridKadir
-    Left = 680
-    Top = 244
+    Left = 552
+    Top = 290
     Width = 225
     Height = 244
     Font.Charset = TURKISH_CHARSET
@@ -911,8 +912,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     end
   end
   object GridIlaclar: TcxGridKadir
-    Left = 392
-    Top = 247
+    Left = 264
+    Top = 290
     Width = 265
     Height = 244
     Font.Charset = TURKISH_CHARSET
@@ -968,7 +969,6 @@ object frmUzmanMuayene: TfrmUzmanMuayene
       OptionsData.CancelOnExit = False
       OptionsData.Deleting = False
       OptionsData.DeletingConfirmation = False
-      OptionsData.Editing = False
       OptionsData.Inserting = False
       OptionsSelection.MultiSelect = True
       OptionsView.NavigatorOffset = 20
@@ -993,6 +993,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         Caption = #304'la'#231' Ad'#305
         DataBinding.FieldName = 'ilacName'
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 294
       end
       object cxGridIlacTedaviPlanigrup: TcxGridDBColumn
@@ -1022,6 +1023,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
             Description = 'Ay'
             Value = 30
           end>
+        Options.Editing = False
         Width = 37
       end
       object cxGridIlacTedaviPlanimiktar: TcxGridDBColumn
@@ -1029,6 +1031,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         DataBinding.FieldName = 'miktar'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
+        Options.Editing = False
         Width = 40
       end
       object cxGridIlacTedaviPlanidoz: TcxGridDBColumn
@@ -1037,6 +1040,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 36
       end
       object cxGridIlacTedaviPlanidozperyotmiktar: TcxGridDBColumn
@@ -1090,6 +1094,46 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         GroupIndex = 0
         IsCaptionAssigned = True
       end
+      object cxGridIlacTedaviPlaniColumn6: TcxGridDBColumn
+        Caption = #304#351'lem'
+        DataBinding.FieldName = 'uygulamaTip'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Items = <
+          item
+            Description = 'Her Ay'
+            ImageIndex = 0
+            Value = 1
+          end
+          item
+            Description = 'Bu Ay'
+            Value = 0
+          end>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 60
+      end
+      object cxGridIlacTedaviPlaniColumn7: TcxGridDBColumn
+        Caption = 'Uygulama'
+        DataBinding.FieldName = 'uygulamaYeri'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Items = <
+          item
+            Description = 'Ev'
+            ImageIndex = 0
+            Value = 0
+          end
+          item
+            Description = 'Merkez'
+            Value = 1
+          end>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 60
+      end
     end
     object cxGridLevel15: TcxGridLevel
       Caption = 'Hastalar'
@@ -1100,8 +1144,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 248
-    Top = 272
+    Left = 392
+    Top = 248
     object K1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -1153,8 +1197,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     CursorType = ctStatic
     LockType = ltBatchOptimistic
     Parameters = <>
-    Left = 120
-    Top = 312
+    Left = 344
+    Top = 256
   end
   object DataSource7: TDataSource
     DataSet = ADO_UzmanMuayene
@@ -1162,8 +1206,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     Top = 282
   end
   object cxStyleRepository1: TcxStyleRepository
-    Left = 400
-    Top = 112
+    Left = 328
+    Top = 184
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svColor, svFont, svTextColor]
@@ -1207,8 +1251,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     end
   end
   object PopupIlac: TPopupMenu
-    Left = 536
-    Top = 312
+    Left = 696
+    Top = 320
     object E1: TMenuItem
       Tag = 80
       Caption = 'Ekle'

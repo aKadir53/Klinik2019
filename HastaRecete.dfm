@@ -3,8 +3,8 @@ object frmHastaRecete: TfrmHastaRecete
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'frmHastaRecete'
-  ClientHeight = 671
-  ClientWidth = 1100
+  ClientHeight = 700
+  ClientWidth = 1374
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,13 +24,13 @@ object frmHastaRecete: TfrmHastaRecete
     Align = alClient
     PanelStyle.Active = True
     TabOrder = 0
-    Height = 671
-    Width = 1100
-    object cxPanelReceteBaslik: TcxGroupBox
+    Height = 700
+    Width = 1374
+    object cxRecete: TcxGroupBox
       Left = 2
       Top = 2
-      Align = alTop
-      Caption = 'Re'#231'ete Bilgisi'
+      Align = alClient
+      Caption = 'Receteler'
       ParentFont = False
       Style.Font.Charset = DEFAULT_CHARSET
       Style.Font.Color = clWindowText
@@ -39,13 +39,309 @@ object frmHastaRecete: TfrmHastaRecete
       Style.Font.Style = [fsBold]
       Style.IsFontAssigned = True
       TabOrder = 0
-      Height = 288
-      Width = 1096
-      object cxGrid10: TcxGrid
+      Height = 696
+      Width = 1090
+      object cxPanelReceteBaslik: TcxGroupBox
         Left = 3
         Top = 15
-        Width = 1090
-        Height = 154
+        Align = alTop
+        PanelStyle.Active = True
+        ParentFont = False
+        Style.Font.Charset = DEFAULT_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -11
+        Style.Font.Name = 'Tahoma'
+        Style.Font.Style = [fsBold]
+        Style.IsFontAssigned = True
+        TabOrder = 0
+        ExplicitLeft = 2
+        ExplicitTop = -2
+        ExplicitWidth = 1086
+        Height = 19
+        Width = 1084
+        object chkTum: TcxCheckBox
+          Left = 2
+          Top = 2
+          Align = alLeft
+          Caption = 'T'#252'm Re'#231'eteler'
+          Properties.OnEditValueChanged = chkTumPropertiesEditValueChanged
+          TabOrder = 0
+          Transparent = True
+          Width = 121
+        end
+      end
+      object cxPanelReceteDetay: TcxGroupBox
+        Left = 3
+        Top = 342
+        Align = alClient
+        Caption = 'Re'#231'ete Detaylar'#305
+        ParentFont = False
+        Style.Font.Charset = DEFAULT_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -11
+        Style.Font.Name = 'Tahoma'
+        Style.Font.Style = [fsBold]
+        Style.IsFontAssigned = True
+        TabOrder = 2
+        ExplicitLeft = 2
+        ExplicitTop = 325
+        ExplicitWidth = 1086
+        ExplicitHeight = 369
+        Height = 344
+        Width = 1084
+        object cxGrid4: TcxGrid
+          Left = 3
+          Top = 44
+          Width = 1078
+          Height = 290
+          Align = alClient
+          BorderStyle = cxcbsNone
+          Font.Charset = TURKISH_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          LevelTabs.ImageBorder = 2
+          LevelTabs.Style = 1
+          LookAndFeel.Kind = lfOffice11
+          ExplicitLeft = 2
+          ExplicitTop = 27
+          ExplicitWidth = 1082
+          ExplicitHeight = 340
+          object gridIlaclar: TcxGridDBTableView
+            PopupMenu = GridIlaclarPopup
+            OnDblClick = gridIlaclarDblClick
+            Navigator.Buttons.First.Visible = True
+            Navigator.Buttons.PriorPage.Visible = True
+            Navigator.Buttons.Prior.Visible = True
+            Navigator.Buttons.Next.Visible = True
+            Navigator.Buttons.NextPage.Visible = True
+            Navigator.Buttons.Last.Visible = True
+            Navigator.Buttons.Insert.Visible = True
+            Navigator.Buttons.Append.Visible = False
+            Navigator.Buttons.Delete.Visible = True
+            Navigator.Buttons.Edit.Visible = True
+            Navigator.Buttons.Post.Visible = True
+            Navigator.Buttons.Cancel.Visible = True
+            Navigator.Buttons.Refresh.Visible = True
+            Navigator.Buttons.SaveBookmark.Visible = True
+            Navigator.Buttons.GotoBookmark.Visible = True
+            Navigator.Buttons.Filter.Visible = True
+            FilterBox.CustomizeDialog = False
+            DataController.DataModeController.DetailInSQLMode = True
+            DataController.DataSource = DataSource5
+            DataController.Filter.Options = [fcoCaseInsensitive]
+            DataController.Filter.Active = True
+            DataController.Filter.TranslateBetween = True
+            DataController.Filter.TranslateLike = True
+            DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+            DataController.Summary.DefaultGroupSummaryItems = <>
+            DataController.Summary.FooterSummaryItems = <>
+            DataController.Summary.SummaryGroups = <>
+            Filtering.MRUItemsList = False
+            Filtering.ColumnMRUItemsList = False
+            FilterRow.InfoText = 'Arama Sat'#305'r'#305
+            FilterRow.SeparatorWidth = 2
+            FilterRow.ApplyChanges = fracImmediately
+            NewItemRow.InfoText = 'Kay'#305't Ekle'
+            OptionsBehavior.CellHints = True
+            OptionsBehavior.FocusCellOnTab = True
+            OptionsCustomize.ColumnGrouping = False
+            OptionsCustomize.ColumnHidingOnGrouping = False
+            OptionsCustomize.ColumnsQuickCustomization = True
+            OptionsData.Inserting = False
+            OptionsView.NavigatorOffset = 20
+            OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+            OptionsView.CellAutoHeight = True
+            OptionsView.GroupByBox = False
+            OptionsView.HeaderAutoHeight = True
+            OptionsView.HeaderHeight = 32
+            OptionsView.Indicator = True
+            OptionsView.RowSeparatorColor = clBlack
+            object gridIlaclarilacKodu: TcxGridDBColumn
+              Caption = #304'la'#231' Kodu'
+              DataBinding.FieldName = 'ilacKodu'
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 128
+            end
+            object gridIlaclarilacAdi: TcxGridDBColumn
+              Caption = #304'la'#231' Ad'#305
+              DataBinding.FieldName = 'ilacAdi'
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 234
+            end
+            object gridIlaclarColumn2: TcxGridDBColumn
+              Caption = 'Adet'
+              DataBinding.FieldName = 'adet'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 32
+            end
+            object gridIlaclarkullanZamanUnit: TcxGridDBColumn
+              Caption = 'Peryot Birim'
+              DataBinding.FieldName = 'kullanZamanUnit'
+              PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.Items = <
+                item
+                  Description = 'G'#252'n'
+                  ImageIndex = 0
+                  Value = 3
+                end
+                item
+                  Description = 'Hafta'
+                  Value = 4
+                end
+                item
+                  Description = 'Ay'
+                  Value = 5
+                end
+                item
+                  Description = 'Y'#305'l'
+                  Value = 6
+                end>
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              MinWidth = 60
+              Options.Editing = False
+              Width = 60
+            end
+            object gridIlaclarkullanimZaman: TcxGridDBColumn
+              Caption = 'Peryot Adet'
+              DataBinding.FieldName = 'kullanimZaman'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 45
+            end
+            object gridIlaclarColumn1: TcxGridDBColumn
+              Caption = 'Kullan'#305'm Doz(1)'
+              DataBinding.FieldName = 'kullanimAdet2'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 45
+            end
+            object gridIlaclarkullanimAdet: TcxGridDBColumn
+              Caption = 'Kullan'#305'm Doz(2)'
+              DataBinding.FieldName = 'kullanimAdet'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 45
+            end
+            object gridIlaclarkullanimSekli: TcxGridDBColumn
+              Caption = 'Kullanim Sekli'
+              DataBinding.FieldName = 'kullanimSekli'
+              PropertiesClassName = 'TcxComboBoxProperties'
+              Properties.Items.Strings = (
+                'A'#231
+                'Tok'
+                'A'#231'/Tok')
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 61
+            end
+            object gridIlaclarkullanimYolu: TcxGridDBColumn
+              Caption = 'Kullanim Yolu'
+              DataBinding.FieldName = 'kullanimYolu'
+              PropertiesClassName = 'TcxLookupComboBoxProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.DropDownListStyle = lsFixedList
+              Properties.KeyFieldNames = 'kod'
+              Properties.ListColumns = <
+                item
+                  FieldName = 'tanimi'
+                end>
+              Properties.ListOptions.ShowHeader = False
+              Properties.ListSource = DATALAR.ReceteKullanimYollari_Datasource
+              FooterAlignmentHorz = taCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 101
+            end
+          end
+          object cxGridLevel4: TcxGridLevel
+            Caption = 'Hastalar'
+            GridView = gridIlaclar
+            Options.DetailFrameColor = clBlack
+            Options.DetailFrameWidth = 0
+          end
+        end
+        object pnlReceteDetaySag: TcxGroupBox
+          Left = 3
+          Top = 15
+          Align = alTop
+          PanelStyle.Active = True
+          Style.BorderStyle = ebsNone
+          TabOrder = 1
+          ExplicitLeft = 2
+          ExplicitTop = -2
+          ExplicitWidth = 1082
+          Height = 29
+          Width = 1078
+          object btnIlacSil: TcxButtonKadir
+            Tag = -23
+            Left = 46
+            Top = 2
+            Width = 44
+            Height = 25
+            Align = alLeft
+            Caption = '&Sil'
+            TabOrder = 0
+            OnClick = btnIlacSilClick
+            NewButtonVisible = False
+          end
+          object btnIlacEkle: TcxButtonKadir
+            Tag = -21
+            Left = 2
+            Top = 2
+            Width = 44
+            Height = 25
+            Align = alLeft
+            Caption = '&Ekle'
+            TabOrder = 1
+            OnClick = btnIlacEkleClick
+            NewButtonVisible = False
+          end
+        end
+      end
+      object cxGrid10: TcxGrid
+        Left = 3
+        Top = 34
+        Width = 1084
+        Height = 300
         Align = alTop
         BorderStyle = cxcbsNone
         Font.Charset = TURKISH_CHARSET
@@ -54,12 +350,12 @@ object frmHastaRecete: TfrmHastaRecete
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 0
+        TabOrder = 1
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
         ExplicitLeft = 2
-        ExplicitTop = -2
-        ExplicitWidth = 1092
+        ExplicitTop = 17
+        ExplicitWidth = 1086
         object cxGridRecete: TcxGridDBTableView
           OnDblClick = cxGridReceteDblClick
           Navigator.Buttons.First.Visible = True
@@ -130,7 +426,7 @@ object frmHastaRecete: TfrmHastaRecete
             DataBinding.FieldName = 'protokolNo'
             HeaderAlignmentHorz = taCenter
             Options.Editing = False
-            Width = 219
+            Width = 200
           end
           object cxGridDBColumn16: TcxGridDBColumn
             Caption = 'T'#252'r'#252
@@ -161,7 +457,7 @@ object frmHastaRecete: TfrmHastaRecete
               end>
             HeaderAlignmentHorz = taCenter
             Options.Editing = False
-            Width = 83
+            Width = 70
           end
           object cxGridReceteColumn2: TcxGridDBColumn
             Caption = 'Re'#231'ete Alt Turu'
@@ -200,7 +496,7 @@ object frmHastaRecete: TfrmHastaRecete
               end>
             HeaderAlignmentHorz = taCenter
             Options.Editing = False
-            Width = 137
+            Width = 120
           end
           object cxGridDBColumn18: TcxGridDBColumn
             Caption = 'Doktor'
@@ -222,13 +518,25 @@ object frmHastaRecete: TfrmHastaRecete
             Width = 176
           end
           object cxGridDBColumn19: TcxGridDBColumn
-            Caption = 'E-Kay'#305't'
+            Caption = 'E-Re'#231'eteNo'
             DataBinding.FieldName = 'eReceteNo'
             PropertiesClassName = 'TcxTextEditProperties'
             Properties.Alignment.Horz = taCenter
             HeaderAlignmentHorz = taCenter
             Options.Editing = False
+            Styles.Content = AnaForm.cxStyle2
             Width = 90
+          end
+          object cxGridReceteColumn4: TcxGridDBColumn
+            Caption = 'ReceteID'
+            DataBinding.FieldName = 'id'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 50
           end
         end
         object cxGridLevel10: TcxGridLevel
@@ -238,309 +546,23 @@ object frmHastaRecete: TfrmHastaRecete
           Options.DetailFrameWidth = 0
         end
       end
-      object cxPanelReceteBaslikBottom: TcxGroupBox
+      object cxSplitter1: TcxSplitter
         Left = 3
-        Top = 169
-        Align = alClient
-        PanelStyle.Active = True
-        TabOrder = 1
+        Top = 334
+        Width = 1084
+        Height = 8
+        AlignSplitter = salTop
+        Control = cxGrid10
         ExplicitLeft = 2
-        ExplicitTop = 152
-        ExplicitWidth = 1092
-        ExplicitHeight = 134
-        Height = 109
-        Width = 1090
-        object cxPanelReceteTanilar: TcxGroupBox
-          Left = 2
-          Top = 2
-          Align = alLeft
-          Caption = 'Re'#231'ete Tan'#305' Bilgileri'
-          ParentFont = False
-          Style.Font.Charset = DEFAULT_CHARSET
-          Style.Font.Color = clWindowText
-          Style.Font.Height = -11
-          Style.Font.Name = 'Tahoma'
-          Style.Font.Style = [fsBold]
-          Style.IsFontAssigned = True
-          TabOrder = 0
-          ExplicitHeight = 130
-          DesignSize = (
-            438
-            98)
-          Height = 105
-          Width = 438
-          object cxGrid11: TcxGrid
-            Left = 3
-            Top = 15
-            Width = 386
-            Height = 80
-            Align = alLeft
-            Font.Charset = TURKISH_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            PopupMenu = PopupMenu2
-            TabOrder = 0
-            LevelTabs.ImageBorder = 2
-            LevelTabs.Style = 1
-            ExplicitLeft = 2
-            ExplicitTop = -2
-            ExplicitHeight = 130
-            object cxGridReceteTani: TcxGridDBTableView
-              Navigator.Buttons.First.Visible = True
-              Navigator.Buttons.PriorPage.Visible = True
-              Navigator.Buttons.Prior.Visible = True
-              Navigator.Buttons.Next.Visible = True
-              Navigator.Buttons.NextPage.Visible = True
-              Navigator.Buttons.Last.Visible = True
-              Navigator.Buttons.Insert.Visible = True
-              Navigator.Buttons.Append.Visible = False
-              Navigator.Buttons.Delete.Visible = True
-              Navigator.Buttons.Edit.Visible = True
-              Navigator.Buttons.Post.Visible = True
-              Navigator.Buttons.Cancel.Visible = True
-              Navigator.Buttons.Refresh.Visible = True
-              Navigator.Buttons.SaveBookmark.Visible = True
-              Navigator.Buttons.GotoBookmark.Visible = True
-              Navigator.Buttons.Filter.Visible = True
-              FilterBox.CustomizeDialog = False
-              DataController.DataModeController.DetailInSQLMode = True
-              DataController.DataSource = DataSource10
-              DataController.Filter.Options = [fcoCaseInsensitive]
-              DataController.Filter.Active = True
-              DataController.Filter.TranslateBetween = True
-              DataController.Filter.TranslateLike = True
-              DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
-              DataController.Summary.DefaultGroupSummaryItems = <>
-              DataController.Summary.FooterSummaryItems = <>
-              DataController.Summary.SummaryGroups = <>
-              Filtering.MRUItemsList = False
-              Filtering.ColumnMRUItemsList = False
-              FilterRow.InfoText = 'Arama Sat'#305'r'#305
-              FilterRow.SeparatorWidth = 2
-              FilterRow.ApplyChanges = fracImmediately
-              NewItemRow.InfoText = 'Kay'#305't Ekle'
-              OptionsBehavior.CellHints = True
-              OptionsBehavior.FocusCellOnTab = True
-              OptionsCustomize.ColumnGrouping = False
-              OptionsCustomize.ColumnHidingOnGrouping = False
-              OptionsCustomize.ColumnsQuickCustomization = True
-              OptionsData.Inserting = False
-              OptionsView.NavigatorOffset = 20
-              OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
-              OptionsView.CellAutoHeight = True
-              OptionsView.GroupByBox = False
-              OptionsView.HeaderAutoHeight = True
-              OptionsView.Indicator = True
-              OptionsView.RowSeparatorColor = clBlack
-              object cxGridDBColumn20: TcxGridDBColumn
-                Caption = 'Tan'#305' Kodu'
-                DataBinding.FieldName = 'taniKodu'
-                HeaderAlignmentHorz = taCenter
-                Options.Editing = False
-                Width = 57
-              end
-              object cxGridDBColumn21: TcxGridDBColumn
-                Caption = 'Tan'#305
-                DataBinding.FieldName = 'tani'
-                HeaderAlignmentHorz = taCenter
-                Options.Editing = False
-                Width = 306
-              end
-            end
-            object cxGridLevel11: TcxGridLevel
-              Caption = 'Hastalar'
-              GridView = cxGridReceteTani
-              Options.DetailFrameColor = clBlack
-              Options.DetailFrameWidth = 0
-            end
-          end
-          object cxButtonKadirTaniEkle: TcxButtonKadir
-            Left = 392
-            Top = 15
-            Width = 42
-            Height = 38
-            Anchors = [akTop, akRight]
-            Caption = 'Ekle'
-            TabOrder = 1
-            OnClick = cxButtonKadirTaniEkleClick
-            NewButtonVisible = False
-          end
-          object cxButtonKadirTaniSil: TcxButtonKadir
-            Tag = 1
-            Left = 392
-            Top = 56
-            Width = 42
-            Height = 38
-            Anchors = [akTop, akRight]
-            Caption = 'Sil'
-            TabOrder = 2
-            OnClick = cxButtonKadirTaniEkleClick
-            NewButtonVisible = False
-          end
-          object cxChkSIK: TcxCheckBox
-            Left = 318
-            Top = -5
-            Caption = 'S'#305'k Kullan'#305'lanlar'
-            TabOrder = 3
-            Transparent = True
-            Width = 115
-          end
-        end
-        object cxPanelReceteAciklama: TcxGroupBox
-          Left = 440
-          Top = 2
-          Align = alClient
-          Caption = 'Recete A'#231#305'klamalar'#305
-          TabOrder = 1
-          ExplicitWidth = 650
-          ExplicitHeight = 130
-          Height = 105
-          Width = 648
-          object cxGrid9: TcxGrid
-            Tag = 1
-            Left = 3
-            Top = 15
-            Width = 596
-            Height = 80
-            Align = alClient
-            Font.Charset = TURKISH_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            PopupMenu = PopupMenu2
-            TabOrder = 0
-            LevelTabs.ImageBorder = 2
-            LevelTabs.Style = 1
-            ExplicitLeft = 2
-            ExplicitTop = -2
-            ExplicitWidth = 600
-            ExplicitHeight = 130
-            object cxGridReceteAciklama: TcxGridDBTableView
-              Tag = 1
-              OnDblClick = cxGridReceteAciklamaDblClick
-              Navigator.Buttons.First.Visible = True
-              Navigator.Buttons.PriorPage.Visible = True
-              Navigator.Buttons.Prior.Visible = True
-              Navigator.Buttons.Next.Visible = True
-              Navigator.Buttons.NextPage.Visible = True
-              Navigator.Buttons.Last.Visible = True
-              Navigator.Buttons.Insert.Visible = True
-              Navigator.Buttons.Append.Visible = False
-              Navigator.Buttons.Delete.Visible = True
-              Navigator.Buttons.Edit.Visible = True
-              Navigator.Buttons.Post.Visible = True
-              Navigator.Buttons.Cancel.Visible = True
-              Navigator.Buttons.Refresh.Visible = True
-              Navigator.Buttons.SaveBookmark.Visible = True
-              Navigator.Buttons.GotoBookmark.Visible = True
-              Navigator.Buttons.Filter.Visible = True
-              FilterBox.CustomizeDialog = False
-              DataController.DataModeController.DetailInSQLMode = True
-              DataController.DataSource = DataSource11
-              DataController.Filter.Options = [fcoCaseInsensitive]
-              DataController.Filter.Active = True
-              DataController.Filter.TranslateBetween = True
-              DataController.Filter.TranslateLike = True
-              DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
-              DataController.Summary.DefaultGroupSummaryItems = <>
-              DataController.Summary.FooterSummaryItems = <>
-              DataController.Summary.SummaryGroups = <>
-              Filtering.MRUItemsList = False
-              Filtering.ColumnMRUItemsList = False
-              FilterRow.InfoText = 'Arama Sat'#305'r'#305
-              FilterRow.SeparatorWidth = 2
-              FilterRow.ApplyChanges = fracImmediately
-              NewItemRow.InfoText = 'Kay'#305't Ekle'
-              OptionsBehavior.CellHints = True
-              OptionsBehavior.FocusCellOnTab = True
-              OptionsCustomize.ColumnGrouping = False
-              OptionsCustomize.ColumnHidingOnGrouping = False
-              OptionsCustomize.ColumnsQuickCustomization = True
-              OptionsData.Inserting = False
-              OptionsView.NavigatorOffset = 20
-              OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
-              OptionsView.CellAutoHeight = True
-              OptionsView.GroupByBox = False
-              OptionsView.HeaderAutoHeight = True
-              OptionsView.Indicator = True
-              OptionsView.RowSeparatorColor = clBlack
-              object cxGridDBColumn11: TcxGridDBColumn
-                Caption = #304'lac Kodu'
-                DataBinding.FieldName = 'rre'
-                Visible = False
-                HeaderAlignmentHorz = taCenter
-                Options.Editing = False
-                Width = 128
-              end
-              object cxGridDBColumn12: TcxGridDBColumn
-                Caption = 'Tip'
-                DataBinding.FieldName = 'aciklamaTip'
-                HeaderAlignmentHorz = taCenter
-                Options.Editing = False
-                Width = 41
-              end
-              object cxGridDBColumn13: TcxGridDBColumn
-                Caption = 'A'#231#305'klama'
-                DataBinding.FieldName = 'aciklama'
-                HeaderAlignmentHorz = taCenter
-                Options.Editing = False
-                Width = 479
-              end
-            end
-            object cxGridLevel9: TcxGridLevel
-              Caption = 'Hastalar'
-              GridView = cxGridReceteAciklama
-              Options.DetailFrameColor = clBlack
-              Options.DetailFrameWidth = 0
-            end
-          end
-          object pnlRaceAckSag: TcxGroupBox
-            Left = 599
-            Top = 15
-            Align = alRight
-            PanelStyle.Active = True
-            TabOrder = 1
-            ExplicitLeft = 602
-            ExplicitTop = -2
-            ExplicitHeight = 130
-            Height = 80
-            Width = 46
-            object cxButtonKadirAckEkle: TcxButtonKadir
-              Left = 2
-              Top = 2
-              Width = 42
-              Height = 38
-              Align = alTop
-              Caption = 'Ekle'
-              TabOrder = 0
-              OnClick = cxButtonKadirAckEkleClick
-              NewButtonVisible = False
-            end
-            object cxButtonKadirAckSil: TcxButtonKadir
-              Left = 2
-              Top = 40
-              Width = 42
-              Height = 38
-              Align = alTop
-              Caption = 'Sil'
-              TabOrder = 1
-              OnClick = cxButtonKadirAckSilClick
-              NewButtonVisible = False
-            end
-          end
-        end
+        ExplicitTop = 317
+        ExplicitWidth = 1086
       end
     end
-    object cxPanelReceteDetay: TcxGroupBox
-      Left = 2
-      Top = 298
-      Align = alTop
-      Caption = 'Re'#231'ete Detaylar'#305
+    object cxPanelReceteTanilar: TcxGroupBox
+      Left = 1092
+      Top = 2
+      Align = alRight
+      Caption = 'Re'#231'ete Tan'#305' Bilgileri'
       ParentFont = False
       Style.Font.Charset = DEFAULT_CHARSET
       Style.Font.Color = clWindowText
@@ -549,277 +571,14 @@ object frmHastaRecete: TfrmHastaRecete
       Style.Font.Style = [fsBold]
       Style.IsFontAssigned = True
       TabOrder = 1
-      Height = 262
-      Width = 1096
-      object cxGrid4: TcxGrid
+      Height = 696
+      Width = 280
+      object cxGrid11: TcxGrid
         Left = 3
-        Top = 15
-        Width = 1044
-        Height = 237
-        Align = alClient
-        BorderStyle = cxcbsNone
-        Font.Charset = TURKISH_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-        LevelTabs.ImageBorder = 2
-        LevelTabs.Style = 1
-        LookAndFeel.Kind = lfOffice11
-        ExplicitLeft = 2
-        ExplicitTop = -2
-        ExplicitWidth = 1046
-        ExplicitHeight = 262
-        object gridIlaclar: TcxGridDBTableView
-          PopupMenu = GridIlaclarPopup
-          OnDblClick = gridIlaclarDblClick
-          Navigator.Buttons.First.Visible = True
-          Navigator.Buttons.PriorPage.Visible = True
-          Navigator.Buttons.Prior.Visible = True
-          Navigator.Buttons.Next.Visible = True
-          Navigator.Buttons.NextPage.Visible = True
-          Navigator.Buttons.Last.Visible = True
-          Navigator.Buttons.Insert.Visible = True
-          Navigator.Buttons.Append.Visible = False
-          Navigator.Buttons.Delete.Visible = True
-          Navigator.Buttons.Edit.Visible = True
-          Navigator.Buttons.Post.Visible = True
-          Navigator.Buttons.Cancel.Visible = True
-          Navigator.Buttons.Refresh.Visible = True
-          Navigator.Buttons.SaveBookmark.Visible = True
-          Navigator.Buttons.GotoBookmark.Visible = True
-          Navigator.Buttons.Filter.Visible = True
-          FilterBox.CustomizeDialog = False
-          DataController.DataModeController.DetailInSQLMode = True
-          DataController.DataSource = DataSource5
-          DataController.Filter.Options = [fcoCaseInsensitive]
-          DataController.Filter.Active = True
-          DataController.Filter.TranslateBetween = True
-          DataController.Filter.TranslateLike = True
-          DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
-          DataController.Summary.DefaultGroupSummaryItems = <>
-          DataController.Summary.FooterSummaryItems = <>
-          DataController.Summary.SummaryGroups = <>
-          Filtering.MRUItemsList = False
-          Filtering.ColumnMRUItemsList = False
-          FilterRow.InfoText = 'Arama Sat'#305'r'#305
-          FilterRow.SeparatorWidth = 2
-          FilterRow.ApplyChanges = fracImmediately
-          NewItemRow.InfoText = 'Kay'#305't Ekle'
-          OptionsBehavior.CellHints = True
-          OptionsBehavior.FocusCellOnTab = True
-          OptionsCustomize.ColumnGrouping = False
-          OptionsCustomize.ColumnHidingOnGrouping = False
-          OptionsCustomize.ColumnsQuickCustomization = True
-          OptionsData.Inserting = False
-          OptionsView.NavigatorOffset = 20
-          OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
-          OptionsView.CellAutoHeight = True
-          OptionsView.GroupByBox = False
-          OptionsView.HeaderAutoHeight = True
-          OptionsView.HeaderHeight = 32
-          OptionsView.Indicator = True
-          OptionsView.RowSeparatorColor = clBlack
-          object gridIlaclarilacKodu: TcxGridDBColumn
-            Caption = #304'la'#231' Kodu'
-            DataBinding.FieldName = 'ilacKodu'
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Options.Editing = False
-            Width = 128
-          end
-          object gridIlaclarilacAdi: TcxGridDBColumn
-            Caption = #304'la'#231' Ad'#305
-            DataBinding.FieldName = 'ilacAdi'
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Options.Editing = False
-            Width = 234
-          end
-          object gridIlaclarColumn2: TcxGridDBColumn
-            Caption = 'Adet'
-            DataBinding.FieldName = 'adet'
-            PropertiesClassName = 'TcxTextEditProperties'
-            Properties.Alignment.Horz = taCenter
-            Properties.Alignment.Vert = taVCenter
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Options.Editing = False
-            Width = 32
-          end
-          object gridIlaclarkullanZamanUnit: TcxGridDBColumn
-            Caption = 'Peryot Birim'
-            DataBinding.FieldName = 'kullanZamanUnit'
-            PropertiesClassName = 'TcxImageComboBoxProperties'
-            Properties.Alignment.Horz = taCenter
-            Properties.Alignment.Vert = taVCenter
-            Properties.Items = <
-              item
-                Description = 'G'#252'n'
-                ImageIndex = 0
-                Value = 3
-              end
-              item
-                Description = 'Hafta'
-                Value = 4
-              end
-              item
-                Description = 'Ay'
-                Value = 5
-              end
-              item
-                Description = 'Y'#305'l'
-                Value = 6
-              end>
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            MinWidth = 60
-            Options.Editing = False
-            Width = 60
-          end
-          object gridIlaclarkullanimZaman: TcxGridDBColumn
-            Caption = 'Peryot Adet'
-            DataBinding.FieldName = 'kullanimZaman'
-            PropertiesClassName = 'TcxTextEditProperties'
-            Properties.Alignment.Horz = taCenter
-            Properties.Alignment.Vert = taVCenter
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Options.Editing = False
-            Width = 45
-          end
-          object gridIlaclarColumn1: TcxGridDBColumn
-            Caption = 'Kullan'#305'm Doz(1)'
-            DataBinding.FieldName = 'kullanimAdet2'
-            PropertiesClassName = 'TcxTextEditProperties'
-            Properties.Alignment.Horz = taCenter
-            Properties.Alignment.Vert = taVCenter
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Options.Editing = False
-            Width = 45
-          end
-          object gridIlaclarkullanimAdet: TcxGridDBColumn
-            Caption = 'Kullan'#305'm Doz(2)'
-            DataBinding.FieldName = 'kullanimAdet'
-            PropertiesClassName = 'TcxTextEditProperties'
-            Properties.Alignment.Horz = taCenter
-            Properties.Alignment.Vert = taVCenter
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Options.Editing = False
-            Width = 45
-          end
-          object gridIlaclarkullanimSekli: TcxGridDBColumn
-            Caption = 'Kullanim Sekli'
-            DataBinding.FieldName = 'kullanimSekli'
-            PropertiesClassName = 'TcxComboBoxProperties'
-            Properties.Items.Strings = (
-              'A'#231
-              'Tok'
-              'A'#231'/Tok')
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Options.Editing = False
-            Width = 61
-          end
-          object gridIlaclarkullanimYolu: TcxGridDBColumn
-            Caption = 'Kullanim Yolu'
-            DataBinding.FieldName = 'kullanimYolu'
-            PropertiesClassName = 'TcxLookupComboBoxProperties'
-            Properties.DropDownListStyle = lsFixedList
-            Properties.KeyFieldNames = 'kod'
-            Properties.ListColumns = <
-              item
-                FieldName = 'tanimi'
-              end>
-            Properties.ListOptions.ShowHeader = False
-            Properties.ListSource = DATALAR.ReceteKullanimYollari_Datasource
-            FooterAlignmentHorz = taCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Options.Editing = False
-            Width = 101
-          end
-        end
-        object cxGridLevel4: TcxGridLevel
-          Caption = 'Hastalar'
-          GridView = gridIlaclar
-          Options.DetailFrameColor = clBlack
-          Options.DetailFrameWidth = 0
-        end
-      end
-      object pnlReceteDetaySag: TcxGroupBox
-        Left = 1047
-        Top = 15
-        Align = alRight
-        PanelStyle.Active = True
-        Style.BorderStyle = ebsNone
-        TabOrder = 1
-        ExplicitLeft = 1048
-        ExplicitTop = -2
-        ExplicitHeight = 262
-        Height = 237
-        Width = 46
-        object btnIlacSil: TcxButtonKadir
-          Tag = -23
-          Left = 2
-          Top = 41
-          Width = 42
-          Height = 39
-          Align = alTop
-          Caption = '&Sil'
-          TabOrder = 0
-          OnClick = btnIlacSilClick
-          NewButtonVisible = False
-        end
-        object btnIlacEkle: TcxButtonKadir
-          Tag = -21
-          Left = 2
-          Top = 2
-          Width = 42
-          Height = 39
-          Align = alTop
-          Caption = '&Ekle'
-          TabOrder = 1
-          OnClick = btnIlacEkleClick
-          NewButtonVisible = False
-        end
-      end
-    end
-    object cxSplitter1: TcxSplitter
-      Left = 2
-      Top = 290
-      Width = 1096
-      Height = 8
-      AlignSplitter = salTop
-      Control = cxPanelReceteBaslik
-    end
-    object pnlIlacAck: TcxGroupBox
-      Left = 2
-      Top = 568
-      Align = alClient
-      Caption = 'Re'#231'ete '#304'la'#231' A'#231#305'klama'
-      TabOrder = 3
-      Height = 101
-      Width = 1096
-      object cxGrid8: TcxGrid
-        Tag = 2
-        Left = 3
-        Top = 15
-        Width = 1044
-        Height = 76
-        Align = alClient
+        Top = 43
+        Width = 274
+        Height = 264
+        Align = alTop
         Font.Charset = TURKISH_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -831,11 +590,9 @@ object frmHastaRecete: TfrmHastaRecete
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
         ExplicitLeft = 2
-        ExplicitTop = -2
-        ExplicitWidth = 1046
-        ExplicitHeight = 101
-        object cxGridReceteIlacAciklama: TcxGridDBTableView
-          OnDblClick = cxGridReceteIlacAciklamaDblClick
+        ExplicitTop = 26
+        ExplicitWidth = 276
+        object cxGridReceteTani: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
           Navigator.Buttons.Prior.Visible = True
@@ -854,7 +611,7 @@ object frmHastaRecete: TfrmHastaRecete
           Navigator.Buttons.Filter.Visible = True
           FilterBox.CustomizeDialog = False
           DataController.DataModeController.DetailInSQLMode = True
-          DataController.DataSource = DataSource12
+          DataController.DataSource = DataSource10
           DataController.Filter.Options = [fcoCaseInsensitive]
           DataController.Filter.Active = True
           DataController.Filter.TranslateBetween = True
@@ -882,81 +639,392 @@ object frmHastaRecete: TfrmHastaRecete
           OptionsView.HeaderAutoHeight = True
           OptionsView.Indicator = True
           OptionsView.RowSeparatorColor = clBlack
-          object cxGridDBColumn8: TcxGridDBColumn
-            Caption = #304'lac Kodu'
-            DataBinding.FieldName = 'rre'
-            Visible = False
+          object cxGridDBColumn20: TcxGridDBColumn
+            Caption = 'Tan'#305' Kodu'
+            DataBinding.FieldName = 'taniKodu'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
             Options.Editing = False
-            Width = 128
+            Width = 57
           end
-          object cxGridDBColumn9: TcxGridDBColumn
-            Caption = 'Tip'
-            DataBinding.FieldName = 'aciklamaTip'
+          object cxGridDBColumn21: TcxGridDBColumn
+            Caption = 'Tan'#305
+            DataBinding.FieldName = 'tani'
+            HeaderAlignmentHorz = taCenter
             Options.Editing = False
-            Width = 41
-          end
-          object cxGridDBColumn10: TcxGridDBColumn
-            Caption = 'A'#231#305'klama'
-            DataBinding.FieldName = 'aciklama'
-            Options.Editing = False
-            Width = 974
+            Width = 200
           end
         end
-        object cxGridLevel8: TcxGridLevel
+        object cxGridLevel11: TcxGridLevel
           Caption = 'Hastalar'
-          GridView = cxGridReceteIlacAciklama
+          GridView = cxGridReceteTani
           Options.DetailFrameColor = clBlack
           Options.DetailFrameWidth = 0
         end
       end
-      object pnlReceteIlacAckSag: TcxGroupBox
-        Left = 1047
+      object cxTaniBaslikPanel: TcxGroupBox
+        Left = 3
         Top = 15
-        Align = alRight
+        Align = alTop
         PanelStyle.Active = True
         TabOrder = 1
-        ExplicitLeft = 1048
+        ExplicitLeft = 2
         ExplicitTop = -2
-        ExplicitHeight = 101
-        Height = 76
-        Width = 46
-        object cxButtonKadirIlacAckEkle: TcxButtonKadir
+        ExplicitWidth = 276
+        Height = 28
+        Width = 274
+        object cxChkSIK: TcxCheckBox
+          Left = 90
+          Top = 2
+          Align = alLeft
+          Caption = 'S'#305'k Kullan'#305'lanlar'
+          TabOrder = 0
+          Transparent = True
+          Width = 115
+        end
+        object cxButtonKadirTaniEkle: TcxButtonKadir
           Left = 2
           Top = 2
-          Width = 42
-          Height = 38
-          Align = alTop
+          Width = 44
+          Height = 24
+          Align = alLeft
           Caption = 'Ekle'
-          TabOrder = 0
-          OnClick = cxButtonKadirIlacAckEkleClick
+          TabOrder = 1
+          OnClick = cxButtonKadirTaniEkleClick
           NewButtonVisible = False
         end
-        object cxButtonKadirIlacAckSil: TcxButtonKadir
-          Left = 2
-          Top = 40
-          Width = 42
-          Height = 38
-          Align = alTop
+        object cxButtonKadirTaniSil: TcxButtonKadir
+          Tag = 1
+          Left = 46
+          Top = 2
+          Width = 44
+          Height = 24
+          Align = alLeft
           Caption = 'Sil'
-          TabOrder = 1
-          OnClick = cxButtonKadirIlacAckSilClick
+          TabOrder = 2
+          OnClick = cxButtonKadirTaniEkleClick
           NewButtonVisible = False
         end
       end
-    end
-    object cxSplitter2: TcxSplitter
-      Left = 2
-      Top = 560
-      Width = 1096
-      Height = 8
-      AlignSplitter = salTop
-      Control = cxPanelReceteDetay
+      object cxPanelReceteAciklama: TcxGroupBox
+        Left = 3
+        Top = 315
+        Align = alTop
+        Caption = 'Recete A'#231#305'klamalar'#305
+        TabOrder = 2
+        ExplicitLeft = 2
+        ExplicitTop = 298
+        ExplicitWidth = 276
+        Height = 136
+        Width = 274
+        object cxGrid9: TcxGrid
+          Tag = 1
+          Left = 3
+          Top = 40
+          Width = 268
+          Height = 86
+          Align = alClient
+          Font.Charset = TURKISH_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          PopupMenu = PopupMenu2
+          TabOrder = 0
+          LevelTabs.ImageBorder = 2
+          LevelTabs.Style = 1
+          ExplicitLeft = 2
+          ExplicitTop = 23
+          ExplicitWidth = 272
+          ExplicitHeight = 111
+          object cxGridReceteAciklama: TcxGridDBTableView
+            Tag = 1
+            OnDblClick = cxGridReceteAciklamaDblClick
+            Navigator.Buttons.First.Visible = True
+            Navigator.Buttons.PriorPage.Visible = True
+            Navigator.Buttons.Prior.Visible = True
+            Navigator.Buttons.Next.Visible = True
+            Navigator.Buttons.NextPage.Visible = True
+            Navigator.Buttons.Last.Visible = True
+            Navigator.Buttons.Insert.Visible = True
+            Navigator.Buttons.Append.Visible = False
+            Navigator.Buttons.Delete.Visible = True
+            Navigator.Buttons.Edit.Visible = True
+            Navigator.Buttons.Post.Visible = True
+            Navigator.Buttons.Cancel.Visible = True
+            Navigator.Buttons.Refresh.Visible = True
+            Navigator.Buttons.SaveBookmark.Visible = True
+            Navigator.Buttons.GotoBookmark.Visible = True
+            Navigator.Buttons.Filter.Visible = True
+            FilterBox.CustomizeDialog = False
+            DataController.DataModeController.DetailInSQLMode = True
+            DataController.DataSource = DataSource11
+            DataController.Filter.Options = [fcoCaseInsensitive]
+            DataController.Filter.Active = True
+            DataController.Filter.TranslateBetween = True
+            DataController.Filter.TranslateLike = True
+            DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+            DataController.Summary.DefaultGroupSummaryItems = <>
+            DataController.Summary.FooterSummaryItems = <>
+            DataController.Summary.SummaryGroups = <>
+            Filtering.MRUItemsList = False
+            Filtering.ColumnMRUItemsList = False
+            FilterRow.InfoText = 'Arama Sat'#305'r'#305
+            FilterRow.SeparatorWidth = 2
+            FilterRow.ApplyChanges = fracImmediately
+            NewItemRow.InfoText = 'Kay'#305't Ekle'
+            OptionsBehavior.CellHints = True
+            OptionsBehavior.FocusCellOnTab = True
+            OptionsCustomize.ColumnGrouping = False
+            OptionsCustomize.ColumnHidingOnGrouping = False
+            OptionsCustomize.ColumnsQuickCustomization = True
+            OptionsData.Inserting = False
+            OptionsView.NavigatorOffset = 20
+            OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+            OptionsView.CellAutoHeight = True
+            OptionsView.GroupByBox = False
+            OptionsView.HeaderAutoHeight = True
+            OptionsView.Indicator = True
+            OptionsView.RowSeparatorColor = clBlack
+            object cxGridDBColumn11: TcxGridDBColumn
+              Caption = #304'lac Kodu'
+              DataBinding.FieldName = 'rre'
+              Visible = False
+              HeaderAlignmentHorz = taCenter
+              Options.Editing = False
+              Width = 128
+            end
+            object cxGridDBColumn12: TcxGridDBColumn
+              Caption = 'Tip'
+              DataBinding.FieldName = 'aciklamaTip'
+              HeaderAlignmentHorz = taCenter
+              Options.Editing = False
+              Width = 41
+            end
+            object cxGridDBColumn13: TcxGridDBColumn
+              Caption = 'A'#231#305'klama'
+              DataBinding.FieldName = 'aciklama'
+              HeaderAlignmentHorz = taCenter
+              Options.Editing = False
+              Width = 200
+            end
+          end
+          object cxGridLevel9: TcxGridLevel
+            Caption = 'Hastalar'
+            GridView = cxGridReceteAciklama
+            Options.DetailFrameColor = clBlack
+            Options.DetailFrameWidth = 0
+          end
+        end
+        object pnlRaceAckSag: TcxGroupBox
+          Left = 3
+          Top = 15
+          Align = alTop
+          PanelStyle.Active = True
+          TabOrder = 1
+          ExplicitLeft = 2
+          ExplicitTop = -2
+          ExplicitWidth = 272
+          Height = 25
+          Width = 268
+          object cxButtonKadirAckEkle: TcxButtonKadir
+            Left = 2
+            Top = 2
+            Width = 44
+            Height = 21
+            Align = alLeft
+            Caption = 'Ekle'
+            TabOrder = 0
+            OnClick = cxButtonKadirAckEkleClick
+            NewButtonVisible = False
+          end
+          object cxButtonKadirAckSil: TcxButtonKadir
+            Left = 46
+            Top = 2
+            Width = 41
+            Height = 21
+            Align = alLeft
+            Caption = 'Sil'
+            TabOrder = 1
+            OnClick = cxButtonKadirAckSilClick
+            NewButtonVisible = False
+          end
+        end
+      end
+      object cxSplitter3: TcxSplitter
+        Left = 3
+        Top = 307
+        Width = 274
+        Height = 8
+        AlignSplitter = salTop
+        Control = cxGrid11
+        ExplicitLeft = 2
+        ExplicitTop = 290
+        ExplicitWidth = 276
+      end
+      object pnlIlacAck: TcxGroupBox
+        Left = 3
+        Top = 459
+        Align = alClient
+        Caption = 'Re'#231'ete '#304'la'#231' A'#231#305'klama'
+        TabOrder = 4
+        ExplicitLeft = 2
+        ExplicitTop = 442
+        ExplicitWidth = 276
+        ExplicitHeight = 252
+        Height = 227
+        Width = 274
+        object cxGrid8: TcxGrid
+          Tag = 2
+          Left = 3
+          Top = 40
+          Width = 268
+          Height = 177
+          Align = alClient
+          Font.Charset = TURKISH_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          PopupMenu = PopupMenu2
+          TabOrder = 0
+          LevelTabs.ImageBorder = 2
+          LevelTabs.Style = 1
+          ExplicitLeft = 2
+          ExplicitTop = 23
+          ExplicitWidth = 272
+          ExplicitHeight = 227
+          object cxGridReceteIlacAciklama: TcxGridDBTableView
+            OnDblClick = cxGridReceteIlacAciklamaDblClick
+            Navigator.Buttons.First.Visible = True
+            Navigator.Buttons.PriorPage.Visible = True
+            Navigator.Buttons.Prior.Visible = True
+            Navigator.Buttons.Next.Visible = True
+            Navigator.Buttons.NextPage.Visible = True
+            Navigator.Buttons.Last.Visible = True
+            Navigator.Buttons.Insert.Visible = True
+            Navigator.Buttons.Append.Visible = False
+            Navigator.Buttons.Delete.Visible = True
+            Navigator.Buttons.Edit.Visible = True
+            Navigator.Buttons.Post.Visible = True
+            Navigator.Buttons.Cancel.Visible = True
+            Navigator.Buttons.Refresh.Visible = True
+            Navigator.Buttons.SaveBookmark.Visible = True
+            Navigator.Buttons.GotoBookmark.Visible = True
+            Navigator.Buttons.Filter.Visible = True
+            FilterBox.CustomizeDialog = False
+            DataController.DataModeController.DetailInSQLMode = True
+            DataController.DataSource = DataSource12
+            DataController.Filter.Options = [fcoCaseInsensitive]
+            DataController.Filter.Active = True
+            DataController.Filter.TranslateBetween = True
+            DataController.Filter.TranslateLike = True
+            DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+            DataController.Summary.DefaultGroupSummaryItems = <>
+            DataController.Summary.FooterSummaryItems = <>
+            DataController.Summary.SummaryGroups = <>
+            Filtering.MRUItemsList = False
+            Filtering.ColumnMRUItemsList = False
+            FilterRow.InfoText = 'Arama Sat'#305'r'#305
+            FilterRow.SeparatorWidth = 2
+            FilterRow.ApplyChanges = fracImmediately
+            NewItemRow.InfoText = 'Kay'#305't Ekle'
+            OptionsBehavior.CellHints = True
+            OptionsBehavior.FocusCellOnTab = True
+            OptionsCustomize.ColumnGrouping = False
+            OptionsCustomize.ColumnHidingOnGrouping = False
+            OptionsCustomize.ColumnsQuickCustomization = True
+            OptionsData.Inserting = False
+            OptionsView.NavigatorOffset = 20
+            OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+            OptionsView.CellAutoHeight = True
+            OptionsView.GroupByBox = False
+            OptionsView.HeaderAutoHeight = True
+            OptionsView.Indicator = True
+            OptionsView.RowSeparatorColor = clBlack
+            object cxGridDBColumn8: TcxGridDBColumn
+              Caption = #304'lac Kodu'
+              DataBinding.FieldName = 'rre'
+              Visible = False
+              Options.Editing = False
+              Width = 128
+            end
+            object cxGridDBColumn9: TcxGridDBColumn
+              Caption = 'Tip'
+              DataBinding.FieldName = 'aciklamaTip'
+              Options.Editing = False
+              Width = 41
+            end
+            object cxGridDBColumn10: TcxGridDBColumn
+              Caption = 'A'#231#305'klama'
+              DataBinding.FieldName = 'aciklama'
+              Options.Editing = False
+              Width = 200
+            end
+          end
+          object cxGridLevel8: TcxGridLevel
+            Caption = 'Hastalar'
+            GridView = cxGridReceteIlacAciklama
+            Options.DetailFrameColor = clBlack
+            Options.DetailFrameWidth = 0
+          end
+        end
+        object pnlReceteIlacAckSag: TcxGroupBox
+          Left = 3
+          Top = 15
+          Align = alTop
+          PanelStyle.Active = True
+          TabOrder = 1
+          ExplicitLeft = 2
+          ExplicitTop = -2
+          ExplicitWidth = 272
+          Height = 25
+          Width = 268
+          object cxButtonKadirIlacAckEkle: TcxButtonKadir
+            Left = 2
+            Top = 2
+            Width = 44
+            Height = 21
+            Align = alLeft
+            Caption = 'Ekle'
+            TabOrder = 0
+            OnClick = cxButtonKadirIlacAckEkleClick
+            NewButtonVisible = False
+          end
+          object cxButtonKadirIlacAckSil: TcxButtonKadir
+            Left = 46
+            Top = 2
+            Width = 44
+            Height = 21
+            Align = alLeft
+            Caption = 'Sil'
+            TabOrder = 1
+            OnClick = cxButtonKadirIlacAckSilClick
+            NewButtonVisible = False
+          end
+        end
+      end
+      object cxSplitter4: TcxSplitter
+        Left = 3
+        Top = 451
+        Width = 274
+        Height = 8
+        AlignSplitter = salTop
+        Control = cxPanelReceteAciklama
+        ExplicitLeft = 2
+        ExplicitTop = 434
+        ExplicitWidth = 276
+      end
     end
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 312
-    Top = 56
+    Left = 128
+    Top = 72
     object K1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -966,6 +1034,7 @@ object frmHastaRecete: TfrmHastaRecete
     object ReeteTakipFormu1: TMenuItem
       Tag = -5
       Caption = 'Re'#231'ete Takip Formu'
+      Visible = False
     end
     object ReeteSorgula1: TMenuItem
       Tag = -11
@@ -1076,8 +1145,8 @@ object frmHastaRecete: TfrmHastaRecete
   end
   object DataSource12: TDataSource
     DataSet = ADO_ReceteIlacAciklama
-    Left = 810
-    Top = 45
+    Left = 802
+    Top = 117
   end
   object ADO_ReceteIlacAciklama: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -1087,13 +1156,13 @@ object frmHastaRecete: TfrmHastaRecete
     MasterFields = 'id'
     MasterSource = DataSource5
     TableName = 'ReceteIlacAciklama'
-    Left = 756
+    Left = 796
     Top = 60
   end
   object DataSource11: TDataSource
     DataSet = ADO_receteAcikla
-    Left = 722
-    Top = 61
+    Left = 586
+    Top = 101
   end
   object ADO_receteAcikla: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -1103,13 +1172,13 @@ object frmHastaRecete: TfrmHastaRecete
     MasterFields = 'id'
     MasterSource = DataSource4
     TableName = 'ReceteAciklama'
-    Left = 644
-    Top = 68
+    Left = 572
+    Top = 76
   end
   object DataSource5: TDataSource
     DataSet = ADO_RECETE_DETAY
-    Left = 676
-    Top = 132
+    Left = 316
+    Top = 116
   end
   object ADO_RECETE_DETAY: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -1119,13 +1188,13 @@ object frmHastaRecete: TfrmHastaRecete
     MasterFields = 'id'
     MasterSource = DataSource4
     TableName = 'ReceteDetay'
-    Left = 636
-    Top = 132
+    Left = 260
+    Top = 172
   end
   object DataSource10: TDataSource
     DataSet = ADO_receteTani
-    Left = 562
-    Top = 53
+    Left = 506
+    Top = 101
   end
   object ADO_receteTani: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -1135,13 +1204,13 @@ object frmHastaRecete: TfrmHastaRecete
     MasterFields = 'id'
     MasterSource = DataSource4
     TableName = 'ReceteTani'
-    Left = 516
-    Top = 52
+    Left = 460
+    Top = 84
   end
   object DataSource4: TDataSource
     DataSet = ADO_Recete
-    Left = 402
-    Top = 117
+    Left = 224
+    Top = 109
   end
   object ADO_Recete: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1151,8 +1220,8 @@ object frmHastaRecete: TfrmHastaRecete
     SQL.Strings = (
       'select * from Recete'
       'where dosyaNo = '#39'015098'#39)
-    Left = 316
-    Top = 118
+    Left = 220
+    Top = 62
   end
   object PopupMenuEkleSil: TPopupMenu
     Images = DATALAR.imag24png
@@ -1172,8 +1241,8 @@ object frmHastaRecete: TfrmHastaRecete
     end
   end
   object GridIlaclarPopup: TPopupMenu
-    Left = 640
-    Top = 392
+    Left = 656
+    Top = 240
     object L1: TMenuItem
       Tag = -21
       Caption = #304'la'#231' Listesinden Ekle'
@@ -1231,15 +1300,15 @@ object frmHastaRecete: TfrmHastaRecete
     BiriktirmeliSecim = True
     Grup = False
     GrupCol = 0
-    Left = 252
-    Top = 70
+    Left = 68
+    Top = 174
   end
   object Oku: TTimer
     Enabled = False
     Interval = 2000
     OnTimer = OkuTimer
-    Left = 168
-    Top = 61
+    Left = 128
+    Top = 141
   end
   object ReceteSablonAc: TListeAc
     ListeBaslik = 'Recete '#350'ablonlar'#305
@@ -1261,8 +1330,8 @@ object frmHastaRecete: TfrmHastaRecete
     BiriktirmeliSecim = False
     Grup = False
     GrupCol = 0
-    Left = 180
-    Top = 294
+    Left = 260
+    Top = 246
   end
   object PopupMenu2: TPopupMenu
     OnPopup = PopupMenu2Popup

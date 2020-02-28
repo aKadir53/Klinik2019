@@ -55,20 +55,6 @@ type
     ADO_receteTani: TADOTable;
     DataSource4: TDataSource;
     ADO_Recete: TADOQuery;
-    cxGrid10: TcxGrid;
-    cxGridRecete: TcxGridDBTableView;
-    cxGridDBColumn14: TcxGridDBColumn;
-    cxGridDBColumn15: TcxGridDBColumn;
-    cxGridReceteColumn1: TcxGridDBColumn;
-    cxGridDBColumn16: TcxGridDBColumn;
-    cxGridDBColumn18: TcxGridDBColumn;
-    cxGridDBColumn19: TcxGridDBColumn;
-    cxGridLevel10: TcxGridLevel;
-    cxGrid11: TcxGrid;
-    cxGridReceteTani: TcxGridDBTableView;
-    cxGridDBColumn20: TcxGridDBColumn;
-    cxGridDBColumn21: TcxGridDBColumn;
-    cxGridLevel11: TcxGridLevel;
     cxGrid4: TcxGrid;
     gridIlaclar: TcxGridDBTableView;
     gridIlaclarilacKodu: TcxGridDBColumn;
@@ -88,25 +74,11 @@ type
     cxGridDBColumn10: TcxGridDBColumn;
     cxGridLevel8: TcxGridLevel;
     cxPanelReceteBaslik: TcxGroupBox;
-    cxPanelReceteBaslikBottom: TcxGroupBox;
-    cxGrid9: TcxGrid;
-    cxGridReceteAciklama: TcxGridDBTableView;
-    cxGridDBColumn11: TcxGridDBColumn;
-    cxGridDBColumn12: TcxGridDBColumn;
-    cxGridDBColumn13: TcxGridDBColumn;
-    cxGridLevel9: TcxGridLevel;
     PopupMenuEkleSil: TPopupMenu;
     E1: TMenuItem;
     S1: TMenuItem;
     cxRecetePanel: TcxGroupBox;
-    cxPanelReceteTanilar: TcxGroupBox;
-    cxButtonKadirTaniEkle: TcxButtonKadir;
-    cxButtonKadirTaniSil: TcxButtonKadir;
-    cxPanelReceteAciklama: TcxGroupBox;
-    cxButtonKadirAckSil: TcxButtonKadir;
-    cxButtonKadirAckEkle: TcxButtonKadir;
     cxPanelReceteDetay: TcxGroupBox;
-    cxSplitter1: TcxSplitter;
     cxButtonKadirIlacAckSil: TcxButtonKadir;
     cxButtonKadirIlacAckEkle: TcxButtonKadir;
     GridIlaclarPopup: TPopupMenu;
@@ -117,7 +89,6 @@ type
     T1: TMenuItem;
     L1: TMenuItem;
     K1: TMenuItem;
-    cxChkSIK: TcxCheckBox;
     TaniListe: TListeAc;
     Oku: TTimer;
     ReceteSablonAc: TListeAc;
@@ -127,16 +98,49 @@ type
     ilacR2: TMenuItem;
     TaniR3: TMenuItem;
     TaniR4: TMenuItem;
-    cxGridReceteColumn2: TcxGridDBColumn;
-    cxGridReceteColumn3: TcxGridDBColumn;
     pnlIlacAck: TcxGroupBox;
-    cxSplitter2: TcxSplitter;
     pnlReceteDetaySag: TcxGroupBox;
     btnIlacSil: TcxButtonKadir;
     btnIlacEkle: TcxButtonKadir;
     pnlReceteIlacAckSag: TcxGroupBox;
-    pnlRaceAckSag: TcxGroupBox;
     ilacR3: TMenuItem;
+    cxPanelReceteTanilar: TcxGroupBox;
+    cxGrid11: TcxGrid;
+    cxGridReceteTani: TcxGridDBTableView;
+    cxGridDBColumn20: TcxGridDBColumn;
+    cxGridDBColumn21: TcxGridDBColumn;
+    cxGridLevel11: TcxGridLevel;
+    cxButtonKadirTaniEkle: TcxButtonKadir;
+    cxButtonKadirTaniSil: TcxButtonKadir;
+    cxChkSIK: TcxCheckBox;
+    cxPanelReceteAciklama: TcxGroupBox;
+    cxGrid9: TcxGrid;
+    cxGridReceteAciklama: TcxGridDBTableView;
+    cxGridDBColumn11: TcxGridDBColumn;
+    cxGridDBColumn12: TcxGridDBColumn;
+    cxGridDBColumn13: TcxGridDBColumn;
+    cxGridLevel9: TcxGridLevel;
+    pnlRaceAckSag: TcxGroupBox;
+    cxButtonKadirAckEkle: TcxButtonKadir;
+    cxButtonKadirAckSil: TcxButtonKadir;
+    chkTum: TcxCheckBox;
+    cxRecete: TcxGroupBox;
+    cxTaniBaslikPanel: TcxGroupBox;
+    cxSplitter3: TcxSplitter;
+    cxSplitter4: TcxSplitter;
+    cxGrid10: TcxGrid;
+    cxGridRecete: TcxGridDBTableView;
+    cxGridDBColumn14: TcxGridDBColumn;
+    cxGridDBColumn15: TcxGridDBColumn;
+    cxGridReceteColumn1: TcxGridDBColumn;
+    cxGridDBColumn16: TcxGridDBColumn;
+    cxGridReceteColumn2: TcxGridDBColumn;
+    cxGridDBColumn18: TcxGridDBColumn;
+    cxGridReceteColumn3: TcxGridDBColumn;
+    cxGridDBColumn19: TcxGridDBColumn;
+    cxGridLevel10: TcxGridLevel;
+    cxSplitter1: TcxSplitter;
+    cxGridReceteColumn4: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure Yukle;override;
     procedure ReceteGetir(_dosyaNo , gelisNo : string);
@@ -144,7 +148,7 @@ type
     procedure ilacEkle(islem : integer);
     procedure TaniEkle;
     procedure AckEkle(islem : integer);
-    procedure Yazdir;
+    procedure Yazdir(Tip : string = '');
     procedure ReceteIptal;
     procedure MedulaSend(islem : integer);
     procedure YeniRecete(islem : integer);
@@ -174,6 +178,7 @@ type
     procedure btnIlacEkleClick(Sender: TObject);
     procedure btnIlacSilClick(Sender: TObject);
     procedure Duzenle;
+    procedure chkTumPropertiesEditValueChanged(Sender: TObject);
   private
     { Private declarations }
     FReg : TRegistry;
@@ -190,7 +195,7 @@ type
 
 
 const
-      formGenislik = 1100;
+      formGenislik = 1340;
       formYukseklik = 700;
 
 const
@@ -204,8 +209,10 @@ var
   AdoHastaGelisDataSource : TDataSource;
   AdoHastaListe : TADOQuery;
   Pm : TComponent;
-  db : string;
+  db ,ReceteWhereGelis: string;
   _TableName_ : string = 'Recete';
+  _TableNameDetay_ : string = 'ReceteDetay';
+  _p_ : string;
 
 implementation
 
@@ -255,7 +262,7 @@ begin
 
     @imzala := findMethod(dllHandle, 'ReceteImzalaGonder');
     if addr(imzala) <> nil then
-    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType));
+    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType),1);
 
     ReceteImzalaGonder := ss;
 
@@ -301,7 +308,7 @@ begin
 
     @imzala := findMethod(dllHandle, 'ReceteImzalaIlacAckEkle');
     if addr(imzala) <> nil then
-    imzala(receteDetayId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType));
+    imzala(receteDetayId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType),1);
 
     ReceteIlacAckImzalaGonder := ss;
 
@@ -347,7 +354,7 @@ begin
 
     @imzala := findMethod(dllHandle, 'ReceteImzalaAckEkle');
     if addr(imzala) <> nil then
-    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType));
+    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType),1);
 
     ReceteAckImzalaGonder := ss;
 
@@ -394,7 +401,7 @@ begin
 
     @imzala := findMethod(dllHandle, 'ReceteImzalaTaniEkle');
     if addr(imzala) <> nil then
-    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType));
+    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType),1);
 
     ReceteTaniImzalaGonder := ss;
 
@@ -558,6 +565,9 @@ var
   ado : TADOQuery;
 begin
    // sablon := InputBox('Reçete Þablon','Þablon Tanýmý Giriniz','Sablon1');
+
+    if cxGridRecete.Controller.SelectedRowCount = 0 Then exit;
+
     datalar.YeniRecete.sablonAdi := '';
     if mrYes = ShowPopupForm('Reçete Þablon',ReceteyiSablonKaydet)
     then begin
@@ -744,7 +754,7 @@ begin
   if mrYes = ShowMessageSkin('E-Reçete Numaranýz SMS ile Bildirilecek','','','msg')
   then begin
       //datalar.Login;
-      tel := dosyaNoTel(_dosyaNO_,_mobilTel_);
+      tel := dosyaNoHastaTel(_dosyaNO_,_mobilTel_);
       msj := 'E-Reçete Numaranýz : ' + ADO_Recete.FieldByName('EreceteNo').AsString + #13 +
              ' Saðlýklý Günler Dileriz';
       if tel = ''
@@ -752,7 +762,7 @@ begin
         ShowMessageSkin('Mobil Telefon boþ olmamalýdýr','','','info');
         exit;
       end;
-      SMSSend(tel,msj,_HastaAdSoyad_);
+      SMSSend(tel,msj,_HastaAdSoyad_,_dosyaNO_);
 
   end;
 end;
@@ -834,7 +844,7 @@ begin
                               try
                                 case DoktorReceteMedulaGonderimTip(_d_) of
                                  imzali :  Sonuc := ReceteImzalaGonder;
-                                 //imzasiz : Sonuc := ReceteGonder;
+                                 imzasiz : Sonuc := ReceteGonder;
                                 end;
 
                                 if Copy(Sonuc,1,4) = '0000'
@@ -975,15 +985,15 @@ begin
            b := False;
            BeginTrans (ado.Connection);
            try
-             sql := 'delete ria from ReceteIlacAciklama ria inner join ReceteDetay rd on rd.id = ria.ReceteDetayID where rd.ReceteId = ' + ADO_Recete.fieldbyname('Id').AsString;
+             sql := 'delete ria from ReceteIlacAciklama' + _p_ + ' ria inner join ReceteDetay rd on rd.id = ria.ReceteDetayID where rd.ReceteId = ' + ADO_Recete.fieldbyname('Id').AsString;
              datalar.QueryExec(ado,sql);
-             sql := 'delete from ReceteTani where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
+             sql := 'delete from ReceteTani' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
              datalar.QueryExec(ado,sql);
-             sql := 'delete from ReceteDetay where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
+             sql := 'delete from ReceteDetay' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
              datalar.QueryExec(ado,sql);
-             sql := 'delete from ReceteAciklama where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
+             sql := 'delete from ReceteAciklama' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
              datalar.QueryExec(ado,sql);
-             sql := 'delete from recete where id = ' + ADO_Recete.fieldbyname('Id').AsString;
+             sql := 'delete from recete' + _p_ + ' where id = ' + ADO_Recete.fieldbyname('Id').AsString;
              datalar.QueryExec(ado,sql);
              b := True;
            finally
@@ -1043,7 +1053,8 @@ begin
            ADO_Recete.FieldByName('WanIP').AsString := datalar.WanIp;
            ADO_Recete.Post;
 
-
+           if self.Tag = TagfrmHastaRecete
+           Then
            if ADO_receteTani.Locate('taniKodu','N18',[loCaseInsensitive]) = False
            then begin
              ADO_receteTani.Append;
@@ -1174,7 +1185,7 @@ end;
 
 
 
-procedure TfrmHastaRecete.Yazdir;
+procedure TfrmHastaRecete.Yazdir(Tip : string = '');
 var
   sql , id : string;
   ado,ado1,ado2,ado3 : TADOQuery;
@@ -1199,11 +1210,16 @@ begin
        try
          ado3 := TADOQuery.Create(nil);
          try
-           sql := ' select * from Recete R ' +
+
+          if Tip = ''
+          then begin
+           sql := ' select R.*,D.*,g.*,I.*,H.*,dr.tanimi doktorAdi,S.tanimi from Recete R ' +
                     'left join receteDetay D on R.id = D.ReceteId ' +
                     'left join hasta_gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
-                    'left join ILACLAR I on I.code = D.ilacKodu ' +
+                    'left join OSGB_MASTER.DBO.ilacListesi I on I.barkod = D.ilacKodu ' +
                     'left join HastaKart H on H.dosyaNo = R.dosyaNo ' +
+                    'left join SIRKETLER_TNM S on S.sirketKod = H.sirketKod ' +
+                    'left join doktorlarT dr on dr.kod = r.doktor ' +
                     'where R.id = ' + id +
                     ' order by R.id';
 
@@ -1226,9 +1242,42 @@ begin
 
            datalar.QuerySelect(ado3,sql);
            TopluDataset.Dataset4 := ado3;
-
-
            PrintYap('050','\Reçete',inttoStr(TagfrmHastaRecete) ,TopluDataset,pTNone);
+          end
+          else
+          begin
+             sql := ' select R.*,D.*,g.*,I.*,H.*,dr.tanimi doktorAdi,S.tanimi from Recete_Personel R ' +
+                      'left join receteDetay_Personel D on R.id = D.ReceteId ' +
+                      'left join gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
+                      'left join OSGB_MASTER.DBO.ilacListesi I on I.barkod = D.ilacKodu ' +
+                      'left join PersonelKart H on H.dosyaNo = R.dosyaNo ' +
+                      'left join SIRKETLER_TNM S on S.sirketKod = H.sirketKod ' +
+                      'left join doktorlarT dr on dr.kod = r.doktor ' +
+                      'where R.id = ' + id +
+                      ' order by R.id';
+
+             datalar.QuerySelect(ado1,sql);
+             TopluDataset.Dataset2 := ado1;
+
+
+             sql := 'select rd.ilacAdi,ria.aciklama from recete_Personel r ' +
+                    ' left join receteDetay_Personel rd on rd.receteId = r.id ' +
+                    ' left join ReceteIlacAciklama_Personel ria on ria.receteDetayId = rd.id ' +
+                    ' where r.id = ' + id;
+
+             datalar.QuerySelect(ado2,sql);
+             TopluDataset.Dataset3 := ado2;
+
+
+             sql := 'select taniKodu,rt.tani from recete_Personel r ' +
+                    ' left join receteTani_Personel rt on rt.receteId = r.id ' +
+                    ' where r.id = ' + id;
+
+             datalar.QuerySelect(ado3,sql);
+             TopluDataset.Dataset4 := ado3;
+             PrintYap('050','\Reçete',inttoStr(TagfrmPersonelRecete) ,TopluDataset,pTNone);
+          end;
+
          finally
            ado3.free;
          end;
@@ -1390,20 +1439,35 @@ begin
 
  inherited;
 
+
+  if chkTum.Checked = True
+  then
+    ReceteWhereGelis := ''
+  else
+    ReceteWhereGelis := ' and r.gelisNo = ' + _gelisNo_;
+
+
  if (_dosyaNo_ <> '') and (_gelisNo_ <> '')
  then begin
-    sql := 'select *,d.tanimi ADI from ' + _TableName_ + ' r' +
+    sql := 'select r.*,d.tanimi ADI from ' + _TableName_ + ' r' +
            ' left join doktorlarT d on d.kod = substring(r.doktor,1,4) ' +
            ' where r.dosyaNo = ' + QuotedStr(_dosyaNo_) +
-           ' and r.gelisNo = ' + _gelisNo_ +
+           ReceteWhereGelis +
            ' order by r.tarih desc';
     datalar.QuerySelect(ADO_Recete,sql);
-    Ado_Recete.last;
-    Ado_Recete.First;
+
+ //   Ado_Recete.last;
+ //   Ado_Recete.First;
+    if _ResourceID <> '' then
+    begin
+      ADO_Recete.Locate('id',_ResourceID,[]);
+    end;
+
     ADO_RECETE_DETAY.Open;
     ADO_receteTani.Open;
     ADO_receteAcikla.Open;
     ADO_ReceteIlacAciklama.Open;
+
  end;
 
 end;
@@ -1428,14 +1492,19 @@ begin
            ' and r.gelisNo = ' + gelisNo +
              ' order by r.tarih desc';
     datalar.QuerySelect(ADO_Recete,sql);
-    Ado_Recete.last;
-    Ado_Recete.First;
 
 
-    ADO_RECETE_DETAY.Open;
-    ADO_receteTani.Open;
-    ADO_receteAcikla.Open;
-    ADO_ReceteIlacAciklama.Open;
+ //   datalar.QuerySelect(ADO_RECETE_DETAY,'select * from ' + _TableNameDetay_ + ' where receteID = ' + ADO_Recete.FieldByName('id').AsString);
+
+
+ //   Ado_Recete.last;
+ //   Ado_Recete.First;
+
+
+ //   ADO_RECETE_DETAY.Open;
+ //   ADO_receteTani.Open;
+ //   ADO_receteAcikla.Open;
+ //   ADO_ReceteIlacAciklama.Open;
 
  end;
 end;
@@ -1463,7 +1532,7 @@ begin
      Then Begin
         try
           try
-            sql := 'delete from ReceteDetay where id = ' + ADO_RECETE_DETAY.fieldbyname('id').AsString;
+            sql := 'delete from ReceteDetay' + _p_ + ' where id = ' + ADO_RECETE_DETAY.fieldbyname('id').AsString;
             datalar.QueryExec(sql);
             ADO_RECETE_DETAY.Requery();
           except on e : exception do
@@ -1526,6 +1595,19 @@ begin
   end;
 end;
 
+procedure TfrmHastaRecete.chkTumPropertiesEditValueChanged(Sender: TObject);
+begin
+  inherited;
+  if chkTum.Checked = True
+  then
+    ReceteWhereGelis := ''
+  else
+    ReceteWhereGelis := ' and r.gelisNo = ' + _gelisNo_;
+
+  yukle;
+
+end;
+
 procedure TfrmHastaRecete.cxButtonCClick(Sender: TObject);
 var
  Form : TGirisForm;
@@ -1537,11 +1619,14 @@ begin
   if datalar.KontrolUserSet = True then exit;
 
   GirisFormRecord.F_dosyaNO_ := _dosyaNO_;
+  GirisFormRecord.F_gelisNo_ := _gelisNo_;
 
 
   case Tcontrol(sender).Tag of
   -4 : begin
-         Yazdir;
+         if self.Tag = TagfrmPersonelRecete
+         Then Yazdir('Personel')
+         Else Yazdir;
        end;
 
   -1 : begin
@@ -1572,7 +1657,7 @@ begin
               tokenParams := receteToken(ADO_Recete.FieldByName('id').AsString);
              // ShowMessageSkin(tokenParams,'','','info');
               StrToFile('C:\NoktaV3\ReceteToken2.txt',tokenParams);
-              WinExec(PAnsiChar(AnsiString(path + ' ' + tokenParams +' 1 G')),SW_SHOW);
+              WinExec(PAnsiChar(AnsiString(path + ' ' + tokenParams +' 0 G')),SW_SHOW);
               exit;
             end
             else
@@ -1808,8 +1893,6 @@ begin
 end;
 
 function TfrmHastaRecete.Init(Sender : TObject) : Boolean;
-var
-  _p_ : string;
 begin
   Result := False;
   if not inherited Init(Sender) then exit;
@@ -1819,16 +1902,19 @@ begin
     TableName := _TableName_;
     _p_ := ifThen(pos('Personel',_TableName_)>0,'_Personel','');
 
+    _TableNameDetay_ := 'ReceteDetay' + _p_;
     ADO_RECETE_DETAY.TableName := 'ReceteDetay' + _p_;
-    ADO_RECETE_DETAY.Open;
+  //  ADO_RECETE_DETAY.Open;
     ADO_receteTani.TableName := 'ReceteTani' + _p_;
-    ADO_receteTani.Open;
+  //  ADO_receteTani.Open;
     ADO_receteAcikla.TableName := 'ReceteAciklama' + _p_;
-    ADO_receteAcikla.Open;
+ //   ADO_receteAcikla.Open;
     ADO_ReceteIlacAciklama.TableName := 'ReceteIlacAciklama' + _p_;
-    ADO_ReceteIlacAciklama.Open;
-    ReceteGetir(_dosyaNO_,_gelisNO_);
+  //  ADO_ReceteIlacAciklama.Open;
 
+   // ReceteGetir(_dosyaNO_,_gelisNO_);
+
+    ReceteWhereGelis := ' and r.gelisNo = ' + _gelisNo_;
 
 
     Result := True;

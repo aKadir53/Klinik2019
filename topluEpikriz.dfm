@@ -111,24 +111,24 @@ object frmTopluEpikriz: TfrmTopluEpikriz
     PopupForm = False
     object Detay: TcxGridDBTableView
       Navigator.Buttons.Images = DATALAR.imag24png
-      Navigator.Buttons.First.Visible = True
-      Navigator.Buttons.PriorPage.Visible = True
-      Navigator.Buttons.Prior.Visible = True
-      Navigator.Buttons.Next.Visible = True
-      Navigator.Buttons.NextPage.Visible = True
-      Navigator.Buttons.Last.Visible = True
+      Navigator.Buttons.First.Visible = False
+      Navigator.Buttons.PriorPage.Visible = False
+      Navigator.Buttons.Prior.Visible = False
+      Navigator.Buttons.Next.Visible = False
+      Navigator.Buttons.NextPage.Visible = False
+      Navigator.Buttons.Last.Visible = False
       Navigator.Buttons.Insert.Visible = False
       Navigator.Buttons.Append.Visible = False
       Navigator.Buttons.Delete.ImageIndex = 42
-      Navigator.Buttons.Delete.Visible = True
+      Navigator.Buttons.Delete.Visible = False
       Navigator.Buttons.Edit.Visible = True
       Navigator.Buttons.Post.ImageIndex = 0
       Navigator.Buttons.Post.Visible = True
       Navigator.Buttons.Cancel.Visible = True
       Navigator.Buttons.Refresh.Visible = True
-      Navigator.Buttons.SaveBookmark.Visible = True
-      Navigator.Buttons.GotoBookmark.Visible = True
-      Navigator.Buttons.Filter.Visible = True
+      Navigator.Buttons.SaveBookmark.Visible = False
+      Navigator.Buttons.GotoBookmark.Visible = False
+      Navigator.Buttons.Filter.Visible = False
       Navigator.Visible = True
       FilterBox.CustomizeDialog = False
       DataController.DataModeController.DetailInSQLMode = True
@@ -149,6 +149,7 @@ object frmTopluEpikriz: TfrmTopluEpikriz
       OptionsCustomize.ColumnGrouping = False
       OptionsCustomize.ColumnHidingOnGrouping = False
       OptionsCustomize.ColumnsQuickCustomization = True
+      OptionsData.Deleting = False
       OptionsData.DeletingConfirmation = False
       OptionsData.Inserting = False
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
@@ -205,8 +206,8 @@ object frmTopluEpikriz: TfrmTopluEpikriz
   end
   object DataSource1: TDataSource
     DataSet = ADO_SQL
-    Left = 288
-    Top = 176
+    Left = 304
+    Top = 168
   end
   object SaveDialog1: TSaveDialog
     Left = 432

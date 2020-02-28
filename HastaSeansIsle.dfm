@@ -222,7 +222,6 @@ object frmHastaSeans: TfrmHastaSeans
               GroupSummaryAlignment = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
               Width = 141
@@ -249,6 +248,7 @@ object frmHastaSeans: TfrmHastaSeans
               Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
+              Styles.Content = cxStyle3
               Width = 95
               Position.BandIndex = 0
               Position.ColIndex = 11
@@ -960,6 +960,10 @@ object frmHastaSeans: TfrmHastaSeans
     object Sayfa_Log: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object txtLog: TcxMemo
         Left = 0
         Top = 0

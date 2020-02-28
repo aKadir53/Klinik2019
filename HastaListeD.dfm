@@ -106,6 +106,7 @@ object frmHastaListeD: TfrmHastaListeD
         Navigator.Buttons.Filter.Visible = True
         FilterBox.CustomizeDialog = False
         OnFocusedRecordChanged = ListeFocusedRecordChanged
+        OnGetCellHeight = ListeGetCellHeight
         DataController.Filter.Options = [fcoCaseInsensitive]
         DataController.Filter.Active = True
         DataController.Filter.TranslateBetween = True
@@ -114,7 +115,7 @@ object frmHastaListeD: TfrmHastaListeD
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <
           item
-            Format = 'Listelen Kay'#305't :#0'
+            Format = 'Hasta Say'#305' :#0'
             Kind = skCount
             FieldName = 'HASTAADI'
             Column = HastaAdi
@@ -139,17 +140,10 @@ object frmHastaListeD: TfrmHastaListeD
         OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
         OptionsView.CellAutoHeight = True
         OptionsView.Footer = True
+        OptionsView.GridLines = glHorizontal
         OptionsView.GroupByBox = False
         OptionsView.RowSeparatorColor = clBlack
         Styles.Indicator = cxStyle1
-        object ListeColumn1: TcxGridDBColumn
-          Caption = 'Dosya'
-          DataBinding.FieldName = 'dosyaNo'
-          Visible = False
-          HeaderAlignmentHorz = taCenter
-          Options.Editing = False
-          Width = 50
-        end
         object ListeColumn2: TcxGridDBColumn
           Caption = 'Foto'
           DataBinding.FieldName = 'foto'
@@ -159,6 +153,18 @@ object frmHastaListeD: TfrmHastaListeD
           Properties.Stretch = True
           HeaderAlignmentHorz = taCenter
           Options.Editing = False
+          Options.EditAutoHeight = iaehNone
+          Width = 60
+        end
+        object ListeColumn1: TcxGridDBColumn
+          Caption = 'Dosya'
+          DataBinding.FieldName = 'dosyaNo'
+          PropertiesClassName = 'TcxTextEditProperties'
+          Properties.Alignment.Horz = taCenter
+          Properties.Alignment.Vert = taVCenter
+          HeaderAlignmentHorz = taCenter
+          Options.Editing = False
+          Width = 53
         end
         object TC: TcxGridDBColumn
           Caption = 'Tc Kimlik No'
@@ -177,7 +183,7 @@ object frmHastaListeD: TfrmHastaListeD
           Properties.Alignment.Horz = taLeftJustify
           Properties.Alignment.Vert = taVCenter
           HeaderAlignmentHorz = taCenter
-          Width = 95
+          Width = 105
         end
         object HastaSoyadi: TcxGridDBColumn
           Caption = 'Soyad'#305
@@ -187,6 +193,17 @@ object frmHastaListeD: TfrmHastaListeD
           Properties.Alignment.Vert = taVCenter
           HeaderAlignmentHorz = taCenter
           Width = 105
+        end
+        object ListeColumn3: TcxGridDBColumn
+          Caption = 'Ya'#351
+          DataBinding.FieldName = 'yas'
+          PropertiesClassName = 'TcxTextEditProperties'
+          Properties.Alignment.Horz = taCenter
+          Properties.Alignment.Vert = taVCenter
+          HeaderAlignmentHorz = taCenter
+          HeaderAlignmentVert = vaCenter
+          Options.Editing = False
+          Width = 31
         end
         object ListeColumn4: TcxGridDBColumn
           Caption = 'Tip'
@@ -265,7 +282,7 @@ object frmHastaListeD: TfrmHastaListeD
           Properties.Items = <
             item
               ImageIndex = 0
-              Value = '1'
+              Value = 1
             end>
           HeaderAlignmentHorz = taCenter
           Width = 37
@@ -294,6 +311,8 @@ object frmHastaListeD: TfrmHastaListeD
           Caption = 'E.Seans'
           DataBinding.FieldName = 'seansKontrol'
           PropertiesClassName = 'TcxImageComboBoxProperties'
+          Properties.Alignment.Horz = taCenter
+          Properties.Alignment.Vert = taVCenter
           Properties.Images = DATALAR.global_img_list4
           Properties.Items = <
             item
@@ -304,6 +323,8 @@ object frmHastaListeD: TfrmHastaListeD
               ImageIndex = 133
               Value = 1
             end>
+          HeaderAlignmentHorz = taCenter
+          HeaderAlignmentVert = vaCenter
           Options.Editing = False
           Width = 72
         end
@@ -509,6 +530,12 @@ object frmHastaListeD: TfrmHastaListeD
         FormId = 0
       end
     end
+    object HastaYllkTekikCetveli1: TMenuItem
+      Tag = -37
+      Caption = 'Hasta Y'#305'll'#305'k Tekik Cetveli'
+      ImageIndex = 45
+      OnClick = cxButtonCClick
+    end
     object A1: TMenuItem
       Tag = 9020
       Caption = 'A'#351#305' Kart'#305
@@ -522,10 +549,19 @@ object frmHastaListeD: TfrmHastaListeD
       OnClick = cxButtonCClick
     end
     object N2: TMenuItem
-      Tag = -20
-      Caption = #304'mza F'#246'yleri'
+      Tag = 20
+      Caption = #304'mza F'#246'y'#252
       ImageIndex = 34
-      OnClick = cxButtonCClick
+      object N3: TMenuItem
+        Tag = -21
+        Caption = 'Se'#231'ili '#304'mza F'#246'y'#252
+        OnClick = cxButtonCClick
+      end
+      object N4: TMenuItem
+        Tag = -20
+        Caption = 'T'#252'm '#304'mza F'#246'yleri'
+        OnClick = cxButtonCClick
+      end
     end
     object E2: TMenuItem
       Tag = 9997

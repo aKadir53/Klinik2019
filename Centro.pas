@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,kadir,
   adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,AdvGrid,DateUtils,
-  Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,sGauge,tenayserviceCENTRO,
+  Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,sGauge,TenayServiceSYNLAB_SYNEVO_CENTRO,
   data_modul;
 
 
@@ -15,7 +15,7 @@ uses
   procedure TenaySonucAlTCdenCENTRO(_dosyaNo,_gelisNo,Trh1,Trh2 : string ;
                             gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
 
-  function OrderCENTRO(dosyaNo : string ; gelis : string ; Field : string = '') : tenayserviceCENTRO.Order;
+  function OrderCENTRO(dosyaNo : string ; gelis : string ; Field : string = '') : TenayServiceSYNLAB_SYNEVO_CENTRO.Order;
 
   procedure TenayOrderKaydetCENTRO(gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge);
   procedure ornekdurumyaz(durum,id,refId : string);
@@ -25,13 +25,13 @@ implementation
 
 
 var
-   HTIMNT : tenayserviceCENTRO.Order;
-   KurumMNT : tenayserviceCENTRO.KurumBilgileri;
-   GelisMNT : tenayserviceCENTRO.Gelis;
-   istekMNT : tenayserviceCENTRO.Tetkik;
-   isteklerMNT : tenayserviceCENTRO.Array_Of_Tetkik;
-   doktorMNT : tenayserviceCENTRO.Doktor;
-   HTICvpMNT : tenayserviceCENTRO.HastakaydetCevap;
+   HTIMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.Order;
+   KurumMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri;
+   GelisMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.Gelis;
+   istekMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.Tetkik;
+   isteklerMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.Array_Of_Tetkik;
+   doktorMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.Doktor;
+   HTICvpMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.HastakaydetCevap;
 
 procedure ornekdurumyaz(durum,id,refId : string);
 var
@@ -57,11 +57,11 @@ var
   x , r : Integer;
 Begin
       datalar.Login;
-      HTIMNT := tenayserviceCENTRO.Order.Create;
-      HTICvpMNT := tenayserviceCENTRO.HastakaydetCevap.Create;
-      GelisMNT := tenayserviceCENTRO.Gelis.Create;
-      doktorMNT := tenayserviceCENTRO.Doktor.Create;
-      KurumMNT := tenayserviceCENTRO.KurumBilgileri.Create;
+      HTIMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.Order.Create;
+      HTICvpMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.HastakaydetCevap.Create;
+      GelisMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.Gelis.Create;
+      doktorMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.Doktor.Create;
+      KurumMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri.Create;
 
       txtLog.Lines.Clear;
       progres.MaxValue := gridAktif.RowCount - 2;
@@ -90,7 +90,7 @@ Begin
 
                  if HTIMNT <> nil
                  Then begin
-                     KurumMNT := tenayserviceCENTRO.KurumBilgileri.Create;
+                     KurumMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri.Create;
                      KurumMNT.KullaniciAdi := datalar._labusername;
                      KurumMNT.Sifre := datalar._labsifre;
                      KurumMNT.Kodu := datalar._labkurumkod;
@@ -103,7 +103,7 @@ Begin
                      datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\Centro\Centro_HastaKaydet_' + dosyaNo + '_' + gelisNo;
 
                      try
-                      HTICvpMNT := (datalar.Lab as tenayserviceCENTRO.TenayWebServiceSoap).HastaKaydet(HTIMNT);
+                      HTICvpMNT := (datalar.Lab as TenayServiceSYNLAB_SYNEVO_CENTRO.TenayWebServiceSoapSSC).HastaKaydet(HTIMNT);
                      except on e : Exception do
                        begin
                          sm := e.Message;
@@ -143,9 +143,9 @@ procedure TenaySonucAlCENTRO(_dosyaNo,_gelisNo,_RefId : string ;
                             gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
 var
  // Service : tenayserviceCENTRO.TenayWebServiceSoapMNT;
-  HTSO : tenayserviceCENTRO.OrderQuery;
-  HTSOCvp : tenayserviceCENTRO.HastaSorguCevap;
-  KurumMNT : tenayserviceCENTRO.KurumBilgileri;
+  HTSO : TenayServiceSYNLAB_SYNEVO_CENTRO.OrderQuery;
+  HTSOCvp : TenayServiceSYNLAB_SYNEVO_CENTRO.HastaSorguCevap;
+  KurumMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri;
   I,s , testAdet , j , x : integer;
   dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max : string;
   ado : TADOQuery;
@@ -154,9 +154,9 @@ var
 begin
        datalar.Login;
      //  Service := tenayserviceCENTRO.GetTenayWebServiceSoap(False,datalar._laburl,datalar.TenayMNT);
-       HTSO := tenayserviceCENTRO.OrderQuery.Create;
-       HTSOCvp := tenayserviceCENTRO.HastaSorguCevap.Create;
-       KurumMNT := tenayserviceCENTRO.KurumBilgileri.Create;
+       HTSO := TenayServiceSYNLAB_SYNEVO_CENTRO.OrderQuery.Create;
+       HTSOCvp := TenayServiceSYNLAB_SYNEVO_CENTRO.HastaSorguCevap.Create;
+       KurumMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri.Create;
        KurumMNT.KullaniciAdi := datalar._labusername;
        KurumMNT.Kodu := datalar._labkurumkod;
        KurumMNT.Sifre := datalar._labsifre;
@@ -198,7 +198,7 @@ begin
                  else
                    HTSO.ReferanId := gridAktif.ints[6,I];
                try
-                HTSOCvp := (datalar.Lab as tenayserviceCENTRO.TenayWebServiceSoap).HastaSonucSorgula(HTSO);
+                HTSOCvp := (datalar.Lab as TenayServiceSYNLAB_SYNEVO_CENTRO.TenayWebServiceSoapSSC).HastaSonucSorgula(HTSO);
                except on e : Exception do
                  begin
                    sm := e.Message;
@@ -211,7 +211,7 @@ begin
               // HTSO.GelisReferansId := '0';
                HTSO.OrnekNo := gridAktif.ints[4,I];
                try
-                HTSOCvp := (datalar.Lab as tenayserviceCENTRO.TenayWebServiceSoap).HastaSonucSorgulaOrnekNo(HTSO);
+                HTSOCvp := (datalar.Lab as TenayServiceSYNLAB_SYNEVO_CENTRO.TenayWebServiceSoapSSC).HastaSonucSorgulaOrnekNo(HTSO);
                except on e : Exception do
                  begin
                    sm := e.Message;
@@ -348,11 +348,11 @@ procedure TenaySonucAlTCdenCENTRO(_dosyaNo,_gelisNo,Trh1,Trh2 : string ;
                             gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
 var
  // Service : tenayserviceCENTRO.TenayWebServiceSoapMNT;
-  HTSO : tenayserviceCENTRO.TCSonuclariQuery;
-  HTSOCvp : tenayserviceCENTRO.TCSonuclariResult;
-  _Sonuc_ :  tenayserviceCENTRO.OrnekSonuc;
-  _tetkikSonuc_ : tenayserviceCENTRO.TetkikSonuc;
-  KurumMNT : tenayserviceCENTRO.KurumBilgileri;
+  HTSO : TenayServiceSYNLAB_SYNEVO_CENTRO.TCSonuclariQuery;
+  HTSOCvp : TenayServiceSYNLAB_SYNEVO_CENTRO.TCSonuclariResult;
+  _Sonuc_ :  TenayServiceSYNLAB_SYNEVO_CENTRO.OrnekSonuc;
+  _tetkikSonuc_ : TenayServiceSYNLAB_SYNEVO_CENTRO.TetkikSonuc;
+  KurumMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri;
   I,s , testAdet , sonucAdet , j , x , Tc : integer;
   dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,_tc_ : string;
   ado : TADOQuery;
@@ -362,9 +362,9 @@ var
 begin
        datalar.Login;
 
-       HTSO := tenayserviceCENTRO.TCSonuclariQuery.Create;
-       HTSOCvp := tenayserviceCENTRO.TCSonuclariResult.Create;
-       KurumMNT := tenayserviceCENTRO.KurumBilgileri.Create;
+       HTSO := TenayServiceSYNLAB_SYNEVO_CENTRO.TCSonuclariQuery.Create;
+       HTSOCvp := TenayServiceSYNLAB_SYNEVO_CENTRO.TCSonuclariResult.Create;
+       KurumMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri.Create;
        KurumMNT.KullaniciAdi := datalar._labusername;
        KurumMNT.Kodu := datalar._labkurumkod;
        KurumMNT.Sifre := datalar._labsifre;
@@ -413,7 +413,7 @@ begin
 
 
              try
-                HTSOCvp := (datalar.Lab as tenayserviceCENTRO.TenayWebServiceSoap).TCSonuclariGetir(HTSO);
+                HTSOCvp := (datalar.Lab as TenayServiceSYNLAB_SYNEVO_CENTRO.TenayWebServiceSoapSSC).TCSonuclariGetir(HTSO);
              except on e : Exception do
                  begin
                    sm := e.Message;
@@ -425,8 +425,15 @@ begin
 
             Progres.Progress := Progres.Progress + 1;
 
+            if (HTSOCvp.Sonuclar[0] = nil) and (length(HTSOCvp.Sonuclar) = 1)
+            then  begin
+               txtLog.Lines.Add(inttostr(HTSO.TC) + ' - Sonuç Bulunamadý');
+               exit;
+            end;
+
             if length(HTSOCvp.Sonuclar) > 0
             Then Begin
+
                 for _Sonuc_ in HTSOCvp.Sonuclar do
                 begin
                  // txtLog.Lines.Add('Barkod : ' + _Sonuc_.OrnekNo);
@@ -528,20 +535,20 @@ end;
 
 
 
-function OrderCentro(dosyaNo : string ; gelis : string ; Field : string = '') : tenayserviceCENTRO.Order;
+function OrderCentro(dosyaNo : string ; gelis : string ; Field : string = '') : TenayServiceSYNLAB_SYNEVO_CENTRO.Order;
 var
   sql : string;
-  HastaTenay : tenayserviceCENTRO.Order;
-  GelisMNT : tenayserviceCENTRO.Gelis;
-  istekler : tenayserviceCENTRO.Array_Of_Tetkik;
-  istek : tenayserviceCENTRO.Tetkik;
+  HastaTenay : TenayServiceSYNLAB_SYNEVO_CENTRO.Order;
+  GelisMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.Gelis;
+  istekler : TenayServiceSYNLAB_SYNEVO_CENTRO.Array_Of_Tetkik;
+  istek : TenayServiceSYNLAB_SYNEVO_CENTRO.Tetkik;
   ado : TADOQuery;
   i , j  : integer;
   barkod : int64;
   yil, ay, gun, saat, dakika, saniye, salise : word;
   ckod,kod,TurId  : string;
   KanAlimZamani : TDateTime;
-  DTarih,TTarih , ATarih : TXSDate;
+  DTarih,TTarih , ATarih : TXSDateTime;
 begin
   OrderCentro := nil;
 
@@ -549,7 +556,7 @@ begin
   ado.Connection := datalar.ADOConnection2;
   try
 
-      HastaTenay := tenayserviceCENTRO.Order.Create;
+      HastaTenay := TenayServiceSYNLAB_SYNEVO_CENTRO.Order.Create;
 
       sql := 'select * from HastaKart where dosyano = ' + QuotedStr(dosyaNo);
       datalar.QuerySelect(ado,sql);
@@ -562,15 +569,15 @@ begin
       HastaTenay.AnneAdi := ado.fieldbyname('ANAADI').AsString;
 
       if (ado.fieldbyname('CINSIYETI').AsString = '0')
-      Then HastaTenay.Cinsiyeti := tenayserviceCENTRO.Cinsiyet.Erkek
-      else HastaTenay.Cinsiyeti := tenayserviceCENTRO.Cinsiyet.Kadin;
+      Then HastaTenay.Cinsiyeti := TenayServiceSYNLAB_SYNEVO_CENTRO.Cinsiyet.Erkek
+      else HastaTenay.Cinsiyeti := TenayServiceSYNLAB_SYNEVO_CENTRO.Cinsiyet.Kadin;
 
-      DTarih := TXSDate.Create;
+      DTarih := TXSDateTime.Create;
   //    Dtarih.Year := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,1,4));
   //    Dtarih.Month := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,5,2));
    //   Dtarih.Day := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,7,2));
 
-     DTarih.AsDate := tarihyap(ado.fieldbyname('DOGUMTARIHI').Asstring);
+     DTarih.AsDateTime := tarihyap(ado.fieldbyname('DOGUMTARIHI').Asstring);
 
       HastaTenay.DogumTarihi := DTarih;
 
@@ -585,19 +592,19 @@ begin
 
       if ado.FieldByName(Field).AsString <> ''
       then  begin
-          GelisMNT := tenayserviceCENTRO.Gelis.Create;
+          GelisMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.Gelis.Create;
           GelisMNT.ReferansNo := ado.fieldbyname('ornekNo').AsString;
           GelisMNT.OrnekNo := 0;
 
 
 
-          TTarih := TXSDate.Create;
+          TTarih := TXSDateTime.Create;
        //   TTarih.Year := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,1,4));
       //    TTarih.Month := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,5,2));
       //    TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
 
 
-          TTarih.AsDate := tarihyap(ado.fieldbyname('BHDAT').Asstring);
+          TTarih.AsDateTime := tarihyap(ado.fieldbyname('BHDAT').Asstring);
 
           GelisMNT.Tarih := TTarih;
 
@@ -630,17 +637,17 @@ begin
 
           while not ado.Eof do
           begin
-            istek := tenayserviceCENTRO.Tetkik.Create;
+            istek := TenayServiceSYNLAB_SYNEVO_CENTRO.Tetkik.Create;
             kod := ado.fieldbyname('islemKodu').AsString;//KodEslestirKod(ado.fieldbyname('islemKodu').AsString,ckod,TurId);
             istek.Kodu := kod;
             istek.Adi := ado.fieldbyname('NAME1').AsString;
             istek.KapId := 0;
             istek.Barkod := ado.fieldbyname('barkod').Value;
           //  istek.OrnekTurId := ifThen(TurId = '','0',TurId);
-            ATarih := TXSDate.Create;
+            ATarih := TXSDateTime.Create;
             DecodeDateTime(KanAlimZamani, yil, ay, gun, saat, dakika, saniye, salise);
 
-            ATarih.AsDate := KanAlimZamani;
+            ATarih.AsDateTime := KanAlimZamani;
             istek.AlindigiTarih := ATarih;
             istekler[i] := istek;
             i := i + 1;

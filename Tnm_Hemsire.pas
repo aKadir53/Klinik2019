@@ -118,6 +118,13 @@ begin
   setDataStringB(self,'kod','Hemþire Kodu',Kolon1,'',70,List,True,nil,'','',True,True);
   setDataString(self,'tanimi','Adý Soyadý',Kolon1,'',200);
   setDataString(self,'tcKimlikNo','TC Kimlik No',Kolon1,'',120,True);
+
+  _CINSIYET_.Visible := True;
+  _CINSIYET_.tag := 0;
+  _CINSIYET_.FilterSet := fsCinsiyet;
+  OrtakEventAta(_CINSIYET_);
+  setDataStringKontrol(self,_CINSIYET_,'cinsiyet','Cinsiyeti',kolon1,'',80);
+
   setDataString(self,'tescilNo','Tescil No',Kolon1,'',100);
 
   (*

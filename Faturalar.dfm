@@ -24,20 +24,22 @@ object frmFaturalar: TfrmFaturalar
     TabOrder = 0
     Properties.ActivePage = cxTabSheet1
     Properties.TabPosition = tpBottom
-    LookAndFeel.NativeStyle = False
-    LookAndFeel.SkinName = 'McSkin'
-    ClientRectBottom = 572
-    ClientRectLeft = 4
-    ClientRectRight = 823
-    ClientRectTop = 5
+    ClientRectBottom = 567
+    ClientRectLeft = 3
+    ClientRectRight = 820
+    ClientRectTop = 3
     object cxTabSheet1: TcxTabSheet
       Caption = 'Faturalar'
       ImageIndex = 0
+      ExplicitLeft = 4
+      ExplicitTop = 5
+      ExplicitWidth = 819
+      ExplicitHeight = 567
       object cxGrid1: TcxGridKadir
         Left = 0
         Top = 0
-        Width = 819
-        Height = 472
+        Width = 817
+        Height = 469
         Align = alClient
         Font.Charset = TURKISH_CHARSET
         Font.Color = clWindowText
@@ -55,6 +57,8 @@ object frmFaturalar: TfrmFaturalar
         ExcelFileName = 'FaturaListesi'
         ExceleGonder = True
         PopupForm = False
+        ExplicitWidth = 819
+        ExplicitHeight = 472
         object GridFaturalar: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -311,13 +315,15 @@ object frmFaturalar: TfrmFaturalar
       end
       object FaturaDetayGrid: TcxGridKadir
         Left = 0
-        Top = 472
-        Width = 819
+        Top = 469
+        Width = 817
         Height = 95
         Align = alBottom
         TabOrder = 1
         ExceleGonder = False
         PopupForm = False
+        ExplicitTop = 472
+        ExplicitWidth = 819
         object FaturaDetaySatirlar: TcxGridDBTableView
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
@@ -401,6 +407,10 @@ object frmFaturalar: TfrmFaturalar
     object cxTabSheet2: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
+      ExplicitLeft = 4
+      ExplicitTop = 5
+      ExplicitWidth = 819
+      ExplicitHeight = 567
       object txtLog: TcxMemo
         Left = 0
         Top = 0
@@ -408,8 +418,10 @@ object frmFaturalar: TfrmFaturalar
         Lines.Strings = (
           'txtLog')
         TabOrder = 0
-        Height = 567
-        Width = 819
+        ExplicitWidth = 819
+        ExplicitHeight = 567
+        Height = 564
+        Width = 817
       end
     end
   end

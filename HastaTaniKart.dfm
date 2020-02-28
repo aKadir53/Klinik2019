@@ -138,6 +138,7 @@ object frmTaniKart: TfrmTaniKart
       object gridTanilarColumn1: TcxGridDBColumn
         DataBinding.FieldName = 'islemSiraNo'
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 82
       end
     end
@@ -150,7 +151,7 @@ object frmTaniKart: TfrmTaniKart
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 16
+    Left = 56
     Top = 112
     object Kapat1: TMenuItem
       Tag = -3

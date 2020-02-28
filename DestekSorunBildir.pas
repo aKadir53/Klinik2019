@@ -176,7 +176,7 @@ var
   sql : string;
   ado : TADOQuery;
 begin
-//  datalar.ADOConnection1.Connected := True;
+  datalar.ADOConnection1.Connected := True;
   ado := TADOQuery.Create(nil);
   try
     ado.Connection := datalar.ADOConnection1;
@@ -217,6 +217,7 @@ var
  sql : string;
 begin
   //datalar.Login;
+  datalar.ADOConnection1.Connected := True;
   cxDateEdit1.Date := tarihyap(d1);
   cxDateEdit2.Date := tarihyap(d2);
   try

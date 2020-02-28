@@ -112,6 +112,9 @@ type
     Label5: TLabel;
     T7: TMenuItem;
     S2: TMenuItem;
+    Y1: TMenuItem;
+    O1: TMenuItem;
+    O2: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure ItemClick(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);
@@ -219,10 +222,26 @@ begin
   then
     sql := 'delete from hareketler ' +
           ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
-          ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'''
+          ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'' and isnull(islemSiraNo,'''') = '''''
+  else
+  if tag = -31
+  then
+    sql := 'update hareketler ' +
+           ' set onay  = 0 ' +
+           ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
+           ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'' and isnull(islemSiraNo,'''') = '''''
+
+  else
+  if tag = -32
+  then
+    sql := 'update hareketler ' +
+           ' set onay  = 1 ' +
+           ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
+           ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'' and isnull(islemSiraNo,'''') = '''''
+
   else
     sql := 'delete from hareketler ' +
-           'where sirano = ' + inttostr(tag);
+           'where sirano = ' + inttostr(tag) + ' and isnull(islemSiraNo,'''') = ''''';
 
 
 
@@ -325,6 +344,8 @@ procedure TfrmHastaTetkikEkle.ItemClick(Sender: TObject);
 var
   GirisRecord : TGirisFormRecord;
   F : TGirisForm;
+  TopluDataset : TDataSetKadir;
+  Tarih1,Tarih2 : Tdate;
 begin
     case TMenuItem(sender).Tag of
    -1,-3,-6,-12,-5 : begin
@@ -336,6 +357,13 @@ begin
                  TetkikSil(ADO_Tetkikler.FieldByName('sirano').AsInteger);
                end;
          end;
+    -31,-32 : begin
+               if cxGridTetkikler.Controller.SelectedRowCount > 0
+               Then begin
+                 TetkikSil(TMenuItem(sender).Tag);
+               end;
+         end;
+
     -2 : begin
             if cxGridTetkikler.Controller.SelectedRowCount > 0
             Then begin
@@ -370,6 +398,26 @@ begin
 
             );
             ADO_Tetkikler.Requery;
+          end;
+
+    -24 : begin
+               Tarih1 := tarihyap(datalar.HastaBil.Tarih);
+               Tarih2 := ayliktarih(Tarih1);
+
+              try
+                sql := 'exec sp_HastaLabSonucToplu ' + QuotedStr(tarihal(tarih1)) + ',' +
+                                                       QuotedStr(tarihal(tarih2)) + ',' +
+                                                       QuotedStr(_dosyaNO_);
+                datalar.QuerySelect(sql);
+                TopluDataset.Dataset0 := datalar.QuerySelect(sql);
+
+                PrintYap('112','\Lab Sonuç Yazdýr (Toplu)',intToStr(TagfrmHastaTetkikEkle),TopluDataset);
+
+              finally
+
+              end;
+
+
           end;
 
 

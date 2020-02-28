@@ -24,7 +24,7 @@ uses
   JvExControls, JvAnimatedImage, JvGIFCtrl, DBAdvGrid, EditType,kadir,kadirType,KadirLabel,
   cxCalendar, cxGroupBox, cxRadioGroup, cxButtons, FScxGrid,getFormClass,
   cxCheckComboBox, cxLabel, cxImageComboBox, cxPCdxBarPopupMenu, cxCheckBox,
-  cxPC, cxCheckGroup;
+  cxPC, cxCheckGroup, cxSplitter;
 
 type
   TfrmMedulaFatura = class(TGirisForm)
@@ -36,18 +36,12 @@ type
     PopupMenu2: TPopupMenu;
     KurumFaturacmali1: TMenuItem;
     KurumFatura1: TMenuItem;
-    PageControl1: TPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    txtLog: TMemo;
     N1: TMenuItem;
     FaturaptalTm1: TMenuItem;
-    Button1: TButton;
     FaturaOkuTm1: TMenuItem;
     N2: TMenuItem;
     utarOnayTm1: TMenuItem;
     HizmetleriOku1: TMenuItem;
-    gridBransKodlari: TDBAdvGrid;
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
     cxStyle2: TcxStyle;
@@ -57,10 +51,30 @@ type
     H1: TMenuItem;
     F1: TMenuItem;
     N5: TMenuItem;
-    pnlFaturaList: TPanel;
-    DBMemo1: TDBMemo;
-    Panel2: TPanel;
-    Splitter1: TSplitter;
+    ADO_Detay: TADOQuery;
+    DataSource2: TDataSource;
+    ADO_Detay_toplam: TADOQuery;
+    DataSource3: TDataSource;
+    F2: TMenuItem;
+    F3: TMenuItem;
+    E1: TMenuItem;
+    F5: TMenuItem;
+    K1: TMenuItem;
+    K2: TMenuItem;
+    S1: TMenuItem;
+    F4: TMenuItem;
+    T2: TMenuItem;
+    H2: TMenuItem;
+    T3: TMenuItem;
+    N6: TMenuItem;
+    ENabzSGKBildirimPaketiGnder1: TMenuItem;
+    ENabzGnderim1: TMenuItem;
+    T4: TMenuItem;
+    S2: TMenuItem;
+    DataSource1: TDataSource;
+    cxPageControl2: TcxPageControl;
+    Sayfa_Faturalar: TcxTabSheet;
+    Sayfa_Log: TcxTabSheet;
     cxGrid4: TcxGridKadir;
     FaturaList: TcxGridDBTableView;
     FaturaListdosyaNo: TcxGridDBColumn;
@@ -91,25 +105,13 @@ type
     FaturaListSicilNo: TcxGridDBColumn;
     FaturaListilkTarih: TcxGridDBColumn;
     FaturaListbitisTarih: TcxGridDBColumn;
+    FaturaListColumn2: TcxGridDBColumn;
+    FaturaListColumn3: TcxGridDBColumn;
+    FaturaListColumn4: TcxGridDBColumn;
     cxGridLevel4: TcxGridLevel;
-    ADO_Detay: TADOQuery;
-    DataSource2: TDataSource;
-    ADO_Detay_toplam: TADOQuery;
-    DataSource3: TDataSource;
-    F2: TMenuItem;
-    F3: TMenuItem;
-    E1: TMenuItem;
-    F5: TMenuItem;
-    K1: TMenuItem;
-    K2: TMenuItem;
-    S1: TMenuItem;
-    F4: TMenuItem;
-    T2: TMenuItem;
-    H2: TMenuItem;
-    T3: TMenuItem;
+    txtLog: TMemo;
     cxPageControl1: TcxPageControl;
     fatura_sayfa1: TcxTabSheet;
-    fatura_sayfa2: TcxTabSheet;
     chkTutarTip: TcxCheckBoxKadir;
     cxGrid2: TcxGridKadir;
     cxGridDBTableView3: TcxGridDBTableView;
@@ -138,6 +140,7 @@ type
     cxGridDBBandedColumn25: TcxGridDBBandedColumn;
     cxGridDBBandedColumn26: TcxGridDBBandedColumn;
     cxGridLevel2: TcxGridLevel;
+    fatura_sayfa2: TcxTabSheet;
     cxGrid1: TcxGridKadir;
     cxGridDBTableView1: TcxGridDBTableView;
     cxGridDBTableView1HizmetKodu: TcxGridDBColumn;
@@ -161,14 +164,8 @@ type
     cxGridDBBandedColumn12: TcxGridDBBandedColumn;
     cxGridDBBandedColumn13: TcxGridDBBandedColumn;
     cxGridLevel1: TcxGridLevel;
-    N6: TMenuItem;
-    ENabzSGKBildirimPaketiGnder1: TMenuItem;
-    ENabzGnderim1: TMenuItem;
-    T4: TMenuItem;
-    S2: TMenuItem;
-    DataSource1: TDataSource;
-    FaturaListColumn2: TcxGridDBColumn;
-    FaturaListColumn3: TcxGridDBColumn;
+    cxSplitter1: TcxSplitter;
+    D1: TMenuItem;
     procedure TopPanelButonClick(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure txtKurumTipiChange(Sender: TObject);
@@ -203,6 +200,7 @@ type
       Sender: TcxCustomGridTableView; APrevFocusedRecord,
       AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
+    procedure TopPanelPropertiesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FaturadanCikar;
     procedure Listele;
@@ -213,6 +211,7 @@ type
     procedure btnVazgecClick(Sender: TObject);
     procedure chkTutarTipClick(Sender: TObject);
     procedure ENabzSGKBildirimPaketiGnder1Click(Sender: TObject);
+    procedure D1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -230,6 +229,7 @@ var
   _teslimNumaralari : Array_Of_string;
   hasta : TTakipBilgisi;
   BirimFiyat : double;
+  islemTip , OnayTip , SgkBildir : string;
 
 implementation
 uses AnaUnit,rapor;
@@ -250,32 +250,101 @@ end;
 
 procedure TfrmMedulaFatura.TopPanelButonClick(Sender: TObject);
 var
- sql ,islemTip , OnayTip : string;
+ sql  : string;
  maxFaturaNo : Double;
 begin
  inherited;
-
-     cxGrid4.Enabled := True;
-     sql := 'select max(convert(float,faturaNo)) + 1 as fatno from kurumfatura';
-     maxFaturaNo := datalar.QuerySelect(sql).Fields[0].AsFloat;
-     _FaturaNo_ := floattostr(maxFaturaNo);
-
-
-     islemTip := copy(varTostr(chkList.EditValue),1,1);
-     onayTip := copy(varTostr(chkList.EditValue),2,1);
-
-     sql := 'exec sp_kurumFatura_m3 ' + QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
-            txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
-            QuotedStr(islemTip) + ',' +
-            QuotedStr(onayTip) + ',' +
-            QuotedStr(datalar.AktifSirket);
-
-     datalar.QuerySelect(cxGrid4.Dataset,sql);
+     DurumGoster;
+     try
+       DatasetOpen := False;
+       cxGrid4.Enabled := True;
+       sql := 'select max(convert(float,faturaNo)) + 1 as fatno from kurumfatura';
+       maxFaturaNo := datalar.QuerySelect(sql).Fields[0].AsFloat;
+       _FaturaNo_ := floattostr(maxFaturaNo);
 
 
+       islemTip := copy(varTostr(chkList.EditValue),1,1);
+       onayTip := copy(varTostr(chkList.EditValue),2,1);
+       SgkBildir := copy(varTostr(chkList.EditValue),3,1);
+
+       if OnayTip = '1'
+        then begin
+          TMenuItem(FindComponent('ENabzSGKBildirimPaketiGnder1')).Enabled := True;
+        end
+        else begin
+          TMenuItem(FindComponent('ENabzSGKBildirimPaketiGnder1')).Enabled := False;
+        end;
+
+       if SgkBildir = '1'
+        then begin
+          TMenuItem(FindComponent('F3')).Enabled := True;
+        end
+        else begin
+          TMenuItem(FindComponent('F3')).Enabled := False;
+        end;
+
+        PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+
+
+       sql := 'exec sp_kurumFatura_m3 ' + QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
+              txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
+              QuotedStr(islemTip) + ',' +
+              QuotedStr(onayTip) + ',' +
+              QuotedStr(SgkBildir) + ',' +
+              QuotedStr(datalar.AktifSirket);
+
+       datalar.QuerySelect(cxGrid4.Dataset,sql);
+
+
+     finally
+       DatasetOpen := True;
+       DurumGoster(False);
+     end;
 
    //  HizmetDetayKodToplam;
    //  RenkKontrol;
+end;
+
+procedure TfrmMedulaFatura.TopPanelPropertiesChange(Sender: TObject);
+var
+ chk : TcxCheckGroupItem;
+begin
+   islemTip := copy(varTostr(chkList.EditValue),1,1);
+   onayTip := copy(varTostr(chkList.EditValue),2,1);
+   SgkBildir := copy(varTostr(chkList.EditValue),3,1);
+
+   if islemTip = '1'
+   then begin
+     if chkList.Properties.Items.Count = 3
+     Then begin
+       chkList.Properties.Items[2].Enabled := True;
+       chkList.Properties.Items[1].Enabled := True;
+     end
+     Else
+      if chkList.Properties.Items.Count = 2
+      Then
+       chkList.Properties.Items[1].Enabled := True;
+   end
+   else
+   begin
+     if chkList.Properties.Items.Count = 3
+     Then begin
+       chkList.Properties.Items[2].Enabled := False;
+       chkList.Properties.Items[1].Enabled := False;
+     end
+     Else
+      if chkList.Properties.Items.Count = 2
+      Then
+       chkList.Properties.Items[1].Enabled := False;
+     chkList.EditValue := '000';
+   end;
+
+   TopPanelButonClick(btnListTopPanel);
+
+
+   inherited;
+
+//
 end;
 
 procedure TfrmMedulaFatura.ENabzSGKBildirimPaketiGnder1Click(Sender: TObject);
@@ -311,7 +380,11 @@ begin
            txtLog.Lines.Add('ENabýz Hizmet Kayýt : ' + sysTakipNo + '-' + eNabizSonuc);
            ENabizTetkikKayit(HastaneRefNo,sysTakipNo,eNabizSonuc,'');
            txtLog.Lines.Add('ENabýz Tetkik Kayýt : ' + sysTakipNo + '-' + eNabizSonuc);
+           ENabizRadyolojiKayit(HastaneRefNo,sysTakipNo,eNabizSonuc);
+           txtLog.Lines.Add('ENabýz RadyolojiSonuc : ' + sysTakipNo + '-' + eNabizSonuc);
+
            ENabizSgkBildir(HastaneRefNo,sysTakipNo,eNabizSonuc,islemRefNo);
+
            txtLog.Lines.Add('ENabýz 700 SGK Bildirim Kayýt : ' + sysTakipNo + '-' + eNabizSonuc);
            txtLog.Lines.Add('-----------------------------------------------------------------------');
          except on e : exception do
@@ -384,12 +457,12 @@ inherited;
            if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
            Then begin
              Form := TGirisForm(FormClassType(TagfrmHastaKart));
-             TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := _Dataset.FieldByName('dosyaNo').AsString;
+             TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := GirisFormRecord.F_dosyaNo_;
              TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
              TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
            end
            Else begin
-            Form := FormINIT(TagfrmHastaKart,self,_Dataset.FieldByName('dosyaNo').AsString,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
+            Form := FormINIT(TagfrmHastaKart,self,GirisFormRecord.F_dosyaNo_,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
             if Form <> nil then Form.show;
            end;
         end;
@@ -418,22 +491,28 @@ end;
 
 procedure TfrmMedulaFatura.FaturaKes;
 var
-   sql , sonuc : string;
+   sql , sonuc , sonucMesaj : string;
    ado : TADOQuery;
 begin
-     sql := 'exec sp_kurumFatura_m3 ' + QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
-            txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
-            '4' + ',' +
-            '1' + ',' +
-            QuotedStr(datalar.AktifSirket);
-     ado := datalar.QuerySelect(sql);
-     sonuc := ado.FieldByName('sonuc').AsString;
-     if sonuc = '0'
-     Then
-      ShowMessageSkin('Fatura Kayýt Edildi','Fatura ID : ' + ado.FieldByName('FaturaId').AsString,'','info')
-     Else
-       ShowMessageSkin('Fatura Kayýt Edilemedi',sonuc,'','info');
+    try
+       sql := 'exec sp_kurumFatura_m3 ' + QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
+              txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
+              '4' + ',' +
+              '1' + ',' +
+              '1' + ',' +
+              QuotedStr(datalar.AktifSirket);
+       ado := datalar.QuerySelect(sql);
+       sonuc := ado.FieldByName('sonuc').AsString;
+       sonucMesaj := ado.FieldByName('mesaj').AsString;
+       if sonuc = '0'
+       Then
+        ShowMessageSkin('Fatura Kayýt Edildi','Fatura ID : ' + ado.FieldByName('FaturaId').AsString,'','info')
+       Else
+         ShowMessageSkin('Fatura Kayýt Edilemedi',sonuc,sonucMesaj,'info');
 
+    finally
+      ado.free;
+    end;
 end;
 
 
@@ -442,6 +521,8 @@ var
   sql , Tip : string;
   TopluSet : TDataSetKadir;
 begin
+     DatasetOpen := False;
+
      sql := 'exec sp_kurumFatura_m3 ' + QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
             txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
             '3' + ',' +
@@ -464,6 +545,7 @@ var
   tip , msj , basvuruNo , sql , teslimNo,_tn_ : string;
   state : boolean;
   ado : TADOQuery;
+  tutar : double;
 begin
  (*
    if datalar._donemSonlandir_ <> 'EVET'
@@ -490,13 +572,16 @@ begin
 
 
    Application.ProcessMessages;
-   gridBransKodlari.Enabled := false;
+ //  gridBransKodlari.Enabled := false;
    x := 1;
 
-   DurumGoster;
+   DurumGoster(True,True);
+   pBar.Properties.Max := FaturaList.Controller.SelectedRowCount;
+   pBar.Position := 0;
    try
       for x := 0 to FaturaList.Controller.SelectedRowCount - 1 do
       begin
+         pBar.Position := pBar.Position + 1;
          Application.ProcessMessages;
          pnlDurum.Caption := FaturaList.DataController.GetValue(
                                           FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('HASTA').Index);
@@ -526,7 +611,6 @@ begin
 
                if msj = '0000'
                Then Begin
-                 FaturaOkuCevapYaz(datalar.FaturaKayitWS.FaturaOkucevap);
                  r := length(datalar.FaturaKayitWS.FaturaOkucevap.faturaDetaylari);
                  for j := 0 to r -1 do
                  begin
@@ -544,6 +628,7 @@ begin
                                                 QuotedStr(datalar.FaturaKayitWS.FaturaOkuCevap.faturaDetaylari[j].protokolNo) + ')';
                             datalar.QueryExec(sql);
                      end;
+                   FaturaOkuCevapYaz(datalar.FaturaKayitWS.FaturaOkucevap);
                    End;
                  end;
                End
@@ -558,7 +643,6 @@ begin
 
         if datalar.FaturaKayitWS.FaturaCevap.sonucKodu = '0000'
         Then Begin
-             FaturaCevapYaz(datalar.FaturaKayitWS.FaturaCevap);
              try
               // FaturaList.Controller.FocusedRow := FaturaList.Controller.SelectedRows[x];
                FaturaList.DataController.SetValue(
@@ -584,8 +668,6 @@ begin
 
                if length(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari) > 0
                then begin
-                 ado := TADOQuery.Create(nil);
-                 ado.Connection := datalar.ADOConnection2;
 
                  sql := 'delete from FaturaHizmetDetayTutarOku where takipNo = ' + QuotedStr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipNo);
                  datalar.QueryExec(sql);
@@ -606,12 +688,15 @@ begin
                     datalar.QueryExec(sql);
                   except end;
                  end;
+                 FaturaCevapYaz(datalar.FaturaKayitWS.FaturaCevap);
+
                end;
         End
         Else Begin
             txtLog.Lines.Add(datalar.FaturaKayitWS.FaturaCevap.hastaBasvuruNo+' ; ' + datalar.FaturaKayitWS.FaturaCevap.sonucMesaji + msj);
         End;
-        sleep(2000);
+        //sleep(2000);
+
       end; // for end
 
    finally
@@ -721,8 +806,12 @@ var
  ado : TADOQuery;
  sql , TNo , teslimNo,Ftarihi: string;
  r , j: integer;
- faturaTutar,Tutar,kdv,kdvTutar : Double;
+ faturaTutar,Tutar,kdv,kdvTutar,birimFiyat : Double;
 begin
+
+   birimFiyat := datalar.QuerySelect('select top 1 round(tutar/1.08,4) Tutar from FaturaHizmetDetayTutarOku where takipno = ' +
+                        QuotedStr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipNo) + ' and tutar > 0').FieldByName('tutar').AsFloat;
+
    r := length(Cvp.faturaDetaylari);
    for j := 0 to r - 1 do
    begin
@@ -734,12 +823,13 @@ begin
       kdv := 8;
    //   kdvTutar := faturaTutar - tutar;
       if teslimNo = '0' Then teslimNo := '';
-      sql := 'update kurumfatura set tutar = ' + floattostr(tutar) +
-             ',faturatutar = ' + floattostr(faturaTutar) +
-             ',kdvtutar = ' + floattostr(kdvTutar) +
+      sql := 'update kurumfatura set  ' +
+         //    'tutar = ' + floattostr(tutar) +
+             'faturatutar = ' + floattostr(faturaTutar) +
+         //    ',kdvtutar = ' + floattostr(kdvTutar) +
              ',GssFaturaTeslimNo = ' + QuotedStr(teslimNo) +
              ',FaturaTarihi = ' + QuotedStr(Ftarihi) +
-             ',birimFiyat = ' + floattostr(BirimFiyat) +
+             ',birimFiyat = ' + txtTOtxt_M(floatToStr(birimFiyat))+
              ',kdv = ' + floattostr(kdv) +
              ' where takipNo = ' + QuotedStr(TNo);
       datalar.QueryExec(sql);
@@ -912,7 +1002,7 @@ procedure TfrmMedulaFatura.btnVazgecClick(Sender: TObject);
 begin
   inherited;
    _stop := 0;
-   gridBransKodlari.Enabled := true;
+  // gridBransKodlari.Enabled := true;
 
 end;
 
@@ -957,7 +1047,7 @@ end;
 procedure TfrmMedulaFatura.gridBransKodlariDblClick(Sender: TObject);
 begin
 
-  ShowMessage(gridBransKodlari.Cells[14,gridBransKodlari.Row],'','','info');
+ // ShowMessage(gridBransKodlari.Cells[14,gridBransKodlari.Row],'','','info');
 //     ShowMessageSkin(TeyitNoBul(gridBransKodlari.Cells[13,gridBransKodlari.row]),'','','info');
 
 end;
@@ -1048,7 +1138,7 @@ begin
 
           txtinfo.Caption := 'TeyitNo Kontrol Yapýlýyor....';
           Application.ProcessMessages;
-          takipNo := gridBransKodlari.Cells[14,gridBransKodlari.Row];
+       //   takipNo := gridBransKodlari.Cells[14,gridBransKodlari.Row];
        //   msg := KabulOku(takipNo,hasta,datalar.HastaKabul,1);
 
            if msg = '0000'
@@ -1164,19 +1254,28 @@ begin
    Menu := PopupMenu1;
 
    TopPanel.Visible := True;
-   TapPanelElemanVisible(True,True,True,false,false,false,True,false,False,False,false,True,True);
+   TapPanelElemanVisible(True,True,True,false,false,false,True,false,False,False,false,True,True,false);
 
 //   chkList.Properties.OnEditValueChanged := PropertiesEditValueChanged;
 
 
    chkList.Properties.Items.Clear;
    Chk := chkList.Properties.Items.Add;
-   Chk.Caption := 'Faturalanmamýþlar';
+   Chk.Caption := 'Faturalanmamýþ';
    Chk.Tag := 0;
    Chk := chkList.Properties.Items.Add;
    Chk.Caption := 'Kontrol Onay';
    Chk.Tag := 1;
-   chkList.Width := 300;
+   Chk := chkList.Properties.Items.Add;
+   Chk.Caption := 'Sgk Bildirim';
+   Chk.Tag := 2;
+
+   chkList.EditValue := '100';
+   chkList.Properties.OnEditValueChanged := TopPanelPropertiesChange;
+
+
+   chkList.Width := 400;
+
 
    DataSource1.DataSet := cxGrid4.Dataset;
 
@@ -1187,7 +1286,7 @@ procedure TfrmMedulaFatura.txtLogKeyDown(Sender: TObject; var Key: Word;
 begin
    if key = VK_F10
    Then Begin
-       Button1.Click;
+       //Button1.Click;
 
    End;
 
@@ -1271,17 +1370,20 @@ begin
                                  // FaturaList.Controller.SelectedRows[x].RecordIndex,2);
 
                   FaturaList.Controller.FocusedRow := FaturaList.Controller.SelectedRows[x];
-                  cxGrid4.Dataset.Edit;
-                  GridCellSetValue(FaturaList,'Kontrol',x,onay);
-                  //FaturaList.DataController.SetValue(
-                  //FaturaList.Controller.SelectedRows[x].RecordIndex,16,'O');
+                  if GridCellToString(FaturaList,'GSSFaturaTeslimNo',x) = ''
+                  then begin
+                    cxGrid4.Dataset.Edit;
+                    GridCellSetValue(FaturaList,'Kontrol',x,onay);
+                    //FaturaList.DataController.SetValue(
+                    //FaturaList.Controller.SelectedRows[x].RecordIndex,16,'O');
 
 
-                  cxGrid4.Dataset.FieldByName('Kontrol').AsString := GridCellToString(FaturaList,'Kontrol',x);
-                              // FaturaList.DataController.GetValue(
-                              // FaturaList.Controller.SelectedRows[x].RecordIndex,16);
+                    cxGrid4.Dataset.FieldByName('Kontrol').AsString := GridCellToString(FaturaList,'Kontrol',x);
+                                // FaturaList.DataController.GetValue(
+                                // FaturaList.Controller.SelectedRows[x].RecordIndex,16);
 
-                  cxGrid4.Dataset.Post;
+                    cxGrid4.Dataset.Post;
+                  end;
          End; // for End
          cxGrid4.Dataset.Requery();
      finally
@@ -1297,11 +1399,14 @@ procedure TfrmMedulaFatura.FaturaListFocusedRecordChanged(
 begin
   inherited;
 
+   if DatasetOpen = True
+   then begin
 
     ado_detay.Close;
     ADO_Detay.Parameters[0].Value := cxGrid4.Dataset.FieldByName('takipNo').AsString;
     ADO_Detay.Open;
 
+   end;
 
 end;
 
@@ -1318,6 +1423,12 @@ begin
     AStyle := cxStyle2;
  except end;
    *)
+end;
+
+procedure TfrmMedulaFatura.D1Click(Sender: TObject);
+begin
+  //DonemSonlandir := 'C:\Users\Cmptr\Desktop\HTMLSAYFA.html';
+  UyumSoftPortalGit(datalar._donemuser,datalar._donemsifre,'C:\Users\Cmptr\Desktop\HTMLSAYFA.html','Medula');
 end;
 
 procedure TfrmMedulaFatura.Onay1Click(Sender: TObject);

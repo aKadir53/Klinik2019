@@ -39,7 +39,7 @@ object frmTakipKontrol: TfrmTakipKontrol
       object cxTabSheetTakipler: TcxTabSheet
         Caption = 'Takipler'
         ImageIndex = 0
-        object cxGrid4: TcxGrid
+        object cxGrid4: TcxGridKadir
           Left = 0
           Top = 0
           Width = 657
@@ -56,6 +56,8 @@ object frmTakipKontrol: TfrmTakipKontrol
           LevelTabs.ImageBorder = 2
           LevelTabs.Style = 1
           LookAndFeel.Kind = lfOffice11
+          ExceleGonder = False
+          PopupForm = False
           object cxGridDBTableView1: TcxGridDBTableView
             Navigator.Buttons.First.Visible = True
             Navigator.Buttons.PriorPage.Visible = True
@@ -318,9 +320,10 @@ object frmTakipKontrol: TfrmTakipKontrol
               Position.RowIndex = 0
             end
           end
-          object Takipler: TcxGridTableView
+          object Takipler: TcxGridDBTableView
             PopupMenu = PopupMenu1
             OnFocusedRecordChanged = TakiplerFocusedRecordChanged
+            DataController.DataSource = DataSource2
             DataController.Summary.DefaultGroupSummaryItems = <>
             DataController.Summary.FooterSummaryItems = <
               item
@@ -329,22 +332,19 @@ object frmTakipKontrol: TfrmTakipKontrol
               end>
             DataController.Summary.SummaryGroups = <>
             Filtering.MRUItemsList = False
+            Filtering.ColumnFilteredItemsList = True
             Filtering.ColumnMRUItemsList = False
-            OptionsCustomize.ColumnFiltering = False
+            FilterRow.InfoText = 'Arama Sat'#305'r'#305
+            FilterRow.Visible = True
             OptionsCustomize.ColumnSorting = False
             OptionsSelection.MultiSelect = True
             OptionsView.CellAutoHeight = True
             OptionsView.Footer = True
             OptionsView.GroupByBox = False
             OptionsView.HeaderHeight = 35
-            Styles.Content = cxStyle1
             Styles.OnGetContentStyle = TakiplerStylesGetContentStyle
-            object Sec: TcxGridColumn
-              PropertiesClassName = 'TcxCheckBoxProperties'
-              Width = 29
-            end
             object TakipNo: TcxGridColumn
-              Caption = 'TakipNo'
+              DataBinding.FieldName = 'TakipNo'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -354,6 +354,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object HastaNo: TcxGridColumn
               Caption = 'Hasta No'
+              DataBinding.FieldName = 'DosyaNo'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -364,6 +365,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object gelisNo: TcxGridColumn
               Caption = 'Geli'#351
+              DataBinding.FieldName = 'gelisNo'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -374,6 +376,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object Hasta: TcxGridColumn
               Caption = 'Hasta Ad'#305' Soyad'#305
+              DataBinding.FieldName = 'ADSOYAD'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
@@ -383,6 +386,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object TakipTarih: TcxGridColumn
               Caption = 'Tarih'
+              DataBinding.FieldName = 'BHDAT'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -391,40 +395,9 @@ object frmTakipKontrol: TfrmTakipKontrol
               Options.Editing = False
               Width = 75
             end
-            object SIRANO: TcxGridColumn
-              Visible = False
-            end
-            object BasvuruNo: TcxGridColumn
-              Caption = 'BasvuruNo'
-              Visible = False
-            end
-            object Durum: TcxGridColumn
-              Caption = 'Durum'
-              PropertiesClassName = 'TcxImageComboBoxProperties'
-              Properties.Images = DATALAR.global_img_list4
-              Properties.Items = <
-                item
-                  ImageIndex = 108
-                  Value = 9
-                end
-                item
-                  ImageIndex = 121
-                  Value = 0
-                end
-                item
-                  ImageIndex = 115
-                  Value = 1
-                end>
-              Visible = False
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              HeaderGlyphAlignmentHorz = taCenter
-              Options.Editing = False
-              Width = 36
-            end
             object TakiplerColumn1: TcxGridColumn
               Caption = 'Seans Adet'
-              DataBinding.ValueType = 'Integer'
+              DataBinding.FieldName = 'SeansAdet'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -438,7 +411,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object TakiplerColumn2: TcxGridColumn
               Caption = 'Medula Seans'
-              DataBinding.ValueType = 'Integer'
+              DataBinding.FieldName = 'MedulaSeansAdet'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -452,7 +425,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object TakiplerColumn3: TcxGridColumn
               Caption = 'Tahlil Adet'
-              DataBinding.ValueType = 'Integer'
+              DataBinding.FieldName = 'TahlilAdet'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -466,7 +439,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object TakiplerColumn4: TcxGridColumn
               Caption = 'Medula Tahlil'
-              DataBinding.ValueType = 'Integer'
+              DataBinding.FieldName = 'MedulaTahlilAdet'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -480,7 +453,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object TakiplerColumn5: TcxGridColumn
               Caption = 'Rad Adet'
-              DataBinding.ValueType = 'Integer'
+              DataBinding.FieldName = 'RadAdet'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -494,7 +467,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             end
             object TakiplerColumn6: TcxGridColumn
               Caption = 'Medula Rad'
-              DataBinding.ValueType = 'Integer'
+              DataBinding.FieldName = 'MedulaRadAdet'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
@@ -506,36 +479,24 @@ object frmTakipKontrol: TfrmTakipKontrol
               Styles.Content = cxStyle3
               Width = 39
             end
-            object TakiplerColumn7: TcxGridColumn
-              Visible = False
-            end
-            object TakiplerColumn8: TcxGridColumn
-              Caption = 'Durum'
-              PropertiesClassName = 'TcxImageComboBoxProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              Properties.Images = DATALAR.imag24png
-              Properties.Items = <
-                item
-                  ImageIndex = 11
-                  Value = 1
-                end
-                item
-                  Value = 0
-                end>
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Options.Editing = False
-              Width = 37
-            end
-            object TakiplerColumn9: TcxGridColumn
+            object TakiplerDurumDetay: TcxGridColumn
               Caption = 'Durum Detay'
+              DataBinding.FieldName = 'DurumDetay'
               PropertiesClassName = 'TcxMemoProperties'
               Properties.Alignment = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
               Width = 150
+            end
+            object SIRANO: TcxGridColumn
+              DataBinding.FieldName = 'SIRANO'
+              Visible = False
+            end
+            object BasvuruNo: TcxGridColumn
+              Caption = 'BasvuruNo'
+              DataBinding.FieldName = 'basvuruNo'
+              Visible = False
             end
           end
           object cxGrid4Level1: TcxGridLevel
@@ -600,9 +561,9 @@ object frmTakipKontrol: TfrmTakipKontrol
       end
     end
     object cxPageControl1: TcxPageControl
-      Left = 668
+      Left = 674
       Top = 1
-      Width = 623
+      Width = 617
       Height = 641
       Align = alClient
       Color = 16315635
@@ -612,7 +573,7 @@ object frmTakipKontrol: TfrmTakipKontrol
       Properties.ActivePage = cxTabSheetMedula
       ClientRectBottom = 634
       ClientRectLeft = 3
-      ClientRectRight = 616
+      ClientRectRight = 610
       ClientRectTop = 26
       object cxTabSheetMedula: TcxTabSheet
         Caption = 'Medula'
@@ -631,11 +592,11 @@ object frmTakipKontrol: TfrmTakipKontrol
           Style.IsFontAssigned = True
           TabOrder = 0
           Height = 608
-          Width = 613
+          Width = 607
           object cxGrid8: TcxGrid
             Left = 3
             Top = 15
-            Width = 607
+            Width = 601
             Height = 583
             Align = alClient
             Font.Charset = TURKISH_CHARSET
@@ -651,7 +612,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             LookAndFeel.NativeStyle = False
             ExplicitLeft = 2
             ExplicitTop = -2
-            ExplicitWidth = 609
+            ExplicitWidth = 603
             ExplicitHeight = 608
             object GridHizmetler: TcxGridDBTableView
               PopupMenu = PopupMenu2
@@ -1044,6 +1005,13 @@ object frmTakipKontrol: TfrmTakipKontrol
         ImageIndex = 1
       end
     end
+    object cxSplitter1: TcxSplitter
+      Left = 668
+      Top = 1
+      Width = 6
+      Height = 641
+      Control = cxPageControl2
+    end
   end
   object StatusBar1: TStatusBar
     Left = 0
@@ -1101,6 +1069,7 @@ object frmTakipKontrol: TfrmTakipKontrol
     object H1: TMenuItem
       Tag = -6
       Caption = 'Hasta Kart'#305
+      ImageIndex = 44
       OnClick = H1Click
     end
     object N2: TMenuItem
@@ -1189,6 +1158,12 @@ object frmTakipKontrol: TfrmTakipKontrol
       ImageIndex = 36
       OnClick = H2Click
     end
+    object S4: TMenuItem
+      Tag = 17
+      Caption = 'Sat'#305'r'#305' Yenile'
+      Visible = False
+      OnClick = cxButtonCClick
+    end
     object S3: TMenuItem
       Tag = -18
       Caption = 'Seans Hakedi'#351' '#304'cmali'
@@ -1219,7 +1194,7 @@ object frmTakipKontrol: TfrmTakipKontrol
     SQL.Strings = (
       ''
       'exec sp_TakipKontrolListesi '#39'20191001'#39','#39'20191130'#39','#39'000005'#39)
-    Left = 364
+    Left = 332
     Top = 220
   end
   object DataSource2: TDataSource
@@ -1256,6 +1231,10 @@ object frmTakipKontrol: TfrmTakipKontrol
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       TextColor = 8454143
+    end
+    object cxStyle5: TcxStyle
+      AssignedValues = [svColor]
+      Color = 8454143
     end
   end
   object PopupMenu2: TPopupMenu

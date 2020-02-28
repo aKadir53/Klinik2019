@@ -79,6 +79,7 @@ type
     procedure DesignerOnShow(sender: TObject);
 
     procedure IcerikAl(var template : TStream ; dokumanNo: string ; ObjeName : string = 'Icerik' ; Dataset : TDataset = nil);
+ //   function GenReportPDF(const RepName, Id: string): string;
   private
 
     { Private declarations }
@@ -102,6 +103,52 @@ implementation
  uses data_modul;
 {$R *.dfm}
 
+ (*
+function TfrmRapor.GenReportPDF(const RepName, Id: string): string;
+var
+  TopluDataset : TDataSetKadir;
+  sql : string;
+begin
+  OpenDS(RepName, Id);
+  try
+
+    frxReport1.PrintOptions.ShowDialog := False;
+    frxReport1.ShowProgress := false;
+
+    frxReport1.EngineOptions.SilentMode := True;
+    frxReport1.EngineOptions.EnableThreadSafe := True;
+    frxReport1.EngineOptions.DestroyForms := False;
+    frxReport1.EngineOptions.UseGlobalDataSetList := False;
+
+
+           TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+           TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
+           sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
+                ' join SKS_DokumanKapsamlari DK on DK.kod = D.Kapsam ' +
+                ' join SKS_DokumanTurleri DT on DT.kod = D.tur ' +
+                ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id'+ // and DR.aktif = 1' +
+                ' where D.id = ' + Id;
+
+           TopluDataset.Dataset2 := datalar.QuerySelect(sql);
+
+    raporData1(TopluDataset ,RepName,'','0',pTOnIzle);
+
+   // frxReport1.LoadFromFile(UniServerModule.FilesFolderPath + RepName + '.fr3');
+
+    frxPDFExport1.Background := True;
+    frxPDFExport1.ShowProgress := False;
+    frxPDFExport1.ShowDialog := False;
+    frxPDFExport1.FileName := DATALAR. NewCacheFileUrl(False, 'pdf', '', '', Result, True);
+    frxPDFExport1.DefaultPath := '';
+
+    frxReport1.PreviewOptions.AllowEdit := False;
+    frxReport1.PrepareReport;
+    frxReport1.Export(frxPDFExport1);
+  finally
+    CloseDS;
+  end;
+end;
+   *)
 
 procedure TfrmRapor.DesignerOnShow(sender: TObject);
 Begin
@@ -491,7 +538,9 @@ begin
 
   datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod));
 
-  if datalar.ADO_RAPORLAR_Q.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
+//  if datalar.ADO_RAPORLAR_Q.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
+
+  if datalar.ADO_RAPORLAR_Q.Locate('raporkodu',kod,[]) = False
   Then begin
       datalar.ADO_RAPORLAR_Q.Append;
       datalar.ADO_RAPORLAR_Q.FieldByName('raporKodu').AsString := kod;

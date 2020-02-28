@@ -16,14 +16,24 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
   PixelsPerInch = 96
   TextHeight = 13
   object KurulEkipGrid: TcxGridKadir
-    Left = 336
-    Top = 49
-    Width = 450
+    Left = 152
+    Top = 124
+    Width = 410
     Height = 150
-    BorderStyle = cxcbsNone
     TabOrder = 0
     ExceleGonder = False
+    PopupForm = False
     object KurulEkipGridList: TcxGridDBBandedTableView
+      Navigator.Buttons.First.Visible = False
+      Navigator.Buttons.PriorPage.Visible = False
+      Navigator.Buttons.Prior.Visible = False
+      Navigator.Buttons.Next.Visible = False
+      Navigator.Buttons.NextPage.Visible = False
+      Navigator.Buttons.Last.Visible = False
+      Navigator.Buttons.SaveBookmark.Visible = False
+      Navigator.Buttons.GotoBookmark.Visible = False
+      Navigator.Buttons.Filter.Visible = False
+      Navigator.Visible = True
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
@@ -39,7 +49,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         item
           Caption = 'Kurul Ekibi'
           Styles.Header = cxStyle8
-          Width = 432
+          Width = 388
         end>
       object KurulEkipGridListAdiSoyadi: TcxGridDBBandedColumn
         DataBinding.FieldName = 'AdiSoyadi'
@@ -47,18 +57,19 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
-        Width = 147
+        Width = 110
         Position.BandIndex = 0
         Position.ColIndex = 0
         Position.RowIndex = 0
       end
       object KurulEkipGridListGorevTanim: TcxGridDBBandedColumn
-        DataBinding.FieldName = 'GorevTanim'
+        Caption = 'G'#246'revi'
+        DataBinding.FieldName = 'Gorevi'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
-        Width = 118
+        Width = 88
         Position.BandIndex = 0
         Position.ColIndex = 1
         Position.RowIndex = 0
@@ -69,7 +80,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
-        Width = 149
+        Width = 120
         Position.BandIndex = 0
         Position.ColIndex = 2
         Position.RowIndex = 0
@@ -80,7 +91,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
-        Width = 99
+        Width = 87
         Position.BandIndex = 0
         Position.ColIndex = 3
         Position.RowIndex = 0
@@ -91,12 +102,13 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
     end
   end
   object KurulMaddeler: TcxGridKadir
-    Left = 8
-    Top = 256
-    Width = 900
+    Left = 32
+    Top = 304
+    Width = 540
     Height = 169
     TabOrder = 1
     ExceleGonder = False
+    PopupForm = False
     object cxGridDBTableView1: TcxGridDBTableView
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
@@ -274,26 +286,27 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
       OptionsView.GroupByBox = False
       Bands = <
         item
-          Caption = 'Kurul Toplant'#305' G'#252'ndem Maddeleri'
+          Caption = 'Kurul Toplant'#305' G'#252'ndem Maddeleri  , Karar ve Aksiyonlar'
           FixedKind = fkLeft
           Styles.Header = cxStyle8
-          Width = 1040
+          Width = 530
         end>
       object SatirlarColumn1: TcxGridDBBandedColumn
         Caption = 'Sira No'
         DataBinding.FieldName = 'siraNo'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.ReadOnly = True
-        Width = 42
+        HeaderAlignmentHorz = taCenter
+        Width = 50
         Position.BandIndex = 0
         Position.ColIndex = 0
         Position.RowIndex = 0
       end
       object SatirlarColumn2: TcxGridDBBandedColumn
         DataBinding.FieldName = 'Madde'
-        PropertiesClassName = 'TcxTextEditProperties'
-        Properties.ReadOnly = True
-        Width = 500
+        PropertiesClassName = 'TcxMemoProperties'
+        HeaderAlignmentHorz = taCenter
+        Width = 400
         Position.BandIndex = 0
         Position.ColIndex = 1
         Position.RowIndex = 0
@@ -301,7 +314,8 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
       object SatirlarColumn3: TcxGridDBBandedColumn
         DataBinding.FieldName = 'Aksiyon'
         PropertiesClassName = 'TcxMemoProperties'
-        Width = 498
+        HeaderAlignmentHorz = taCenter
+        Width = 156
         Position.BandIndex = 0
         Position.ColIndex = 2
         Position.RowIndex = 0
@@ -383,8 +397,8 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 232
-    Top = 128
+    Left = 152
+    Top = 16
     object Y1: TMenuItem
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
@@ -428,6 +442,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
     SkinName = 'lilian'
     Grup = False
     GrupCol = 0
-    Left = 56
+    Left = 104
+    Top = 64
   end
 end

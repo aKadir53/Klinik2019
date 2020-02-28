@@ -330,6 +330,7 @@ begin
   setDataString(self,'GIBFaturaNo','Fatura GIB No',Kolon1,'FaturaID',100,False,'',True);
   setDataString(self,'Guid','Fatura Guid',Kolon1,'FaturaID',250,False,'',True);
 
+
   (*
   List := ListeAcCreate('SIRKETLER_TNM','sirketKod,tanimi,Aktif',
                        'SirketKod,Sirket,Durum',
@@ -352,7 +353,17 @@ begin
   sirketKod.DisplayField := 'tanimi';
   sirketKod.Filter := ' FirmaTip = 3';
   sirketKod.BosOlamaz := True;
-  setDataStringKontrol(self,sirketKod,'SirketKod','Müþteri',Kolon1,'',693);
+  setDataStringKontrol(self,sirketKod,'SirketKod','Müþteri',Kolon1,'',250);
+  OrtakEventAta(sirketKod);
+
+  sirketKod := TcxImageComboKadir.Create(self);
+  sirketKod.Conn := datalar.ADOConnection2;
+  sirketKod.TableName := 'SIRKETLER_TNM';
+  sirketKod.ValueField := 'sirketKod';
+  sirketKod.DisplayField := 'tanimi';
+  sirketKod.Filter := ' FirmaTip = 1';
+  sirketKod.BosOlamaz := True;
+  setDataStringKontrol(self,sirketKod,'DiyalizSirketKod','Merkez',Kolon1,'',250);
   OrtakEventAta(sirketKod);
 
 
@@ -367,6 +378,7 @@ begin
   setDataStringKontrol(self,FaturaTip,'FaturaTip','Fatura Tipi',Kolon1,'FT',100);
   OrtakEventAta(FaturaTip);
 
+
   FaturaOzelKodlari := TcxImageComboKadir.Create(self);
   FaturaOzelKodlari.Conn := datalar.ADOConnection2;
   FaturaOzelKodlari.TableName := 'FaturaOzelKodlari';
@@ -380,6 +392,16 @@ begin
   FaturaTarihi := TcxDateEditKadir.Create(Self);
   FaturaTarihi.ValueTip := tvDate;
   setDataStringKontrol(self,FaturaTarihi,'FaturaTarihi','Fatura Tarihi',Kolon1,'FT',100);
+
+  FaturaTip := TcxImageComboKadir.Create(self);
+  FaturaTip.Conn := nil;
+  FaturaTip.ItemList := 'SAGLIK_HAS;Hastane,SAGLIK_ECZ;Eczane,SAGLIK_OPT;Optik,SAGLIK_MED;Medical';
+  FaturaTip.Filter := '';
+  FaturaTip.BosOlamaz := True;
+  setDataStringKontrol(self,FaturaTip,'ilaveFaturaTip','SGK Fat.Tipi / E.RefNo',Kolon1,'sgk',100);
+  OrtakEventAta(FaturaTip);
+
+  setDataString(self,'evrakRefNo','',Kolon1,'sgk',100,False,'');
 
 
   setDataStringBLabel(self,'bosSatir',kolon1,'',750,'Fatura Mal ve Hizmetleri');

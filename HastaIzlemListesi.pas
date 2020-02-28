@@ -196,6 +196,7 @@ type
     ExceleGnder1: TMenuItem;
     gridHastalarColumn3: TcxGridDBBandedColumn;
     H2: TMenuItem;
+    K2: TMenuItem;
 
     procedure TopPanelButonClick(Sender: TObject);
     procedure HastalarAfterScroll(DataSet: TDataSet);
@@ -463,18 +464,24 @@ var
   st : Tstrings;
   ado : TADOQuery;
 begin
-  sql := 'SELECT kod,Tanimi FROM DoktorlarT WHERE Uzman = ''Evet'' AND durum = ''Aktif''';
-  UDoktor := datalar.QuerySelect(sql).FieldByName('kod').AsString;
+ // sql := 'SELECT kod,Tanimi FROM DoktorlarT WHERE Uzman = ''Evet'' AND durum = ''Aktif''';
+ // UDoktor := datalar.QuerySelect(sql).FieldByName('kod').AsString;
 
 
   tip := '0';//DiyalizTip.EditingValue;
   islem := '1';
 
+
+  DurumGoster(True,False,KayitYukleMesaj);
+  try
    sql := 'exec sp_IzlemList @tarih1 = ' + txtTopPanelTarih1.GetSQLValue + ',@tarih2 = ' + txtTopPanelTarih2.GetSQLValue +
           ',@tip = ' + QuotedStr(tip) + ',@islem = ' + QuotedStr(islem) + ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
 
    datalar.QuerySelect(hastalar,sql);
 
+  finally
+    DurumGoster(False);
+  end;
    (*
    st := TStringList.Create;
    ItemsDoldurName('txtDamarGiris',st);
@@ -792,30 +799,64 @@ var
  TopluDataset : TDataSetKadir;
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
+ x : integer;
+ dosyaNo,gelisNo : string;
+ _Tarih_ : TDate;
 begin
   inherited;
+
+  if Hastalar.Eof then exit;
+
 
   GirisFormRecord.F_dosyaNo_ := Hastalar.FieldByName('dosyaNo').AsString;;
   GirisFormRecord.F_gelisNo_ := Hastalar.FieldByName('gelisNo').AsString;
   GirisFormRecord.F_HastaAdSoyad_ := Hastalar.FieldByName('HASTAADI').AsString + ' ' +
                                      Hastalar.FieldByName('HASTASOYADI').AsString;
 
-  case Tcontrol(sender).tag of
- -10,-11 : begin
-            TDISKaydet(Tcontrol(sender).tag);
-          end;
+  DurumGoster;
+  try
+    case Tcontrol(sender).tag of
+   -10,-11 : begin
+              TDISKaydet(Tcontrol(sender).tag);
+            end;
 
- -20 : begin
-         TopluDataset.Dataset0 := Hastalar;
-         PrintYap('200T','Uzman Muayene Tutanak(Toplu',intToStr(TagfrmHastaDiyalizIzlemListesi), TopluDataset);
-       end;
+   -20 : begin
+           TopluDataset.Dataset0 := Hastalar;
+           PrintYap('200T','Uzman Muayene Tutanak(Toplu',intToStr(TagfrmHastaDiyalizIzlemListesi), TopluDataset);
+         end;
 
- -38 : begin
-          F := FormINIT(TagfrmUzmanMuayene,GirisFormRecord,ikEvet);
-          //  F._Foto_ := foto;
-          if F <> nil then F.ShowModal;
+   -38 : begin
+            F := FormINIT(TagfrmUzmanMuayene,GirisFormRecord,ikEvet);
+            //  F._Foto_ := foto;
+            if F <> nil then F.ShowModal;
+         end;
+   -55 : begin
+               DurumGoster;
+               try
+                   for x := 0 to gridHastalar.Controller.SelectedRowCount - 1 do
+                   begin
+                       Application.ProcessMessages;
+                       if stop = 1 then break;
 
-       end;
+                       dosyaNo := gridHastalar.DataController.GetValue(
+                                                      gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('dosyaNo').Index);
+                       gelisNo := gridHastalar.DataController.GetValue(
+                                                      gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('gelisNo').Index);
+                       _Tarih_ := gridHastalar.DataController.GetValue(
+                                                      gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('KanAlimTarihi').Index);
+
+                       datalar.QueryExec('update UzmanGozlem set Tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD',_Tarih_)) +
+                                         ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + QuotedStr(gelisNo)
+                                        );
+                   end;
+
+               finally
+                 DurumGoster(false);
+               end;
+         end;
+    end;
+  finally
+    DurumGoster(False);
   end;
 
 end;

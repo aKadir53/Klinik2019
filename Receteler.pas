@@ -20,7 +20,7 @@ uses
   dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver, dxSkinSpringTime,
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
   rxToolEdit, ComCtrls, ToolWin, sToolBar, cxImageComboBox, Menus, cxContainer,
-  cxTextEdit, cxGroupBox, cxLabel;
+  cxTextEdit, cxGroupBox, cxLabel, cxSplitter;
 
 type
   TfrmReceteler = class(TGirisForm)
@@ -199,6 +199,8 @@ type
     txtHastaBilgisi: TcxTextEdit;
     cxLabel1: TcxLabel;
     ReceteTanimi: TcxGridDBColumn;
+    cxSplitter1: TcxSplitter;
+    cxSplitter2: TcxSplitter;
     procedure TopPanelButonClick(Sender: TObject);
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure cxGridDBTableView1DblClick(Sender: TObject);
@@ -286,9 +288,9 @@ begin
 
       sql := ' select * from Recete R ' +
                'left join receteDetay D on R.id = D.ReceteId ' +
-               'left join gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
-               'left join ILACLAR I on I.code = D.ilacKodu ' +
-               'left join PersonelKart H on H.dosyaNo = R.dosyaNo ' +
+               'left join Hasta_gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
+               'left join OSGB_MASTER.DBO.ilacListesi I on I.barkod = D.ilacKodu ' +
+               'left join HastaKart H on H.dosyaNo = R.dosyaNo ' +
                ' where convert(varchar,R.Tarih,112) between ' + txtTopPanelTarih1.GetSQLValue +
                ' and ' + txtTopPanelTarih1.GetSQLValue +
                ' and r.id IN (select datavalue from dbo.StrToTable(' + QuotedStr(copy(id,2,500)) + ','',''))' +
@@ -316,9 +318,10 @@ begin
   sql := 'select r.*,h.HASTAADI,h.HASTASOYADI from recete r ' +
          ' join receteDetay rd on R.id = RD.receteId ' +
          ' join hastakart h on h.dosyaNo = r.dosyaNO ' +
-         ' where convert(varchar,tarih,112) between ' + txtTopPanelTarih1.GetSQLValue + ' and ' + txtTopPanelTarih1.GetSQLValue +
+         ' where convert(varchar,tarih,112) between ' + txtTopPanelTarih1.GetSQLValue + ' and ' + txtTopPanelTarih2.GetSQLValue +
          ' and rd.ilacKodu = ' + QuotedStr(ADO_toplam.FieldByName('ilacKodu').AsString) +
-         ' and h.sirketKod in (select sirketKod from SIRKETLER_TNM_view where doktor = ' + QuotedStr(datalar.doktorKodu)  + ')' +
+         ' and h.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+         //in (select sirketKod from SIRKETLER_TNM_view where doktor = ' + QuotedStr(datalar.doktorKodu)  + ')' +
          ' order by h.HASTAADI , h.HASTASOYADI ' ;
   datalar.QuerySelect(ADO_Hast,sql);
 end;
@@ -362,22 +365,24 @@ var
  sql,SirketKod : string;
 begin
  // inherited;
-  if KurumTipTopPanel.EditValue = 1 then sirketKod := datalar.AktifSirket
-   else SirketKod := '';
+  //if KurumTipTopPanel.EditValue = 1 then
+  sirketKod := datalar.AktifSirket;
+  // else SirketKod := '';
+
   sql := 'exec sp_Receteler ' + QuotedStr(sirketKod) + ',' +
   txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' + 'G,' + QuotedStr(datalar.doktorKodu);
   datalar.QuerySelect(Ado_Receteler_Grup,sql);
 
   sql := 'exec sp_Receteler ' + QuotedStr(sirketKod) + ',' +
-  txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' + QuotedStr('') + ',' + QuotedStr(datalar.doktorKodu);
+  txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' + QuotedStr('') + ',' + QuotedStr('');
   datalar.QuerySelect(Ado_Receteler,sql);
 
   sql := 'select ilacKodu,ilacAdi,sum(adet) toplamAdet , sum (kullanimAdet*kullanimadet2) toplamDoz from recete R ' +
-         ' join PersonelKart p on p.dosyaNo = r.dosyaNo ' +
+         ' join HastaKart p on p.dosyaNo = r.dosyaNo ' +
          ' join receteDetay RD on R.id = RD.receteId ' +
          ' where p.SirketKod like ' + QuotedStr('%'+sirketKod+'%') +
          ' and convert(varchar,tarih,112) between ' + txtTopPanelTarih1.GetSQLValue+ ' and ' + txtTopPanelTarih2.GetSQLValue +
-         ' and p.sirketKod in (select sirketKod from SIRKETLER_TNM_view where doktor = ' + QuotedStr(datalar.doktorKodu)  + ') ' +
+        // ' and p.sirketKod in (select sirketKod from SIRKETLER_TNM_view where doktor = ' + QuotedStr(datalar.doktorKodu)  + ') ' +
          '  group by ilacKodu,ilacAdi ';
   datalar.QuerySelect(ADO_toplam,sql);
 
@@ -405,7 +410,7 @@ procedure TfrmReceteler.FormCreate(Sender: TObject);
 begin
   inherited;
   TopPanel.Visible := true;
-  TapPanelElemanVisible(True,True,True,false,false,False,True,false,False,False,False,False);
+  TapPanelElemanVisible(True,True,True,false,false,False,False,false,False,False,False,False);
   txtTopPanelTarih1.Date := date;
   txtTopPanelTarih2.Date := date;
  // Recete.DataController.DataSource := _DataSource;

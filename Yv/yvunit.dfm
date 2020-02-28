@@ -3260,7 +3260,7 @@ object frmYv: TfrmYv
   object Progress: TcxProgressBar
     Left = 217
     Top = 65
-    Properties.Max = 6.000000000000000000
+    Properties.Max = 11.000000000000000000
     Properties.OverloadValue = 6.000000000000000000
     Properties.PeakValue = 2.000000000000000000
     TabOrder = 0
@@ -3369,5 +3369,13 @@ object frmYv: TfrmYv
     SSLOptions.VerifyDepth = 0
     Left = 400
     Top = 8
+  end
+  object IdTCPClient1: TIdTCPClient
+    ConnectTimeout = 0
+    IPVersion = Id_IPv4
+    Port = 0
+    ReadTimeout = -1
+    Left = 328
+    Top = 104
   end
 end

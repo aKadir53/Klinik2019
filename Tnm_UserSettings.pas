@@ -411,6 +411,7 @@ begin
 
   setDataStringB(self,'kullanici','Kullanici Adý',Kolon1,'',150,List,True,cxKullaniciAdi,'');
   setDataString(self,'ADISOYADI','Kullanýcý Tanýmý',Kolon1,'',250);
+  setDataString(self,'donem','Kullanýcý TC',Kolon1,'',150);
   setDataString(self,'password','Þifre',Kolon1,'pass',150);
   TcxTextEditKadir (FindComponent ('password')).Properties.EchoMode := eemPassword;
   TcxTextEditKadir (FindComponent ('password')).Properties.PasswordChar := '*';
@@ -492,7 +493,7 @@ begin
   DSPers := TcxImageComboKadir.Create(self);
   DSPers.Conn := Datalar.ADOConnection2;
   DSPers.Tag := dsp;
-  DSPers.TableName := 'DigerSaglikPersonel';
+  DSPers.TableName := 'HemsirelerT';
   DSPers.ValueField := 'KOD';
   DSPers.DisplayField := 'Tanimi';
   DSPers.BosOlamaz := False;

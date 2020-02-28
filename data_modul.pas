@@ -43,6 +43,9 @@ uses
     DBPasword : string = 'LyotTlRNMU13PT0=';
     AppalicationVer : integer = 2201;
 
+    KayitYukleMesaj : string = 'Kayýtlar Yükleniyor , Lütfen Bekleyiniz';
+
+
 type
   TDATALAR = class(TDataModule)
     ADOConnection2: TADOConnection;
@@ -372,6 +375,13 @@ type
     XMLTransformProvider1: TXMLTransformProvider;
     DYOB: THTTPRIO;
     RxTaniBilgisitakipNo: TStringField;
+    MemDataKullaniciDokumanOku: TdxMemData;
+    MemDataKullaniciDokumanOkuadi: TStringField;
+    DataSource_MemDataKullaniciDokumanOku: TDataSource;
+    MemDataKullaniciDokumanOkuid: TIntegerField;
+    MemDataKullaniciDokumanOkurev: TIntegerField;
+    MemDataKullaniciDokumanOkuDokumanNo: TStringField;
+    MemDataKullaniciDokumanOkusirketKod: TStringField;
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
     procedure TakipHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;
@@ -402,7 +412,7 @@ type
     { Private declarations }
   public
    LabEntegrasyonBilgileri : TLabEntegrasyonBilgileri;
-   servername,username, usersifre , _username , _sifre , _donemuser , _donemsifre , usernameAdi ,
+   userTC,servername,username, usersifre , _username , _sifre , _donemuser , _donemsifre , usernameAdi ,
    _tesisKodu , _labusername , _labsifre , doktor ,doktorKodu,doktorTC, doktorAdi , SonReceteDoktorKodu,SonImzaDoktorKodu,sirketKodu,
    IGU, DSPers, _dosyaNo_,_gelisNo_,kontrolKod,RiskTanimBilgiEkle,
    _labkurumkod , _labkurumkodText, _laburl , _labfirma , _LabCalismaYon,_LabBarkodBasim,
@@ -414,7 +424,7 @@ type
    TakipDevam : boolean;
    AktifSirketAdi,AktifSirket ,AktifSube ,AktifSubeAdi,_donemSonlandir_ ,TenayMNTRequest , TenayBIORequest , DyobRequest , _database , _Tip : string;
    CentroResponse ,SMSHesapFrom,SMSHesapUser,SMSHesapSifre , AlpemixRun,AlpemixGrupAdi,AlpemixGrupParola : string;
-   SMTPSunucu,SMTPUserName,SMTPPassword,SMTPPort : string;
+   SMTPSunucu,SMTPUserName,SMTPPassword,SMTPPort,SMTPSEndTip : string;
    _kurumKod  , _donemgoster,Cinsiyet : integer;
    _YazilimGelistirici : integer;
    LisansBitis,LisansBasla,LisansTarih : string;
@@ -486,9 +496,13 @@ type
    HTTP_XMLDosya_Name : string;
    DefaultTedaviTuru : string;
    DefaultTedaviTipi : string;
+   SeansOnayDoktorHemsireYapar : string;
    KurumBransi : string;
    eNabizKayit : string;
    IlacTedavisi : TIlacTedavi;
+   DokumanRev : TDokumanRevDetay;
+   HemsireTalimat : THemsireTalimat;
+   Konsultasyon : THastaKosultasyon;
 
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
     function MasterBaglan : Boolean; overload;
@@ -842,7 +856,7 @@ begin
   end;
   try
     if Q.Connection = nil then Q.Connection := ADOConnection2;
-
+    Q.CommandTimeout := 0;
     //sql2 := sql;
     Q.Close;
     Q.SQL.Clear;
@@ -889,7 +903,7 @@ begin
 //      Then sql := sql + ' WITH(NOLOCK) ';
     if Assigned(Q) = false then Q := TADOQuery.Create(nil);
     if Q.Connection = nil then Q.Connection := ADOConnection2;
-
+    Q.CommandTimeout := 0;
     Q.Close;
     Q.SQL.Clear ;
     if Copy(AnsiUppercase(sql) ,1, 6) = 'SELECT'
@@ -909,6 +923,7 @@ begin
 //      and (Pos ('ORDER BY',AnsiUpperCase(sql)) = 0)
 //      Then sql := sql + ' WITH(NOLOCK) ';
     Result := TADOQuery.Create(nil);
+    Result.CommandTimeout := 0;
     try
       Result.Connection := ADOConnection2;
 

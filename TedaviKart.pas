@@ -67,6 +67,7 @@ type
   private
     { Private declarations }
   public
+      GelisTableOpen : Boolean;
       function Init(Sender: TObject) : Boolean; override;
     { Public declarations }
   end;
@@ -85,7 +86,7 @@ var
 implementation
       uses Data_Modul,AnaUnit,HastaListe,HastaListeD,
            HastaRecete,HastaTetkikEkle,Anamnez,HastaIlacTedavi,
-           HastaDiyalizIzlem,UzmanMuayene;
+           HastaDiyalizIzlem,UzmanMuayene,KanTetkikleriTakip;
 
 {$R *.dfm}
 
@@ -102,7 +103,8 @@ begin
      TagfrmHastaTetkikEkle,
      TagfrmHastaIlacTedavi,
      TagfrmHastaDiyalizIzlem,
-     TagfrmUzmanMuayene
+     TagfrmUzmanMuayene,
+     TagfrmKanTetkikTakip
       :
          begin
               for i := 0 to Screen.FormCount - 1 do
@@ -184,6 +186,7 @@ begin
                                     frmHastaRecete._dosyaNO_ := self._dosyaNO_;
                                     frmHastaRecete._gelisNO_ := self._gelisNO_;
                                     frmHastaRecete._MuayeneProtokolNo_ := self._MuayeneProtokolNo_;
+                                    if GelisTableOpen = True Then
                                     yukle;
                                    // frmHastaRecete.ReceteGetir(self._dosyaNO_,self._gelisNO_);
                                     frmHastaRecete._provizyonTarihi_ := self._provizyonTarihi_;
@@ -225,10 +228,13 @@ begin
         TagfrmHastaTetkikEkle : begin
                                    frmHastaTetkikEkle._dosyaNO_ := self._dosyaNO_;
                                    frmHastaTetkikEkle._gelisNO_ := self._gelisNO_;
-
-                                   frmHastaTetkikEkle.Sonuclar;
-                                   frmHastaTetkikEkle.DegerlendirmeGetir;
+                                   if GelisTableOpen = True
+                                   Then begin
+                                     frmHastaTetkikEkle.Sonuclar;
+                                     frmHastaTetkikEkle.DegerlendirmeGetir;
+                                   end;
                                 end;
+
 
  TagfrmAnamnez,TagfrmIseGiris : begin
                                    case AdoHastaGelis.FieldByName('AnemnezEkranTipi').AsInteger of
@@ -277,6 +283,17 @@ begin
 
                                 end;
 
+      TagfrmKanTetkikTakip  :   begin
+                                 if Assigned(frmKanTetkikTakip) then
+                                  begin
+                                    frmKanTetkikTakip._dosyaNO_ := self._dosyaNO_;
+                                    frmKanTetkikTakip._gelisNO_ := self._gelisNO_;
+                                    frmKanTetkikTakip._provizyonTarihi_ := tarihal(date);
+                                    yukle;
+
+                                  end;
+                                end;
+
 
       end;
 
@@ -303,10 +320,21 @@ begin
   self._dosyaNO_ := cxGridHastaListesi.DataController.GetValue(
   cxGridHastaListesi.Controller.SelectedRows[0].RecordIndex,dosyaNoColum.index);
 
-  cxTab.Tabs[0].Caption := self._HastaAdSoyad_;
-  LeftPanelcxPageControl.ActivePageIndex := 1;
+  self._mobilTel_ := '';
 
+  cxTab.Tabs[0].Caption := self._HastaAdSoyad_;
+  case TfrmTedaviBilgisi(self).Tag  of
+      TagfrmKanTetkikTakip :    LeftPanelcxPageControl.ActivePageIndex := 0;
+      else
+       LeftPanelcxPageControl.ActivePageIndex := 1;
+
+  end;
+
+  GelisTableOpen := False;
   HastaGelisSelect(dosyaNo,AdoHastaGelis);
+  GelisTableOpen := not AdoHastaGelis.Eof;
+  AdoHastaGelis.Next;
+  AdoHastaGelis.First;
   FOTO1.Picture := FotoGetir(_dosyaNo_).Picture;
 end;
 
@@ -403,20 +431,46 @@ begin
      TagfrmHastaTetkikEkle,
      TagfrmHastaIlacTedavi,
      TagfrmHastaDiyalizIzlem,
-     TagfrmUzmanMuayene
+     TagfrmUzmanMuayene,
+     TagfrmKanTetkikTakip
           :
        tt := 'Hasta_gelisler'
      else
        tt := 'gelisler';
    end;
 
-   gelisNO := _gelisNO_;
-   HastaGelisSelect(_dosyaNo_,AdoHastaGelis,tt);
-   AdoHastaGelis.Locate('gelisNo',gelisNO,[]);
+   case TfrmTedaviBilgisi(self).Tag  of
+     TagfrmHastaRecete,
+     TagfrmPersonelRecete,
+     TagfrmHastaTetkikEkle,
+     TagfrmHastaIlacTedavi,
+     TagfrmHastaDiyalizIzlem,
+     TagfrmUzmanMuayene
+      :
+       begin
+         gelisNO := _gelisNO_;
+         GelisTableOpen := False;
+         HastaGelisSelect(_dosyaNo_,AdoHastaGelis,tt);
+         GelisTableOpen := not AdoHastaGelis.Eof;
+         AdoHastaGelis.Locate('gelisNo',gelisNO,[]);
+         cxGrid1.SetFocus;
+         cxGridHastaGelis.DataController.SetFocus;
+         cxTab.Tabs[0].Caption := self._HastaAdSoyad_;// datalar.HastaBil.Adi + ' ' + datalar.HastaBil.SoyAdi;
+       end;
+     TagfrmKanTetkikTakip :
+       begin
+          gelisNO := _gelisNO_;
+          GelisTableOpen := False;
+          HastaGelisSelect(_dosyaNo_,AdoHastaGelis,tt);
+          GelisTableOpen := not AdoHastaGelis.Eof;
+          AdoHastaGelis.Locate('gelisNo',gelisNO,[]);
 
-   cxGrid1.SetFocus;
-   cxGridHastaGelis.DataController.SetFocus;
-   cxTab.Tabs[0].Caption := self._HastaAdSoyad_;// datalar.HastaBil.Adi + ' ' + datalar.HastaBil.SoyAdi;
+          cxTabHastaListe.TabVisible := True;
+          LeftPanelcxPageControl.Properties.ActivePage := cxTabHastaListe;
+          cxTabHastaGelis.TabVisible := False;
+          cxTab.Tabs[0].Caption := self._HastaAdSoyad_;// datalar.HastaBil.Adi + ' ' + datalar.HastaBil.SoyAdi;
+       end;
+   end;
 end;
 
 end.

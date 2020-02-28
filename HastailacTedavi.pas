@@ -69,6 +69,8 @@ type
     D1: TMenuItem;
     S2: TMenuItem;
     cxSplitter1: TcxSplitter;
+    cxGridIlacTedaviPlaniColumn6: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn7: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure IlacTedavi(_dosyaNo , gelisNo,_Tarih : string ; islem : integer = 99999);
     procedure ItemClick(Sender: TObject);
@@ -230,7 +232,7 @@ begin
         ado.Free;
       end;
 
-      tel := dosyaNoTel(_dosyaNO_,_mobilTel_);
+      tel := dosyaNoHastaTel(_dosyaNO_,_mobilTel_);
       msj := 'Ýlaç Bilgileriniz : ' + ilaclar + #13 +
              ' Saðlýklý Günler Dileriz';
 
@@ -288,52 +290,55 @@ var
   Datasets : TDataSetKadir;
 begin
     DurumGoster(True);
+    try
+      sql := 'select * from hastakart where dosyaNo = ' + QuotedStr(_dosyaNo_);
+      Datasets.Dataset0 := datalar.QuerySelect(sql);
 
-    sql := 'select * from hastakart where dosyaNo = ' + QuotedStr(_dosyaNo_);
-    Datasets.Dataset0 := datalar.QuerySelect(sql);
-
-    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih_) + ',@f=-1,@sirketKod = ' + QuotedStr(datalar.AktifSirket) ;
-    Datasets.Dataset1 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih_) + ',@f=-1,@sirketKod = ' + QuotedStr(datalar.AktifSirket) ;
+      Datasets.Dataset1 := datalar.QuerySelect(sql);
 
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('OCAK');
-    Datasets.Dataset00 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('OCAK');
+      Datasets.Dataset00 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('SUBAT');
-    Datasets.Dataset2 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('SUBAT');
+      Datasets.Dataset2 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('MART');
-    Datasets.Dataset3 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('MART');
+      Datasets.Dataset3 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('NISAN');
-    Datasets.Dataset4 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('NISAN');
+      Datasets.Dataset4 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('MAYIS');
-    Datasets.Dataset5 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('MAYIS');
+      Datasets.Dataset5 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('HAZIRAN');
-    Datasets.Dataset6 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('HAZIRAN');
+      Datasets.Dataset6 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('TEMMUZ');
-    Datasets.Dataset7 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('TEMMUZ');
+      Datasets.Dataset7 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('AGUSTOS');
-    Datasets.Dataset8 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('AGUSTOS');
+      Datasets.Dataset8 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('EYLUL');
-    Datasets.Dataset9 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('EYLUL');
+      Datasets.Dataset9 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('EKIM');
-    Datasets.Dataset10 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('EKIM');
+      Datasets.Dataset10 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('KASIM');
-    Datasets.Dataset11 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('KASIM');
+      Datasets.Dataset11 := datalar.QuerySelect(sql);
 
-    sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('ARALIK');
-    Datasets.Dataset12 := datalar.QuerySelect(sql);
+      sql := 'exec sp_HastaIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_tarih_) + ',@f=1,@ay=' + QuotedStr('ARALIK');
+      Datasets.Dataset12 := datalar.QuerySelect(sql);
 
-    PrintYap('202','Hasta Tetkik Ýlaç Formu',inttostr(TagfrmHastaIlacTedavi),Datasets);
-    DurumGoster(False);
+      PrintYap('202','Hasta Tetkik Ýlaç Formu',inttostr(TagfrmHastaIlacTedavi),Datasets);
+
+    finally
+      DurumGoster(False);
+    end;
 
 end;
 procedure TfrmHastaIlacTedavi.ilacTedaviPlaniYazdir(_Tarih_ : string);
@@ -346,13 +351,13 @@ begin
    sql := 'select * from HastaKart where dosyaNo = ' + QuotedStr(_dosyaNo_);
    Datasets.Dataset0 := datalar.QuerySelect(sql);
 
-   sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr('');
-   Datasets.Dataset00 := datalar.QuerySelect(sql);
+ //  sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr('');
+ //  Datasets.Dataset00 := datalar.QuerySelect(sql);
 
    sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'01');
    Datasets.Dataset1 := datalar.QuerySelect(sql);;
 
-
+(*
    sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'02');
    Datasets.Dataset2 := datalar.QuerySelect(sql);;
 
@@ -385,7 +390,7 @@ begin
 
    sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'12');
    Datasets.Dataset12 :=  datalar.QuerySelect(sql);;
-
+    *)
 
    PrintYap('051','IlacTedavi',inttostr(TagfrmHastaIlacTedavi),Datasets);
 

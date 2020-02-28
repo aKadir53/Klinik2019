@@ -1,12 +1,12 @@
 // ************************************************************************ //
 // The types declared in this file were generated from data read from the
 // WSDL File described below:
-// WSDL     : https://sgkt.sgk.gov.tr/medula/hastane/hizmetKayitIslemleriWS?wsdl
-//  >Import : https://sgkt.sgk.gov.tr/medula/hastane/hizmetKayitIslemleriWS?wsdl>0
-//  >Import : https://sgkt.sgk.gov.tr/medula/hastane/hizmetKayitIslemleriWS.xsd2.xsd
+// WSDL     : https://medula.sgk.gov.tr/medula/hastane/hizmetKayitIslemleriWS?wsdl
+//  >Import : https://medula.sgk.gov.tr/medula/hastane/hizmetKayitIslemleriWS?wsdl>0
+//  >Import : https://medula.sgk.gov.tr/medula/hastane/hizmetKayitIslemleriWS.xsd2.xsd
 // Encoding : UTF-8
 // Version  : 1.0
-// (03.04.2019 16:44:31 - - $Rev: 45757 $)
+// (10.02.2020 11:09:52 - - $Rev: 45757 $)
 // ************************************************************************ //
 
 unit hizmetKayitIslemleriWS;
@@ -265,6 +265,8 @@ type
     FdrTescilNo_Specified: boolean;
     FistemYapanDrTescilNo: string;
     FistemYapanDrTescilNo_Specified: boolean;
+    FistemYapanDrBrans: string;
+    FistemYapanDrBrans_Specified: boolean;
     FhizmetSunucuRefNo: string;
     FhizmetSunucuRefNo_Specified: boolean;
     FislemSiraNo: string;
@@ -273,6 +275,8 @@ type
     FislemTarihi_Specified: boolean;
     FsutKodu: string;
     FsutKodu_Specified: boolean;
+    FraporTakipNo: string;
+    FraporTakipNo_Specified: boolean;
     procedure SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
     function  cokluOzelDurum_Specified(Index: Integer): boolean;
     procedure SettahlilSonuclari(Index: Integer; const AArray_Of_tahlilSonucDVO: Array_Of_tahlilSonucDVO);
@@ -285,6 +289,8 @@ type
     function  drTescilNo_Specified(Index: Integer): boolean;
     procedure SetistemYapanDrTescilNo(Index: Integer; const Astring: string);
     function  istemYapanDrTescilNo_Specified(Index: Integer): boolean;
+    procedure SetistemYapanDrBrans(Index: Integer; const Astring: string);
+    function  istemYapanDrBrans_Specified(Index: Integer): boolean;
     procedure SethizmetSunucuRefNo(Index: Integer; const Astring: string);
     function  hizmetSunucuRefNo_Specified(Index: Integer): boolean;
     procedure SetislemSiraNo(Index: Integer; const Astring: string);
@@ -293,6 +299,8 @@ type
     function  islemTarihi_Specified(Index: Integer): boolean;
     procedure SetsutKodu(Index: Integer; const Astring: string);
     function  sutKodu_Specified(Index: Integer): boolean;
+    procedure SetraporTakipNo(Index: Integer; const Astring: string);
+    function  raporTakipNo_Specified(Index: Integer): boolean;
   public
     destructor Destroy; override;
   published
@@ -303,10 +311,12 @@ type
     property bransKodu:            string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FbransKodu write SetbransKodu stored bransKodu_Specified;
     property drTescilNo:           string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FdrTescilNo write SetdrTescilNo stored drTescilNo_Specified;
     property istemYapanDrTescilNo: string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FistemYapanDrTescilNo write SetistemYapanDrTescilNo stored istemYapanDrTescilNo_Specified;
+    property istemYapanDrBrans:    string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FistemYapanDrBrans write SetistemYapanDrBrans stored istemYapanDrBrans_Specified;
     property hizmetSunucuRefNo:    string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FhizmetSunucuRefNo write SethizmetSunucuRefNo stored hizmetSunucuRefNo_Specified;
     property islemSiraNo:          string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemSiraNo write SetislemSiraNo stored islemSiraNo_Specified;
     property islemTarihi:          string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemTarihi write SetislemTarihi stored islemTarihi_Specified;
     property sutKodu:              string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsutKodu write SetsutKodu stored sutKodu_Specified;
+    property raporTakipNo:         string                   Index (IS_OPTN or IS_NLBL or IS_UNQL) read FraporTakipNo write SetraporTakipNo stored raporTakipNo_Specified;
   end;
 
 
@@ -434,6 +444,8 @@ type
     FsolAltCeneAnomaliDis_Specified: boolean;
     FsolUstCeneAnomaliDis: string;
     FsolUstCeneAnomaliDis_Specified: boolean;
+    FraporTakipNo: string;
+    FraporTakipNo_Specified: boolean;
     procedure SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
     function  cokluOzelDurum_Specified(Index: Integer): boolean;
     procedure SetayniFarkliKesi(Index: Integer; const Astring: string);
@@ -478,6 +490,8 @@ type
     function  solAltCeneAnomaliDis_Specified(Index: Integer): boolean;
     procedure SetsolUstCeneAnomaliDis(Index: Integer; const Astring: string);
     function  solUstCeneAnomaliDis_Specified(Index: Integer): boolean;
+    procedure SetraporTakipNo(Index: Integer; const Astring: string);
+    function  raporTakipNo_Specified(Index: Integer): boolean;
   published
     property cokluOzelDurum:       Array_Of_string  Index (IS_OPTN or IS_UNBD or IS_NLBL or IS_UNQL) read FcokluOzelDurum write SetcokluOzelDurum stored cokluOzelDurum_Specified;
     property disTaahhutNo:         Integer          Index (IS_NLBL or IS_UNQL) read FdisTaahhutNo write FdisTaahhutNo;
@@ -503,6 +517,7 @@ type
     property sagUstCeneAnomaliDis: string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsagUstCeneAnomaliDis write SetsagUstCeneAnomaliDis stored sagUstCeneAnomaliDis_Specified;
     property solAltCeneAnomaliDis: string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsolAltCeneAnomaliDis write SetsolAltCeneAnomaliDis stored solAltCeneAnomaliDis_Specified;
     property solUstCeneAnomaliDis: string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsolUstCeneAnomaliDis write SetsolUstCeneAnomaliDis stored solUstCeneAnomaliDis_Specified;
+    property raporTakipNo:         string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FraporTakipNo write SetraporTakipNo stored raporTakipNo_Specified;
   end;
 
 
@@ -650,6 +665,8 @@ type
     FsagSol_Specified: boolean;
     FsutKodu: string;
     FsutKodu_Specified: boolean;
+    FraporTakipNo: string;
+    FraporTakipNo_Specified: boolean;
     procedure SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
     function  cokluOzelDurum_Specified(Index: Integer): boolean;
     procedure SetozelDurum(Index: Integer; const Astring: string);
@@ -674,6 +691,8 @@ type
     function  sagSol_Specified(Index: Integer): boolean;
     procedure SetsutKodu(Index: Integer; const Astring: string);
     function  sutKodu_Specified(Index: Integer): boolean;
+    procedure SetraporTakipNo(Index: Integer; const Astring: string);
+    function  raporTakipNo_Specified(Index: Integer): boolean;
   published
     property cokluOzelDurum:    Array_Of_string  Index (IS_OPTN or IS_UNBD or IS_NLBL or IS_UNQL) read FcokluOzelDurum write SetcokluOzelDurum stored cokluOzelDurum_Specified;
     property ozelDurum:         string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FozelDurum write SetozelDurum stored ozelDurum_Specified;
@@ -688,6 +707,7 @@ type
     property islemTarihi:       string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemTarihi write SetislemTarihi stored islemTarihi_Specified;
     property sagSol:            string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsagSol write SetsagSol stored sagSol_Specified;
     property sutKodu:           string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsutKodu write SetsutKodu stored sutKodu_Specified;
+    property raporTakipNo:      string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FraporTakipNo write SetraporTakipNo stored raporTakipNo_Specified;
   end;
 
 
@@ -721,6 +741,12 @@ type
     FraporTakipNo_Specified: boolean;
     Faciklama: string;
     Faciklama_Specified: boolean;
+    FsagSol: string;
+    FsagSol_Specified: boolean;
+    FistemYapanDrTescilNo: string;
+    FistemYapanDrTescilNo_Specified: boolean;
+    FistemYapanDrBrans: string;
+    FistemYapanDrBrans_Specified: boolean;
     procedure SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
     function  cokluOzelDurum_Specified(Index: Integer): boolean;
     procedure SetayniFarkliKesi(Index: Integer; const Astring: string);
@@ -743,19 +769,28 @@ type
     function  raporTakipNo_Specified(Index: Integer): boolean;
     procedure Setaciklama(Index: Integer; const Astring: string);
     function  aciklama_Specified(Index: Integer): boolean;
+    procedure SetsagSol(Index: Integer; const Astring: string);
+    function  sagSol_Specified(Index: Integer): boolean;
+    procedure SetistemYapanDrTescilNo(Index: Integer; const Astring: string);
+    function  istemYapanDrTescilNo_Specified(Index: Integer): boolean;
+    procedure SetistemYapanDrBrans(Index: Integer; const Astring: string);
+    function  istemYapanDrBrans_Specified(Index: Integer): boolean;
   published
-    property cokluOzelDurum:    Array_Of_string  Index (IS_OPTN or IS_UNBD or IS_NLBL or IS_UNQL) read FcokluOzelDurum write SetcokluOzelDurum stored cokluOzelDurum_Specified;
-    property ayniFarkliKesi:    string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FayniFarkliKesi write SetayniFarkliKesi stored ayniFarkliKesi_Specified;
-    property ozelDurum:         string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FozelDurum write SetozelDurum stored ozelDurum_Specified;
-    property adet:              Integer          Index (IS_NLBL or IS_UNQL) read Fadet write Fadet;
-    property bransKodu:         string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FbransKodu write SetbransKodu stored bransKodu_Specified;
-    property sutKodu:           string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsutKodu write SetsutKodu stored sutKodu_Specified;
-    property drTescilNo:        string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FdrTescilNo write SetdrTescilNo stored drTescilNo_Specified;
-    property hizmetSunucuRefNo: string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FhizmetSunucuRefNo write SethizmetSunucuRefNo stored hizmetSunucuRefNo_Specified;
-    property islemSiraNo:       string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemSiraNo write SetislemSiraNo stored islemSiraNo_Specified;
-    property islemTarihi:       string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemTarihi write SetislemTarihi stored islemTarihi_Specified;
-    property raporTakipNo:      string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FraporTakipNo write SetraporTakipNo stored raporTakipNo_Specified;
-    property aciklama:          string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read Faciklama write Setaciklama stored aciklama_Specified;
+    property cokluOzelDurum:       Array_Of_string  Index (IS_OPTN or IS_UNBD or IS_NLBL or IS_UNQL) read FcokluOzelDurum write SetcokluOzelDurum stored cokluOzelDurum_Specified;
+    property ayniFarkliKesi:       string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FayniFarkliKesi write SetayniFarkliKesi stored ayniFarkliKesi_Specified;
+    property ozelDurum:            string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FozelDurum write SetozelDurum stored ozelDurum_Specified;
+    property adet:                 Integer          Index (IS_NLBL or IS_UNQL) read Fadet write Fadet;
+    property bransKodu:            string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FbransKodu write SetbransKodu stored bransKodu_Specified;
+    property sutKodu:              string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsutKodu write SetsutKodu stored sutKodu_Specified;
+    property drTescilNo:           string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FdrTescilNo write SetdrTescilNo stored drTescilNo_Specified;
+    property hizmetSunucuRefNo:    string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FhizmetSunucuRefNo write SethizmetSunucuRefNo stored hizmetSunucuRefNo_Specified;
+    property islemSiraNo:          string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemSiraNo write SetislemSiraNo stored islemSiraNo_Specified;
+    property islemTarihi:          string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemTarihi write SetislemTarihi stored islemTarihi_Specified;
+    property raporTakipNo:         string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FraporTakipNo write SetraporTakipNo stored raporTakipNo_Specified;
+    property aciklama:             string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read Faciklama write Setaciklama stored aciklama_Specified;
+    property sagSol:               string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsagSol write SetsagSol stored sagSol_Specified;
+    property istemYapanDrTescilNo: string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FistemYapanDrTescilNo write SetistemYapanDrTescilNo stored istemYapanDrTescilNo_Specified;
+    property istemYapanDrBrans:    string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FistemYapanDrBrans write SetistemYapanDrBrans stored istemYapanDrBrans_Specified;
   end;
 
 
@@ -1189,6 +1224,12 @@ type
     FtahlilTipi_Specified: boolean;
     Fbirim: string;
     Fbirim_Specified: boolean;
+    FayniFarkliKesi: string;
+    FayniFarkliKesi_Specified: boolean;
+    FsagSol: string;
+    FsagSol_Specified: boolean;
+    Faciklama: string;
+    Faciklama_Specified: boolean;
     procedure SetislemSiraNo(Index: Integer; const Astring: string);
     function  islemSiraNo_Specified(Index: Integer): boolean;
     procedure Setsonuc(Index: Integer; const Astring: string);
@@ -1197,11 +1238,20 @@ type
     function  tahlilTipi_Specified(Index: Integer): boolean;
     procedure Setbirim(Index: Integer; const Astring: string);
     function  birim_Specified(Index: Integer): boolean;
+    procedure SetayniFarkliKesi(Index: Integer; const Astring: string);
+    function  ayniFarkliKesi_Specified(Index: Integer): boolean;
+    procedure SetsagSol(Index: Integer; const Astring: string);
+    function  sagSol_Specified(Index: Integer): boolean;
+    procedure Setaciklama(Index: Integer; const Astring: string);
+    function  aciklama_Specified(Index: Integer): boolean;
   published
-    property islemSiraNo: string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemSiraNo write SetislemSiraNo stored islemSiraNo_Specified;
-    property sonuc:       string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read Fsonuc write Setsonuc stored sonuc_Specified;
-    property tahlilTipi:  string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read FtahlilTipi write SettahlilTipi stored tahlilTipi_Specified;
-    property birim:       string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read Fbirim write Setbirim stored birim_Specified;
+    property islemSiraNo:    string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemSiraNo write SetislemSiraNo stored islemSiraNo_Specified;
+    property sonuc:          string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read Fsonuc write Setsonuc stored sonuc_Specified;
+    property tahlilTipi:     string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read FtahlilTipi write SettahlilTipi stored tahlilTipi_Specified;
+    property birim:          string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read Fbirim write Setbirim stored birim_Specified;
+    property ayniFarkliKesi: string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read FayniFarkliKesi write SetayniFarkliKesi stored ayniFarkliKesi_Specified;
+    property sagSol:         string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsagSol write SetsagSol stored sagSol_Specified;
+    property aciklama:       string  Index (IS_OPTN or IS_NLBL or IS_UNQL) read Faciklama write Setaciklama stored aciklama_Specified;
   end;
 
 
@@ -1260,6 +1310,8 @@ type
     FdrTescilNo_Specified: boolean;
     FistemYapanDrTescilNo: string;
     FistemYapanDrTescilNo_Specified: boolean;
+    FistemYapanDrBrans: string;
+    FistemYapanDrBrans_Specified: boolean;
     FhizmetSunucuRefNo: string;
     FhizmetSunucuRefNo_Specified: boolean;
     FislemSiraNo: string;
@@ -1270,6 +1322,8 @@ type
     FsutKodu_Specified: boolean;
     Faccession: string;
     Faccession_Specified: boolean;
+    FraporTakipNo: string;
+    FraporTakipNo_Specified: boolean;
     procedure Setmodality(Index: Integer; const Astring: string);
     function  modality_Specified(Index: Integer): boolean;
     procedure SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
@@ -1292,6 +1346,8 @@ type
     function  drTescilNo_Specified(Index: Integer): boolean;
     procedure SetistemYapanDrTescilNo(Index: Integer; const Astring: string);
     function  istemYapanDrTescilNo_Specified(Index: Integer): boolean;
+    procedure SetistemYapanDrBrans(Index: Integer; const Astring: string);
+    function  istemYapanDrBrans_Specified(Index: Integer): boolean;
     procedure SethizmetSunucuRefNo(Index: Integer; const Astring: string);
     function  hizmetSunucuRefNo_Specified(Index: Integer): boolean;
     procedure SetislemSiraNo(Index: Integer; const Astring: string);
@@ -1302,6 +1358,8 @@ type
     function  sutKodu_Specified(Index: Integer): boolean;
     procedure Setaccession(Index: Integer; const Astring: string);
     function  accession_Specified(Index: Integer): boolean;
+    procedure SetraporTakipNo(Index: Integer; const Astring: string);
+    function  raporTakipNo_Specified(Index: Integer): boolean;
   published
     property modality:             string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read Fmodality write Setmodality stored modality_Specified;
     property cokluOzelDurum:       Array_Of_string  Index (IS_OPTN or IS_UNBD or IS_NLBL or IS_UNQL) read FcokluOzelDurum write SetcokluOzelDurum stored cokluOzelDurum_Specified;
@@ -1315,11 +1373,13 @@ type
     property bransKodu:            string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FbransKodu write SetbransKodu stored bransKodu_Specified;
     property drTescilNo:           string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FdrTescilNo write SetdrTescilNo stored drTescilNo_Specified;
     property istemYapanDrTescilNo: string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FistemYapanDrTescilNo write SetistemYapanDrTescilNo stored istemYapanDrTescilNo_Specified;
+    property istemYapanDrBrans:    string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FistemYapanDrBrans write SetistemYapanDrBrans stored istemYapanDrBrans_Specified;
     property hizmetSunucuRefNo:    string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FhizmetSunucuRefNo write SethizmetSunucuRefNo stored hizmetSunucuRefNo_Specified;
     property islemSiraNo:          string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemSiraNo write SetislemSiraNo stored islemSiraNo_Specified;
     property islemTarihi:          string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemTarihi write SetislemTarihi stored islemTarihi_Specified;
     property sutKodu:              string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsutKodu write SetsutKodu stored sutKodu_Specified;
     property accession:            string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read Faccession write Setaccession stored accession_Specified;
+    property raporTakipNo:         string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FraporTakipNo write SetraporTakipNo stored raporTakipNo_Specified;
   end;
 
 
@@ -1377,6 +1437,8 @@ type
     FlotNo_Specified: boolean;
     FkullanimBildirimID: string;
     FkullanimBildirimID_Specified: boolean;
+    FraporTakipNo: string;
+    FraporTakipNo_Specified: boolean;
     procedure SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
     function  cokluOzelDurum_Specified(Index: Integer): boolean;
     procedure SetozelDurum(Index: Integer; const Astring: string);
@@ -1421,6 +1483,8 @@ type
     function  lotNo_Specified(Index: Integer): boolean;
     procedure SetkullanimBildirimID(Index: Integer; const Astring: string);
     function  kullanimBildirimID_Specified(Index: Integer): boolean;
+    procedure SetraporTakipNo(Index: Integer; const Astring: string);
+    function  raporTakipNo_Specified(Index: Integer): boolean;
   published
     property cokluOzelDurum:         Array_Of_string  Index (IS_OPTN or IS_UNBD or IS_NLBL or IS_UNQL) read FcokluOzelDurum write SetcokluOzelDurum stored cokluOzelDurum_Specified;
     property kdv:                    Integer          Index (IS_NLBL or IS_UNQL) read Fkdv write Fkdv;
@@ -1447,6 +1511,7 @@ type
     property seriNo:                 string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FseriNo write SetseriNo stored seriNo_Specified;
     property lotNo:                  string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FlotNo write SetlotNo stored lotNo_Specified;
     property kullanimBildirimID:     string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FkullanimBildirimID write SetkullanimBildirimID stored kullanimBildirimID_Specified;
+    property raporTakipNo:           string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FraporTakipNo write SetraporTakipNo stored raporTakipNo_Specified;
   end;
 
 
@@ -1479,6 +1544,14 @@ type
     Ftutar: Double;
     FraporTakipNo: string;
     FraporTakipNo_Specified: boolean;
+    FSN: string;
+    FSN_Specified: boolean;
+    FsonKullanimTarihi: string;
+    FsonKullanimTarihi_Specified: boolean;
+    FbatchNo: string;
+    FbatchNo_Specified: boolean;
+    FitsBirimSarfId: string;
+    FitsBirimSarfId_Specified: boolean;
     procedure SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
     function  cokluOzelDurum_Specified(Index: Integer): boolean;
     procedure SetozelDurum(Index: Integer; const Astring: string);
@@ -1499,6 +1572,14 @@ type
     function  islemTarihi_Specified(Index: Integer): boolean;
     procedure SetraporTakipNo(Index: Integer; const Astring: string);
     function  raporTakipNo_Specified(Index: Integer): boolean;
+    procedure SetSN(Index: Integer; const Astring: string);
+    function  SN_Specified(Index: Integer): boolean;
+    procedure SetsonKullanimTarihi(Index: Integer; const Astring: string);
+    function  sonKullanimTarihi_Specified(Index: Integer): boolean;
+    procedure SetbatchNo(Index: Integer; const Astring: string);
+    function  batchNo_Specified(Index: Integer): boolean;
+    procedure SetitsBirimSarfId(Index: Integer; const Astring: string);
+    function  itsBirimSarfId_Specified(Index: Integer): boolean;
   published
     property cokluOzelDurum:    Array_Of_string  Index (IS_OPTN or IS_UNBD or IS_NLBL or IS_UNQL) read FcokluOzelDurum write SetcokluOzelDurum stored cokluOzelDurum_Specified;
     property ozelDurum:         string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FozelDurum write SetozelDurum stored ozelDurum_Specified;
@@ -1512,6 +1593,10 @@ type
     property islemTarihi:       string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FislemTarihi write SetislemTarihi stored islemTarihi_Specified;
     property tutar:             Double           Index (IS_NLBL or IS_UNQL) read Ftutar write Ftutar;
     property raporTakipNo:      string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FraporTakipNo write SetraporTakipNo stored raporTakipNo_Specified;
+    property SN:                string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FSN write SetSN stored SN_Specified;
+    property sonKullanimTarihi: string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FsonKullanimTarihi write SetsonKullanimTarihi stored sonKullanimTarihi_Specified;
+    property batchNo:           string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FbatchNo write SetbatchNo stored batchNo_Specified;
+    property itsBirimSarfId:    string           Index (IS_OPTN or IS_NLBL or IS_UNQL) read FitsBirimSarfId write SetitsBirimSarfId stored itsBirimSarfId_Specified;
   end;
 
 
@@ -1605,7 +1690,7 @@ type
   // binding   : HizmetKayitIslemleriServicePortBinding
   // service   : HizmetKayitIslemleriServiceService
   // port      : HizmetKayitIslemleriServicePort
-  // URL       : https://sgkt.sgk.gov.tr:443/medula/hastane/hizmetKayitIslemleriWS
+  // URL       : https://medula.sgk.gov.tr:443/medula/hastane/hizmetKayitIslemleriWS
   // ************************************************************************ //
   HizmetKayitIslemleriService = interface(IInvokable)
   ['{5320E8FA-8C01-D947-CB71-5D8AF0016259}']
@@ -1625,8 +1710,8 @@ implementation
 
 function GetHizmetKayitIslemleriService(UseWSDL: Boolean; Addr: string; HTTPRIO: THTTPRIO): HizmetKayitIslemleriService;
 const
-  defWSDL = 'https://sgkt.sgk.gov.tr/medula/hastane/hizmetKayitIslemleriWS?wsdl';
-  defURL  = 'https://sgkt.sgk.gov.tr:443/medula/hastane/hizmetKayitIslemleriWS';
+  defWSDL = 'https://medula.sgk.gov.tr/medula/hastane/hizmetKayitIslemleriWS?wsdl';
+  defURL  = 'https://medula.sgk.gov.tr:443/medula/hastane/hizmetKayitIslemleriWS';
   defSvc  = 'HizmetKayitIslemleriServiceService';
   defPrt  = 'HizmetKayitIslemleriServicePort';
 var
@@ -1984,6 +2069,17 @@ begin
   Result := FistemYapanDrTescilNo_Specified;
 end;
 
+procedure tahlilBilgisiDVO.SetistemYapanDrBrans(Index: Integer; const Astring: string);
+begin
+  FistemYapanDrBrans := Astring;
+  FistemYapanDrBrans_Specified := True;
+end;
+
+function tahlilBilgisiDVO.istemYapanDrBrans_Specified(Index: Integer): boolean;
+begin
+  Result := FistemYapanDrBrans_Specified;
+end;
+
 procedure tahlilBilgisiDVO.SethizmetSunucuRefNo(Index: Integer; const Astring: string);
 begin
   FhizmetSunucuRefNo := Astring;
@@ -2026,6 +2122,17 @@ end;
 function tahlilBilgisiDVO.sutKodu_Specified(Index: Integer): boolean;
 begin
   Result := FsutKodu_Specified;
+end;
+
+procedure tahlilBilgisiDVO.SetraporTakipNo(Index: Integer; const Astring: string);
+begin
+  FraporTakipNo := Astring;
+  FraporTakipNo_Specified := True;
+end;
+
+function tahlilBilgisiDVO.raporTakipNo_Specified(Index: Integer): boolean;
+begin
+  Result := FraporTakipNo_Specified;
 end;
 
 procedure hastaYatisBilgisiDVO.SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
@@ -2402,6 +2509,17 @@ begin
   Result := FsolUstCeneAnomaliDis_Specified;
 end;
 
+procedure disBilgisiDVO.SetraporTakipNo(Index: Integer; const Astring: string);
+begin
+  FraporTakipNo := Astring;
+  FraporTakipNo_Specified := True;
+end;
+
+function disBilgisiDVO.raporTakipNo_Specified(Index: Integer): boolean;
+begin
+  Result := FraporTakipNo_Specified;
+end;
+
 procedure konsultasyonBilgisiDVO.SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
 begin
   FcokluOzelDurum := AArray_Of_string;
@@ -2687,6 +2805,17 @@ begin
   Result := FsutKodu_Specified;
 end;
 
+procedure ameliyatveGirisimBilgisiDVO.SetraporTakipNo(Index: Integer; const Astring: string);
+begin
+  FraporTakipNo := Astring;
+  FraporTakipNo_Specified := True;
+end;
+
+function ameliyatveGirisimBilgisiDVO.raporTakipNo_Specified(Index: Integer): boolean;
+begin
+  Result := FraporTakipNo_Specified;
+end;
+
 procedure digerIslemBilgisiDVO.SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
 begin
   FcokluOzelDurum := AArray_Of_string;
@@ -2806,6 +2935,39 @@ end;
 function digerIslemBilgisiDVO.aciklama_Specified(Index: Integer): boolean;
 begin
   Result := Faciklama_Specified;
+end;
+
+procedure digerIslemBilgisiDVO.SetsagSol(Index: Integer; const Astring: string);
+begin
+  FsagSol := Astring;
+  FsagSol_Specified := True;
+end;
+
+function digerIslemBilgisiDVO.sagSol_Specified(Index: Integer): boolean;
+begin
+  Result := FsagSol_Specified;
+end;
+
+procedure digerIslemBilgisiDVO.SetistemYapanDrTescilNo(Index: Integer; const Astring: string);
+begin
+  FistemYapanDrTescilNo := Astring;
+  FistemYapanDrTescilNo_Specified := True;
+end;
+
+function digerIslemBilgisiDVO.istemYapanDrTescilNo_Specified(Index: Integer): boolean;
+begin
+  Result := FistemYapanDrTescilNo_Specified;
+end;
+
+procedure digerIslemBilgisiDVO.SetistemYapanDrBrans(Index: Integer; const Astring: string);
+begin
+  FistemYapanDrBrans := Astring;
+  FistemYapanDrBrans_Specified := True;
+end;
+
+function digerIslemBilgisiDVO.istemYapanDrBrans_Specified(Index: Integer): boolean;
+begin
+  Result := FistemYapanDrBrans_Specified;
 end;
 
 destructor hizmetDVO.Destroy;
@@ -3558,6 +3720,39 @@ begin
   Result := Fbirim_Specified;
 end;
 
+procedure tahlilSonucDVO.SetayniFarkliKesi(Index: Integer; const Astring: string);
+begin
+  FayniFarkliKesi := Astring;
+  FayniFarkliKesi_Specified := True;
+end;
+
+function tahlilSonucDVO.ayniFarkliKesi_Specified(Index: Integer): boolean;
+begin
+  Result := FayniFarkliKesi_Specified;
+end;
+
+procedure tahlilSonucDVO.SetsagSol(Index: Integer; const Astring: string);
+begin
+  FsagSol := Astring;
+  FsagSol_Specified := True;
+end;
+
+function tahlilSonucDVO.sagSol_Specified(Index: Integer): boolean;
+begin
+  Result := FsagSol_Specified;
+end;
+
+procedure tahlilSonucDVO.Setaciklama(Index: Integer; const Astring: string);
+begin
+  Faciklama := Astring;
+  Faciklama_Specified := True;
+end;
+
+function tahlilSonucDVO.aciklama_Specified(Index: Integer): boolean;
+begin
+  Result := Faciklama_Specified;
+end;
+
 procedure hizmetIptalGirisDVO.SetislemSiraNumaralari(Index: Integer; const AArray_Of_string: Array_Of_string);
 begin
   FislemSiraNumaralari := AArray_Of_string;
@@ -3701,6 +3896,17 @@ begin
   Result := FistemYapanDrTescilNo_Specified;
 end;
 
+procedure tetkikveRadyolojiBilgisiDVO.SetistemYapanDrBrans(Index: Integer; const Astring: string);
+begin
+  FistemYapanDrBrans := Astring;
+  FistemYapanDrBrans_Specified := True;
+end;
+
+function tetkikveRadyolojiBilgisiDVO.istemYapanDrBrans_Specified(Index: Integer): boolean;
+begin
+  Result := FistemYapanDrBrans_Specified;
+end;
+
 procedure tetkikveRadyolojiBilgisiDVO.SethizmetSunucuRefNo(Index: Integer; const Astring: string);
 begin
   FhizmetSunucuRefNo := Astring;
@@ -3754,6 +3960,17 @@ end;
 function tetkikveRadyolojiBilgisiDVO.accession_Specified(Index: Integer): boolean;
 begin
   Result := Faccession_Specified;
+end;
+
+procedure tetkikveRadyolojiBilgisiDVO.SetraporTakipNo(Index: Integer; const Astring: string);
+begin
+  FraporTakipNo := Astring;
+  FraporTakipNo_Specified := True;
+end;
+
+function tetkikveRadyolojiBilgisiDVO.raporTakipNo_Specified(Index: Integer): boolean;
+begin
+  Result := FraporTakipNo_Specified;
 end;
 
 procedure malzemeBilgisiDVO.SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
@@ -3998,6 +4215,17 @@ begin
   Result := FkullanimBildirimID_Specified;
 end;
 
+procedure malzemeBilgisiDVO.SetraporTakipNo(Index: Integer; const Astring: string);
+begin
+  FraporTakipNo := Astring;
+  FraporTakipNo_Specified := True;
+end;
+
+function malzemeBilgisiDVO.raporTakipNo_Specified(Index: Integer): boolean;
+begin
+  Result := FraporTakipNo_Specified;
+end;
+
 procedure ilacBilgisiDVO.SetcokluOzelDurum(Index: Integer; const AArray_Of_string: Array_Of_string);
 begin
   FcokluOzelDurum := AArray_Of_string;
@@ -4106,6 +4334,50 @@ end;
 function ilacBilgisiDVO.raporTakipNo_Specified(Index: Integer): boolean;
 begin
   Result := FraporTakipNo_Specified;
+end;
+
+procedure ilacBilgisiDVO.SetSN(Index: Integer; const Astring: string);
+begin
+  FSN := Astring;
+  FSN_Specified := True;
+end;
+
+function ilacBilgisiDVO.SN_Specified(Index: Integer): boolean;
+begin
+  Result := FSN_Specified;
+end;
+
+procedure ilacBilgisiDVO.SetsonKullanimTarihi(Index: Integer; const Astring: string);
+begin
+  FsonKullanimTarihi := Astring;
+  FsonKullanimTarihi_Specified := True;
+end;
+
+function ilacBilgisiDVO.sonKullanimTarihi_Specified(Index: Integer): boolean;
+begin
+  Result := FsonKullanimTarihi_Specified;
+end;
+
+procedure ilacBilgisiDVO.SetbatchNo(Index: Integer; const Astring: string);
+begin
+  FbatchNo := Astring;
+  FbatchNo_Specified := True;
+end;
+
+function ilacBilgisiDVO.batchNo_Specified(Index: Integer): boolean;
+begin
+  Result := FbatchNo_Specified;
+end;
+
+procedure ilacBilgisiDVO.SetitsBirimSarfId(Index: Integer; const Astring: string);
+begin
+  FitsBirimSarfId := Astring;
+  FitsBirimSarfId_Specified := True;
+end;
+
+function ilacBilgisiDVO.itsBirimSarfId_Specified(Index: Integer): boolean;
+begin
+  Result := FitsBirimSarfId_Specified;
 end;
 
 destructor utsKesinlestirmeKayitCevapDVO.Destroy;

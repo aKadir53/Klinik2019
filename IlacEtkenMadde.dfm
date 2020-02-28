@@ -23,9 +23,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     TabOrder = 0
     Properties.ActivePage = sayfa_EtkenMadde
     Properties.TabPosition = tpBottom
-    ExplicitLeft = -200
-    ExplicitWidth = 609
-    ExplicitHeight = 486
     ClientRectBottom = 553
     ClientRectLeft = 3
     ClientRectRight = 901
@@ -33,10 +30,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     object sayfa_EtkenMadde: TcxTabSheet
       Caption = 'EtkenMadde'
       ImageIndex = 0
-      ExplicitLeft = 275
-      ExplicitTop = 52
-      ExplicitWidth = 599
-      ExplicitHeight = 453
       object cxGroupBox1: TcxGroupBox
         Left = 0
         Top = 0
@@ -55,7 +48,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         StyleFocused.LookAndFeel.Kind = lfFlat
         StyleHot.LookAndFeel.Kind = lfFlat
         TabOrder = 0
-        ExplicitHeight = 583
         Height = 550
         Width = 416
         object cxGrid1: TcxGrid
@@ -71,7 +63,10 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitHeight = 528
+          ExplicitLeft = 2
+          ExplicitTop = 28
+          ExplicitWidth = 412
+          ExplicitHeight = 520
           object gridIlacSarf: TcxGridDBTableView
             Navigator.Buttons.First.Visible = True
             Navigator.Buttons.PriorPage.Visible = True
@@ -90,6 +85,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Navigator.Buttons.GotoBookmark.Visible = True
             Navigator.Buttons.Filter.Visible = True
             OnFocusedRecordChanged = gridIlacSarfFocusedRecordChanged
+            DataController.DataModeController.GridMode = True
             DataController.DataSource = DataSource1
             DataController.Filter.Options = [fcoCaseInsensitive, fcoShowOperatorDescription]
             DataController.Filter.Active = True
@@ -106,14 +102,10 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Filtering.ColumnFilteredItemsList = True
             FilterRow.InfoText = 'Filitre'
             FilterRow.SeparatorColor = 3155860
-            FilterRow.Visible = True
             FilterRow.ApplyChanges = fracImmediately
+            NewItemRow.Visible = True
             OptionsBehavior.FocusCellOnTab = True
             OptionsBehavior.IncSearch = True
-            OptionsData.Deleting = False
-            OptionsData.DeletingConfirmation = False
-            OptionsData.Editing = False
-            OptionsData.Inserting = False
             OptionsView.NoDataToDisplayInfoText = 'Listelenecek Etken Madde Yok'
             OptionsView.CellAutoHeight = True
             OptionsView.ColumnAutoWidth = True
@@ -135,6 +127,15 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               HeaderAlignmentVert = vaCenter
               Width = 307
             end
+            object gridIlacSarfTurKodu: TcxGridDBColumn
+              DataBinding.FieldName = 'TurKodu'
+              PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.Items = <>
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+            end
           end
           object cxGrid1Level1: TcxGridLevel
             GridView = gridIlacSarf
@@ -146,6 +147,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           Align = alTop
           PanelStyle.Active = True
           TabOrder = 1
+          ExplicitLeft = 2
+          ExplicitTop = -2
+          ExplicitWidth = 412
           Height = 30
           Width = 410
           object chkTumu: TcxCheckBoxKadir
@@ -175,6 +179,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             TabOrder = 1
             OnKeyDown = Edit1KeyDown
             OnKeyPress = Edit1KeyPress
+            ExplicitWidth = 408
             Width = 406
           end
         end
@@ -185,9 +190,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         Width = 8
         Height = 550
         Control = cxGroupBox1
-        ExplicitLeft = 456
-        ExplicitTop = 22
-        ExplicitHeight = 453
       end
       object cxGroupBox5: TcxGroupBox
         Left = 424
@@ -202,10 +204,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         Style.Font.Style = [fsBold]
         Style.IsFontAssigned = True
         TabOrder = 2
-        ExplicitLeft = 115
-        ExplicitTop = -130
-        ExplicitWidth = 484
-        ExplicitHeight = 583
         Height = 550
         Width = 474
         object cxGroupBox6: TcxGroupBox
@@ -214,7 +212,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           Align = alTop
           Caption = 'Etken Madde '#304#231'in '#304'stenen Tekkikleri Belirle'
           TabOrder = 0
-          ExplicitWidth = 478
+          ExplicitLeft = 2
+          ExplicitTop = -2
+          ExplicitWidth = 470
           Height = 183
           Width = 468
           object cxGrid2: TcxGrid
@@ -230,7 +230,10 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            ExplicitWidth = 472
+            ExplicitLeft = 2
+            ExplicitTop = -2
+            ExplicitWidth = 466
+            ExplicitHeight = 183
             object gridTetkikler: TcxGridDBTableView
               Navigator.Buttons.First.Visible = True
               Navigator.Buttons.PriorPage.Visible = True
@@ -349,8 +352,10 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           Style.Font.Style = []
           Style.IsFontAssigned = True
           TabOrder = 1
-          ExplicitWidth = 478
-          ExplicitHeight = 375
+          ExplicitLeft = 2
+          ExplicitTop = 181
+          ExplicitWidth = 470
+          ExplicitHeight = 367
           Height = 342
           Width = 468
           object Label2: TLabel
@@ -446,7 +451,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             ParentCtl3D = False
             ScrollBars = ssVertical
             TabOrder = 0
-            ExplicitWidth = 472
+            ExplicitLeft = 2
+            ExplicitTop = 113
+            ExplicitWidth = 466
           end
           object DBMemo2: TDBMemo
             Left = 3
@@ -459,7 +466,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             ParentCtl3D = False
             ScrollBars = ssVertical
             TabOrder = 1
-            ExplicitWidth = 472
+            ExplicitLeft = 2
+            ExplicitTop = 214
+            ExplicitWidth = 466
           end
           object DBMemo3: TDBMemo
             Left = 3
@@ -472,7 +481,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             ParentCtl3D = False
             ScrollBars = ssVertical
             TabOrder = 2
-            ExplicitWidth = 472
+            ExplicitLeft = 2
+            ExplicitTop = 284
+            ExplicitWidth = 466
           end
           object cxGrid3: TcxGrid
             Left = 3
@@ -487,7 +498,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Font.Style = []
             ParentFont = False
             TabOrder = 3
-            ExplicitWidth = 472
+            ExplicitLeft = 2
+            ExplicitTop = -2
+            ExplicitWidth = 466
             object gridSutKural: TcxGridDBBandedTableView
               DataController.DataSource = DataSource3
               DataController.Summary.DefaultGroupSummaryItems = <>
@@ -711,9 +724,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     object sayfa_Ilac: TcxTabSheet
       Caption = #304'la'#231'lar'
       ImageIndex = 1
-      ExplicitTop = 26
-      ExplicitWidth = 279
-      ExplicitHeight = 160
       object cxGroupBox3: TcxGroupBox
         Left = 0
         Top = 0
@@ -732,7 +742,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
         StyleFocused.LookAndFeel.Kind = lfFlat
         StyleHot.LookAndFeel.Kind = lfFlat
         TabOrder = 0
-        ExplicitWidth = 416
         Height = 550
         Width = 898
         object cxGrid4: TcxGrid
@@ -748,7 +757,10 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 410
+          ExplicitLeft = 2
+          ExplicitTop = 28
+          ExplicitWidth = 894
+          ExplicitHeight = 520
           object ilacList: TcxGridDBTableView
             Navigator.Buttons.First.Visible = True
             Navigator.Buttons.PriorPage.Visible = True
@@ -788,7 +800,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             OptionsBehavior.IncSearch = True
             OptionsData.Deleting = False
             OptionsData.DeletingConfirmation = False
-            OptionsData.Editing = False
             OptionsData.Inserting = False
             OptionsView.NoDataToDisplayInfoText = 'Listelenecek Etken Madde Yok'
             OptionsView.CellAutoHeight = True
@@ -801,6 +812,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               DataBinding.FieldName = 'barkod'
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 142
             end
             object cxGridDBColumn2: TcxGridDBColumn
@@ -808,6 +820,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               DataBinding.FieldName = 'ilacAdi'
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 305
             end
             object ilacListColumn1: TcxGridDBColumn
@@ -818,6 +831,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 63
             end
             object ilacListColumn2: TcxGridDBColumn
@@ -827,17 +841,18 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 32
             end
             object ilacListColumn3: TcxGridDBColumn
-              Caption = 'ATC_Kodu'
+              Caption = 'E.Madde Kodu'
               DataBinding.FieldName = 'EtkenMadde'
               PropertiesClassName = 'TcxTextEditProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Width = 69
+              Width = 77
             end
             object ilacListColumn6: TcxGridDBColumn
               Caption = 'Etken Madde'
@@ -847,6 +862,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 144
             end
             object ilacListColumn4: TcxGridDBColumn
@@ -857,6 +873,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 141
             end
             object ilacListColumn5: TcxGridDBColumn
@@ -880,7 +897,9 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           Align = alTop
           PanelStyle.Active = True
           TabOrder = 1
-          ExplicitWidth = 410
+          ExplicitLeft = 2
+          ExplicitTop = -2
+          ExplicitWidth = 894
           Height = 30
           Width = 892
           object cxCheckBoxKadir1: TcxCheckBoxKadir
@@ -909,7 +928,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Style.Color = 8454143
             TabOrder = 1
             OnKeyDown = Edit1KeyDown
-            ExplicitWidth = 406
+            ExplicitWidth = 890
             Width = 888
           end
         end
@@ -960,8 +979,8 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
   end
   object DataSource4: TDataSource
     DataSet = ADO_EtkenMaddeTetkik
-    Left = 529
-    Top = 90
+    Left = 593
+    Top = 122
   end
   object ADO_EtkenMaddeTetkik: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -979,8 +998,8 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
     SQL.Strings = (
       'select * from OSGB_MASTER.dbo.IlaclarReceteTetkikSonuc'
       'where ATC_Kodu =:@kod')
-    Left = 464
-    Top = 120
+    Left = 544
+    Top = 128
   end
   object DataSource3: TDataSource
     DataSet = ADO_EtkenMaddeSUT
@@ -1026,7 +1045,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
       
         'select i.*,a.tanimi etkenmaddeAdi from OSGB_MASTER.dbo.ilacListe' +
         'si i'
-      'join OSGB_MASTER.dbo.ATC_Kodlari a on a.kod = i.etkenmadde'
+      'left join OSGB_MASTER.dbo.ATC_Kodlari a on a.kod = i.etkenmadde'
       'where ilacAdi like :@p')
     Left = 464
     Top = 266

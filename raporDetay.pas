@@ -76,6 +76,8 @@ type
     N5: TMenuItem;
     R2: TMenuItem;
     R3: TMenuItem;
+    ListeRaporlarColumn10: TcxGridDBColumn;
+    ListeRaporlarColumn11: TcxGridDBColumn;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
@@ -161,7 +163,7 @@ type
     procedure ListeRaporlarDblClick(Sender: TObject);
     procedure raporDuzenle;
     function RaporImzalaGonder : string;
-    function RaporIslemGonder(islem : string) : string;
+  //  function RaporIslemGonder(islem : string) : string;
     procedure ListeRaporlarFocusedRecordChanged(Sender: TcxCustomGridTableView;
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
@@ -456,7 +458,7 @@ begin
   end;
 end;
 
-
+ (*
 function TfrmRaporDetay.RaporIslemGonder(islem : string) : string;
 var
   imzala : TRaporImzala;
@@ -499,7 +501,7 @@ begin
   end;
 end;
 
-
+  *)
 
 procedure TfrmRaporDetay.RaporuMedulayaKaydet(islem : integer);
 var
@@ -509,6 +511,7 @@ var
   _exe : PAnsiChar;
   fark : double;
 begin
+   _id_ := RaporGrid.Dataset.FieldByName('sira').AsString;
 
   case islem of
    RaporMedulaKaydet :  begin
@@ -522,6 +525,7 @@ begin
                                   RaporGrid.Dataset.edit;
                                   RaporGrid.Dataset.FieldByName('raporTakipNo').AsString := Copy(Sonuc,6,10);
                                   RaporGrid.Dataset.post;
+                                  ShowMessageSkin('Rapor Kaydedildi','','','info');
                                 end;
                               finally
                                 DurumGoster(False,False,'');
@@ -535,12 +539,13 @@ begin
    RaporMedulaSil   :  begin
                               DurumGoster(True,False,'Rapor Ýptal Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
                               try
-                                Sonuc := RaporIslemGonder('imzaliEraporSilBilgisi');
+                                Sonuc := RaporIslemGonder(_id_,'imzaliEraporSilBilgisi','','','');
                                 if Copy(Sonuc,1,4) = '0000'
                                 then begin
                                   RaporGrid.Dataset.edit;
                                   RaporGrid.Dataset.FieldByName('raporTakipNo').AsString := '';
                                   RaporGrid.Dataset.post;
+                                  ShowMessageSkin('Rapor Silindi','','','info');
                                 end;
                               finally
                                 DurumGoster(False,False,'');
@@ -551,12 +556,13 @@ begin
    RaporBasHekimOnay : begin
                                DurumGoster(True,False,'Rapor Onay Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
                               try
-                                Sonuc := RaporIslemGonder('imzaliEraporBashekimOnayBilgisi');
+                                Sonuc := RaporIslemGonder(_id_,'imzaliEraporBashekimOnayBilgisi','','','');
                                 if Copy(Sonuc,1,4) = '0000'
                                 then begin
                                   RaporGrid.Dataset.edit;
                                   RaporGrid.Dataset.FieldByName('Onay').AsString := '1';
                                   RaporGrid.Dataset.post;
+                                  ShowMessageSkin('Baþhekim Onayý Yapýldý','','','info');
                                 end;
                               finally
                                 DurumGoster(False,False,'');
@@ -567,12 +573,13 @@ begin
    RaporBasHekimOnayRed : begin
                               DurumGoster(True,False,'Rapor Onay Red Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
                               try
-                                Sonuc := RaporIslemGonder('imzaliEraporBashekimOnayRedBilgisi');
+                                Sonuc := RaporIslemGonder(_id_,'imzaliEraporBashekimOnayRedBilgisi','','','');
                                 if Copy(Sonuc,1,4) = '0000'
                                 then begin
                                   RaporGrid.Dataset.edit;
                                   RaporGrid.Dataset.FieldByName('Onay').AsString := '0';
                                   RaporGrid.Dataset.post;
+                                  ShowMessageSkin('Baþhekim Onay Red Yapýldý','','','info');
                                 end;
                               finally
                                 DurumGoster(False,False,'');
@@ -631,6 +638,7 @@ procedure TfrmRaporDetay.YeniRapor;
 var
   sql : string;
 begin
+    datalar.RaporBilgisi.raporCaption :=  _HastaAdSoyad_;
 
     if mrYes = ShowPopupForm('Yeni Rapor',raporInsert)
     Then Begin
@@ -676,7 +684,13 @@ begin
   RaporBasHekimOnay,
   RaporBasHekimOnayRed
         : begin
-            RaporuMedulayaKaydet(TControl(sender).Tag);
+              if RaporGrid.Dataset.FieldByName('duzenleyenDoktor').AsString = ''
+              then begin
+                ShowMessageSkin('Duzenleyen Doktor Bilgisi Eksik','','','info');
+                exit;
+              end
+              else
+                RaporuMedulayaKaydet(TControl(sender).Tag);
           end;
   -5 : begin
           RaporMeduladanOku;

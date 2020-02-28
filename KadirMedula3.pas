@@ -72,7 +72,7 @@ function TaniMemData(memData : TADOQuery) : hizmetKayitIslemleriWS.taniBilgisiDV
 function HizmetKaydiOku(_takipNo , basvuruNo : string) : string;
 function HizmetKaydiIptal(_TakipNo_ : string) : string;
 procedure HizmetIptalSonucDBYaz;
-function TetkikveRadyolojiBilgileriMemData(DataSet : TADOQuery) : TetkikveRadyolojiBilgisiDVO;
+function TetkikveRadyolojiBilgileriMemData(memData : TADOQuery) : TetkikveRadyolojiBilgisiDVO;
 function MalzemeMemData(DataSet : TADOQuery) : hizmetKayitIslemleriWS.MalzemeBilgisiDVO;
 
 function DigerIslemBilgileriM3(_takip ,Modul : string) : hizmetKayitIslemleriWS.Array_Of_DigerIslemBilgisiDVO;
@@ -3568,10 +3568,18 @@ begin
       TakipSil_3 := datalar.HastaKabulWS.CevapSil.sonucKodu;
       if datalar.HastaKabulWS.CevapSil.sonucKodu = '0000'
       then begin
+        sql := 'update hareketler ' +
+               ' set islemSiraNo = ' + QuotedStr('') +
+               ' from hareketler h ' +
+               ' join Hasta_Gelisler g on g.SIRANO = h.gelisSIRANO ' +
+               ' where TakipNo = ' + QuotedStr(TakipNo);
+        datalar.QueryExec(sql);
+
         sql := 'Update Hasta_Gelisler set TakipNo = ' + QuotedStr('') +
                       ',BasvuruNo = ' + QuotedStr('') +
                       ' where TakipNo = ' + QuotedStr(TakipNo);
         datalar.QueryExec(sql);
+
       end
       else
       begin
@@ -4713,7 +4721,7 @@ begin
        TahlilElemanlar.hizmetSunucuRefNo := memData.fieldbyname('hizmetSunucuRefNo').AsString;
        TahlilElemanlar.ozeldurum := 'f';//memData.fieldbyname('ozeldurum').AsString;
        TahlilElemanlar.istemYapanDrTescilNo := memData.fieldbyname('DrTescilNo').AsString;
-
+       TahlilElemanlar.istemYapanDrBrans := memData.fieldbyname('bransKodu').AsString;
        TahlilElemanlar.islemSiraNo := '';
 
 
@@ -4766,26 +4774,27 @@ begin
 end;
 
 
-function TetkikveRadyolojiBilgileriMemData(DataSet : TADOQuery) : TetkikveRadyolojiBilgisiDVO;
+function TetkikveRadyolojiBilgileriMemData(memData : TADOQuery) : TetkikveRadyolojiBilgisiDVO;
 var
   sql , raporTakipNo : string;
   i ,j : integer;
   Rad : TetkikveRadyolojiBilgisiDVO;
 begin
           Rad := TetkikveRadyolojiBilgisiDVO.Create;
-          Rad.sutKodu := DATALAR.ADO_SQL2.fieldbyname('butKodu').AsString;
-          Rad.adet := DATALAR.ADO_SQL2.fieldbyname('adet').AsInteger;
-          Rad.islemTarihi := FormattedTarih(DATALAR.ADO_SQL2.fieldbyname('islemTarihi').AsString);
-          Rad.drTescilNo := DATALAR.ADO_SQL2.fieldbyname('drTescilNo').AsString;
-          Rad.bransKodu := DATALAR.ADO_SQL2.fieldbyname('bransKodu').AsString;
-          Rad.hizmetSunucuRefNo := DATALAR.ADO_SQL2.fieldbyname('hizmetSunucuRefNo').AsString;
-          Rad.ozelDurum := DATALAR.ADO_SQL2.fieldbyname('ozeldurum').AsString;
-          Rad.sonuc := DATALAR.ADO_SQL2.fieldbyname('sonuc').AsString;
-          Rad.birim := DATALAR.ADO_SQL2.fieldbyname('birim').AsString;
-          Rad.aciklama := DATALAR.ADO_SQL2.fieldbyname('aciklama').AsString;
-          Rad.modality := DATALAR.ADO_SQL2.fieldbyname('modality').AsString;
-          Rad.accession := DATALAR.ADO_SQL2.fieldbyname('accession').AsString;
-
+          Rad.sutKodu := memData.fieldbyname('code').AsString;
+          Rad.adet := memData.fieldbyname('adet').AsInteger;
+          Rad.islemTarihi := memData.fieldbyname('islemTarihi').AsString;
+          Rad.drTescilNo := '';//memData.fieldbyname('drTescilNo').AsString;
+          Rad.bransKodu := memData.fieldbyname('bransKodu').AsString;
+          Rad.hizmetSunucuRefNo := memData.fieldbyname('hizmetSunucuRefNo').AsString;
+          Rad.ozelDurum := 'f';//memData.fieldbyname('ozeldurum').AsString;
+          Rad.sonuc := '';//memData.fieldbyname('aciklama').AsString;
+          Rad.birim := memData.fieldbyname('birim').AsString;
+          Rad.aciklama := memData.fieldbyname('aciklama').AsString;
+          Rad.modality := memData.fieldbyname('modality').AsString;
+          Rad.accession := memData.fieldbyname('accession').AsString;
+          Rad.istemYapanDrTescilNo := memData.fieldbyname('drTescilNo').AsString;
+          Rad.istemYapanDrBrans := memData.fieldbyname('bransKodu').AsString;
           TetkikveRadyolojiBilgileriMemData := Rad;
 end;
 

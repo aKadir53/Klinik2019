@@ -78,11 +78,10 @@ object frmTestAyarlari: TfrmTestAyarlari
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Options.Editing = False
         Width = 27
       end
       object cxGrid1DBTableView1butKodu: TcxGridDBColumn
-        Caption = 'Sut Kodu'
+        Caption = 'Kodu'
         DataBinding.FieldName = 'butKodu'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taLeftJustify
@@ -90,7 +89,17 @@ object frmTestAyarlari: TfrmTestAyarlari
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
-        Width = 57
+        Width = 60
+      end
+      object cxGrid1DBTableView1Column12: TcxGridDBColumn
+        Caption = 'Yeni Sut Kodu'
+        DataBinding.FieldName = 'yeniButKodu'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 60
       end
       object cxGrid1DBTableView1tanimi: TcxGridDBColumn
         Caption = 'Tan'#305'm'#305
@@ -213,7 +222,6 @@ object frmTestAyarlari: TfrmTestAyarlari
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Options.Editing = False
         Width = 22
       end
       object cxGrid1DBTableView1Column6: TcxGridDBColumn
@@ -224,7 +232,6 @@ object frmTestAyarlari: TfrmTestAyarlari
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Options.Editing = False
         Width = 25
       end
       object cxGrid1DBTableView1Column8: TcxGridDBColumn
@@ -731,6 +738,7 @@ object frmTestAyarlari: TfrmTestAyarlari
     Top = 136
   end
   object cxStyleRepository1: TcxStyleRepository
+    Top = 64
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svFont]

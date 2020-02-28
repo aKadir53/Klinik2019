@@ -111,7 +111,7 @@ begin
   then begin
     List.Kolonlar.Clear;
     List.KolonBasliklari.Clear;
-    List.Table := 'ilac_Teshis_Kodlarý';
+    List.Table := 'OSGB_MASTER.dbo.ilac_Teshis_KodlarýViewTable';
     List.Kolonlar.Add('teshiskodu');
     List.Kolonlar.Add('adi');
     List.Kolonlar.Add('taniKodu');
@@ -216,7 +216,7 @@ begin
      Then Begin
         ado := TADOQuery.Create(nil);
         try
-          sql := 'delete from IlacRaporEtkenMaddelerSablon where id = ' + SABLONDETAY.fieldbyname('id').AsString;
+          sql := 'delete from IlacRaporEtkenMaddelerSablon where Id = ' + SABLONDETAY.fieldbyname('Id').AsString;
           datalar.QueryExec(ado,sql);
           SABLONDETAY.Active := false;
           SABLONDETAY.Active := True;

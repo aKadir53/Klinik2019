@@ -249,7 +249,7 @@ begin
   else
     sube := '';
 
-  TcxImageComboKadir(FindComponent('Sube')).TableName := 'SIRKET_SUBE_TNM';
+//  TcxImageComboKadir(FindComponent('Sube')).TableName := 'SIRKET_SUBE_TNM';
   TcxImageComboKadir(FindComponent('Sube')).Filter := ' SirketKod = ' +
   QuotedStr(varToStr(TcxImageComboKadir(FindComponent('SirketKod')).EditValue)) + sube;// + ' and (Pasif = 0 or Pasif is Null)';
 
@@ -260,7 +260,7 @@ begin
   begin
       TcxImageComboKadir(FindComponent('muayenePeryot')).EditValue :=
       SirketSubeTehlikeSinifi(vartostr(TcxImageComboKadir(FindComponent('SirketKod')).EditValue),
-                              vartostr(TcxImageComboKadir(FindComponent('Sube')).EditValue));
+                              vartostr('00'));
   end;
 
 
@@ -483,7 +483,7 @@ begin
 
 
    protokolNo := EnsonSeansProtokolNo(vartostr(TcxImageComboKadir(FindComponent('SirketKod')).EditValue),
-                                      vartostr(TcxImageComboKadir(FindComponent('Sube')).EditValue));
+                                      vartostr('00'));
    datalar.GelisDuzenleRecord.ProtokolNo := protokolNo;
    datalar.GelisDuzenleRecord.ProtokolNoGuncelle := False;
     if mrYes = ShowPopupForm('Geliþ Aç',gdgelisAc)
@@ -502,7 +502,7 @@ begin
      sql := 'Update sIrket_Sube_TNM '+
      'SET MuayeneProtokolNo = ' + SQLValue (datalar.GelisDuzenleRecord.ProtokolNo) + ' '+
      'where sirketKod = ' + QuotedStr(TcxImageComboKadir(FindComponent('SirketKod')).EditValue) + ''+
-     ' and SubeKod = ' + QuotedStr(TcxImageComboKadir(FindComponent('Sube')).EditValue);
+     ' and SubeKod = ' + QuotedStr('00');
      datalar.QueryExec(sql);
      protokolNo := datalar.GelisDuzenleRecord.ProtokolNo;
    end;
@@ -654,7 +654,7 @@ begin
   begin
       TcxImageComboKadir(FindComponent('muayenePeryot')).EditValue :=
       SirketSubeTehlikeSinifi(vartostr(TcxImageComboKadir(FindComponent('SirketKod')).EditValue),
-                              vartostr(TcxImageComboKadir(FindComponent('Sube')).EditValue));
+                              vartostr('00'));
   end;
 
   if TcxImageComboKadir(sender).Name = 'EV_SEHIR'
@@ -741,31 +741,52 @@ end;
 procedure TfrmPersonelKart.FotoEkle;
 var
  Fo : TFileOpenDialog;
- filename,dosyaNo : string;
+ filename,dosyaNo ,dosyaTip : string;
  jp : TJPEGImage;
+ image : TcxImage;
 begin
   dosyaNo := TcxButtonEditKadir(FindComponent('dosyaNo')).Text;
   datalar.ADO_Foto.SQL.Text := Format(FotoTable,[#39+dosyaNo+#39]);
   datalar.ADO_FOTO.Open;
   datalar.ADO_FOTO.Edit;
 
-  Fo := TFileOpenDialog.Create(nil);
-  try
-    if not fo.Execute then Exit;
-    filename := fo.FileName;
-  finally
-    fo.Free;
-  end;
-  Foto.Picture.LoadFromFile(filename);
+      Fo := TFileOpenDialog.Create(nil);
+      try
+        if not fo.Execute then Exit;
+        filename := fo.FileName;
+        dosyaTip := ExtractFileExt(filename);
+        dosyaTip := StringReplace(dosyaTip,'.','',[rfReplaceAll]);
+      finally
+        fo.Free;
+      end;
 
-  jp := TJpegimage.Create;
-  try
-    jp.Assign(FOTO.Picture);
-    datalar.ADO_FOTO.FieldByName('Foto').Assign(jp);
-    datalar.ADO_FOTO.Post;
-  finally
-    jp.Free;
-  end;
+      if (dosyaTip = 'JPG') or
+         (dosyaTip = 'jpg') or
+         (dosyaTip = 'jpeg') or
+         (dosyaTip = 'JPEG')
+      then begin
+          image := TcxImage.Create(nil);
+          try
+            image.Picture.LoadFromFile(filename);
+            StretchImage(image,stHerDurumdaStretch,160,240);
+            Foto.Picture := image.Picture;
+            //Foto.Picture.LoadFromFile(filename);
+            jp := TJpegimage.Create;
+            try
+              jp.Assign(Foto.Picture);
+              datalar.ADO_FOTO.FieldByName('Foto').Assign(jp);
+              datalar.ADO_FOTO.Post;
+            finally
+              jp.Free;
+            end;
+          finally
+            image.free;
+          end;
+      end
+      else begin
+       ShowMessageSkin('Sadece JPG formatlarý Yüklenebilir','','','info');
+       datalar.ADO_FOTO.Cancel;
+      end;
 end;
 
 
@@ -1185,6 +1206,7 @@ begin
 
  // OrtakEventAta(sirketlerx);
 
+  (*
   subeler := TcxImageComboKadir.Create(self);
   subeler.Conn := Datalar.ADOConnection2;
   subeler.TableName := 'SIRKET_SUBE_TNM';
@@ -1198,6 +1220,8 @@ begin
  // OrtakEventAta(subeler);
   sirketlerx.Properties.OnEditValueChanged := SirketlerPropertiesChange;
   subeler.Properties.OnEditValueChanged := SirketlerPropertiesChange;
+    *)
+
 
   setDataString(self,'SicilNo','Sigorta No',Kolon2,'',70);
   setDataStringBLabel(self,'BosSatir1',Kolon2,'',10);
@@ -1491,7 +1515,7 @@ begin
                exit;
              end;
              if MrYes <> ShowMessageSkin('Personel Kartý',TcxImageComboKadir(FindComponent('SirketKod')).Text,
-                                         TcxImageComboKadir(FindComponent('Sube')).Text + ' Þubesine Kayýt Edilecek',
+                                         '  Kayýt Edilecek',
                                          'msg') Then exit;
 
            FotoNewRecord;
@@ -1520,12 +1544,13 @@ begin
             foto.Picture.Assign(nil);
             HastaGelis (dosyaNo.Text, ADO_Gelisler);
             TcxImageComboKadir(FindComponent('SirketKod')).EditValue := datalar.AktifSirket;
-            TcxImageComboKadir(FindComponent('Sube')).EditValue :=
-            ifThen(datalar.AktifSube = '','00',ifThen(pos(',',datalar.AktifSube) > 0,'00',datalar.AktifSube));
+
+          //  TcxImageComboKadir(FindComponent('Sube')).EditValue :=
+          //  ifThen(datalar.AktifSube = '','00',ifThen(pos(',',datalar.AktifSube) > 0,'00',datalar.AktifSube));
 
             TcxImageComboKadir(FindComponent('muayenePeryot')).EditValue :=
             SirketSubeTehlikeSinifi(vartostr(TcxImageComboKadir(FindComponent('SirketKod')).EditValue),
-                                    vartostr(TcxImageComboKadir(FindComponent('Sube')).EditValue));
+                                    vartostr('00'));
 
             if IsNull (TcxLabel(FindComponent('LabelSirketKod')).Caption) then
               TcxLabel(FindComponent('LabelSirketKod')).Caption := datalar.AktifSirket;
@@ -1560,7 +1585,7 @@ begin
     ShowMessageSkin ('Personelin Þirket bilgisi seçilmemiþ', '', '', 'info');
     Exit;
   end;
-  sSubeKod := VarToStr (TcxImageComboKadir(FindComponent('Sube')).EditingValue);
+  sSubeKod := VarToStr ('00');
   if IsNull (sSubeKod) then
   begin
     ShowMessageSkin ('Personelin Þube bilgisi seçilmemiþ', '', '', 'info');
@@ -1597,7 +1622,7 @@ begin
   GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
   GirisFormRecord.F_mobilTel_ := vartoStr(TcxTextEdit(FindComponent('EV_TEL1')).Text);
   GirisFormRecord.F_firmaKod_ := TcxImageComboKadir(FindComponent('SirketKod')).EditValue;
-  GirisFormRecord.F_sube_ := TcxImageComboKadir(FindComponent('sube')).EditValue;
+//  GirisFormRecord.F_sube_ := TcxImageComboKadir(FindComponent('sube')).EditValue;
 
 
 
@@ -1680,7 +1705,7 @@ begin
        end;
 
  -28 : begin
-         tel := dosyaNoTel(_dosyaNO_,TcxTextEdit(FindComponent('EV_TEL1')).Text);
+         tel := dosyaNoPersonelTel(_dosyaNO_,TcxTextEdit(FindComponent('EV_TEL1')).Text);
          SMSSend(tel,msj,_HastaAdSoyad_);
        end;
  -29 : begin

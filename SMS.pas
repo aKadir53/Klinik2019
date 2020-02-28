@@ -15,7 +15,7 @@ uses
   dxSkinStardust, dxSkinSummer2008, dxSkinsDefaultPainters, dxSkinValentine,
   dxSkinXmas2008Blue, dxSkinscxPCPainter, cxPCdxBarPopupMenu, cxContainer,
   cxEdit, Menus, cxTextEdit, cxMemo, StdCtrls, cxButtons, cxGroupBox, cxPC,
-  cxLabel,shellApi,data_modul,adodb,kadir;
+  cxLabel,shellApi,data_modul,adodb,kadir,KadirType;
 
 type
   TfrmSMS = class(TForm)
@@ -39,9 +39,6 @@ type
     mesaj : string;
   end;
 
-  TSendMesaj = procedure(KullaniciAdi : string ; Sifre : string ; _from : string ;
-                         TelefonNums : string ; mesaj : string;
-                         var Sonuc : string);stdCall;
 
   const
    LIB_DLL = 'NoktaDLL.dll';
@@ -109,8 +106,13 @@ begin
         ExtractStrings(['|'], [], PChar(sonuc),SS);
 
         if SS[1] = '200'
-        then
-          ShowMessageSkin('Mesaj Gönderildi','','','info')
+        then begin
+          ShowMessageSkin('Mesaj Gönderildi','','','info');
+          datalar.QueryExec('insert into SmsGonderimLog (dosyaNO,tel,msj)' +
+                            ' values(' + QuotedStr(dosyaNo) + ',' +
+                            QuotedStr(tel) + ',' +
+                            QuotedStr(txtmsg.Text) + ')');
+        end
         else
          ShowMessageSkin('Hata : ' + SS[2] ,'','','info');
       finally

@@ -88,6 +88,14 @@ type
     T1: TMenuItem;
     E2: TMenuItem;
     ListeColumn1: TcxGridDBColumn;
+    ListeColumn8: TcxGridDBColumn;
+    ListeColumn9: TcxGridDBColumn;
+    ListeColumn10: TcxGridDBColumn;
+    etkikTakipFormlar1: TMenuItem;
+    ListeColumn11: TcxGridDBColumn;
+    ListeColumn12: TcxGridDBColumn;
+    ListeColumn14: TcxGridDBColumn;
+    ListeColumn15: TcxGridDBColumn;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -127,15 +135,22 @@ const formGenislik = 700;
 var
   frmLabEntegrasyon: TfrmLabEntegrasyon;
   ay1 , ay2  , donemYil ,_Tarih_: string;
+
 implementation
-  uses Data_Modul,AnaUnit,HastaRecete,
+  uses
+  Data_Modul,
+  AnaUnit,
+  HastaRecete,
+
   ENA,
   Centro,
   GemSoftBIYOTIP,
   TenaySynevo,
-  Referans,
   TenaySYNLAB,
-  TenaySISTEMTIP;
+  Referans,
+  TenaySISTEMTIP,
+  Derman,
+  TenayAhenk;
 
 {$R *.dfm}
 
@@ -148,8 +163,11 @@ end;
 
 
 procedure TfrmLabEntegrasyon.IslemItemSub1Click(Sender: TObject);
+var
+  GirisFormRecord : TGirisFormRecord;
 begin
    if Liste.Controller.SelectedRowCount = 0 then exit;
+
 
   case TMenuItem(Sender).Tag of
     BIYOTIP : begin
@@ -201,7 +219,27 @@ REFERANSLAB : begin
                   DurumGoster(False);
                 end;
               end;
+
+ DERMANLAB   : begin
+                  DurumGoster(True,True);
+                  try
+                     DermanOrderKaydet(Liste,txtLog,pBar);
+                   finally
+                    DurumGoster(False);
+                  end;
+               end;
+
+    AHENK  : begin
+                DurumGoster(True,True);
+                try
+                  TenayOrderKaydetAhenk(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+
   end;
+
 
 
 end;
@@ -259,11 +297,29 @@ begin
      SISTEMTIP :  begin
                       DurumGoster(True,True);
                       try
-                        TenaySonucAlTCdenSISTEM('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar);
+                       TenaySonucAlTCdenSISTEM('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar);
                       finally
                         DurumGoster(False);
                       end;
                   end;
+
+     DERMANLAB    : begin
+                      DurumGoster(True,True);
+                      try
+                        DermanSonucAl('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar);
+                      finally
+                        DurumGoster(False);
+                      end;
+                 end;
+
+    AHENK  : Begin
+                DurumGoster(True,True);
+                try
+                  TenaySonucAlTCdenAhenk('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar,False);
+                finally
+                  DurumGoster(False);
+                end;
+              End;
 
   end;
 end;
@@ -304,6 +360,9 @@ var
  F : TGirisForm;
  dosyaNo,sirketKod,sube : string;
  i : integer;
+ DosyaNos , sql : string;
+ ado : TADOQuery;
+ topluset : TDataSetKadir;
 begin
   datalar.KontrolUserSet := False;
 
@@ -366,7 +425,7 @@ begin
  -21 : begin
           DurumGoster(True,True);
           try
-            BarkodOlustur(Liste,txtLog,pBar);
+            //BarkodOlustur(Liste,txtLog,pBar);
           finally
             DurumGoster(False);
           end;
@@ -375,7 +434,7 @@ begin
  -22 : begin
           DurumGoster(True,True);
           try
-            BarkodYazdir(Liste,memData,txtLog,pBar);
+           // BarkodYazdir(Liste,memData,txtLog,pBar);
           finally
             DurumGoster(False);
           end;
@@ -385,6 +444,36 @@ begin
          // F._Foto_ := foto;
           if F <> nil then F.ShowModal;
          // TetkikEkle(dosyaNo.Text,_gelisNo_,datalar.HastaBil.Tarih);
+       end;
+
+ 100 : begin
+           DosyaNos := '';
+           if Liste.Controller.SelectedRowCount > 0
+           then begin
+               for i := 0 to Liste.Controller.SelectedRowCount - 1 do
+               begin
+                   Application.ProcessMessages;
+                   DosyaNos := DosyaNos + ifThen(DosyaNos <> '', ',','') + varToStr(Liste.DataController.GetValue(
+                   Liste.Controller.SelectedRows[i].RecordIndex,Liste.DataController.GetItemByFieldName('DosyaNo').Index));
+               end;
+
+              DurumGoster(True);
+              ay1 := txtTopPanelTarih1.GetValue;
+              ado := TADOQuery.Create(nil);
+              Try
+                  sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = ' + QuotedStr(DosyaNos) + ', @yil = ' + QuotedStr(ay1) +
+                                ',@marker = ' + QuotedStr('E') + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                                ',@seans = ''''';
+                  datalar.QuerySelect(ado,sql);
+
+                  topluset.Dataset0 := ado;
+                  PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),topluset);
+              finally
+                DurumGoster(False);
+                ado.Free;
+              end;
+
+           end;
        end;
 
   end;
@@ -433,7 +522,7 @@ begin
  //  IslemItemSub3.OnClick :=  IslemItemSubClick;
   // IslemItemSub1.OnClick :=  IslemItemSubClick;
 
-   if strToint(datalar._labID) in [ENALAB,SYNEVO,SYNLAB,SISTEMTIP]
+   if strToint(datalar._labID) in [ENALAB,SYNEVO,SYNLAB,SISTEMTIP,DERMANLAB,AHENK]
    then begin
      if datalar._LabCalismaYon = '2'
      Then BEgin
@@ -621,8 +710,9 @@ begin
            Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('SIRANO').Index));
        end;
 
-           sql := 'update Hasta_Gelisler set LabOrnekDurum = ' + QuotedStr(TMenuItem(Sender).Hint) +
-                             ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','',''))';
+           sql := 'set nocount on update Hasta_Gelisler set LabOrnekDurum = ' + QuotedStr(TMenuItem(Sender).Hint) +
+                             ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','','')) ' +
+                             ' set nocount off';
            datalar.QueryExec(sql);
           _Dataset.Requery();
 

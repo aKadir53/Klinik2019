@@ -795,6 +795,10 @@ object frmLogin: TfrmLogin
           Height = 202
           Align = alClient
           TabOrder = 0
+          ExplicitLeft = 2
+          ExplicitTop = -2
+          ExplicitWidth = 331
+          ExplicitHeight = 227
           object txtServerName: TcxTextEditKadir
             Left = 104
             Top = 10
@@ -952,6 +956,10 @@ object frmLogin: TfrmLogin
       Caption = 'cxTabSheet1'
       ImageIndex = 2
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 154
         Top = 62

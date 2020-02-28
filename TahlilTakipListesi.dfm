@@ -169,10 +169,6 @@ object frmTahliltakip: TfrmTahliltakip
           object TetkikDegerlendirSayfa2: TcxTabSheet
             Caption = 'Tetkik De'#287'. Ayar'
             ImageIndex = 1
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object cxGrid13: TcxGrid
               Left = 0
               Top = 0
@@ -405,6 +401,7 @@ object frmTahliltakip: TfrmTahliltakip
           OptionsData.Deleting = False
           OptionsData.Editing = False
           OptionsData.Inserting = False
+          OptionsSelection.MultiSelect = True
           OptionsView.GroupByBox = False
           OptionsView.HeaderHeight = 33
           Bands = <
@@ -1144,10 +1141,6 @@ object frmTahliltakip: TfrmTahliltakip
     object cxTabSheet2: TcxTabSheet
       Caption = 'LOG'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object txtHatalar: TcxMemo
         Left = 0
         Top = 0
@@ -1268,11 +1261,13 @@ object frmTahliltakip: TfrmTahliltakip
     object T1: TMenuItem
       Tag = -9
       Caption = 'Hasta Kart'#305
+      Visible = False
       OnClick = T1Click
     end
     object T6: TMenuItem
       Tag = -8
       Caption = 'Tetkik Kart'#305
+      Visible = False
     end
     object N1: TMenuItem
       Caption = '-'

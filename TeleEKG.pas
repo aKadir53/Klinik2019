@@ -141,7 +141,9 @@ begin
      datalar.QuerySelect(ado,sql);
      memData.LoadFromDataSet(ado);
 
-     DatasetKadir.Dataset0 := memData;
+     DatasetKadir.Dataset1 := ado;
+     DatasetKadir.Dataset0 := datalar.ADO_AktifSirket;
+
      PrintYap('EKG01','\Ekg Sonuç Takip Formu',intTostr(TagfrmTeleEkg),DatasetKadir);
    finally
        ado.Free;

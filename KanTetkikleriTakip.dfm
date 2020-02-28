@@ -15,7 +15,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object cxGrid2: TcxGridKadir
+  object GridKanTetkikleri: TcxGridKadir
     Tag = 9997
     Left = 0
     Top = 19
@@ -31,14 +31,12 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
     TabOrder = 0
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
-    LookAndFeel.Kind = lfUltraFlat
-    LookAndFeel.NativeStyle = False
     ExcelFileName = 'KanTetkikTakip'
     ExceleGonder = True
     PopupForm = False
-    ExplicitTop = 0
-    ExplicitHeight = 700
-    object ILACKULLANIM: TcxGridDBTableView
+    ExplicitLeft = 88
+    ExplicitTop = 25
+    object GridTetkikler: TcxGridDBTableView
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True
       Navigator.Buttons.Prior.Visible = True
@@ -86,30 +84,28 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
       OptionsView.GroupByBox = False
       OptionsView.Indicator = True
       OptionsView.RowSeparatorColor = clBlack
-      Styles.Content = cxStyle1
-      Styles.ContentEven = cxStyle2
-      object ILACKULLANIMColumn1: TcxGridDBColumn
+      object GridTetkiklerColumn1: TcxGridDBColumn
         DataBinding.FieldName = 'TetkikKodu'
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Styles.Header = cxStyle4
         Width = 56
       end
-      object ILACKULLANIMColumn2: TcxGridDBColumn
+      object GridTetkiklerColumn2: TcxGridDBColumn
         DataBinding.FieldName = 'Tetkik'
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Styles.Header = cxStyle4
-        Width = 233
+        Width = 150
       end
-      object ILACKULLANIMColumn3: TcxGridDBColumn
+      object GridTetkiklerColumn3: TcxGridDBColumn
         DataBinding.FieldName = 'INo'
         Visible = False
         Styles.Content = cxStyle5
         Styles.Header = cxStyle4
         Width = 26
       end
-      object ILACKULLANIMColumn4: TcxGridDBColumn
+      object GridTetkiklerColumn4: TcxGridDBColumn
         Caption = 'Ocak'
         DataBinding.FieldName = 'OCAK'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -120,7 +116,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn5: TcxGridDBColumn
+      object GridTetkiklerColumn5: TcxGridDBColumn
         Caption = #350'ubat'
         DataBinding.FieldName = 'SUBAT'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -131,7 +127,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn15: TcxGridDBColumn
+      object GridTetkiklerColumn15: TcxGridDBColumn
         Caption = 'Mart'
         DataBinding.FieldName = 'MART'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -142,7 +138,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle5
         Width = 60
       end
-      object ILACKULLANIMColumn6: TcxGridDBColumn
+      object GridTetkiklerColumn6: TcxGridDBColumn
         Caption = 'Nisan'
         DataBinding.FieldName = 'NISAN'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -153,7 +149,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn7: TcxGridDBColumn
+      object GridTetkiklerColumn7: TcxGridDBColumn
         Caption = 'May'#305's'
         DataBinding.FieldName = 'MAYIS'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -164,7 +160,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn8: TcxGridDBColumn
+      object GridTetkiklerColumn8: TcxGridDBColumn
         Caption = 'Haziran'
         DataBinding.FieldName = 'HAZIRAN'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -175,7 +171,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn9: TcxGridDBColumn
+      object GridTetkiklerColumn9: TcxGridDBColumn
         Caption = 'Temmuz'
         DataBinding.FieldName = 'TEMMUZ'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -186,7 +182,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn10: TcxGridDBColumn
+      object GridTetkiklerColumn10: TcxGridDBColumn
         Caption = 'A'#287'ustos'
         DataBinding.FieldName = 'AGUSTOS'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -197,7 +193,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn11: TcxGridDBColumn
+      object GridTetkiklerColumn11: TcxGridDBColumn
         Caption = 'Eyl'#252'l'
         DataBinding.FieldName = 'EYLUL'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -208,7 +204,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn12: TcxGridDBColumn
+      object GridTetkiklerColumn12: TcxGridDBColumn
         Caption = 'Ekim'
         DataBinding.FieldName = 'EKIM'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -219,7 +215,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn13: TcxGridDBColumn
+      object GridTetkiklerColumn13: TcxGridDBColumn
         Caption = 'Kas'#305'm'
         DataBinding.FieldName = 'KASIM'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -230,7 +226,7 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Styles.Header = cxStyle4
         Width = 60
       end
-      object ILACKULLANIMColumn14: TcxGridDBColumn
+      object GridTetkiklerColumn14: TcxGridDBColumn
         Caption = 'Aral'#305'k'
         DataBinding.FieldName = 'ARALIK'
         PropertiesClassName = 'TcxTextEditProperties'
@@ -242,9 +238,9 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
         Width = 60
       end
     end
-    object cxGridLevel1: TcxGridLevel
+    object cxGridTetkikLevel: TcxGridLevel
       Caption = 'Hastalar'
-      GridView = ILACKULLANIM
+      GridView = GridTetkikler
       Options.DetailFrameColor = clBlack
       Options.DetailFrameWidth = 0
     end

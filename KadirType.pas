@@ -6,7 +6,7 @@ interface
 uses HizmetKayitIslemleriWS,DB,sysUtils,XSBuiltIns,Classes,cxImage,ADODB,
      Vcl.Graphics,jpeg,ExtCtrls;
 
-type TprintTip = (pTYazdir,pTOnIzle,pTDizayn,pTNone,pTPDF);
+type TprintTip = (pTYazdir,pTOnIzle,pTDizayn,pTNone,pTPDF,pTReadOnly);
 type sqlType = (sql_Select,sql_Exec,sql_sp,sql_fn,sql_new,sql_edit,sql_delete,sql_none);
 type showDialog = (OFShow,OFShowModal);
 type userGroup = (ugUser,ugGroup);
@@ -17,6 +17,11 @@ type  TMethods = (mTest,mGercek);
 
 
 type
+
+  TSendMesaj = procedure(KullaniciAdi : string ; Sifre : string ; _from : string ;
+                         TelefonNums : string ; mesaj : string;
+                         var Sonuc : string);stdCall;
+
   TENabizSendMesaj = procedure(msj : pwidechar ; mesajTipi : pwidechar ;
                          var Id : integer ;
                          var sonucMesaj : PWideChar ;
@@ -48,7 +53,11 @@ type
                           alici : PWideChar;
                           konu : PWideChar;
                           msj : PWideChar;
-                          filename : PWideChar
+                          filename : PWideChar;
+                          displayName : PWideChar;
+                          port : integer;
+                          ssl : PWideChar;
+                          SendTip : PWideChar
                           ); stdcall;
 
   TSGKHizmetSorgulama = Procedure(kullaniciAdi : pwidechar;
@@ -75,7 +84,8 @@ type
                       TesisKodu : PWideChar;
                        var sonuc : PWideChar;
                       url : PWideChar;
-                      cardType : PWideChar); stdcall;
+                      cardType : PWideChar;
+                      goster : integer); stdcall;
 
 
   TReceteGonder = procedure(Id : integer;
@@ -120,6 +130,7 @@ type
                       cardType : PWideChar); stdcall;
 
   TImzaliGiris = Procedure(var sonucMesaj : PWideChar);stdCall;
+  TImzaliSeansKapatKapat = Procedure(islemRefNo : integer ; var sonucMesaj : PWideChar);stdCall;
 
 
 type
@@ -241,6 +252,15 @@ type
     dosyaNO : string;
 end;
 
+type
+   THastaKosultasyon = record
+    BulguSonuc : string;
+    bolum : string;
+    id : string;
+    Tarih : string;
+    gelisNo : string;
+    dosyaNO : string;
+end;
 
 
 
@@ -295,6 +315,7 @@ type
     itakiString : string;
     itakiDeger : string;
     yas : variant;
+    ISI : variant;
    end;
 
 type
@@ -717,6 +738,10 @@ type
     F_TedaviTuru_ : string;
     F_SeansBilgi : TDigerIslemTalep;
     F_sysTakipNo : string;
+    F_Cinsiyet : string;
+    F_DogumTarihi : string;
+    F_HASTAADI : string;
+    F_HASTASOYADI : string;
   End;
 
 type
@@ -829,6 +854,18 @@ type
     SggTarihi : TDate;
   end;
 
+  TDokumanRevDetay = record
+    dokumanid : String;
+    tanimi : string;
+    rev : string;
+    revTarihi : TDate;
+    aciklama : string;
+    onayTarihi : TDate;
+    kontrolTarihi : TDate;
+    id : string;
+
+  end;
+
   TKurulToplantiMadde = record
     SiraNo : integer;
     Madde : string;
@@ -843,7 +880,14 @@ type
     Tamam : integer;
   end;
 
-
+  THemsireTalimat = record
+    id : string;
+    uygulama : String;
+    durum : String;
+    dosyaNo : String;
+    uygulamaBaslamaTarihi : variant;
+    uygulamaBitisTarihi : variant;
+  end;
 
 
   TYillikCalismaPlani = record
@@ -945,6 +989,7 @@ Const
   TagYeniOSGBVeriTabani = 127;
   TagfrmHastaRecete = 130;
   TagfrmPersonelRecete = 131;
+  TagfrmTopluHastaRecete = 132;
   TagfrmHastaIlacTedavi = 140;
   TagfrmTeleEkg = 150;
   TagfrmSifreDegis = 160;
@@ -1045,15 +1090,16 @@ Const
   TagfrmKroki = 1000;
   TagfrmHastaRaporlari = 1010;
 
+
   TagfrmOrtamOlcum = 1020;
   TagfrmCihazKontrolListesi = 1030;
   TagfrmFirmaPersonelEgitimList = 1040;
+
 
   TagfrmSKS_Dokumanlar = 1050;
   TagfrmSKS_YeniDokuman = 1060;
   TagfrmOlayBildirim = 1070;
   TagfrmKlorOlcum = 1080;
-
 
 
   TagfrmHastaKart = 5001;
@@ -1070,7 +1116,8 @@ Const
   TagfrmUzmanMuayene = 5030;
   TagfrmLabEntegrasyon = 5040;
   TagfrmHizliKayit = 5050;
-
+  TagfrmTopluHastaTedaviListesi = 5060;
+  TagfrmHastaKonsultasyon = 5070;
 
 
   Kaydet = 0;
@@ -1085,6 +1132,8 @@ Const
   SYNLAB = 2;
   CentroLab = 3;
   SISTEMTIP = 10;
+  DERMANLAB = 8;
+  AHENK = 1;
 
   ExceleGonder = 9997;
   SeansTarihiUpdate = 0;
@@ -1197,6 +1246,12 @@ Const
   ReceteyiSablonKaydet = 86;
   ilacTedaviUygula = 87;
   ilacTedaviIptal = 88;
+  SKSdokumanOku = 100;
+  SKSdokumanRevDuzenle = 101;
+  yeniTalimat = 102;
+  talimatDuzenle = 103;
+  yeniKonsultasyon = 104;
+  konsultasyonDuzenle = 105;
 
 
 

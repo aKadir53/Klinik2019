@@ -91,35 +91,28 @@ uses
   yardimciIslemlerWS in 'yardimciIslemlerWS.pas',
   GunSonuOzet in 'GunSonuOzet.pas' {frmGunSonuOzet},
   IlacEtkenMadde in 'IlacEtkenMadde.pas' {frmIlacEtkenMaddeSutKural},
-  Centro in 'Centro.pas',
-  ENA in 'ENA.pas',
-  TenayENA in 'WebReferans\TenayENA.pas',
-  tenayserviceCENTRO in 'WebReferans\tenayserviceCENTRO.pas',
+  Derman in 'Derman.pas',
   LabTestlerService in 'WebReferans\LabTestlerService.pas',
   klorOlcum in 'klorOlcum.pas' {frmKlorOlcum},
   GemsoftServiceBIYOTIP in 'WebReferans\GemsoftServiceBIYOTIP.pas',
   GemSoftBIYOTIP in 'WebReferans\GemSoftBIYOTIP.pas',
-  TenayServiceSYNEVO in 'WebReferans\TenayServiceSYNEVO.pas',
-  TenaySynevo in 'WebReferans\TenaySynevo.pas',
   Referans in 'WebReferans\Referans.pas',
   ServiceReferansLab in 'WebReferans\ServiceReferansLab.pas',
-  TenayServiceSYNLAB in 'WebReferans\TenayServiceSYNLAB.pas',
-  TenaySYNLAB in 'WebReferans\TenaySYNLAB.pas',
   hizliKayit in 'hizliKayit.pas' {frmHizliKayit},
   HastaIzlemListesi in 'HastaIzlemListesi.pas' {frmIzlem},
   TakipKontrol in 'TakipKontrol.pas' {frmTakipKontrol},
-  TenaySISTEMTIP in 'WebReferans\TenaySISTEMTIP.pas';
+  TenaySISTEMTIP in 'WebReferans\TenaySISTEMTIP.pas' {/ TenayAhenk in 'WebReferans\TenayAhenk.pas';};
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 4003;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
+  AppalicationVer : integer = 4004;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
   OSGBDllVersiyon : integer = 6;     //  DLLVersiyon.txt  içine DllVersiyon deðerini yaz ftp at
                                      // isg.exe yapý deðiþikliðinden sonra buna gerek kalmýyor
 
   NoktaURL : string = 'https://www.noktayazilim.net';
-  VersiyonURL : string = 'http://www.noktayazilim.net/KlinikVersiyon.txt';
-  DLLVersiyonURL : string = 'http://www.noktayazilim.net/KlinikDLLVersiyon.txt';
+  VersiyonURL : string = 'http://www.noktayazilim.net/Klinik2019Versiyon.txt';
+  DLLVersiyonURL : string = 'http://www.noktayazilim.net/Klinik2019DLLVersiyon.txt';
 
 {$R *.res}
 {$WEAKLINKRTTI ON}
@@ -185,29 +178,27 @@ begin
   if versiyon = '' then versiyon := inttostr(AppalicationVer);
   if Dversiyon = '' then Dversiyon := inttostr(OSGBDllVersiyon);
 
-
-  if 1=2//(strtoint(Dversiyon) > OSGBDllVersiyon)
-  Then Begin
-//      dosya := TFileStream.Create('C:\OSGB\NoktaDLL.dll',fmCreate);
-//      datalar.HTTP1.Get('https://www.noktayazilim.net/NoktaDLL.dll' ,TStream(dosya));
-
-      Download('https://www.noktayazilim.net/NoktaDLL.dll','mavinokta','nokta53Nokta','C:\NoktaV4\NoktaDLL.dll');
-      Download('https://www.noktayazilim.net/BouncyCastle.Crypto.dll','mavinokta','nokta53Nokta','C:\NoktaV4\BouncyCastle.Crypto.dll');
-      Download('https://www.noktayazilim.net/EdocLib.dll','mavinokta','nokta53Nokta','C:\NoktaV4\EdocLib.dll');
-      Download('https://www.noktayazilim.net/Net.Pkcs11.dll','mavinokta','nokta53Nokta','C:\NoktaV4\Net.Pkcs11.dll');
-      Download('https://www.noktayazilim.net/itextsharp.dll','mavinokta','nokta53Nokta','C:\NoktaV4\itextsharp.dll');
-      Download('https://www.noktayazilim.net/Microsoft.VisualBasic.PowerPacks.Vs.dll','mavinokta','nokta53Nokta','C:\NoktaV4\Microsoft.VisualBasic.PowerPacks.Vs.dll');
-
-  //    dosya.Free;
-
-  End;
-
-
+  try
+    if 1=2//(strtoint(Dversiyon) > OSGBDllVersiyon)
+    Then Begin
+        Download('https://www.noktayazilim.net/NoktaDLL.dll','mavinokta','nokta53Nokta','C:\NoktaV3\NoktaDLL.dll');
+        Download('https://www.noktayazilim.net/BouncyCastle.Crypto.dll','mavinokta','nokta53Nokta','C:\NoktaV3\BouncyCastle.Crypto.dll');
+        Download('https://www.noktayazilim.net/EdocLib.dll','mavinokta','nokta53Nokta','C:\NoktaV3\EdocLib.dll');
+        Download('https://www.noktayazilim.net/Net.Pkcs11.dll','mavinokta','nokta53Nokta','C:\NoktaV3\Net.Pkcs11.dll');
+        Download('https://www.noktayazilim.net/itextsharp.dll','mavinokta','nokta53Nokta','C:\NoktaV3\itextsharp.dll');
+        Download('https://www.noktayazilim.net/Microsoft.VisualBasic.PowerPacks.Vs.dll','mavinokta','nokta53Nokta','C:\NoktaV3\Microsoft.VisualBasic.PowerPacks.Vs.dll');
+        Download('https://www.noktayazilim.net/ReceteToken2.exe','mavinokta','nokta53Nokta','C:\NoktaV3\ReceteToken2.exe');
+        Download('https://www.noktayazilim.net/salt.dat','mavinokta','nokta53Nokta','C:\NoktaV3\salt.dat');
+        Download('https://www.noktayazilim.net/RenkliEncryption.dll','mavinokta','nokta53Nokta','C:\NoktaV3\RenkliEncryption.dll');
+        Download('https://www.noktayazilim.net/RenkliRsaPublicKey.txt','mavinokta','nokta53Nokta','C:\NoktaV3\RenkliRsaPublicKey.pem');
+    End;
+  except
+  end;
 
   if (strtoint(versiyon) > AppalicationVer)
   Then Begin
     try
-     _exe :=  PAnsiChar(AnsiString('C:\NoktaV4\yv.exe'));
+     _exe :=  PAnsiChar(AnsiString('C:\NoktaV3\yvK.exe'));
      WinExec(_exe,SW_SHOW);
     // datalar.KillTask('Diyaliz.exe');
     except on e : exception do

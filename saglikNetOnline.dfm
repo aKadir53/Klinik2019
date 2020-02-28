@@ -116,16 +116,6 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
             HeaderAlignmentVert = vaCenter
             Width = 80
           end
-          object gridListeColumn3: TcxGridDBColumn
-            Caption = 'Durum'
-            DataBinding.FieldName = 'SONUCKODU'
-            PropertiesClassName = 'TcxTextEditProperties'
-            Properties.Alignment.Horz = taCenter
-            Properties.Alignment.Vert = taVCenter
-            HeaderAlignmentHorz = taCenter
-            HeaderAlignmentVert = vaCenter
-            Width = 30
-          end
           object gridListeColumn4: TcxGridDBColumn
             Caption = 'G'#246'nderim Zaman'#305
             DataBinding.FieldName = 'SONGonderim'
@@ -135,6 +125,26 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 100
+          end
+          object gridListeColumn3: TcxGridDBColumn
+            Caption = 'Durum'
+            DataBinding.FieldName = 'SONUCKODU'
+            PropertiesClassName = 'TcxImageComboBoxProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.Images = DATALAR.global_img_list4
+            Properties.Items = <
+              item
+                ImageIndex = 132
+                Value = 'T'
+              end
+              item
+                ImageIndex = 133
+                Value = 'F'
+              end>
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 30
           end
           object gridListeCOLUMN1: TcxGridDBColumn
             Caption = 'Message'

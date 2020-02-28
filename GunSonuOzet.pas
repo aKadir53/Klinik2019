@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,kadir, cxGraphics, cxControls,strUtils,System.DateUtils,
-  cxLookAndFeels, cxLookAndFeelPainters, cxContainer, cxEdit, dxSkinsCore,
+  cxLookAndFeels, cxLookAndFeelPainters, cxContainer, cxEdit, dxSkinsCore,ClipBrd,
   cxGroupBox, Menus, cxStyles, dxSkinscxPCPainter, cxCustomData, cxFilter,
   cxData, cxDataStorage, DB, cxDBData, cxGridLevel, cxClasses, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
@@ -56,10 +56,14 @@ type
     WebBrowser3: TWebBrowser;
     XMLDocument3: TXMLDocument;
     chkTumAy: TcxCheckBox;
+    ADO_SQL: TADOQuery;
+    DataSource1: TDataSource;
     procedure btnListClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure txtTarihPropertiesChange(Sender: TObject);
     procedure btnGonderClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure cxPageControl1Change(Sender: TObject);
   private
     { Private declarations }
   public
@@ -69,7 +73,7 @@ type
 
 var
   frmGunSonuOzet: TfrmGunSonuOzet;
-  msj,sorgu : string;
+  msj,sorgu,_Tip_ : string;
 implementation
     uses data_modul,saglikNetOnline;
 {$R *.dfm}
@@ -85,6 +89,12 @@ begin
     try
      DurumGoster(True,False,'Özet Veri Gönderiminiz Yapýlýyor , Lütfen Bekleyiniz...');
      Application.ProcessMessages;
+
+     if pos('Gün Sonu Veri Seti',Clipboard.AsText) > 0
+     then
+      msj := Clipboard.AsText;
+     Clipboard.Clear;
+
 
      if TcxButton(sender).Tag = 0
      then
@@ -141,12 +151,26 @@ begin
        end;
      //  txtTarih2.Date := txtTarih.Date - 9;
 
-       sql := 'sp_SaglikNetOnlineGunSonuTable ' + txtTarih.GetSQLValue + ',' + QuotedStr(datalar.AktifSirket) + ',' + inttostr(sifir) + ',' + intTostr(ayKacCekiyor);
-       datalar.QuerySelect(cxGrid1.Dataset,sql);
+       sql := 'sp_SaglikNetOnlineGunSonuTable ' + txtTarih.GetSQLValue + ',' + QuotedStr(datalar.AktifSirket) + ','
+                                                + inttostr(sifir) + ',' + intTostr(ayKacCekiyor) + ',' + QuotedStr(_Tip_);
+       cxGrid1.Dataset.CommandTimeout := 0;
+       datalar.QuerySelect(ADO_SQL,sql);
+
+       if _Tip_ = 'M'
+       then  begin
+         sql := 'select * from GunSonuTable where sayi >= ' + inttostr(sifir) + ' order by tarih';
+         datalar.QuerySelect(ADO_SQL,sql);
+         gridListesayi.Options.Editing := True;
+       end
+       else
+       begin
+         gridListesayi.Options.Editing := False;
+       end;
 
        try
         ado := TADOQuery.Create(nil);
         ado.Connection := datalar.ADOConnection2;
+        ado.CommandTimeout := 0;
         sql := 'exec sp_SaglikNetOnlineGunSonu ' + txtTarih.GetSQLValue + ',' +  QuotedStr(datalar.AktifSirket) + ',' + inttostr(sifir) + ',' + intTostr(ayKacCekiyor);
         datalar.QuerySelect(ado,sql);
         msj := ado.Fields[0].AsString;
@@ -174,11 +198,76 @@ begin
      end;
 end;
 
+procedure TfrmGunSonuOzet.cxPageControl1Change(Sender: TObject);
+var
+  ado : TADOQuery;
+  sql : string;
+  sifir,ayKacCekiyor : integer;
+  tarih2 : TDate;
+begin
+
+  if cxPageControl1.ActivePage = cxTabSheet2
+  Then BEgin
+     sifir := strtoint(ifThen(SifirGoster.EditValue=True,'1','0'));
+
+     if chkTumAy.Checked
+     then begin
+       ayKacCekiyor := DaysInMonth(txtTarih.date) - 1;
+       ayliktarih(txtTarih.Date,tarih2);
+       txtTarih2.Date := tarih2;
+     end
+     else begin
+       ayKacCekiyor := 9;
+       txtTarih2.Date := txttarih.Date - ayKacCekiyor;
+     end;
+   //  txtTarih2.Date := txtTarih.Date - 9;
+
+     try
+      ado := TADOQuery.Create(nil);
+      ado.Connection := datalar.ADOConnection2;
+      sql := 'exec sp_SaglikNetOnlineGunSonu ' + txtTarih.GetSQLValue + ',' +  QuotedStr(datalar.AktifSirket) + ',' +
+                      inttostr(sifir) + ',' + intTostr(ayKacCekiyor) + ',' + QuotedStr(_Tip_);
+      datalar.QuerySelect(ado,sql);
+      msj := ado.Fields[0].AsString;
+      sorgu := ado.Fields[1].AsString;
+      ado.Close;
+      ado.Free;
+     except
+       ado.Free;
+       exit;
+     end;
+
+     XMLDocument1.XML.Clear;
+     XMLDocument1.XML.Add(msj);
+     XMLDocument1.Active := true;
+     XMLDocument1.SaveToFile('c:\NoktaV3\GunSonuOzetMesaj.xml');
+     WebBrowser1.Navigate('c:\NoktaV3\GunSonuOzetMesaj.xml');
+  End;
+end;
+
 procedure TfrmGunSonuOzet.FormCreate(Sender: TObject);
 begin
   txtTarih.Date := date;
   txtTarih2.Date := txttarih.Date - 9;
   cxPanel.Visible := false;
+end;
+
+procedure TfrmGunSonuOzet.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+
+  if (key = VK_F12)// and (Shift = [ssShift]) and (Shift = [ssCtrl])
+  then begin
+    _Tip_ := 'M';
+    btnGonder.Caption := 'Gönderm';
+  end;
+
+  if (key = VK_F11) //and (Shift = [ssShift]) and (Shift = [ssCtrl])
+  then begin
+    _Tip_ := '';
+    btnGonder.Caption := 'Gönder';
+  end;
+
 end;
 
 function TfrmGunSonuOzet.Init(Sender: TObject): Boolean;

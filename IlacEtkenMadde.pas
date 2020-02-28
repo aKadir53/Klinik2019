@@ -15,7 +15,7 @@ uses
   cxGridCustomView, cxGrid, GridsEh, DBGridEh, Vcl.DBCtrls, cxGroupBox,
   Data.Win.ADODB, Vcl.Menus, cxCheckBox, KadirLabel, cxTextEdit, cxSplitter,
   cxGridBandedTableView, cxGridDBBandedTableView, cxPCdxBarPopupMenu, cxPC,
-  cxImageComboBox;
+  cxImageComboBox,data_modul;
 
 type
   TfrmIlacEtkenMaddeSutKural = class(TGirisForm)
@@ -98,6 +98,7 @@ type
     ilacListColumn4: TcxGridDBColumn;
     ilacListColumn5: TcxGridDBColumn;
     ilacListColumn6: TcxGridDBColumn;
+    gridIlacSarfTurKodu: TcxGridDBColumn;
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
     procedure ado_BransKodlariAfterScroll(DataSet: TDataSet);
@@ -146,7 +147,7 @@ end;
 procedure TfrmIlacEtkenMaddeSutKural.ADO_EtkenMaddeTetkikNewRecord(
   DataSet: TDataSet);
 begin
-  // Dataset.FieldByName('EtkenMaddeKodu').AsString := ado_BransKodlari.FieldByName('tanimi').AsString;
+   Dataset.FieldByName('ATC_Kodu').AsString := ado_BransKodlari.FieldByName('kod').AsString;
 end;
 
 procedure TfrmIlacEtkenMaddeSutKural.chkTumuPropertiesEditValueChanged(
@@ -211,9 +212,27 @@ end;
 
 
 procedure TfrmIlacEtkenMaddeSutKural.FormCreate(Sender: TObject);
+var
+  IC : TcxImageComboKadir;
 begin
     TopPanel.Visible := False;
     cxPanel.Visible := False;
+
+    IC := TcxImageComboKadir.Create(nil);
+    try
+      IC.Conn := datalar.ADOConnection2;
+     // IC.Name := 'ATC_Kodlari_Tur';
+      IC.TableName := '(select * from osgb_master.dbo.ATC_Kodlari_Tur) t';
+      IC.DisplayField := 'tanimi';
+      IC.ValueField := 'kod';
+      IC.Filter := '';
+      TcxImageComboBoxProperties(gridIlacSarfTurKodu.Properties).Items := IC.Properties.Items;
+    finally
+      IC.Free;
+    end;
+
+
+
 end;
 
 procedure TfrmIlacEtkenMaddeSutKural.gridIlacSarfFocusedRecordChanged(
@@ -224,22 +243,23 @@ var
   satir : integer;
 begin
   inherited;
-  if _Focus_ = 1 then
-  begin
-    satir := gridIlacSarf.Controller.SelectedRows[0].RecordIndex;
-    kod := varToStr(gridIlacSarf.DataController.GetValue(satir,gridIlacSarf.DataController.GetItemByFieldName('kod').Index));
-    if kod <> ''
+  try
+    if _Focus_ = 1
     then begin
-      ADO_EtkenMaddeTetkik.Active := False;
-      ADO_EtkenMaddeTetkik.Parameters[0].Value := kod;
-      ADO_EtkenMaddeTetkik.Active := True;
+      satir := gridIlacSarf.Controller.SelectedRows[0].RecordIndex;
+      kod := varToStr(gridIlacSarf.DataController.GetValue(satir,gridIlacSarf.DataController.GetItemByFieldName('kod').Index));
+      if kod <> ''
+      then begin
+        ADO_EtkenMaddeTetkik.Active := False;
+        ADO_EtkenMaddeTetkik.Parameters[0].Value := kod;
+        ADO_EtkenMaddeTetkik.Active := True;
 
-      ADO_EtkenMaddeSUT.Active := False;
-      ADO_EtkenMaddeSUT.Parameters[0].Value := kod;
-      ADO_EtkenMaddeSUT.Active := True;
-
+        ADO_EtkenMaddeSUT.Active := False;
+        ADO_EtkenMaddeSUT.Parameters[0].Value := kod;
+        ADO_EtkenMaddeSUT.Active := True;
+      end;
     end;
-
+  except
   end;
 end;
 

@@ -26,6 +26,7 @@ object frmDoktorlar: TfrmDoktorlar
       Top = 15
       Align = alClient
       Properties.ClearKey = 46
+      Properties.GraphicClassName = 'TJPEGImage'
       Properties.PopupMenuLayout.MenuItems = []
       Properties.ReadOnly = False
       Properties.Stretch = True
@@ -84,6 +85,7 @@ object frmDoktorlar: TfrmDoktorlar
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    Visible = False
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
     ExceleGonder = False

@@ -513,15 +513,44 @@ begin
                  ',Durum = ' +  intToStr(Datalar.SeansBilgi.Durum) +
                  ',hekimgozlemDdiger = ' + QuotedStr(datalar.SeansBilgi.hemsireNot) +
                  ',itaki = ' + QuotedStr(datalar.SeansBilgi.itakiString) +
-                 ' where siraNo = ' + Datalar.SeansBilgi.hizmetSunucuRefNo +
-
+                 ' where siraNo = ' + Datalar.SeansBilgi.hizmetSunucuRefNo;
+              (*
                  ' update Hareketler set raporTakipNo = ' + QuotedStr(Datalar.SeansBilgi.raporTakipNo) +
                  ',Doktor = ' +  QuotedStr(Datalar.SeansBilgi.doktor) +
                  ',itaki = ' + QuotedStr(Datalar.SeansBilgi.itakiString) +
                  ' where dosyaNo = ' + QuotedStr(Datalar.SeansBilgi.dosyaNo) +
                  ' and gelisNo = ' + Datalar.SeansBilgi.gelisNo + ' and Durum = 0 and Tip = ''S''';
-
+                *)
           datalar.QueryExec(sql);
+
+                 if MrYes = ShowMessageSkin('Deðiþiklikler Gelecek Seanslara da Uygulansýn mý?','','','msg')
+                 then begin
+
+                    sql:=  ' update Hareketler set raporTakipNo = ' + QuotedStr(Datalar.SeansBilgi.raporTakipNo) +
+                           ',DiyalizorCinsi = ' +  QuotedStr(Datalar.SeansBilgi.DiyalizorCinsi) +
+                           ',DiyalizorTipi = ' +  QuotedStr(Datalar.SeansBilgi.DiyalizorTipi) +
+                           ',DIYALIZOR = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizor) +
+                           ',YA = ' +  QuotedStr(Datalar.SeansBilgi.YA) +
+                           ',APH = ' +  QuotedStr(Datalar.SeansBilgi.APH) +
+                           ',Igne = ' +  QuotedStr(Datalar.SeansBilgi.Igne) +
+                           ',IgneV = ' +  QuotedStr(Datalar.SeansBilgi.IgneV) +
+                           ',D = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizat) +
+                           ',HEPARINTIP = ' +  QuotedStr(Datalar.SeansBilgi.HeparinTip) +
+                           ',HEPARIN = ' +  QuotedStr(Datalar.SeansBilgi.Heparin) +
+                           ',HEPARINUYG = ' +  QuotedStr(Datalar.SeansBilgi.HeparinUyg) +
+                           ',Doktor = ' +  QuotedStr(Datalar.SeansBilgi.doktor) +
+                           ',MakinaNo = ' +  QuotedStr(Datalar.SeansBilgi.MakinaNo) +
+                           ',UF = ' +  QuotedStr(Datalar.SeansBilgi.UF) +
+                           ',HCOOO = ' +  QuotedStr(Datalar.SeansBilgi.HCOOO) +
+                           ',Na = ' +  QuotedStr(Datalar.SeansBilgi.Na) +
+                           ',GIRISYOLU = ' +  QuotedStr(Datalar.SeansBilgi.GirisYolu) +
+                           ',IdealKilo = ' +  QuotedStr(Datalar.SeansBilgi.Kilo) +
+                           ' where dosyaNo = ' + QuotedStr(Datalar.SeansBilgi.dosyaNo) +
+                           ' and gelisNo = ' + Datalar.SeansBilgi.gelisNo + ' and Durum = 0 and Tip = ''S''';
+
+                      datalar.QueryExec(sql);
+                 end;
+
           cxGrid_Seans.Dataset.Requery();
           cxGrid_Seans.Dataset.Next;
 
@@ -822,13 +851,13 @@ begin
 
   txtLog.Lines.Clear;
 
- (*
-  if LisansKontrol(fark) = False
-  Then Begin
+
+   if LisansKontrol(fark) = False
+   Then Begin
     ShowMessageSkin('Lisans Yenileyin','','','info');
     exit;
-  End;
-   *)
+   End;
+
 
 
    durum := 0;
@@ -983,6 +1012,8 @@ begin
   Datalar.SeansBilgi.UF := cxGrid_Seans.Dataset.FieldByName('UF').AsString;
   Datalar.SeansBilgi.Durum := cxGrid_Seans.Dataset.FieldByName('Durum').AsInteger;
   Datalar.SeansBilgi.hemsireNot := cxGrid_Seans.Dataset.FieldByName('hekimGozlemDdiger').AsString;
+  Datalar.SeansBilgi.doktorNot := cxGrid_Seans.Dataset.FieldByName('hekimGozlemD').AsString;
+
   Datalar.SeansBilgi.islemSiraNo := cxGrid_Seans.Dataset.FieldByName('islemSiraNo').AsString;
   Datalar.SeansBilgi.SeansCaption := _HastaAdSoyad_ + ' - ' + cxGrid_Seans.Dataset.FieldByName('seansGunu').AsString +
                                      ' (' + cxGrid_Seans.Dataset.FieldByName('islemRefNo').AsString + ')';
@@ -1085,10 +1116,15 @@ begin
         end;
 
   0,1 : begin
-           if ListeS.Controller.SelectedRowCount > 0
-           Then begin
-             SeansOnay(TControl(sender).Tag,ListeS.Controller.SelectedRows[0].RecordIndex);
-           end;
+           if datalar.SeansOnayDoktorHemsireYapar <> 'Evet'
+           then
+             if ListeS.Controller.SelectedRowCount > 0
+             Then begin
+               SeansOnay(TControl(sender).Tag,ListeS.Controller.SelectedRows[0].RecordIndex);
+             end
+           else
+              ShowMessageSkin('Seans Onaylarýný Doktor ve Hemþire Seansý Kapatarak Yapmalýdýr','','','info');
+
         end;
   end;
 
@@ -1209,55 +1245,62 @@ var
   talepSira , kod , Rtarih , sql ,ktip , takipno ,makineNo,Hst,seans : string;
   ado : TADOQuery;
 begin
-  satir := ListeS.Controller.SelectedRows[0].RecordIndex;
-  if (ACellViewInfo.Item.Index = 6) and (TakipFaturadami(_TakipNo_) = False)
+  if datalar.SeansOnayDoktorHemsireYapar <> 'Evet'
   then begin
-    if ACellViewInfo.GridView.DataController.Values[satir,6] = 0
-    then
-     durum := 1
-    else
-     durum := 0;
 
-       Application.ProcessMessages;
-       satir := ListeS.Controller.SelectedRows[0].RecordIndex;
-       ListeS.DataController.FocusedRecordIndex := satir;
-       RTarih := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('Tarih').Index);
-       kod := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('code').Index);
-//       durum := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('Durum').Index);
-       talepSira := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('islemSiraNo').Index);
-       ktip := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('KURUMTIPI').Index);
-       takipno := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('TakipNo').Index);
-       makineNo := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('makinaNo').Index);
-       seans := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('Seans').Index);
+        satir := ListeS.Controller.SelectedRows[0].RecordIndex;
+        if (ACellViewInfo.Item.Index = 6) and (TakipFaturadami(_TakipNo_) = False)
+        then begin
+          if ACellViewInfo.GridView.DataController.Values[satir,6] = 0
+          then
+           durum := 1
+          else
+           durum := 0;
 
-       if ((ktip = '1') or (ktip = '99')) and (takipno = '')
-       then begin
-           ShowMessageSkin('SGK Hastalarýna Takip Almadan Seans Onaylayamazsýnýz','','','info');
-           exit;
-       end;
+             Application.ProcessMessages;
+             satir := ListeS.Controller.SelectedRows[0].RecordIndex;
+             ListeS.DataController.FocusedRecordIndex := satir;
+             RTarih := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('Tarih').Index);
+             kod := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('code').Index);
+      //       durum := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('Durum').Index);
+             talepSira := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('islemSiraNo').Index);
+             ktip := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('KURUMTIPI').Index);
+             takipno := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('TakipNo').Index);
+             makineNo := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('makinaNo').Index);
+             seans := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('Seans').Index);
 
-       if  talepSira = ''
-       then begin
-             if makineNo <> ''
+             if ((ktip = '1') or (ktip = '99')) and (takipno = '')
              then begin
-               Hst := SeansKontrol(seans,makineNo,RTarih,_DosyaNo_);
-               if Hst <> ''
-               then begin
-                 ShowMessageSkin('Makina No Kontrol Ediniz,','Ayný Seansta ' + Hst ,' Seans Görmüþ' ,'info');
-               end;
+                 ShowMessageSkin('SGK Hastalarýna Takip Almadan Seans Onaylayamazsýnýz','','','info');
+                 exit;
              end;
 
-           ListeS.DataController.SetEditValue(ListeS.DataController.GetItemByFieldName('Durum').Index,durum,evsValue);
+             if  talepSira = ''
+             then begin
+                   if makineNo <> ''
+                   then begin
+                     Hst := SeansKontrol(seans,makineNo,RTarih,_DosyaNo_);
+                     if Hst <> ''
+                     then begin
+                       ShowMessageSkin('Makina No Kontrol Ediniz,','Ayný Seansta ' + Hst ,' Seans Görmüþ' ,'info');
+                     end;
+                   end;
 
-           ListeS.DataController.post;
-           ADO_Detay_toplam.Close;
-           ADO_Detay_toplam.Parameters[0].Value :=  copy(RTarih,1,6);
-           ADO_Detay_toplam.Parameters[1].Value := _dosyaNo_;
-           ADO_Detay_toplam.Active := True;
+                 ListeS.DataController.SetEditValue(ListeS.DataController.GetItemByFieldName('Durum').Index,durum,evsValue);
 
-       end; // talep end
+                 ListeS.DataController.post;
+                 ADO_Detay_toplam.Close;
+                 ADO_Detay_toplam.Parameters[0].Value :=  copy(RTarih,1,6);
+                 ADO_Detay_toplam.Parameters[1].Value := _dosyaNo_;
+                 ADO_Detay_toplam.Active := True;
 
-  end;
+             end; // talep end
+
+        end;
+  end
+   else
+   ShowMessageSkin('Seans Onaylarýný Doktor ve Hemþire Seansý Kapatarak Yapmalýdýr','','','info');
+
 
 end;
 

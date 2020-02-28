@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, sBitBtn, ExtCtrls, cxGraphics, cxControls,kadir,kadirType,
+  Dialogs, StdCtrls, Buttons, sBitBtn, ExtCtrls, cxGraphics, cxControls,kadir,kadirType,TedaviKart,
   cxLookAndFeels, cxLookAndFeelPainters, cxStyles, cxCustomData, cxFilter,
   cxData, cxDataStorage, cxEdit, DB, cxDBData, cxDropDownEdit, cxCalendar,
   cxGridLevel, cxGridCustomTableView, cxGridTableView, cxGridDBTableView,
@@ -15,26 +15,26 @@ uses
   GirisUnit, cxContainer, cxCheckBox, KadirLabel, cxTextEdit;
 
 type
-  TfrmKanTetkikTakip = class(TGirisForm)
-    cxGrid2: TcxGridKadir;
-    ILACKULLANIM: TcxGridDBTableView;
+  TfrmKanTetkikTakip = class(TfrmTedaviBilgisi)
+    GridKanTetkikleri: TcxGridKadir;
+    GridTetkikler: TcxGridDBTableView;
     DataSource1: TDataSource;
-    cxGridLevel1: TcxGridLevel;
+    cxGridTetkikLevel: TcxGridLevel;
     ADO_Tetkikler: TADOQuery;
-    ILACKULLANIMColumn1: TcxGridDBColumn;
-    ILACKULLANIMColumn2: TcxGridDBColumn;
-    ILACKULLANIMColumn3: TcxGridDBColumn;
-    ILACKULLANIMColumn4: TcxGridDBColumn;
-    ILACKULLANIMColumn5: TcxGridDBColumn;
-    ILACKULLANIMColumn6: TcxGridDBColumn;
-    ILACKULLANIMColumn7: TcxGridDBColumn;
-    ILACKULLANIMColumn8: TcxGridDBColumn;
-    ILACKULLANIMColumn9: TcxGridDBColumn;
-    ILACKULLANIMColumn10: TcxGridDBColumn;
-    ILACKULLANIMColumn11: TcxGridDBColumn;
-    ILACKULLANIMColumn12: TcxGridDBColumn;
-    ILACKULLANIMColumn13: TcxGridDBColumn;
-    ILACKULLANIMColumn14: TcxGridDBColumn;
+    GridTetkiklerColumn1: TcxGridDBColumn;
+    GridTetkiklerColumn2: TcxGridDBColumn;
+    GridTetkiklerColumn3: TcxGridDBColumn;
+    GridTetkiklerColumn4: TcxGridDBColumn;
+    GridTetkiklerColumn5: TcxGridDBColumn;
+    GridTetkiklerColumn6: TcxGridDBColumn;
+    GridTetkiklerColumn7: TcxGridDBColumn;
+    GridTetkiklerColumn8: TcxGridDBColumn;
+    GridTetkiklerColumn9: TcxGridDBColumn;
+    GridTetkiklerColumn10: TcxGridDBColumn;
+    GridTetkiklerColumn11: TcxGridDBColumn;
+    GridTetkiklerColumn12: TcxGridDBColumn;
+    GridTetkiklerColumn13: TcxGridDBColumn;
+    GridTetkiklerColumn14: TcxGridDBColumn;
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
     cxStyleRepository2: TcxStyleRepository;
@@ -43,7 +43,7 @@ type
     cxStyle4: TcxStyle;
     cxStyle5: TcxStyle;
     SaveDialog1: TSaveDialog;
-    ILACKULLANIMColumn15: TcxGridDBColumn;
+    GridTetkiklerColumn15: TcxGridDBColumn;
     cxStyle6: TcxStyle;
     ADO_Tele: TADOQuery;
     PopupMenu1: TPopupMenu;
@@ -60,6 +60,7 @@ type
     procedure Yazdir(tag : integer);
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
+    procedure Yukle;override;
 
 
   private
@@ -121,6 +122,12 @@ begin
 
 end;
 
+procedure TfrmKanTetkikTakip.Yukle;
+begin
+  inherited;
+  KanTetkikleri('','');
+end;
+
 procedure TfrmKanTetkikTakip.KanTetkikleri(dosyaNo,Tarih : String);
 var
   sql : string;
@@ -145,7 +152,7 @@ begin
                                           ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
      datalar.QuerySelect(ADO_Tetkikler,sql);
 
-     Caption  := Caption + ' ' + ADO_Tetkikler.FieldByName('ay1').AsString + ' - ' + ADO_Tetkikler.FieldByName('ay2').AsString;
+     Caption  := ADO_Tetkikler.FieldByName('ay1').AsString + ' - ' + ADO_Tetkikler.FieldByName('ay2').AsString;
 
    finally
      ado.free;
@@ -234,6 +241,7 @@ end;
 function TfrmKanTetkikTakip.Init(Sender: TObject): Boolean;
 begin
   Result := False;
+  if not inherited Init(Sender) then exit;
   KanTetkikleri('','');
   Result := True;
 

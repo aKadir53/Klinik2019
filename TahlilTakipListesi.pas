@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
   cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit, DB,
-  cxDBData, ADODB, cxGridLevel, cxClasses, cxGridCustomView,
+  cxDBData, ADODB, cxGridLevel, cxClasses, cxGridCustomView,strUtils,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
   kadir, kadirMedula3, KadirType,GetFormClass,GirisUnit,
   StdCtrls, Buttons, sBitBtn, ExtCtrls, cxContainer, cxLabel, cxTextEdit, cxGridExportLink,
@@ -633,22 +633,40 @@ end;
 procedure TfrmTahliltakip.S1Click(Sender: TObject);
 var
  ado : TADOQuery;
- sql : string;
+ sql , dosyaNo,dosyaNos : string;
+ satir , x : integer;
  TopluDataset : TDataSetKadir;
 begin
+  DurumGoster;
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
   try
-    sql := 'exec sp_HastaLabSonucToplu ' + QuotedStr(tarihal(tarih1.Date)) + ',' +  QuotedStr(tarihal(tarih2.Date));
+    if mrYes = ShowMessageSkin('Seçili Kayýtlar Ýçin Sonuç Yazdýrýlacak','','','msg')
+    then begin
+       for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+       begin
+            Application.ProcessMessages;
+            satir := Liste.Controller.SelectedRows[x].RecordIndex;
+            dosyaNo := varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+            dosyaNos :=
+            ifThen(dosyaNos <> '',dosyaNos + ',' + dosyaNo, dosyaNo);
+       end;
+    end;
+
+    if dosyaNos = '' then exit;
+    
+    sql := 'exec sp_HastaLabSonucToplu ' + QuotedStr(tarihal(tarih1.Date)) + ',' +
+                                           QuotedStr(tarihal(tarih2.Date)) + ',' +
+                                           QuotedStr(dosyaNos) + ',' +
+                                           QuotedStr(datalar.AktifSirket);
+
     datalar.QuerySelect(ado,sql);
     TopluDataset.Dataset0 := ado;
-
     PrintYap('112','\Lab Sonuç Yazdýr (Toplu)',intToStr(TagfrmTahliltakip),TopluDataset);
-
   finally
       ado.Free;
+      DurumGoster(False);
   end;
-
 end;
 
 procedure TfrmTahliltakip.cxCheckBox1Click(Sender: TObject);

@@ -241,6 +241,8 @@ type
     indexFieldValue : string;
     sqlTip : sqlType;
     GonderenForm : TGirisForm;
+    ChangeButtonListClick : Boolean;
+    DatasetOpen : Boolean;
    // _dosyaNo_,_gelisNo_,TakipNo,BasvuruNo : string;
     procedure Olustur(sender : TObject;Table,Tabbaslik : string ; imageindex : integer;
                       sqlInsert : string = '';sqlUpdate : string = '';sqlDelete : string = '';indexField : string = '');
@@ -254,7 +256,8 @@ type
                                     AktifPasif : Boolean = False;
                                     DiyalizTip : Boolean = False;
                                     Donem : Boolean = False;
-                                    ChkListe : Boolean = False);
+                                    ChkListe : Boolean = False;
+                                    ChangeButtonListClick : Boolean = True);
 
     procedure setDataStringC(sender : Tform ; fieldName,caption : string;
       parent : TdxLayoutGroup;grup : string ;uzunluk : integer;List : Tstrings);overload;
@@ -290,7 +293,7 @@ type
     procedure addButtonTopPanel(sender : Tform ; Name,caption: string ; uzunluk,Tag : integer; Event : TNotifyEvent = nil);
     procedure setDataImage(sender : Tform; Name ,captionItem : string; parent : TdxLayoutGroup; grup : string;uzunluk,yukseklik : integer);
     procedure setDataStringChk(sender : Tform ; fieldName,caption : string;
-     parent : TdxLayoutGroup;grup : string ;uzunluk : integer ; tip : CheckTip = ctBol);
+     parent : TdxLayoutGroup;grup : string ;uzunluk : integer ; tip : CheckTip = ctBol  ; text : string = ' ');
     procedure setDataStringCurr(sender : Tform ; fieldName,caption : string;
      parent : TdxLayoutGroup;grup : string ;uzunluk : integer;displayFormat : string = ',0.00';_Tag_ : integer = -100);
  //   procedure SetGrid(cxGrid : TcxGrid ; Colums,ColumnsPropertiesClassName,ColumsCaption,ColumnsWidth : String);
@@ -438,7 +441,9 @@ var
 begin
    ADO := TADOQuery.Create(nil);
    ADO.Connection := Datalar.ADOConnection2;
-   DurumGoster;
+   Application.ProcessMessages;
+   TGirisForm(self).DurumGoster;
+
    try
      case formTag of
 
@@ -466,7 +471,7 @@ begin
             sql := 'exec sp_frmHastaListesi ' + txtDonemTopPanel.getValueIlkTarih + ',' +
                                                 txtDonemTopPanel.getValueSonTarih + ',' +
                                                 QuotedStr(vartoStr(AktifPasifTopPanel.EditValue)) + ',' +
-                                                QuotedStr(varToStr(DiyalizTipTopPanel.EditValue)) + ',' +
+                                                QuotedStr(varToStr(txtSeansTopPanel.EditValue)) + ',' +
                                                 QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
                                                 QuotedStr(datalar.AktifSirket);
          end;
@@ -641,7 +646,8 @@ procedure TGirisForm.TapPanelElemanVisible(ButtonList : Boolean = True;Tarih1 : 
                                     AktifPasif : Boolean = False;
                                     DiyalizTip : Boolean = False;
                                     Donem : Boolean = False;
-                                    ChkListe : Boolean = False);
+                                    ChkListe : Boolean = False;
+                                    ChangeButtonListClick : Boolean = True);
 begin
   btnListTopPanel.Visible := ButtonList;
   txtTopPanelTarih1.Visible := Tarih1;
@@ -857,15 +863,19 @@ begin
     setDataStringBLabel(self,'kiloOrder',Grp,'',126,'Kilo Order', '', '', True, clRed, taCenter);
     setDataStringCurr(self,'girisKilo','Giriþ Kilo',Grp,'',60,'#.#0',0);
     setDataStringCurr(self,'kilo','Kuru Kilo',Grp,'',60,'#.#0',0);
-    setDataStringCurr(self,'CEKILECEKSIVI','Ç.Sývý',Grp,'',60,'#.#0',0);
+    setDataStringCurr(self,'CEKILECEKSIVI','Ç.Sývý',Grp,'',60,'0',0);
     setDataStringCurr(self,'OncekiCikisKilo','Ö.Çýkýþ Kilo',Grp,'',60,'#.#0',0);
     setDataStringCurr(self,'aldigiKilo','Aldýðý Kilo',Grp,'',60,'#.#0',0);
-    setDataStringCurr(self,'verilecekSivi','Verilecek Sývý',Grp,'',60,'#.#0',0);
-    setDataStringCurr(self,'UF','UF',Grp,'',60,'#.#0',0);
+    setDataStringCurr(self,'verilecekSivi','Verilecek Sývý',Grp,'',60,'0',0);
+    setDataStringCurr(self,'UF','UF',Grp,'',60,'0',0);
     setDataStringCurr(self,'cikisKilo','Çýkýþ Kilo',Grp,'',60,'#.#0',0);
 
     TcxTextEdit(FindComponent('kilo')).Properties.ReadOnly := True;
     TcxTextEdit(FindComponent('OncekiCikisKilo')).Properties.ReadOnly := True;
+    TcxTextEdit(FindComponent('CEKILECEKSIVI')).Properties.ReadOnly := True;
+    TcxTextEdit(FindComponent('UF')).Properties.ReadOnly := True;
+    TcxTextEdit(FindComponent('aldigiKilo')).Properties.ReadOnly := True;
+
 
     TcxTextEdit(FindComponent('girisKilo')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
     TcxTextEdit(FindComponent('CEKILECEKSIVI')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
@@ -910,14 +920,18 @@ begin
     D.name := 'txtAPH';
     ComboDoldur3('select tanimi from Diyaliz_APH',D,0,-1);
 
-    setDataStringC(self,'HCOOO','HCO3',Grp,'',70,'25,26,27,28,29,30,31,32,33,34,35');
+    setDataStringC(self,'HCOOO','HCO3',Grp,'_isi_',50,'25,26,27,28,29,30,31,32,33,34,35,36');
+    setDataStringCurr(self,'ISI','ISI',Grp,'_isi_',50,'0',1);
     setDataStringC(self,'APH','APH',Grp,'aphNa',50,D.Properties.Items);
-    setDataStringC(self,'Na','Na',Grp,'aphNa',50,'136,138,140,142,144,146');
+    setDataStringC(self,'Na','Na',Grp,'aphNa',50,'136,137,138,139,140,141,142,143,144,145,146,147,148');
 
     D.name := 'txtIgne';
     ComboDoldur3('select tanimi from Diyaliz_Igne',D,0,-1);
     setDataStringC(self,'Igne','Ýðne A',Grp,'Ign',50,D.Properties.Items);
     setDataStringC(self,'IgneV','V ',Grp,'Ign',50,D.Properties.Items);
+
+
+   // setDataStringCurr(self,'UF','UF',Grp,'_isi_',50,'0',1);
 
     TcxImageComboKadir(FindComponent('DiyalizorCinsi')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
     TcxImageComboKadir(FindComponent('DiyalizorTipi')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
@@ -932,6 +946,8 @@ begin
     TcxComboBox(FindComponent('Na')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
     TcxComboBox(FindComponent('Igne')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
     TcxComboBox(FindComponent('IgneV')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
+    TcxComboBox(FindComponent('ISI')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
+
   finally
     D.Free;
   end;
@@ -1016,6 +1032,8 @@ end;
 procedure TGirisForm.PropertiesEditValueChanged(Sender: TObject);
 begin
   cxPanelButtonEnabled(false,True,false);
+
+
 end;
 
 procedure TGirisForm.cxPanelButtonVisible(yeni,kaydet,sil : boolean ;  kapat : boolean = True);
@@ -2126,6 +2144,7 @@ begin
   cxEditC.OnKeyDown := cxTextEditBKeyDown;
   cxEditC.Properties.ImmediatePost := True;
   cxEditC.Properties.ImmediateUpdateText := True;
+  cxEditC.Properties.ClearKey := VK_DELETE;
 end;
 
 procedure TGirisForm.setDataStringC(sender : Tform ; fieldName,caption : string;
@@ -2175,7 +2194,7 @@ end;
 
 
 procedure TGirisForm.setDataStringChk(sender : Tform ; fieldName,caption : string;
-     parent : TdxLayoutGroup;grup : string ;uzunluk : integer ; tip : CheckTip = ctBol);
+     parent : TdxLayoutGroup;grup : string ;uzunluk : integer ; tip : CheckTip = ctBol ; text : string = ' ');
 var
   cxCheck : TcxCheckBox;
   dxLaC : TdxLayoutItem;
@@ -2190,18 +2209,20 @@ begin
   then begin
     cxCheck.Properties.ValueChecked := 'True';
     cxCheck.Properties.ValueUnchecked := 'False';
+    cxCheck.EditValue := False;
   end
   else
   begin
     cxCheck.Properties.ValueChecked := 1;
     cxCheck.Properties.ValueUnchecked := 0;
+    cxCheck.EditValue := 0;
   end;
 
   dxLaC := TdxLayoutGroup(parent).CreateItemForControl(cxCheck);
   dxLaC.Name := 'dxLa'+fieldName;
   dxLaC.AlignHorz := ahLeft;
   dxLaC.Width := uzunluk;
-  dxLaC.Caption := '';
+  dxLaC.Caption := text;
 
 
   if grup = '' then
@@ -2221,6 +2242,7 @@ begin
   cxCheck.OnEnter := cxEditEnter;
   cxCheck.OnExit := cxEditExit;
   cxCheck.OnKeyDown := cxTextEditBKeyDown;
+  cxCheck.Properties.OnEditValueChanged := PropertiesEditValueChanged;
 end;
 
 procedure TGirisForm.setDataStringCurr(sender : Tform ; fieldName,caption : string;
@@ -2352,12 +2374,17 @@ begin
   try
    if txtDonemTopPanel.Visible
    then begin
-     txtTopPanelTarih1.Date := txtDonemTopPanel.ilkTarih;
-     txtTopPanelTarih2.Date := txtDonemTopPanel.sonTarih;
+      if TcxCustomEdit(sender).Name = 'txtDonemTopPanel'
+      then begin
+         txtTopPanelTarih1.Date := txtDonemTopPanel.ilkTarih;
+         txtTopPanelTarih2.Date := txtDonemTopPanel.sonTarih;
+      end;
    end;
   except
   end;
-  btnListTopPanel.Click;
+  if ChangeButtonListClick = True
+  then
+    btnListTopPanel.Click;
 end;
 
 procedure TGirisForm.addButtonTopPanel(sender : Tform ; Name,caption: string ; uzunluk,Tag : integer; Event : TNotifyEvent = nil);
@@ -2861,6 +2888,11 @@ begin
   end;
 
 
+  if (key = VK_ESCAPE) //and (Shift = [ssShift])
+  then begin
+     if TGirisForm(self).Parent = nil then close;
+  end;
+
 
 end;
 
@@ -2906,6 +2938,9 @@ begin
           GridToSayfaClient(TcxGrid(TdxLayoutControl(self.Components[i]).Controls[r]).Name,self);
        end;
   end;
+
+ // StringReplace(cxTab.Tabs[0].Caption,'Yükleniyor...','',[rfReplaceAll]);
+
 //  GridToSayfaClient('YillikPlanGrid',self);
 end;
 

@@ -1153,9 +1153,9 @@
         end
         object cxGrid_Seans: TcxGridKadir
           Left = 0
-          Top = 0
+          Top = 19
           Width = 1308
-          Height = 537
+          Height = 518
           Cursor = crHandPoint
           Align = alClient
           TabOrder = 1
@@ -1165,6 +1165,7 @@
           object Liste: TcxGridDBBandedTableView
             PopupMenu = PopupMenu1
             OnCellDblClick = ListeCellDblClick
+            OnFocusedRecordChanged = ListeFocusedRecordChanged
             DataController.DataModeController.SmartRefresh = True
             DataController.DataSource = DataSource1
             DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding]
@@ -1186,7 +1187,6 @@
             OptionsCustomize.ColumnGrouping = False
             OptionsCustomize.GroupBySorting = True
             OptionsData.Deleting = False
-            OptionsData.Editing = False
             OptionsData.Inserting = False
             OptionsSelection.MultiSelect = True
             OptionsView.NoDataToDisplayInfoText = 'Listelenecek Kay'#305't Yok'
@@ -1196,7 +1196,6 @@
             OptionsView.GroupByBox = False
             OptionsView.HeaderHeight = 33
             OptionsView.BandHeaderHeight = 21
-            Styles.OnGetContentStyle = ListeStylesGetContentStyle
             Bands = <
               item
                 Caption = 'Hasta Bilgileri'
@@ -1328,11 +1327,10 @@
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
               Properties.Items = <>
-              Properties.ReadOnly = True
+              Properties.ReadOnly = False
               GroupSummaryAlignment = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Options.Editing = False
               Options.Sorting = False
               Styles.Content = cxStyle5
               Width = 140
@@ -1405,11 +1403,10 @@
               Properties.Alignment.Vert = taVCenter
               Properties.DecimalPlaces = 0
               Properties.DisplayFormat = '0#'
-              Properties.ReadOnly = True
+              Properties.ReadOnly = False
               Properties.OnEditValueChanged = ListemakinaNoPropertiesEditValueChanged
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Options.Editing = False
               Options.FilteringPopup = False
               Options.SortByDisplayText = isbtOn
               Styles.Content = cxStyle5
@@ -1580,11 +1577,10 @@
                 '3'
                 '4'
                 '5')
-              Properties.ReadOnly = True
+              Properties.ReadOnly = False
               Properties.OnEditValueChanged = ListeSeansPropertiesEditValueChanged
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Options.Editing = False
               Options.FilteringPopup = False
               Options.Sorting = False
               Styles.Content = cxStyle5
@@ -2034,6 +2030,7 @@
               Properties.Items = <>
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Styles.Header = cxStyle3
               Width = 54
               Position.BandIndex = 0
@@ -2045,9 +2042,67 @@
             GridView = Liste
           end
         end
+        object cxRadioGroup1: TcxRadioGroup
+          Left = 0
+          Top = 0
+          Align = alTop
+          Alignment = alCenterCenter
+          ParentFont = False
+          Properties.Columns = 6
+          Properties.Items = <
+            item
+              Caption = 'T'#252'm'#252
+              Value = '-1'
+            end
+            item
+              Caption = 'Seansa Gelenler'
+              Value = '1'
+            end
+            item
+              Caption = 'Seansa Gelmeyenler'
+              Value = '0'
+            end
+            item
+              Caption = 'Medulaya G'#246'nderilmeyen'
+              Value = '2'
+            end
+            item
+              Caption = 'G'#246'nderilen'
+              Value = '3'
+            end>
+          Properties.OnChange = TopPanelPropertiesChange
+          ItemIndex = 0
+          Style.BorderColor = clNone
+          Style.BorderStyle = ebsNone
+          Style.Font.Charset = DEFAULT_CHARSET
+          Style.Font.Color = clWindowText
+          Style.Font.Height = -11
+          Style.Font.Name = 'MS Sans Serif'
+          Style.Font.Style = [fsBold]
+          Style.TextStyle = [fsBold]
+          Style.IsFontAssigned = True
+          TabOrder = 2
+          Transparent = True
+          Height = 19
+          Width = 1308
+          object chkIzın: TCheckBox
+            Left = 1270
+            Top = 3
+            Width = 105
+            Height = 20
+            Caption = 'Seans OnaylarkenDoktor Mesai yada '#304'zin Kontrol'#252' Yapma'
+            TabOrder = 5
+            Visible = False
+            WordWrap = True
+          end
+        end
       end
       object TetkiklerPage: TcxTabSheet
         Caption = 'Tetkikler'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object GridTetkikList: TcxGrid
           Left = 0
           Top = 0
@@ -2086,6 +2141,7 @@
             OptionsView.GroupByHeaderLayout = ghlHorizontal
             OptionsView.HeaderHeight = 30
             OptionsView.BandHeaderHeight = 25
+            Styles.OnGetContentStyle = GridListStylesGetContentStyle
             Bands = <
               item
                 Caption = 'Hasta Geli'#351' Listesi'
@@ -2104,7 +2160,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 58
+              Width = 56
               Position.BandIndex = 0
               Position.ColIndex = 0
               Position.RowIndex = 0
@@ -2120,7 +2176,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 47
+              Width = 62
               Position.BandIndex = 0
               Position.ColIndex = 1
               Position.RowIndex = 0
@@ -2134,7 +2190,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 86
+              Width = 81
               Position.BandIndex = 0
               Position.ColIndex = 5
               Position.RowIndex = 0
@@ -2148,7 +2204,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 84
+              Width = 80
               Position.BandIndex = 0
               Position.ColIndex = 6
               Position.RowIndex = 0
@@ -2163,7 +2219,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 106
+              Width = 97
               Position.BandIndex = 0
               Position.ColIndex = 7
               Position.RowIndex = 0
@@ -2179,7 +2235,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 61
+              Width = 72
               Position.BandIndex = 0
               Position.ColIndex = 8
               Position.RowIndex = 0
@@ -2194,7 +2250,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 96
+              Width = 89
               Position.BandIndex = 0
               Position.ColIndex = 2
               Position.RowIndex = 0
@@ -2209,7 +2265,7 @@
               Options.Editing = False
               Styles.Content = cxStyle3
               Styles.Header = cxStyle3
-              Width = 127
+              Width = 119
               Position.BandIndex = 0
               Position.ColIndex = 3
               Position.RowIndex = 0
@@ -2233,6 +2289,20 @@
               Visible = False
               Position.BandIndex = 0
               Position.ColIndex = 9
+              Position.RowIndex = 0
+            end
+            object GridListColumn11: TcxGridDBBandedColumn
+              Caption = '?'
+              DataBinding.FieldName = 'GonderilmeyenIslemSayisi'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 24
+              Position.BandIndex = 0
+              Position.ColIndex = 10
               Position.RowIndex = 0
             end
           end
@@ -2293,7 +2363,7 @@
                 item
                   Caption = 'Tetkik Bilgileri'
                   Styles.Header = cxStyle2
-                  Width = 708
+                  Width = 584
                 end>
               object cxGridDBBandedColumn29: TcxGridDBBandedColumn
                 Caption = 'G No'
@@ -2425,9 +2495,9 @@
                 Options.Editing = False
                 Styles.Content = cxStyle3
                 Styles.Header = cxStyle3
-                Width = 174
+                Width = 153
                 Position.BandIndex = 0
-                Position.ColIndex = 2
+                Position.ColIndex = 3
                 Position.RowIndex = 0
               end
               object GridTetkiklerColumn7: TcxGridDBBandedColumn
@@ -2439,9 +2509,9 @@
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
                 Styles.Header = cxStyle3
-                Width = 35
+                Width = 39
                 Position.BandIndex = 0
-                Position.ColIndex = 6
+                Position.ColIndex = 7
                 Position.RowIndex = 0
               end
               object GridTetkiklerColumn2: TcxGridDBBandedColumn
@@ -2454,9 +2524,9 @@
                 Options.Editing = False
                 Styles.Content = cxStyle3
                 Styles.Header = cxStyle3
-                Width = 34
+                Width = 41
                 Position.BandIndex = 0
-                Position.ColIndex = 3
+                Position.ColIndex = 4
                 Position.RowIndex = 0
               end
               object GridTetkiklerColumn3: TcxGridDBBandedColumn
@@ -2469,9 +2539,9 @@
                 HeaderAlignmentVert = vaCenter
                 Styles.Content = cxStyle3
                 Styles.Header = cxStyle3
-                Width = 59
+                Width = 70
                 Position.BandIndex = 0
-                Position.ColIndex = 4
+                Position.ColIndex = 5
                 Position.RowIndex = 0
               end
               object GridTetkiklerColumn4: TcxGridDBBandedColumn
@@ -2480,13 +2550,14 @@
                 Properties.Alignment.Horz = taCenter
                 Properties.Alignment.Vert = taVCenter
                 Properties.DisplayFormat = ',0.00;-,0.00'
+                Visible = False
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
                 Styles.Content = cxStyle3
                 Styles.Header = cxStyle3
-                Width = 57
+                Width = 92
                 Position.BandIndex = 0
-                Position.ColIndex = 5
+                Position.ColIndex = 6
                 Position.RowIndex = 0
               end
               object GridTetkiklerColumn5: TcxGridDBBandedColumn
@@ -2499,9 +2570,9 @@
                 HeaderAlignmentVert = vaCenter
                 Styles.Content = cxStyle3
                 Styles.Header = cxStyle3
-                Width = 79
+                Width = 139
                 Position.BandIndex = 0
-                Position.ColIndex = 7
+                Position.ColIndex = 8
                 Position.RowIndex = 0
               end
               object GridTetkiklerColumn6: TcxGridDBBandedColumn
@@ -2514,13 +2585,13 @@
                 Options.Editing = False
                 Styles.Content = cxStyle3
                 Styles.Header = cxStyle3
-                Width = 199
+                Width = 74
                 Position.BandIndex = 0
-                Position.ColIndex = 8
+                Position.ColIndex = 2
                 Position.RowIndex = 0
               end
               object GridTetkiklerColumn8: TcxGridDBBandedColumn
-                Caption = 'IslemRefNo'
+                Caption = 'RefNo'
                 DataBinding.FieldName = 'SIRANO'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
@@ -2530,7 +2601,7 @@
                 Options.Editing = False
                 Styles.Content = cxStyle3
                 Styles.Header = cxStyle3
-                Width = 71
+                Width = 68
                 Position.BandIndex = 0
                 Position.ColIndex = 1
                 Position.RowIndex = 0
@@ -2830,6 +2901,10 @@
       object LogPage: TcxTabSheet
         Caption = 'Log'
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object txtLog: TcxMemo
           Left = 0
           Top = 0
@@ -2845,64 +2920,6 @@
           Height = 537
           Width = 1308
         end
-      end
-    end
-    object cxRadioGroup1: TcxRadioGroup
-      Left = 139
-      Top = 6
-      Alignment = alCenterCenter
-      ParentFont = False
-      Properties.Columns = 6
-      Properties.Items = <
-        item
-          Caption = 'T'#252'm'#252
-          Value = '-1'
-        end
-        item
-          Caption = 'Seansa Gelenler'
-          Value = '0'
-        end
-        item
-          Caption = 'Seansa Gelmeyenler'
-          Value = '1'
-        end
-        item
-          Caption = 'Medulaya G'#246'nderilmeyen'
-          Value = '2'
-        end
-        item
-          Caption = ' G'#246'nderilen'
-          Value = '3'
-        end
-        item
-          Caption = 'G'#246'nderilen (Tutars'#305'z Kod)'
-          Value = '4'
-        end>
-      Properties.OnChange = cxRadioGroup1PropertiesChange
-      ItemIndex = 0
-      Style.BorderColor = clNone
-      Style.BorderStyle = ebsNone
-      Style.Font.Charset = DEFAULT_CHARSET
-      Style.Font.Color = clWindowText
-      Style.Font.Height = -11
-      Style.Font.Name = 'MS Sans Serif'
-      Style.Font.Style = [fsBold]
-      Style.TextStyle = [fsBold]
-      Style.IsFontAssigned = True
-      TabOrder = 1
-      Transparent = True
-      Visible = False
-      Height = 19
-      Width = 1178
-      object chkIzın: TCheckBox
-        Left = 910
-        Top = 0
-        Width = 105
-        Height = 20
-        Caption = 'Seans OnaylarkenDoktor Mesai yada '#304'zin Kontrol'#252' Yapma'
-        TabOrder = 6
-        Visible = False
-        WordWrap = True
       end
     end
   end
@@ -2923,8 +2940,8 @@
     Images = DATALAR.imag24png
     MenuAnimation = [maLeftToRight]
     OnPopup = PopupMenu1Popup
-    Left = 228
-    Top = 142
+    Left = 212
+    Top = 118
     object H3: TMenuItem
       Tag = -18
       Caption = 'Medulada Kay'#305'tl'#305' Hizmet Kodu De'#287'i'#351'tir'
@@ -3041,7 +3058,7 @@
       OnClick = cxButtonCClick
     end
     object S1: TMenuItem
-      Tag = -12666
+      Tag = -12
       Caption = 'Seans D'#252'zenle'
       ImageIndex = 73
       Visible = False
@@ -3064,9 +3081,8 @@
     end
     object U1: TMenuItem
       Tag = -15
-      Caption = 'Uzman G'#246'zlem Yazd'#305'r'
+      Caption = 'Uzman Muayene Tutana'#287#305
       ImageIndex = 28
-      Visible = False
       OnClick = cxButtonCClick
     end
     object E1: TMenuItem
@@ -3096,6 +3112,20 @@
       Caption = 'Se'#231'ili Seanslar'#305'n Onay Vazge'#231
       ImageIndex = 33
       OnClick = cxButtonCClick
+    end
+    object S9: TMenuItem
+      Caption = 'Seans Kapat'
+      OnClick = cxButtonCClick
+      object D3: TMenuItem
+        Tag = -50
+        Caption = 'Doktor'
+        OnClick = cxButtonCClick
+      end
+      object H4: TMenuItem
+        Tag = -51
+        Caption = 'Hem'#351'ire'
+        OnClick = cxButtonCClick
+      end
     end
   end
   object HTTPRIO1: THTTPRIO
@@ -3138,8 +3168,8 @@
     BiriktirmeliSecim = False
     Grup = False
     GrupCol = 0
-    Left = 24
-    Top = 232
+    Left = 16
+    Top = 360
   end
   object ADO_Detay_toplam: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -3225,11 +3255,15 @@
   end
   object cxStyleRepository2: TcxStyleRepository
     Left = 24
-    Top = 160
+    Top = 128
     PixelsPerInch = 96
+    object cxStyle8: TcxStyle
+      AssignedValues = [svColor]
+      Color = 8421631
+    end
   end
   object cxStyleRepository3: TcxStyleRepository
-    Left = 16
+    Left = 24
     Top = 168
     PixelsPerInch = 96
     object cxStyle3: TcxStyle
@@ -3242,8 +3276,8 @@
     end
   end
   object cxStyleRepository4: TcxStyleRepository
-    Left = 16
-    Top = 168
+    Left = 24
+    Top = 216
     PixelsPerInch = 96
     object cxStyle4: TcxStyle
       AssignedValues = [svFont, svTextColor]
@@ -3256,8 +3290,8 @@
     end
   end
   object cxStyleRepository5: TcxStyleRepository
-    Left = 16
-    Top = 184
+    Left = 24
+    Top = 88
     PixelsPerInch = 96
     object cxStyle5: TcxStyle
       AssignedValues = [svFont, svTextColor]
@@ -3270,8 +3304,8 @@
     end
   end
   object cxStyleRepository6: TcxStyleRepository
-    Left = 32
-    Top = 176
+    Left = 24
+    Top = 264
     PixelsPerInch = 96
     object cxStyle6: TcxStyle
       AssignedValues = [svColor, svFont]
@@ -3388,8 +3422,8 @@
   end
   object PopupMenu2: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 360
-    Top = 328
+    Left = 296
+    Top = 120
     object E6: TMenuItem
       Caption = 'E-Nab'#305'z'
       ImageIndex = 118
@@ -3445,6 +3479,11 @@
         Tag = -9
         Caption = 'Takip Bilgisini Oku'
         ImageIndex = 35
+        OnClick = T2Click
+      end
+      object T5: TMenuItem
+        Tag = 10
+        Caption = 'Tan'#305'lar'#305' Kaydet'
         OnClick = T2Click
       end
     end

@@ -151,10 +151,14 @@ begin
 
 
           if not datalar.memData_yurtDisiYardimHakki.Eof
-          then
-           datalar.HastaKabulWS.GirisParametre.yardimHakkiID :=  datalar.memData_yurtDisiYardimHakki.FieldByName('id').AsInteger  //ClientDataSet1.FieldByName('id').AsInteger
-          else
+          then begin
+           datalar.HastaKabulWS.GirisParametre.yardimHakkiID :=  datalar.memData_yurtDisiYardimHakki.FieldByName('id').AsInteger;  //ClientDataSet1.FieldByName('id').AsInteger
+           datalar.HastaKabulWS.GirisParametre.hastaTCKimlikNo := txtYUPASS.EditValue;
+          end
+          else begin
            datalar.HastaKabulWS.GirisParametre.yardimHakkiID := 0;
+           datalar.HastaKabulWS.GirisParametre.hastaTCKimlikNo := txtTcKimlikNo.EditValue;
+          end;
 
           datalar.HastaKabulWS.GirisParametre.saglikTesisKodu := datalar._kurumKod;
           datalar.HastaKabulWS.GirisParametre.takipTipi := txtTakipTipi.EditValue;
@@ -163,7 +167,7 @@ begin
           datalar.HastaKabulWS.GirisParametre.devredilenKurum := txtDevredilenKurum.EditValue;
           datalar.HastaKabulWS.GirisParametre.provizyonTipi := txtProvizyonTipi.EditValue;
           datalar.HastaKabulWS.GirisParametre.sigortaliTuru := varToStr(txtSigortaliTuru.EditValue);
-          datalar.HastaKabulWS.GirisParametre.hastaTCKimlikNo := txtTcKimlikNo.EditValue;
+
           datalar.HastaKabulWS.GirisParametre.bransKodu := txtBransKodu.EditValue;
           datalar.HastaKabulWS.GirisParametre.provizyonTarihi := txtTarih.Text;
           datalar.HastaKabulWS.GirisParametre.takipNo := txtilkTakipNo.Text;

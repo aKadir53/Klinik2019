@@ -155,7 +155,7 @@ begin
    end;
    1 :if MrYes = ShowMessageSkin('Açýklama Þablondan Çýkartýlýyor Emin misiniz ?','','','msg')
      Then Begin
-   Aciklama.Delete;
+       if not Aciklama.Eof Then Aciklama.Delete;
      End;
   end;
  Aciklama.Active := False;
@@ -167,11 +167,11 @@ begin
   inherited;
   case TcxButtonKadir(Sender).Tag of
    0 : begin
-   sablonTaniEkle;
-   end;
+        sablonTaniEkle;
+       end;
    1 :if MrYes = ShowMessageSkin('Taný Þablondan Çýkartýlýyor Emin misiniz ?','','','msg')
      Then Begin
-   Tani.Delete;
+       if not Tani.Eof then Tani.Delete;
      End;
   end;
  Tani.Active := False;

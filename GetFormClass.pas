@@ -144,7 +144,10 @@ uses
     ktv_urrListesi,
     MakinaDurumP,
     raporDetayToplu,
-    TeleEKG;
+    TeleEKG,
+    TopluReceteImzala,
+    TopluHastaTedaviList,
+    KonsultasyonForm;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -390,7 +393,9 @@ begin
    TagfrmMakinaDurumP : Result := TfrmMakinaDurumP;
    TagfrmHastaRaporlari : Result := TfrmHastaRaporlari;
    TagfrmTeleEkg : Result := TfrmTeleEkg;
-
+   TagfrmTopluHastaRecete : Result := TfrmTopluHastaRecete;
+   TagfrmTopluHastaTedaviListesi : Result := TfrmTopluHastaTedaviListesi;
+   TagfrmHastaKonsultasyon : Result := TfrmHastaKonsultasyon;
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
 end;
@@ -506,7 +511,9 @@ begin
    TagfrmMakinaDurumP : Result := frmMakinaDurumP;
    TagfrmHastaRaporlari : Result := frmHastaRaporlari;
    TagfrmTeleEkg : Result := frmTeleEkg;
-
+   TagfrmTopluHastaRecete : Result := frmTopluHastaRecete;
+   TagfrmTopluHastaTedaviListesi : Result := frmTopluHastaTedaviListesi;
+   TagfrmHastaKonsultasyon : Result := frmHastaKonsultasyon;
 
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
 
@@ -619,7 +626,8 @@ begin
      TagfrmMakinaDurumP : frmMakinaDurumP  := TfrmMakinaDurumP.Create(Tab);
      TagfrmHastaRaporlari : frmHastaRaporlari  := TfrmHastaRaporlari.Create(Tab);
      TagfrmTeleEkg : frmTeleEkg  := TfrmTeleEkg.Create(Tab);
-
+     TagfrmTopluHastaRecete : frmTopluHastaRecete   := TfrmTopluHastaRecete .Create(Tab);
+     TagfrmTopluHastaTedaviListesi : frmTopluHastaTedaviListesi   := TfrmTopluHastaTedaviListesi .Create(Tab);
   end;
   try
     if not (Form is TGirisForm) then
@@ -633,7 +641,7 @@ begin
 
     Form := TGirisForm(FormClassType(abs(FormTag)));
     Tab.Caption := sFormAltCaption;
-    TGirisForm(Form).cxTab.Tabs[0].Caption := Tab.Caption;
+   // TGirisForm(Form).cxTab.Tabs[0].Caption := Tab.Caption;
     TGirisForm(Form).cxTab.Tabs[0].ImageIndex := FormTabImageIndex(abs(FormTag));
     if Tab = nil
     then begin
@@ -687,6 +695,7 @@ begin
      result := TGirisForm(Form);
      bTamam := True;
     end;
+    TGirisForm(Form).cxTab.Tabs[0].Caption := Tab.Caption;
   finally
     if not bTamam and Assigned (Form) then FreeAndNil(Form);
   end;
@@ -799,12 +808,13 @@ begin
      TagfrmMakinaDurumP : frmMakinaDurumP  := TfrmMakinaDurumP.Create(Tab);
      TagfrmHastaRaporlari : frmHastaRaporlari  := TfrmHastaRaporlari.Create(Tab);
      TagfrmTeleEkg : frmTeleEkg  := TfrmTeleEkg.Create(Tab);
-
+     TagfrmTopluHastaRecete : frmTopluHastaRecete   := TfrmTopluHastaRecete .Create(Tab);
+     TagfrmTopluHastaTedaviListesi : frmTopluHastaTedaviListesi   := TfrmTopluHastaTedaviListesi .Create(Tab);
   end;
   try
     Form := TGirisForm(FormClassType(abs(FormTag)));
     Tab.Caption := sFormAltCaption1;
-    TGirisForm(Form).cxTab.Tabs[0].Caption := Tab.Caption;
+//    TGirisForm(Form).cxTab.Tabs[0].Caption := Tab.Caption;
     TGirisForm(Form).cxTab.Tabs[0].ImageIndex := FormTabImageIndex(abs(FormTag));
     if Tab = nil
     then begin
@@ -830,6 +840,7 @@ begin
       result := TGirisForm(Form);
       bTamam := True;
     end;
+    TGirisForm(Form).cxTab.Tabs[0].Caption := Tab.Caption;
   finally
     if not bTamam and Assigned (Form) then FreeAndNil(Form);
   end;
@@ -952,6 +963,7 @@ begin
     TagfrmHizliKayit : Application.CreateForm(TfrmHizliKayit,frmHizliKayit);
     TagfrmHastaDiyalizIzlemListesi : Application.CreateForm(TfrmIzlem,frmIzlem);
     TagfrmKtvListesi : Application.CreateForm(TfrmKtvListesi,frmKtvListesi);
+    TagfrmHastaKonsultasyon : Application.CreateForm(TfrmHastaKonsultasyon,frmHastaKonsultasyon);
 
   end;
   try

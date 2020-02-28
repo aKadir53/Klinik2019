@@ -27,6 +27,7 @@ type
     dxSkinController1: TdxSkinController;
     HTTP1id: TIdHTTP;
     IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL;
+    IdTCPClient1: TIdTCPClient;
     procedure HTTP1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
       AWorkCountMax: Int64);
     procedure cxButton1Click(Sender: TObject);
@@ -38,6 +39,7 @@ type
     function DesktopPath : string;
     procedure FormShow(Sender: TObject);
     function Download(URL, User, Pass, FileName :  string ; FullURL : string = '443'): Boolean;
+    function Download_NOCache(const aUrl: string; var s: String): Boolean;
   private
     { Private declarations }
   public
@@ -56,6 +58,43 @@ var
   implementation
 
 {$R *.dfm}
+
+function TfrmYv.Download_NOCache(const aUrl: string; var s: String): Boolean;
+var
+  hSession: HINTERNET;
+  hService: HINTERNET;
+  lpBuffer: array[0..1024 + 1] of Char;
+  dwBytesRead: DWORD;
+begin
+  Result := False;
+  s := '';
+  // hSession := InternetOpen( 'MyApp', INTERNET_OPEN_TYPE_DIRECT, nil, nil, 0);
+  hSession := InternetOpen('Yv', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  try
+    if Assigned(hSession) then
+    begin
+      hService := InternetOpenUrl(hSession, PChar(aUrl), nil, 0, INTERNET_FLAG_RELOAD, 0);
+      if Assigned(hService) then
+        try
+          while True do
+          begin
+            dwBytesRead := 1024;
+            InternetReadFile(hService, @lpBuffer, 1024, dwBytesRead);
+            if dwBytesRead = 0 then break;
+            lpBuffer[dwBytesRead] := #0;
+            s := s + lpBuffer;
+          end;
+          Result := True;
+        finally
+          InternetCloseHandle(hService);
+        end;
+    end;
+  finally
+    InternetCloseHandle(hSession);
+  end;
+end;
+
+
 
 function TfrmYv.Download(URL, User, Pass, FileName :  string ; FullURL : string = '443'): Boolean;
 const
@@ -82,7 +121,7 @@ begin
    );
 
   try
-    hURL := InternetOpenURL(hSession, PChar(URL), nil, 0, 0, 0) ;
+    hURL := InternetOpenURL(hSession, PChar(URL), nil, 0, INTERNET_FLAG_RELOAD, 0) ;
     try
       AssignFile(f, FileName);
       Rewrite(f,1);
@@ -205,7 +244,7 @@ var
  par , p : string;
  Handle : HWND;
  dosya : TFileStream;
- exeFile : string;
+ exeFile , appData : string;
 begin
 
  KillTaskt('Klinik2019.exe');
@@ -283,6 +322,13 @@ begin
      end;
 
      try
+     (*
+      GetEnvironmentVariable('COMPUTERNAME');
+      appData := GetEnvironmentVariable('TEMP');
+      appData := StringReplace(GetEnvironmentVariable('APPDATA'),'Roaming','',[rfReplaceAll]);
+      appData := appData+'Local\Microsoft\Windows\INetCache\Klinik2019.exe';
+      DeleteFile(appData);
+      *)
       filename := Nokta;
       Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
      finally
@@ -300,7 +346,7 @@ begin
 
     exeFile := Nokta;
 
-    filename := 'C:\NoktaV3\' + exeFile;
+    filename := 'C:\NoktaV3\Klinik2019.exe';
     ShellExecute(Handle,'open', pwidechar(filename),
                 pwidechar(''), nil, SW_SHOWNORMAL);
 

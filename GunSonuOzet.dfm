@@ -11,9 +11,11 @@ object frmGunSonuOzet: TfrmGunSonuOzet
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object cxGroupBox1: TcxGroupBox
@@ -124,7 +126,8 @@ object frmGunSonuOzet: TfrmGunSonuOzet
     Height = 529
     Align = alClient
     TabOrder = 1
-    Properties.ActivePage = cxTabSheet3
+    Properties.ActivePage = cxTabSheet1
+    OnChange = cxPageControl1Change
     ClientRectBottom = 522
     ClientRectLeft = 3
     ClientRectRight = 591
@@ -140,7 +143,11 @@ object frmGunSonuOzet: TfrmGunSonuOzet
         Align = alClient
         TabOrder = 0
         ExceleGonder = False
+        PopupForm = False
+        ExplicitLeft = 3
+        ExplicitTop = 3
         object gridListe: TcxGridDBTableView
+          DataController.DataSource = DataSource1
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
             item
@@ -150,7 +157,6 @@ object frmGunSonuOzet: TfrmGunSonuOzet
             end>
           DataController.Summary.SummaryGroups = <>
           OptionsData.Deleting = False
-          OptionsData.Editing = False
           OptionsData.Inserting = False
           OptionsSelection.MultiSelect = True
           OptionsView.Footer = True
@@ -159,6 +165,7 @@ object frmGunSonuOzet: TfrmGunSonuOzet
             Caption = #304#351'lem Referans Tan'#305'm'#305
             DataBinding.FieldName = 'Adi'
             HeaderAlignmentHorz = taCenter
+            Options.Editing = False
             Width = 492
           end
           object gridListesayi: TcxGridDBColumn
@@ -213,6 +220,7 @@ object frmGunSonuOzet: TfrmGunSonuOzet
         Align = alClient
         TabOrder = 0
         ExceleGonder = False
+        PopupForm = False
         object cxGridGonderimLog: TcxGridDBTableView
           DataController.DataModeController.GridMode = True
           DataController.DataSource = DataSource2
@@ -312,15 +320,15 @@ object frmGunSonuOzet: TfrmGunSonuOzet
   end
   object DataSource2: TDataSource
     DataSet = Ado_GunSonuOzetLog
-    Left = 72
-    Top = 192
+    Left = 112
+    Top = 120
   end
   object Ado_GunSonuOzetLog: TADOTable
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
     TableName = 'GunSonuOzetGonderimLog'
-    Left = 160
-    Top = 192
+    Left = 72
+    Top = 120
   end
   object XMLDocument2: TXMLDocument
     Left = 536
@@ -331,5 +339,21 @@ object frmGunSonuOzet: TfrmGunSonuOzet
     Left = 536
     Top = 256
     DOMVendorDesc = 'MSXML'
+  end
+  object ADO_SQL: TADOQuery
+    Connection = DATALAR.ADOConnection2
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      
+        'select * from dbo.fn_KLINIK_KALITE_BILGISI_table('#39'20140101'#39','#39'201' +
+        '40111'#39')')
+    Left = 72
+    Top = 208
+  end
+  object DataSource1: TDataSource
+    DataSet = ADO_SQL
+    Left = 112
+    Top = 208
   end
 end

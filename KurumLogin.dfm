@@ -230,12 +230,14 @@ object frmKurumBilgi: TfrmKurumBilgi
       Tag = -1
       Caption = 'Hasta Kabul '#350'ifre Bilgilerini De'#287'i'#351'tir'
       ImageIndex = 69
+      Visible = False
       OnClick = cxButtonCClick
     end
     object DnemSonlandrmaifremiDei1: TMenuItem
       Tag = -2
       Caption = 'D'#246'nem Sonland'#305'rma '#350'ifremi De'#287'i'#351
       ImageIndex = 70
+      Visible = False
       OnClick = cxButtonCClick
     end
   end

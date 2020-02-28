@@ -140,6 +140,7 @@ type
 
     procedure ButtonClick(Sender: TObject);
     procedure SayfalarChange(Sender: TObject);
+    procedure gridRevDblClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -477,6 +478,26 @@ begin
 
 end;
 
+procedure TfrmSKS_YeniDokuman.gridRevDblClick(Sender: TObject);
+var
+ sql : string;
+begin
+  inherited;
+    datalar.DokumanRev.id := cxGrid1.Dataset.FieldByName('id').AsString;
+    datalar.DokumanRev.tanimi := TcxTextEdit(FindComponent('adi')).Text;
+    datalar.DokumanRev.revTarihi := cxGrid1.Dataset.FieldByName('revTarihi').AsDateTime;
+    datalar.DokumanRev.rev := cxGrid1.Dataset.FieldByName('rev').AsString;
+    datalar.DokumanRev.aciklama := cxGrid1.Dataset.FieldByName('aciklama').AsString;
+
+    if mrYes = ShowPopupForm('Dokuman Rev Duzenle',SKSdokumanRevDuzenle)
+    Then Begin
+          cxGrid1.Dataset.Edit;
+          cxGrid1.Dataset.FieldByName('aciklama').AsString := datalar.DokumanRev.aciklama;
+          cxGrid1.Dataset.FieldByName('revTarihi').AsDateTime := datalar.DokumanRev.revTarihi;
+          cxGrid1.Dataset.post;
+    End;
+end;
+
 function TfrmSKS_YeniDokuman.Init(Sender: TObject): Boolean;
 begin
   Result := False;
@@ -574,13 +595,13 @@ var
   TopluDataset : TDataSetKadir;
 begin
 
-  if MrYes = MessageDlg(
-      'Dokuman Eklenecek , Emin misiniz?',
-    mtConfirmation, [mbYes, mbNo], 0, mbYes)
-  then begin
-      dxStatusBar1.Panels[1].Text := 'Dosya Yükleniyor , Lütfen Bekleyiniz...';
+ // if MrYes = MessageDlg(
+ //     'Dokuman Eklenecek , Emin misiniz?',
+  //  mtConfirmation, [mbYes, mbNo], 0, mbYes)
+ // then begin
+     // dxStatusBar1.Panels[1].Text := 'Dosya Yükleniyor , Lütfen Bekleyiniz...';
 
-      DurumGoster(True,False,'Dokuman Tasarým Yükleniyor , Lütfen Bekleyiniz');
+      DurumGoster(True,False,'Dokuman Açýlýyor... , Lütfen Bekleyiniz');
 
       try
         if TcxImageComboKadir(FindComponent('dokumanTip')).EditValue = 1 then
@@ -600,7 +621,7 @@ begin
                  ifThen(cxGrid1.dataset.FieldByName('rev').AsString <> '',
                  '_'+cxGrid1.dataset.FieldByName('rev').AsString,''),
                  TcxTextEdit(FindComponent('adi')).Text,
-                 inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTNone);
+                 inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTOnIzle);
 
         end
         else
@@ -621,7 +642,7 @@ begin
 
       end;
 
-  end;
+ // end;
 end;
 
 

@@ -188,16 +188,30 @@ object frmRaporDetay: TfrmRaporDetay
             Description = 'Aktif'
             ImageIndex = 31
             Value = True
-          end
-          item
-            Description = 'Pasif'
-            ImageIndex = 33
-            Value = False
           end>
         Properties.ShowDescriptions = False
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 70
+        Width = 40
+      end
+      object ListeRaporlarColumn10: TcxGridDBColumn
+        DataBinding.FieldName = 'duzenleyenDoktor'
+        Visible = False
+      end
+      object ListeRaporlarColumn11: TcxGridDBColumn
+        DataBinding.FieldName = 'Onay'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Images = DATALAR.imag24png
+        Properties.Items = <
+          item
+            ImageIndex = 49
+            Value = 1
+          end>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 40
       end
     end
     object cxGridLevel2: TcxGridLevel
@@ -208,8 +222,8 @@ object frmRaporDetay: TfrmRaporDetay
     end
   end
   object PopupMenu1: TPopupMenu
-    Left = 80
-    Top = 352
+    Left = 104
+    Top = 272
     object N1: TMenuItem
       Caption = #304'la'#231' Rapor Te'#351'hi'#351' Ve Etken Maddeleri '#350'ablon Olarak Kaydet'
       OnClick = N1Click
@@ -277,8 +291,8 @@ object frmRaporDetay: TfrmRaporDetay
     Top = 438
   end
   object PopupMenu2: TPopupMenu
-    Left = 160
-    Top = 352
+    Left = 184
+    Top = 264
     object E1: TMenuItem
       Caption = 'Eklenen Etken Maddeyi Meduladaki Rapora Ekle'
       OnClick = E1Click

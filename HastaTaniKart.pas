@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,Kadir,
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxStyles,
   dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
@@ -63,7 +63,14 @@ end;
 
 procedure TfrmTaniKart.TaniSil;
 begin
+   if sqlRun.Eof then exit;
+   if sqlRun.FieldByName('islemSiraNo').AsString = ''
+   then begin
     sqlRun.Delete;
+   end
+   else
+    ShowMessageSkin('Taný Medulaya Kayýtlý','','','info');
+
 end;
 
 procedure TfrmTaniKart.TaniEkle;
@@ -73,6 +80,8 @@ begin
     List := Tanilar.ListeGetir;
     if length(List) > 0
     Then BEgin
+       if sqlRun.Locate('dosyaNo;gelisNo;code',VarArrayOf([_dosyaNO_, _gelisNO_,List[0].kolon1]),[])
+       then exit;
        sqlRun.Append;
        sqlRun.FieldByName('code').AsString := List[0].kolon1;
        sqlRun.FieldByName('NAME1').AsString := List[0].kolon2;

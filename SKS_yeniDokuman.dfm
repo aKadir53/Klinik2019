@@ -122,6 +122,7 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       ExplicitHeight = 209
       object gridRev: TcxGridDBTableView
         PopupMenu = PopupMenu1
+        OnDblClick = gridRevDblClick
         Navigator.Buttons.First.Visible = False
         Navigator.Buttons.PriorPage.Visible = False
         Navigator.Buttons.Prior.Visible = False
@@ -1190,13 +1191,13 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
     end
     object D1: TMenuItem
       Tag = -10
-      Caption = 'D'#246'k'#252'man Y'#252'kle'
-      ImageIndex = 113
+      Caption = 'D'#246'k'#252'man A'#231
+      ImageIndex = 101
       OnClick = cxButtonCClick
     end
     object D2: TMenuItem
       Tag = -11
-      Caption = 'D'#246'k'#252'man A'#231
+      Caption = 'D'#246'k'#252'man D'#252'zenle'
       ImageIndex = 114
       OnClick = cxButtonCClick
     end

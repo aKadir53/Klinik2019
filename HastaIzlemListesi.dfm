@@ -45,7 +45,6 @@ object frmIzlem: TfrmIzlem
       Style.Shadow = False
       Style.IsFontAssigned = True
       TabOrder = 0
-      ExplicitHeight = 642
       Height = 623
       Width = 1293
       object cxGrid2: TcxGrid
@@ -65,7 +64,7 @@ object frmIzlem: TfrmIzlem
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
         ExplicitLeft = 2
-        ExplicitTop = 573
+        ExplicitTop = 554
         ExplicitWidth = 1289
         object Liste: TcxGridDBTableView
           PopupMenu = PopupMenu1
@@ -512,7 +511,7 @@ object frmIzlem: TfrmIzlem
         ExplicitLeft = 2
         ExplicitTop = -2
         ExplicitWidth = 1289
-        ExplicitHeight = 575
+        ExplicitHeight = 556
         object gridHastalar: TcxGridDBBandedTableView
           PopupMenu = PopupMenu1
           OnDblClick = gridHastalarDblClick
@@ -585,7 +584,7 @@ object frmIzlem: TfrmIzlem
           end
           object gridHastalarKanAlimTarihi: TcxGridDBBandedColumn
             DataBinding.FieldName = 'KanAlimTarihi'
-            PropertiesClassName = 'TcxTextEditProperties'
+            PropertiesClassName = 'TcxDateEditProperties'
             Properties.Alignment.Horz = taCenter
             Properties.Alignment.Vert = taVCenter
             HeaderAlignmentHorz = taCenter
@@ -1414,7 +1413,6 @@ object frmIzlem: TfrmIzlem
         Lines.Strings = (
           '')
         TabOrder = 0
-        ExplicitHeight = 22
       end
     end
   end
@@ -1449,8 +1447,8 @@ object frmIzlem: TfrmIzlem
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 576
-    Top = 344
+    Left = 312
+    Top = 152
     object O1: TMenuItem
       Tag = 1
       Caption = 'Onayla'
@@ -1492,6 +1490,12 @@ object frmIzlem: TfrmIzlem
       Tag = -38
       Caption = 'Uzman Muayene Formu'
       ImageIndex = 56
+      OnClick = cxButtonCClick
+    end
+    object K2: TMenuItem
+      Tag = -55
+      Caption = 'Kan Al'#305'm Tarihini Muayene Tarihi Yap'
+      ImageIndex = 120
       OnClick = cxButtonCClick
     end
     object MuayeneTutanaklarnYazdr1: TMenuItem

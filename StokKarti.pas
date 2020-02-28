@@ -70,12 +70,42 @@ end;
 
 procedure TfrmStokKarti.cxButtonEditPropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);
+var
+  ado : TADOQuery;
 begin
   inherited;
   if length(datalar.ButtonEditSecimlist) > 0 then
   begin
     enabled;
   end;
+
+
+  datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridStokAlis')).Dataset,
+
+    ' select f.faturaTarihi,f.sirketKod,s.tanimi,fh.fiyat,fh.birim,fh.adet from faturalar f ' +
+    ' join faturaHareket fh on f.sira = fh.faturaId ' +
+    ' join SIRKETLER_TNM s on s.sirketKod = f.sirketKod ' +
+    ' where HizmetKodu = ' + QuotedStr(TcxTextEdit(FindComponent('CODE')).EditValue) +
+    ' and  DiyalizSirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and f.iptal = 0' );
+
+
+   datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridStokKullanim')).Dataset,
+
+   '   select s.tarih,h.dosyaNo,h.HASTAADI,h.hastasoyadI from hareketlerSeans s '+
+   '   join hastaKart h on h.dosyaNo = s.dosyaNo ' +
+   '   where DIYALIZOR = ' + QuotedStr(TcxTextEdit(FindComponent('CODE')).EditValue));
+
+
+   ado := TADOQuery.Create(nil);
+   try
+     datalar.QuerySelect(ado,'exec sp_StokUrunDurum ' + QuotedStr(TcxTextEdit(FindComponent('CODE')).EditValue));
+     TcxTextEdit(FindComponent('alisToplam')).EditValue := ado.FieldByName('alisToplam').AsString;
+     TcxTextEdit(FindComponent('satisToplam')).EditValue := ado.FieldByName('satisToplam').AsString;
+     TcxTextEdit(FindComponent('mevcut')).EditValue := ado.FieldByName('mevcut').AsString;
+   finally
+     ado.free;
+   end;
+
 end;
 
 procedure TfrmStokKarti.ButtonClick(Sender: TObject);
@@ -141,8 +171,33 @@ begin
   Tarih.ValueTip := tvString;
   setDataStringKontrol(self,Tarih,'enSonAlisTarihi','En Son Aliþ Tarihi',Kolon1,'',120,0,alNone,'');
 
-  setDataStringCurr(self,'MinMiktar','Min Miktar',Kolon1,'',120,'0',1);
+  setDataStringCurr(self,'MinMiktar','Min Miktar',Kolon1,'',80,'0',1);
 
+
+
+  SetGrid(CreateGrid('cxGridStokAlis',self,False),'faturaTarihi,tanimi,fiyat,adet,birim',
+               'TcxDateEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+               'FaturaTarihi,AlýmFirma,BirimFiyat,Adet,Birim',
+               '80,150,80,60,60',
+               '0,0,0,0,0',
+               'True,True,True,True,True'
+               );
+
+  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridStokAlis')) ,'cxGridStokAlis','Ürün Alýþlarý',Kolon2,'',450,200);
+
+
+  SetGrid(CreateGrid('cxGridStokKullanim',self,False),'Tarih,HASTAADI,HASTASOYADI',
+               'TcxDateEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+               'SeansTarihi,HastaAdý,HastaSoyadý',
+               '80,100,100',
+               '0,0,0',
+               'True,True,True'
+               );
+
+  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridStokKullanim')) ,'cxGridStokKullanim','Ürün Kullanýmlarý',Kolon2,'',450,200);
+
+
+// TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridTeshis')).Levels[0].GridView).NavigatorButtons.OnButtonClick := NavigatorButtonsButtonClick;
 
 
   (*
@@ -153,8 +208,8 @@ begin
   TdxLayoutGroup(FindComponent('dxLaIgneGrid')).Visible := False;
     *)
 
-  Kolon2.Visible := False;
-  Kolon3.Visible := False;
+ // Kolon2.Visible := False;
+ // Kolon3.Visible := False;
   Kolon4.Visible := False;
 
   SayfaCaption('Stok Kart','','','','');
@@ -181,12 +236,25 @@ var
   ado : TADOQuery;
   IC_Params : TstringList;
   field,caption,_params_ ,_ICParams_, TableName,kod,tanimi,filter,tt : string;
-  grp : integer;
+  grp , index : integer;
 begin
   inherited;
 
   if TcxImageComboKadir(sender).Name = 'Grup'
   then begin
+
+       if Assigned(TdxLayoutItem(FindComponent('dxLaalisToplam')))
+       then begin
+            TdxLayoutItem(FindComponent('dxLalblBostatir2')).free;
+            TdxLayoutItem(FindComponent('dxLaalisToplam')).free;
+            TdxLayoutItem(FindComponent('dxLasatisToplam')).free;
+            TdxLayoutItem(FindComponent('dxLamevcut')).free;
+            TcxLabel(FindComponent('LabellblBostatir2')).free;
+            TcxCustomEdit(FindComponent('mevcut')).free;
+            TcxCustomEdit(FindComponent('alisToplam')).free;
+            TcxCustomEdit(FindComponent('satisToplam')).free;
+       end;
+
    IC_Params := TStringList.Create;
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
@@ -219,7 +287,7 @@ begin
                            pos(',',ado.FieldByName('IC_Params').AsString)-1);
 
          _ICParams_ := copy(ado.FieldByName('IC_Params').AsString,
-                             pos(',',ado.FieldByName('IC_Params').AsString)+1,100);
+                             pos(',',ado.FieldByName('IC_Params').AsString)+1,250);
 
          ExtractStrings([';'],[],PChar(_ICParams_),IC_Params);
 
@@ -253,6 +321,7 @@ begin
             end;
          end
          else
+         begin
           if not Assigned(TcxTextEdit(FindComponent(field)))
             then begin
               setDataString(self,field,caption,kolon1,'',120);
@@ -262,8 +331,34 @@ begin
                 TdxLayoutGroup(FindComponent('dxLa'+field)).Visible := True;
                 TcxCustomEdit(FindComponent(field)).Tag := 1;
               end;
+         end;
           ado.Next;
        end;
+
+      (*
+       if Assigned(TdxLayoutItem(FindComponent('dxLaalisToplam')))
+       then begin
+            TdxLayoutItem(FindComponent('dxLalblBostatir2')).Visible := True;
+            TdxLayoutItem(FindComponent('dxLaalisToplam')).Visible := True;
+            TdxLayoutItem(FindComponent('dxLasatisToplam')).Visible := True;
+            TdxLayoutItem(FindComponent('dxLamevcut')).Visible := True;
+       end;
+        *)
+
+       if not Assigned(TdxLayoutItem(FindComponent('dxLaalisToplam')))
+            then begin
+                setDataStringBLabel(self,'lblBostatir2',Kolon1,'',1,'','');
+                setDataStringCurr(self,'alisToplam','Alýþ Toplam',Kolon1,'',80,'0');
+                setDataStringCurr(self,'satisToplam','Çýkýþ Toplam',Kolon1,'',80,'0');
+                setDataStringCurr(self,'mevcut','Stok Durum',Kolon1,'',80,'0');
+                TcxTextEdit(FindComponent('alisToplam')).Properties.ReadOnly := True;
+                TcxTextEdit(FindComponent('satisToplam')).Properties.ReadOnly := True;
+                TcxTextEdit(FindComponent('mevcut')).Properties.ReadOnly := True;
+
+           end;
+
+
+
 
    finally
       ado.free;

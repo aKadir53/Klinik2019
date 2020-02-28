@@ -525,6 +525,10 @@ object frmTopluGelis: TfrmTopluGelis
     object TabSheet2: TTabSheet
       Caption = #304#351'lem Raporu'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object txtHatalar: TMemo
         Left = 0
         Top = 0
@@ -739,7 +743,7 @@ object frmTopluGelis: TfrmTopluGelis
               end
               item
                 ImageIndex = 38
-                Value = 'BAYAN'
+                Value = 'KADIN'
               end>
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
@@ -1026,6 +1030,10 @@ object frmTopluGelis: TfrmTopluGelis
     object SayfaLog: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object txtLog: TcxMemo
         Left = 0
         Top = 0

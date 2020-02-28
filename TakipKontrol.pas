@@ -23,7 +23,8 @@ uses
   dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver, dxSkinSpringTime,
   dxmdaset,dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
   GirisUnit,cxGroupBox, cxRadioGroup, cxImageComboBox, cxLabel, cxButtons,
-  dxGDIPlusClasses, dxLayoutContainer, dxLayoutControl, dxLayoutLookAndFeels;
+  dxGDIPlusClasses, dxLayoutContainer, dxLayoutControl, dxLayoutLookAndFeels,
+  cxSplitter;
 
 type
   TfrmTakipKontrol = class(TGirisForm)
@@ -72,7 +73,7 @@ type
     cxTabSheetTakipler: TcxTabSheet;
     cxTabSheetEAck: TcxTabSheet;
     cxTabSheetLog: TcxTabSheet;
-    cxGrid4: TcxGrid;
+    cxGrid4: TcxGridKadir;
     cxGridDBTableView1: TcxGridDBTableView;
     cxGridDBColumn1: TcxGridDBColumn;
     cxGridDBColumn2: TcxGridDBColumn;
@@ -96,8 +97,7 @@ type
     cxGridDBBandedColumn50: TcxGridDBBandedColumn;
     cxGridDBBandedColumn51: TcxGridDBBandedColumn;
     cxGridDBBandedColumn52: TcxGridDBBandedColumn;
-    Takipler: TcxGridTableView;
-    Sec: TcxGridColumn;
+    Takipler: TcxGridDBTableView;
     TakipNo: TcxGridColumn;
     HastaNo: TcxGridColumn;
     gelisNo: TcxGridColumn;
@@ -105,14 +105,12 @@ type
     TakipTarih: TcxGridColumn;
     SIRANO: TcxGridColumn;
     BasvuruNo: TcxGridColumn;
-    Durum: TcxGridColumn;
     TakiplerColumn1: TcxGridColumn;
     TakiplerColumn2: TcxGridColumn;
     TakiplerColumn3: TcxGridColumn;
     TakiplerColumn4: TcxGridColumn;
     TakiplerColumn5: TcxGridColumn;
     TakiplerColumn6: TcxGridColumn;
-    TakiplerColumn7: TcxGridColumn;
     cxGrid4Level1: TcxGridLevel;
     cxGroupBox1: TcxGroupBox;
     cxMemo1: TcxMemo;
@@ -154,8 +152,10 @@ type
     cxGridLevel7: TcxGridLevel;
     cxTabSheetSistem: TcxTabSheet;
     cxStyle4: TcxStyle;
-    TakiplerColumn8: TcxGridColumn;
-    TakiplerColumn9: TcxGridColumn;
+    TakiplerDurumDetay: TcxGridColumn;
+    cxSplitter1: TcxSplitter;
+    S4: TMenuItem;
+    cxStyle5: TcxStyle;
     procedure cxButtonCClick(Sender: TObject);
     procedure mnSe1Click(Sender: TObject);
     procedure mptal1Click(Sender: TObject);
@@ -176,9 +176,6 @@ type
       ANewItemRecordFocusingChanged: Boolean);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure GonderimSonuc(takip, s: string);
-    procedure TakiplerStylesGetContentStyle(Sender: TcxCustomGridTableView;
-      ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
-      out AStyle: TcxStyle);
     procedure T1Click(Sender: TObject);
     procedure S1Click(Sender: TObject);
     procedure H1Click(Sender: TObject);
@@ -191,6 +188,9 @@ type
     procedure H2Click(Sender: TObject);
     procedure S3Click(Sender: TObject);
     procedure TopPanelButonClick(Sender: TObject);
+    procedure TakiplerStylesGetContentStyle(Sender: TcxCustomGridTableView;
+      ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
+      out AStyle: TcxStyle);
 
   private
     { Private declarations }
@@ -246,6 +246,11 @@ procedure TfrmTakipKontrol.cxButtonCClick(Sender: TObject);
 begin
 inherited;
   case Tcontrol(sender).Tag of
+
+  17 : begin
+         //ll
+       end;
+
   -17 : begin
           H2.Click;
        end;
@@ -325,7 +330,7 @@ begin
                                       QuotedStr(dataset.FieldByName('bransKodu').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('hizmetSunucuRefNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('islemSiraNo').AsString) + ',' +
-                                      QuotedStr(dataset.FieldByName('deTescilNo').AsString) + ')');
+                                      QuotedStr(dataset.FieldByName('drTescilNo').AsString) + ')');
       end
       else
       if Dataset.Name = 'RxTaniBilgisi'
@@ -493,67 +498,72 @@ var
   x, tip: integer;
 begin
 
+  DurumGoster(True,False,'Kayýtlarýnýz (Seans,Tahlil,Taný) Kontrol Edilip , Yükleniyor...');
   try
-    ADO_TahlillSQL.Active := false;
+      try
+        ADO_TahlillSQL.Active := false;
 
-    if DiyalizTipTopPanel.EditValue = 'H' Then
-      _Tip_ := 'H'
-    Else
-      _Tip_ := 'P,A';
+        if DiyalizTipTopPanel.EditValue = 'H' Then
+          _Tip_ := 'H'
+        Else
+          _Tip_ := 'P,A';
 
-    if chkList.EditValue = '100' Then
-      TakipVar := 'and isnull(g.TakipNo,'''') <>  '''' '
-    Else
-      TakipVar := '';
+        if chkList.EditValue = '100' Then
+          TakipVar := 'and isnull(g.TakipNo,'''') <>  '''' '
+        Else
+          TakipVar := '';
 
-   (*
-    if ktip.Text = 'Tümü' Then
-      kurumTip := '1,99'
-    else
-      kurumTip := KurumTipTopPanel.EditValue;// trim(copy(ktip.Text, 1, 2));
-     *)
+       (*
+        if ktip.Text = 'Tümü' Then
+          kurumTip := '1,99'
+        else
+          kurumTip := KurumTipTopPanel.EditValue;// trim(copy(ktip.Text, 1, 2));
+         *)
 
-    sql :=
-          'exec sp_TakipKontrolListesi ' + txtTopPanelTarih1.GetSQLValue + ',' +
-                                           txtTopPanelTarih2.GetSQLValue + ',' +
-                                           QuotedStr(datalar.AktifSirket);
-    datalar.QuerySelect(ADO_SQL, sql);
+        sql :=
+              'exec sp_TakipKontrolListesi ' + txtTopPanelTarih1.GetSQLValue + ',' +
+                                               txtTopPanelTarih2.GetSQLValue + ',' +
+                                               QuotedStr(datalar.AktifSirket);
+        datalar.QuerySelect(ADO_SQL, sql);
+       (*
+        ADO_SQL.First;
+        Takipler.DataController.RecordCount := 0;
 
-    ADO_SQL.First;
-    Takipler.DataController.RecordCount := ADO_SQL.RecordCount;
-    for x := 0 to ADO_SQL.RecordCount - 1 do
-    begin
-      Takipler.DataController.Values[x, 1] := ADO_SQL.fieldbyname('TakipNo').AsString;
-      Takipler.DataController.Values[x, 2] := ADO_SQL.fieldbyname('dosyaNo').AsString;
-      Takipler.DataController.Values[x, 3] := ADO_SQL.fieldbyname('GelisNo').AsString;
-      Takipler.DataController.Values[x, 4] := ADO_SQL.fieldbyname('ADSOYAD').AsString;
-      Takipler.DataController.Values[x, 5] := ADO_SQL.fieldbyname('BHDAT').Value;
-      Takipler.DataController.Values[x, 6] := ADO_SQL.fieldbyname('SIRANO').AsString;
-      Takipler.DataController.Values[x, 7] := ADO_SQL.fieldbyname('basvuruNo').AsString;
-     // Takipler.DataController.Values[x, 8] := ADO_SQL.fieldbyname('TakýpSend').AsString;
-      Takipler.DataController.Values[x, 9] := ADO_SQL.fieldbyname('SeansAdet').AsInteger;
-      Takipler.DataController.Values[x, 10] := ADO_SQL.fieldbyname('MedulaSeansAdet').AsInteger;
-      Takipler.DataController.Values[x, 11] := ADO_SQL.fieldbyname('TahlilAdet').AsInteger;
-      Takipler.DataController.Values[x, 12] := ADO_SQL.fieldbyname('MedulaTahlilAdet').AsInteger;
-      Takipler.DataController.Values[x, 13] := ADO_SQL.fieldbyname('RadAdet').AsInteger;
-      Takipler.DataController.Values[x, 14] := ADO_SQL.fieldbyname('MedulaRadAdet').AsInteger;
-      Takipler.DataController.Values[x, 15] := ADO_SQL.fieldbyname('aciklama').AsString;
-      Takipler.DataController.Values[x, 16] := ADO_SQL.fieldbyname('Durum').AsInteger;
-      Takipler.DataController.Values[x, 17] := ADO_SQL.fieldbyname('DurumDetay').AsString;
+        for x := 0 to ADO_SQL.RecordCount - 1 do
+        begin
+          Takipler.DataController.Values[x, 1] := ADO_SQL.fieldbyname('TakipNo').AsString;
+          Takipler.DataController.Values[x, 2] := ADO_SQL.fieldbyname('dosyaNo').AsString;
+          Takipler.DataController.Values[x, 3] := ADO_SQL.fieldbyname('GelisNo').AsString;
+          Takipler.DataController.Values[x, 4] := ADO_SQL.fieldbyname('ADSOYAD').AsString;
+          Takipler.DataController.Values[x, 5] := ADO_SQL.fieldbyname('BHDAT').Value;
+          Takipler.DataController.Values[x, 6] := ADO_SQL.fieldbyname('SIRANO').AsString;
+          Takipler.DataController.Values[x, 7] := ADO_SQL.fieldbyname('basvuruNo').AsString;
+         // Takipler.DataController.Values[x, 8] := ADO_SQL.fieldbyname('TakýpSend').AsString;
+          Takipler.DataController.Values[x, 9] := ADO_SQL.fieldbyname('SeansAdet').AsInteger;
+          Takipler.DataController.Values[x, 10] := ADO_SQL.fieldbyname('MedulaSeansAdet').AsInteger;
+          Takipler.DataController.Values[x, 11] := ADO_SQL.fieldbyname('TahlilAdet').AsInteger;
+          Takipler.DataController.Values[x, 12] := ADO_SQL.fieldbyname('MedulaTahlilAdet').AsInteger;
+          Takipler.DataController.Values[x, 13] := ADO_SQL.fieldbyname('RadAdet').AsInteger;
+          Takipler.DataController.Values[x, 14] := ADO_SQL.fieldbyname('MedulaRadAdet').AsInteger;
+          Takipler.DataController.Values[x, 15] := ADO_SQL.fieldbyname('aciklama').AsString;
+          Takipler.DataController.Values[x, 16] := ADO_SQL.fieldbyname('Durum').AsInteger;
+          Takipler.DataController.Values[x, 17] := ADO_SQL.fieldbyname('DurumDetay').AsString;
 
-      ADO_SQL.Next;
-    end;
+          ADO_SQL.Next;
+        end;
+               *)
+        //SeansSayiToplam;
 
-    SeansSayiToplam;
-
-  except
-    on e: Exception do
-    begin
-      ShowMessageSkin(e.Message, '', '', 'info');
-    end;
+      except
+        on e: Exception do
+        begin
+          ShowMessageSkin(e.Message, '', '', 'info');
+        end;
+      end;
+  finally
+   DurumGoster(False);
   end;
 
-  pnlDurum.Visible := false;
 
 end;
 
@@ -679,14 +689,15 @@ begin
 
  // datalar.Bilgi.dosyaNo := ado_BransKodlari.FieldByName('dosyaNo').AsString;
 //  FormINIT(TagfrmHastaKart,AnaForm,ado_BransKodlari.FieldByName('dosyaNo').AsString);
- if FindTab(AnaForm.sayfalar,'TabfrmHastaKart')
+ if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
  Then begin
    Form := TGirisForm(FormClassType(TagfrmHastaKart));
-   TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := Takipler.DataController.Values[r, 2];
+   TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := Takipler.DataController.Values[r, 1];
+   TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
    TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
  end
  Else begin
-  Form := FormINIT(TagfrmHastaKart,self,Takipler.DataController.Values[r, 2],NewTab(AnaForm.sayfalar,'TabfrmHastaKart'),ikEvet,'Giriþ');
+  Form := FormINIT(TagfrmHastaKart,self,Takipler.DataController.Values[r, 2],NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
   if Form <> nil then Form.show;
  end;
 
@@ -710,13 +721,14 @@ begin
     for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
     begin
           Application.ProcessMessages;
-          takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
+          takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, Takipler.DataController.GetItemByFieldName('TakipNo').Index);
           DatalariBosalt;
 
           if takip <> '' then
             msj := HizmetKaydiOku(takip, BasvuruNo)
           else
             Continue;
+            txtHatalar.Lines.Add(msj);
           try
             datalar.ADOConnection2.BeginTrans;
             if (msj = '0000') or (copy(msj, 1, 4) = '0631') Then
@@ -759,6 +771,7 @@ begin
             txtHatalar.Lines.Add(msj + ' - ' + e.Message);
            end;
           end;
+          pBar.Position := pBar.Position + 1;
         end; // for end
     finally
       DurumGoster(False);
@@ -1031,10 +1044,10 @@ begin
     begin
       Application.ProcessMessages;
       Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[satir].RecordIndex;
-      takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
-      dosyaNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 2);
-      gelisNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 3);
-      gelisSIRANO := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 6);
+      takip := varToStr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 0));
+      dosyaNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
+      gelisNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 2);
+      gelisSIRANO := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, Takipler.DataController.GetItemByFieldName('SIRANO').Index);
 
       DATALAR.ADOConnection2.BeginTrans;
       try
@@ -1259,23 +1272,27 @@ var
   ado: TADOQuery;
   x, r: integer;
 begin
-
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
+  DurumGoster(True,False,'Kayýtlarýnýz Faturaya, Atýlýyor...');
 
-  for r := 0 to Takipler.Controller.SelectedRowCount - 1 do
-  begin
-    takip := Takipler.DataController.GetValue
-      (Takipler.Controller.SelectedRows[r].RecordIndex, 1);
+  try
+    for r := 0 to Takipler.Controller.SelectedRowCount - 1 do
+    begin
+      takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex, Takipler.DataController.GetItemByFieldName('TakipNo').Index);
+      sql := 'exec sp_kurumFaturaIsle_M3 ' + #39 + takip + #39 + ',' + #39 +
+              txtTopPanelTarih1.GetValue + #39 + ',' + #39 + txtTopPanelTarih2.GetValue + #39;
 
-    sql := 'exec sp_kurumFaturaIsle_M3 ' + #39 + takip + #39 + ',' + #39 +
-            txtTopPanelTarih1.GetValue + #39 + ',' + #39 + txtTopPanelTarih2.GetValue + #39;
+      datalar.QuerySelect(ado, sql);
 
-    datalar.QuerySelect(ado, sql);
-
+    end;
+    ShowMessageSkin('Kayýtlar Faturaya Atýldý', '', '', 'info');
+  finally
+    DurumGoster(False);
+    ado.Free;
   end;
-  ShowMessageSkin('Kayýtlar Faturaya Atýldý', '', '', 'info');
-  ado.Free;
+
+  btnListTopPanel.Click;
 
 end;
 
@@ -1341,48 +1358,49 @@ var
 begin
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
+  try
+      satir := 1;
+      satirlar := Takipler.DataController.RowCount - 1;
 
-  satir := 1;
-  satirlar := Takipler.DataController.RowCount - 1;
 
+      StatusBar1.SimpleText := 'Hizmetler Okunuyor...';
 
-  StatusBar1.SimpleText := 'Hizmetler Okunuyor...';
-
-  if mrYes = ShowMessageSkin('Seçili Takipler Ýçin Okuma Ýþlemi Baþlayacak',
-    'Onaylýyormusunuz ?', '', 'msg') then
-  begin
-    for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
-    begin
-      // Takipler.DataController.FocusedRowIndex := satir;
-      // x := Takipler.DataController.GetFocusedRecordIndex;
-      Takipler.DataController.FocusedRowIndex :=
-        Takipler.Controller.SelectedRows[satir].RecordIndex;
-      Application.ProcessMessages;
-
-      takip := Takipler.DataController.GetValue
-        (Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
-
-      sql := 'exec sp_TakipKontrol ' + QuotedStr(takip);
-      datalar.QuerySelect(ado, sql);
-      if not ado.Eof then
+      if mrYes = ShowMessageSkin('Seçili Takipler Ýçin Okuma Ýþlemi Baþlayacak',
+        'Onaylýyormusunuz ?', '', 'msg') then
       begin
-        ado.First;
-        while not ado.Eof do
+        for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
         begin
-          txtHatalar.Lines.Add(ado.Fields[0].AsString + ' ' + ado.Fields[1]
-              .AsString);
-          txtHatalar.Lines.Add('----------------------------------');
-          ado.Next;
+          // Takipler.DataController.FocusedRowIndex := satir;
+          // x := Takipler.DataController.GetFocusedRecordIndex;
+          Takipler.DataController.FocusedRowIndex :=
+            Takipler.Controller.SelectedRows[satir].RecordIndex;
+          Application.ProcessMessages;
+
+          takip := varToStr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, Takipler.DataController.GetItemByFieldName('TakipNo').Index));
+
+          sql := 'select dbo.fn_TakipKontrol(' + QuotedStr(takip) + ')';
+          datalar.QuerySelect(ado, sql);
+          if not ado.Eof then
+          begin
+            ado.First;
+            while not ado.Eof do
+            begin
+              txtHatalar.Lines.Add(takip + ' : ' + ado.Fields[0].AsString);
+              txtHatalar.Lines.Add('----------------------------------');
+              ado.Next;
+            end;
+          end
+          else
+          begin
+          end;
+
         end;
-      end
-      else
-      begin
       end;
 
-    end;
-  end;
-  ado.Free;
 
+  finally
+    ado.Free;
+  end;
 end;
 
 procedure TfrmTakipKontrol.T1Click(Sender: TObject);
@@ -1412,41 +1430,42 @@ procedure TfrmTakipKontrol.TakiplerFocusedRecordChanged
   APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
   ANewItemRecordFocusingChanged: Boolean);
 begin
+  if AFocusedRecord = nil then exit;
 
-  id := AFocusedRecord.Index;
-  ADO_SQL.Locate('TakipNo', AFocusedRecord.Values[1], []);
-
-  cxGroupBox1.Caption := 'Açýklama  [ ' + AFocusedRecord.Values[4] + ' ]';
-  dn := AFocusedRecord.Values[2];
-  gn := AFocusedRecord.Values[3];
+  cxGroupBox1.Caption := 'Açýklama  [ ' + AFocusedRecord.Values[3] + ' ]';
+  dn := AFocusedRecord.Values[1];
+  gn := AFocusedRecord.Values[2];
 
   ADO_TahlillSQL.close;
-  ADO_TahlillSQL.Parameters[0].Value := AFocusedRecord.Values[1];
+  ADO_TahlillSQL.Parameters[0].Value := AFocusedRecord.Values[0];
   ADO_TahlillSQL.Open;
 
  // ADO_DigerSistem.close;
  // ADO_DigerSistem.Parameters[0].Value := AFocusedRecord.Values[1];
  // ADO_DigerSistem.Open;
 
-  cxMemo1.Lines.Text := AFocusedRecord.Values[15];
+  cxMemo1.Lines.Text := AFocusedRecord.Values[11];
   GridHizmetler.ViewData.Expand(true);
 
   // ShowMessage(AFocusedRecord.Values[5]);
 end;
 
-procedure TfrmTakipKontrol.TakiplerStylesGetContentStyle
-  (Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+procedure TfrmTakipKontrol.TakiplerStylesGetContentStyle(
+  Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
   AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+var
+  i : integer;
 begin
   inherited;
 
-  if (ARecord.Values[9] = ARecord.Values[10]) and
-    (ARecord.Values[11] = ARecord.Values[12]) and
-    (ARecord.Values[13] = ARecord.Values[14]) Then
+
+//  i := TcxGridDBTableView(Sender).FindItemByName('DurumDetay').Index;
+
+  if (ARecord.Values[11] = '')
+    Then
     AStyle := cxStyle2
   Else
     AStyle := cxStyle1;
-
 end;
 
 end.

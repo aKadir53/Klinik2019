@@ -147,8 +147,8 @@ type
                       url : PWideChar); stdcall;
 
 const
-  LIB_DLL = 'EFaturaDLL.dll';
- // LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
+ // LIB_DLL = 'EFaturaDLL.dll';
+  LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
 
 //  test = 'https://efatura-test.uyumsoft.com.tr/Services/Integration';
 //  gercek = 'https://efatura.uyumsoft.com.tr/Services/Integration';
@@ -208,7 +208,7 @@ begin
               datalar.QueryExec(sql);
             end;
          end;
-         ShowMessageSkin('Fatura Gönderim Ýþlemi Tamamlandý','','','info');
+         ShowMessageSkin('Fatura Gönderim Ýþlemi Tamamlandý','Log Bilgilerini Kontrol Ediniz','','info');
        finally
          DurumGoster(False,False,faturaId);
        end;

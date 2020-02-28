@@ -75,6 +75,9 @@ begin
     List := Asilar.ListeGetir;
     if length(List) > 0
     Then BEgin
+       if sqlRun.Locate('dosyaNo;tarih;asiKodu',VarArrayOf([_dosyaNO_, date(),List[0].kolon1]),[])
+       then exit;
+
        sqlRun.Append;
        try
          sqlRun.FieldByName('asiKodu').AsString := List[0].kolon1;
@@ -86,6 +89,7 @@ begin
          sqlRun.Cancel;
          raise;
        end;
+
     End;
 end;
 procedure TfrmAsiKarti.AsiGetir;

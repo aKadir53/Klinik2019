@@ -17,14 +17,11 @@ type
   TfrmSeansDagilimi = class(TGirisForm)
     pnlToolBar: TPanel;
     gridHastalar: TAdvStringGrid;
-    pnlOnay: TPanel;
-    txtinfo: TLabel;
     PopupMenu1: TPopupMenu;
     Seansaretle1: TMenuItem;
     SeansKaldr1: TMenuItem;
     SaveDialog1: TSaveDialog;
     btnListele: TcxButtonKadir;
-    btnVazgec: TcxButtonKadir;
     txtYil: TcxComboBox;
     txtDonem: TcxComboBox;
     chkDevredilen: TcxCheckBox;
@@ -503,6 +500,8 @@ var
   _tarih_ : Tdate;
   gun : integer;
 begin
+   if (txtDonem.Text = '') or (txtYil.Text = '') then exit;
+
    ay1 := formatfloat('00',txtDonem.ItemIndex);
    Tarih1 := txtYil.Text + ay1 + '01';
    _tarih_ := tarihyap(Tarih1);
@@ -633,21 +632,21 @@ var
    ado : TADOQuery;
 begin
    inherited;
-   txtYil.Text :=  copy(tarihal(date()),1,4);
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
    try
-   sql := 'exec sp_YillikSeansGostergesi '''',''T'' ,' + QuotedStr(datalar.AktifSirket) ;
-   datalar.QuerySelect(ado,sql);
+     sql := 'exec sp_YillikSeansGostergesi '''',''T'' ,' + QuotedStr(datalar.AktifSirket) ;
+     datalar.QuerySelect(ado,sql);
 
-   txtYil.Properties.Items.Clear;
+     txtYil.Properties.Items.Clear;
 
      for i := 1 to ado.RecordCount  do
      begin
          txtYil.properties.Items.Add(ado.fieldbyname('YIL').AsString);
          ado.Next;
      end;
-
+     txtYil.Text :=  copy(FormatDateTime('YYYYMMDD',date),1,4);
+     txtDonem.Text := aytoayadi(date);
    finally
      ado.Free;
    end;

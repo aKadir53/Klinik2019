@@ -10,17 +10,20 @@ uses
   ImgList, sPanel, sButton, Menus,
   SHDocVw, IdBaseComponent, IdComponent, IdTCPConnection,
   IdTCPClient, IdHTTP, HTTPApp, HTTPProd, jpeg, strutils,
-  cxGraphics, OleCtrls;
+  cxGraphics, OleCtrls, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
+  cxContainer, cxEdit, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
+  dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
+  dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters, cxTextEdit, cxMemo;
 
 type
   TfrmPortal = class(TForm)
     pnlBrowser: TsPanel;
-    WebBrowser1: TWebBrowser;
     pnlAdres: TPanel;
     Label1: TLabel;
     txtAdres: TEdit;
     pnlButton: TPanel;
-    procedure yukle(user,password,url : string);
+    WebBrowser1: TWebBrowser;
+    procedure yukle(user,password,url,uygulama : string);
     procedure WebBrowser1DocumentComplete(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
     procedure FormCreate(Sender: TObject);
@@ -33,7 +36,7 @@ type
 
 var
   frmPortal: TfrmPortal;
-  _user , _pas , _tc : string;
+  _user , _pas , _tc , _uygulama : string;
   ButtonClick : Boolean;
 implementation
   uses data_modul;
@@ -60,9 +63,15 @@ var
    _goster : integer;
   Buttons: OleVariant;
   Button: OleVariant;
-
+  bb : integer;
+  ss : string;
 begin
       if ButtonClick = True then exit;
+   ss := (Webbrowser1.Document as ihtmldocument2).body.parentelement.outerhtml;
+ //  cxMemo1.Text := (Webbrowser1.Document as ihtmldocument2).body.parentelement.outerhtml;
+   bb := pos('Evrak Ref. No : </td><td class="ui-panelgrid-cell" role="gridcell">',ss);
+
+   ShowMessage(copy(ss,bb+67,6));
 
       idoc := Webbrowser1.document as IHTMLDocument2;
       ov := 'INPUT';
@@ -78,12 +87,24 @@ begin
                             iDisp.QueryInterface(IHTMLInputElement, iInputElement);
                             if assigned(iInputElement) then
 
-                            if iInputElement.Get_name = 'Username'
-                            then iInputElement.Set_value(_user);
 
-                            if iInputElement.Get_name = 'Password'
-                            then iInputElement.Set_value(_pas);
+                            if _uygulama = 'Uyum'
+                            then begin
+                              if iInputElement.Get_name = 'Username'
+                              then iInputElement.Set_value(_user);
 
+                              if iInputElement.Get_name = 'Password'
+                              then iInputElement.Set_value(_pas);
+                            end;
+
+                            if _uygulama = 'Medula'
+                            Then begin
+                              if iInputElement.Get_name = 'j_username'
+                              then iInputElement.Set_value(_user);
+
+                              if iInputElement.Get_name = 'j_password'
+                              then iInputElement.Set_value(_pas);
+                            end;
                            (*
                             if (iInputElement.Get_type_ = 'submit')
                          //  and (iInputElement.Get_name = 'form1:buttonSorgula')
@@ -107,10 +128,11 @@ begin
       end;
 end;
 
-procedure TfrmPortal.yukle(user,password,url : string);
+procedure TfrmPortal.yukle(user,password,url,uygulama : string);
 begin
     _user := user;
     _pas := password;
+    _uygulama := uygulama;
     WebBrowser1.Navigate(url);
 end;
 

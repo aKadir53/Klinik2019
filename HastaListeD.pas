@@ -71,6 +71,10 @@ type
     ListeColumn2: TcxGridDBColumn;
     E2: TMenuItem;
     R1: TMenuItem;
+    N3: TMenuItem;
+    N4: TMenuItem;
+    HastaYllkTekikCetveli1: TMenuItem;
+    ListeColumn3: TcxGridDBColumn;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -102,6 +106,9 @@ type
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
     procedure cxDonemComboKadir1PropertiesChange(Sender: TObject);
+    procedure ListeGetCellHeight(Sender: TcxCustomGridTableView;
+      ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; var AHeight: Integer);
 
   private
     { Private declarations }
@@ -152,6 +159,7 @@ begin
 
   GirisFormRecord.F_dosyaNo_ := _Dataset.FieldByName('dosyaNo').AsString;
   GirisFormRecord.F_gelisNo_ := _Dataset.FieldByName('gelisNo').AsString;
+  GirisFormRecord.F_GelisSIRANO := _Dataset.FieldByName('SIRANO').AsString;
   GirisFormRecord.F_provizyonTarihi_ := _Dataset.FieldByName('BHDAT').AsString;
   GirisFormRecord.F_HastaAdSoyad_ := _Dataset.FieldByName('HASTAADI').AsString + ' ' +
                                      _Dataset.FieldByName('HASTASOYADI').AsString;
@@ -178,9 +186,11 @@ begin
        end;
 
  -7 : begin
+          DurumGoster(True,False,'Hastanýn Reçeteleri Yükleniyor...');
           F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet);
           F._foto_ := _foto_;
           if F <> nil then F.ShowModal;
+          DurumGoster(False,False);
        // ReceteForm(ado_BransKodlari.FieldByName('dosyaNo').AsString,ado_BransKodlari.FieldByName('gelisNo').AsString);
       end;
 
@@ -191,19 +201,34 @@ begin
       end;
 
 
- -20 : begin
+ -20,-21 : begin
         //
-        DurumGoster(True,False,'Ýmza Föyleri Yükleniyor, Lütfen Bekleyiniz');
-        try
-          Datasets.Dataset0 := datalar.ADO_aktifSirketLogo;
-          Datasets.Dataset1 := DataSource.Dataset;
-          Datasets.Dataset2 := datalar.ADO_AktifSirket;
-          PrintYap('039','Ýmza Föyü',intTostr(TagfrmHastaListeD),Datasets);
-        finally
-          DurumGoster(False);
-        end;
+              DurumGoster(True,False,'Ýmza Föyleri Yükleniyor, Lütfen Bekleyiniz');
+              try
+                Datasets.Dataset0 := datalar.ADO_aktifSirketLogo;
+                Datasets.Dataset2 := datalar.ADO_AktifSirket;
+
+                if Tcontrol(sender).tag = -21
+                then begin
+                  DataSource.Dataset.Filtered := True;
+                  DataSource.Dataset.Filter := 'dosyaNO = ' + QuotedStr(GirisFormRecord.F_dosyaNo_);
+                end;
+
+
+                Datasets.Dataset1 := DataSource.Dataset;
+                PrintYap('039','Ýmza Föyü',intTostr(TagfrmHastaListeD),Datasets);
+                DataSource.Dataset.Filtered := False;
+              finally
+                DurumGoster(False);
+              end;
 
        end;
+ -37 : begin
+          GirisFormRecord.F_provizyonTarihi_ := tarihal(date);
+          F := FormINIT(TagfrmKanTetkikTakip,GirisFormRecord,ikHayir);
+          if F <> nil then F.ShowModal;
+       end;
+
 
  330,9020 : begin
                F := FormINIT(Tcontrol(sender).tag,GirisFormRecord,ikEvet,'Giriþ');
@@ -253,6 +278,13 @@ begin
 
  // AktifPasifTopPanel.EditValue := '1';
 
+(*
+  KurumTipTopPanel.TableName := 'KURUMLAR_TNM';
+  KurumTipTopPanel.DisplayField := 'tanimi';
+  KurumTipTopPanel.EditValue := 'KurumKod';
+  KurumTipTopPanel.Conn := Datalar.ADOConnection2;
+  *)
+  KurumTipTopPanel.Filter := '';
 
   Liste.DataController.DataSource := DataSource;
 
@@ -291,7 +323,8 @@ begin
     try
     ado := TADOQuery.Create(nil);
     sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = '''' , @yil = ' + QuotedStr(ay1) +
-                  ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket);
+                  ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                  ',@seans = ' + QuotedStr(txtSeansTopPanel.text);
     datalar.QuerySelect(ado,sql);
 
     topluset.Dataset0 := ado;
@@ -307,11 +340,26 @@ begin
 end;
 
 function TfrmHastaListeD.Init(Sender: TObject): Boolean;
+var
+  seans : string;
 begin
-   TapPanelElemanVisible(True,false,false,false,false,false,True,false,False,True,True,True);
+   TapPanelElemanVisible(True,false,false,false,True,false,True,false,False,True,False,True,False);
+
    AktifPasifTopPanel.EditValue := '1';
-   DiyalizTipTopPanel.EditValue := 'H';
-   KurumTipTopPanel.EditValue := '1';
+   KurumTipTopPanel.EditValue := '1000';
+
+   try
+     seans := SaatRangeToSeans(FormatDateTime('hh:nn',now()));
+   except
+     seans := '';
+   end;
+
+   if seans <> ''
+   then begin
+     ChangeButtonListClick := True;
+     txtSeansTopPanel.EditValue := seans;
+   end;
+
 
    Result := True;
 end;
@@ -528,6 +576,20 @@ begin
 
 end;
 
+procedure TfrmHastaListeD.ListeGetCellHeight(Sender: TcxCustomGridTableView;
+  ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
+  ACellViewInfo: TcxGridTableDataCellViewInfo; var AHeight: Integer);
+begin
+  inherited;
+
+  if ACellViewInfo.Properties.ClassType = TcxImageProperties
+  then begin
+    AHeight := 48;
+
+  end;
+
+end;
+
 procedure TfrmHastaListeD.N1Click(Sender: TObject);
 begin
   donemYil := trim(stringReplace(TMenuItem(sender).Caption,'&','',[rfReplaceAll]));
@@ -628,7 +690,6 @@ end;
 procedure TfrmHastaListeD.txtayPropertiesChange(Sender: TObject);
 begin
     Bilgiler;
-
 end;
 
 end.

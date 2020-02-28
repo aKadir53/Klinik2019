@@ -75,7 +75,7 @@ object frmFirmaKart: TfrmFirmaKart
     Width = 107
   end
   object NaceKod: TcxButtonEditKadir
-    Tag = 1
+    Tag = -100
     Left = 264
     Top = 16
     Properties.Buttons = <

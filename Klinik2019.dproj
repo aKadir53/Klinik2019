@@ -305,22 +305,15 @@
 			<DCCReference Include="IlacEtkenMadde.pas">
 				<Form>frmIlacEtkenMaddeSutKural</Form>
 			</DCCReference>
-			<DCCReference Include="Centro.pas"/>
-			<DCCReference Include="ENA.pas"/>
-			<DCCReference Include="WebReferans\TenayENA.pas"/>
-			<DCCReference Include="WebReferans\tenayserviceCENTRO.pas"/>
+			<DCCReference Include="Derman.pas"/>
 			<DCCReference Include="WebReferans\LabTestlerService.pas"/>
 			<DCCReference Include="klorOlcum.pas">
 				<Form>frmKlorOlcum</Form>
 			</DCCReference>
 			<DCCReference Include="WebReferans\GemsoftServiceBIYOTIP.pas"/>
 			<DCCReference Include="WebReferans\GemSoftBIYOTIP.pas"/>
-			<DCCReference Include="WebReferans\TenayServiceSYNEVO.pas"/>
-			<DCCReference Include="WebReferans\TenaySynevo.pas"/>
 			<DCCReference Include="WebReferans\Referans.pas"/>
 			<DCCReference Include="WebReferans\ServiceReferansLab.pas"/>
-			<DCCReference Include="WebReferans\TenayServiceSYNLAB.pas"/>
-			<DCCReference Include="WebReferans\TenaySYNLAB.pas"/>
 			<DCCReference Include="hizliKayit.pas">
 				<Form>frmHizliKayit</Form>
 			</DCCReference>
@@ -330,7 +323,9 @@
 			<DCCReference Include="TakipKontrol.pas">
 				<Form>frmTakipKontrol</Form>
 			</DCCReference>
-			<DCCReference Include="WebReferans\TenaySISTEMTIP.pas"/>
+			<DCCReference Include="WebReferans\TenaySISTEMTIP.pas">
+				<Form>/ TenayAhenk in &apos;WebReferans\TenayAhenk.pas&apos;;</Form>
+			</DCCReference>
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>

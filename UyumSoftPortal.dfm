@@ -22,32 +22,13 @@ object frmPortal: TfrmPortal
     Align = alClient
     TabOrder = 0
     SkinData.SkinSection = 'PANEL'
-    object WebBrowser1: TWebBrowser
-      Left = 1
-      Top = 28
-      Width = 775
-      Height = 392
-      Align = alClient
-      TabOrder = 0
-      OnDocumentComplete = WebBrowser1DocumentComplete
-      ExplicitLeft = 5
-      ExplicitTop = 30
-      ExplicitWidth = 863
-      ExplicitHeight = 302
-      ControlData = {
-        4C00000019500000842800000000000000000000000000000000000000000000
-        000000004C000000000000000000000001000000E0D057007335CF11AE690800
-        2B2E12620F000000000000004C0000000114020000000000C000000000000046
-        8000000000000000000000000000000000000000000000000000000000000000
-        00000000000000000100000000000000000000000000000000000000}
-    end
     object pnlAdres: TPanel
       Left = 1
       Top = 1
       Width = 775
       Height = 27
       Align = alTop
-      TabOrder = 1
+      TabOrder = 0
       Visible = False
       DesignSize = (
         775
@@ -84,6 +65,25 @@ object frmPortal: TfrmPortal
         Align = alRight
         TabOrder = 1
       end
+    end
+    object WebBrowser1: TWebBrowser
+      Left = 1
+      Top = 28
+      Width = 775
+      Height = 392
+      Align = alClient
+      TabOrder = 1
+      OnDocumentComplete = WebBrowser1DocumentComplete
+      ExplicitLeft = 5
+      ExplicitTop = 30
+      ExplicitWidth = 863
+      ExplicitHeight = 302
+      ControlData = {
+        4C00000019500000842800000000000000000000000000000000000000000000
+        000000004C000000000000000000000001000000E0D057007335CF11AE690800
+        2B2E12620F000000000000004C0000000114020000000000C000000000000046
+        8000000000000000000000000000000000000000000000000000000000000000
+        00000000000000000100000000000000000000000000000000000000}
     end
   end
 end

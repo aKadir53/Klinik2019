@@ -70,10 +70,6 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
               '10')
             Properties.OnChange = cxSalonBilgisiPropertiesChange
             TabOrder = 0
-            ExplicitLeft = 2
-            ExplicitTop = -2
-            ExplicitWidth = 229
-            ExplicitHeight = 51
             Width = 227
           end
         end
@@ -90,14 +86,13 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
             DataController.Summary.DefaultGroupSummaryItems = <>
             DataController.Summary.FooterSummaryItems = <>
             DataController.Summary.SummaryGroups = <>
+            FilterRow.Visible = True
             OptionsData.Deleting = False
             OptionsData.Editing = False
             OptionsData.Inserting = False
             OptionsView.GroupByBox = False
             OptionsView.Indicator = True
             OptionsView.IndicatorWidth = 20
-            Styles.Selection = frmUzmanMuayene.cxStyle1
-            Styles.Indicator = frmUzmanMuayene.cxStyle1
             object dosyaNoColum: TcxGridDBColumn
               DataBinding.FieldName = 'dosyaNo'
               Visible = False
@@ -161,8 +156,6 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
               OptionsView.GroupByBox = False
               OptionsView.Indicator = True
               OptionsView.IndicatorWidth = 20
-              Styles.Selection = frmUzmanMuayene.cxStyle1
-              Styles.Indicator = frmUzmanMuayene.cxStyle1
               object Tarih: TcxGridDBColumn
                 DataBinding.FieldName = 'Tarih'
                 PropertiesClassName = 'TcxTextEditProperties'

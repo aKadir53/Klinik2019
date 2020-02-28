@@ -103,7 +103,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
               OptionsData.CancelOnExit = False
               OptionsData.Deleting = False
               OptionsData.DeletingConfirmation = False
-              OptionsData.Editing = False
               OptionsData.Inserting = False
               OptionsSelection.MultiSelect = True
               OptionsView.NavigatorOffset = 20
@@ -129,6 +128,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 Caption = #304'la'#231' Ad'#305
                 DataBinding.FieldName = 'ilacName'
                 HeaderAlignmentHorz = taCenter
+                Options.Editing = False
                 Width = 294
               end
               object cxGridIlacTedaviPlanigrup: TcxGridDBColumn
@@ -158,6 +158,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                     Description = 'Ay'
                     Value = '30'
                   end>
+                Options.Editing = False
                 Width = 37
               end
               object cxGridIlacTedaviPlanimiktar: TcxGridDBColumn
@@ -165,6 +166,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 DataBinding.FieldName = 'miktar'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
+                Options.Editing = False
                 Width = 40
               end
               object cxGridIlacTedaviPlanidoz: TcxGridDBColumn
@@ -173,6 +175,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
                 HeaderAlignmentHorz = taCenter
+                Options.Editing = False
                 Width = 36
               end
               object cxGridIlacTedaviPlanidozperyotmiktar: TcxGridDBColumn
@@ -226,6 +229,46 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 GroupIndex = 0
                 IsCaptionAssigned = True
               end
+              object cxGridIlacTedaviPlaniColumn6: TcxGridDBColumn
+                Caption = #304#351'lem'
+                DataBinding.FieldName = 'uygulamaTip'
+                PropertiesClassName = 'TcxImageComboBoxProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Properties.Items = <
+                  item
+                    Description = 'Her Ay'
+                    ImageIndex = 0
+                    Value = 1
+                  end
+                  item
+                    Description = 'Bu Ay'
+                    Value = 0
+                  end>
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Width = 60
+              end
+              object cxGridIlacTedaviPlaniColumn7: TcxGridDBColumn
+                Caption = 'Uygulama'
+                DataBinding.FieldName = 'uygulamaYeri'
+                PropertiesClassName = 'TcxImageComboBoxProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Properties.Items = <
+                  item
+                    Description = 'Ev'
+                    ImageIndex = 0
+                    Value = 0
+                  end
+                  item
+                    Description = 'Mekez'
+                    Value = 1
+                  end>
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Width = 60
+              end
             end
             object cxGridLevel15: TcxGridLevel
               Caption = 'Hastalar'
@@ -264,6 +307,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       Tag = -5
       Caption = 'Re'#231'eteye Ekle'
       ImageIndex = 97
+      Visible = False
       OnClick = cxButtonCClick
     end
     object y1: TMenuItem

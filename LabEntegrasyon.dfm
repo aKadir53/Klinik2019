@@ -236,7 +236,153 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
+              Width = 95
+            end
+            object ListeColumn6: TcxGridDBColumn
+              Caption = 'Serum Giri'#351
+              DataBinding.FieldName = 'ornekNo'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Width = 80
+            end
+            object Kilo: TcxGridDBColumn
+              Caption = 'Serum '#199#305'k'#305#351
+              DataBinding.FieldName = 'CikisOrnekNo'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Width = 80
+            end
+            object ListeColumn13: TcxGridDBColumn
+              Caption = 'OrnekNo TamKan'
+              DataBinding.FieldName = 'OrnekNo_TamKan'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Width = 80
+            end
+            object ListeColumn7: TcxGridDBColumn
+              Caption = 'OrnekNo Plazma'
+              DataBinding.FieldName = 'OrnekNo_Plazma'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Width = 80
+            end
+            object ListeColumn2: TcxGridDBColumn
+              Caption = 'Serum (Anaerob)'
+              DataBinding.FieldName = 'OrnekNo_Serum'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Width = 80
+            end
+            object ListeColumn5: TcxGridDBColumn
+              Caption = #214'rnek Durum'
+              DataBinding.FieldName = 'LabOrnekdurum'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 100
+            end
+            object ListeColumn8: TcxGridDBColumn
+              DataBinding.FieldName = 'CINSIYETI'
+              Visible = False
+            end
+            object ListeColumn9: TcxGridDBColumn
+              DataBinding.FieldName = 'HASTAADI'
+              Visible = False
+            end
+            object ListeColumn10: TcxGridDBColumn
+              DataBinding.FieldName = 'HASTASOYADI'
+              Visible = False
+            end
+            object ListeColumn11: TcxGridDBColumn
+              Caption = 'Kan A.Zamani'
+              DataBinding.FieldName = 'KanAlimZamani'
+              PropertiesClassName = 'TcxDateEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.Kind = ckDateTime
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Width = 80
+            end
+            object ListeColumn12: TcxGridDBColumn
+              Caption = 'Lab Kabul Zamani'
+              DataBinding.FieldName = 'LabaratuvarKabulZamani'
+              PropertiesClassName = 'TcxDateEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.Kind = ckDateTime
+              GroupSummaryAlignment = taCenter
+              HeaderAlignmentHorz = taCenter
+              Width = 80
+            end
+            object ListeColumn14: TcxGridDBColumn
+              Caption = 'Lab Kabul Durum'
+              DataBinding.FieldName = 'LabKabulDurum'
+              PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.Items = <
+                item
+                  Description = 'Red'
+                  ImageIndex = 0
+                  Value = 0
+                end
+                item
+                  Description = 'Kabul'
+                  Value = 1
+                end
+                item
+                  Description = 'Bekliyor'
+                  Value = 2
+                end>
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+            end
+            object ListeColumn15: TcxGridDBColumn
+              Caption = 'Lab Kabul Red Sebeb'
+              DataBinding.FieldName = 'LabKabulDurumRedAck'
+              PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.Items = <
+                item
+                  Description = 'Materyal Eksik'
+                  ImageIndex = 0
+                  Value = 1
+                end
+                item
+                  Description = 'Zayi'
+                  Value = 2
+                end>
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+            end
+            object ListeColumn3: TcxGridDBColumn
+              Caption = 'GelisID'
+              DataBinding.FieldName = 'SIRANO'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 50
             end
             object ListeColumn1: TcxGridDBColumn
               Caption = 'Do'#287'um Tarihi'
@@ -248,78 +394,6 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
               Width = 80
-            end
-            object ListeColumn6: TcxGridDBColumn
-              Caption = 'Serum Giri'#351
-              DataBinding.FieldName = 'ornekNo'
-              PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Width = 100
-            end
-            object Kilo: TcxGridDBColumn
-              Caption = 'Serum '#199#305'k'#305#351
-              DataBinding.FieldName = 'CikisOrnekNo'
-              PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Width = 100
-            end
-            object ListeColumn13: TcxGridDBColumn
-              Caption = 'OrnekNo TamKan'
-              DataBinding.FieldName = 'OrnekNo_TamKan'
-              PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Width = 100
-            end
-            object ListeColumn7: TcxGridDBColumn
-              Caption = 'OrnekNo Plazma'
-              DataBinding.FieldName = 'OrnekNo_Plazma'
-              PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Width = 100
-            end
-            object ListeColumn2: TcxGridDBColumn
-              Caption = 'Serum(Anaerob)'
-              DataBinding.FieldName = 'OrnekNo_Serum'
-              PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Width = 100
-            end
-            object ListeColumn3: TcxGridDBColumn
-              Caption = 'GelisID'
-              DataBinding.FieldName = 'SIRANO'
-              PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Options.Editing = False
-              Width = 67
-            end
-            object ListeColumn5: TcxGridDBColumn
-              Caption = #214'rnek Durum'
-              DataBinding.FieldName = 'LabOrnekdurum'
-              PropertiesClassName = 'TcxTextEditProperties'
-              Properties.Alignment.Horz = taCenter
-              Properties.Alignment.Vert = taVCenter
-              HeaderAlignmentHorz = taCenter
-              HeaderAlignmentVert = vaCenter
-              Options.Editing = False
-              Width = 158
             end
           end
           object cxGridLevel1: TcxGridLevel
@@ -591,6 +665,12 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
       Tag = -32
       Caption = 'Tetkik Tedavi Kart'#305
       ImageIndex = 99
+      OnClick = cxButtonCClick
+    end
+    object etkikTakipFormlar1: TMenuItem
+      Tag = 100
+      Caption = 'Tetkik Takip Formlar'#305' Yazd'#305'r'
+      ImageIndex = 28
       OnClick = cxButtonCClick
     end
   end

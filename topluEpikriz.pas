@@ -66,16 +66,18 @@ begin
    gun := DaysInMonth(_tarih_);
    txtTarih2 := txtYil.Text + ay1 + inttostr(gun);
 
-   sql := 'update Hasta_gelisler  ' +
+   sql := 'set nocount on ' +
+          'update Hasta_gelisler  ' +
           ' set MedulaEpikriz = dbo.HizmetDetay(g.basvuruno) ' +
           ' from Hasta_gelisler g ' +
           ' join HastaKart hk on hk.dosyaNo = g.dosyaNo ' +
           ' left join kurumFatura f on g.basvuruNo = f.basvuruNo ' +
           ' where bhdat between ' + QuotedStr(txtTarih1) + ' and ' + QuotedStr(txtTarih2) +
           ' and hk.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-          ' and isnull(f.GSSFaturaTeslimNo,'''') = '''' ' ;
+          ' and isnull(f.GSSFaturaTeslimNo,'''') = '''' ' +
+          ' set nocount off' ;
 
-   datalar.QueryExec(ado_sql,sql);
+   datalar.QueryExec(sql);
    sql :=
           ' select HASTAADI+'' ''+HASTASOYADI ad ,BHDAT tarih ,MedulaEpikriz ,aciklama ' +
           ' from Hasta_gelisler g ' +
@@ -83,7 +85,7 @@ begin
           ' where bhdat between ' + QuotedStr(txtTarih1) + ' and ' + QuotedStr(txtTarih2) +
           ' and h.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
           ' order by HASTAADI+'' ''+HASTASOYADI ';
-   datalar.QuerySelect(cxGrid2.dataset,sql);
+   datalar.QuerySelect(ado_sql,sql);
 
 end;
 
