@@ -77,7 +77,7 @@ object frmTopluHastaRecete: TfrmTopluHastaRecete
             TabOrder = 0
             LevelTabs.ImageBorder = 2
             LevelTabs.Style = 1
-            ExcelFileName = 'IzlemListesi'
+            ExcelFileName = 'Re'#231'eteListesi'
             ExceleGonder = True
             PopupForm = False
             object gridHastalar: TcxGridDBBandedTableView
@@ -339,12 +339,6 @@ object frmTopluHastaRecete: TfrmTopluHastaRecete
     object N2: TMenuItem
       Caption = '-'
     end
-    object DSVerileriniGnder1: TMenuItem
-      Tag = -11
-      Caption = 'Re'#231'ete '#304'mzala G'#246'nder'
-      ImageIndex = 76
-      OnClick = cxButtonCClick
-    end
     object S1: TMenuItem
       Tag = -13
       Caption = 'SMS G'#246'nder'
@@ -356,6 +350,22 @@ object frmTopluHastaRecete: TfrmTopluHastaRecete
       Caption = 'Excel'#39'e G'#246'nder'
       ImageIndex = 75
       OnClick = cxButtonCClick
+    end
+    object M1: TMenuItem
+      Caption = 'Medulaya G'#246'nder'
+      ImageIndex = 76
+      object DSVerileriniGnder1: TMenuItem
+        Tag = -11
+        Caption = 'Re'#231'ete '#304'mzala G'#246'nder'
+        ImageIndex = 76
+        OnClick = cxButtonCClick
+      end
+      object R2: TMenuItem
+        Tag = -100
+        Caption = 'Re'#231'etem'
+        ImageIndex = 122
+        OnClick = cxButtonCClick
+      end
     end
   end
   object cxStyleRepository1: TcxStyleRepository

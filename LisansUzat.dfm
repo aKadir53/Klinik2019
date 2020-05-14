@@ -3,7 +3,7 @@ object frmLisansBilgisi: TfrmLisansBilgisi
   Top = 213
   BorderStyle = bsToolWindow
   Caption = 'frmLisansBilgisi'
-  ClientHeight = 138
+  ClientHeight = 180
   ClientWidth = 324
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -22,7 +22,7 @@ object frmLisansBilgisi: TfrmLisansBilgisi
     Caption = '  Mevcut Lisans Bilgisi  '
     Style.BorderStyle = ebsOffice11
     TabOrder = 0
-    Height = 106
+    Height = 148
     Width = 324
     object Label1: TLabel
       Left = 119
@@ -88,6 +88,21 @@ object frmLisansBilgisi: TfrmLisansBilgisi
       ParentFont = False
       TabOrder = 0
     end
+    object txtLisansTip: TEdit
+      Left = 5
+      Top = 81
+      Width = 300
+      Height = 27
+      Alignment = taCenter
+      Color = clLime
+      Font.Charset = TURKISH_CHARSET
+      Font.Color = clWhite
+      Font.Height = -16
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+    end
   end
   object cxGroupBox1: TcxGroupBox
     Left = 8
@@ -115,7 +130,7 @@ object frmLisansBilgisi: TfrmLisansBilgisi
   end
   object PnlBottom: TcxGroupBox
     Left = 0
-    Top = 106
+    Top = 148
     Align = alBottom
     PanelStyle.Active = True
     TabOrder = 2

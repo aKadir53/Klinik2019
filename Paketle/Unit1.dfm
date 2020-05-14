@@ -2,7 +2,7 @@ object frmPaket: TfrmPaket
   Left = 450
   Top = 119
   BorderStyle = bsDialog
-  Caption = 'frmPaket'
+  Caption = 'Klinik2019 Update - Revizyon'
   ClientHeight = 588
   ClientWidth = 664
   Color = clBtnFace
@@ -29,14 +29,6 @@ object frmPaket: TfrmPaket
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object pb: TProgressBar
-    Left = 0
-    Top = 570
-    Width = 664
-    Height = 18
-    Align = alBottom
-    TabOrder = 0
-  end
   object txtMemo1: TMemo
     Left = 376
     Top = 512
@@ -44,22 +36,22 @@ object frmPaket: TfrmPaket
     Height = 17
     Lines.Strings = (
       'txtMemo1')
-    TabOrder = 1
+    TabOrder = 0
     Visible = False
   end
   object cxPageControl1: TcxPageControl
     Left = 0
     Top = 53
     Width = 664
-    Height = 517
+    Height = 500
     Align = alClient
-    TabOrder = 2
-    Properties.ActivePage = cxTabSheet1
+    TabOrder = 1
+    Properties.ActivePage = cxTabSheet4
     LookAndFeel.NativeStyle = False
-    LookAndFeel.SkinName = 'McSkin'
-    ClientRectBottom = 513
-    ClientRectLeft = 4
-    ClientRectRight = 660
+    LookAndFeel.SkinName = 'Lilian'
+    ClientRectBottom = 493
+    ClientRectLeft = 3
+    ClientRectRight = 657
     ClientRectTop = 26
     object cxTabSheet1: TcxTabSheet
       Caption = 'G'#252'ncelleme Komutlar'#305
@@ -76,7 +68,7 @@ object frmPaket: TfrmPaket
       object DBGrid1: TDBGrid
         Left = 0
         Top = 0
-        Width = 656
+        Width = 654
         Height = 241
         Align = alTop
         DataSource = DataSource1
@@ -90,8 +82,8 @@ object frmPaket: TfrmPaket
       object DBMemo1: TDBMemo
         Left = 0
         Top = 266
-        Width = 656
-        Height = 221
+        Width = 654
+        Height = 201
         Align = alClient
         DataSource = DataSource1
         Font.Charset = DEFAULT_CHARSET
@@ -105,7 +97,7 @@ object frmPaket: TfrmPaket
       object DBNavigator1: TDBNavigator
         Left = 0
         Top = 241
-        Width = 656
+        Width = 654
         Height = 25
         DataSource = DataSource1
         Align = alTop
@@ -116,15 +108,11 @@ object frmPaket: TfrmPaket
     object cxTabSheet2: TcxTabSheet
       Caption = 'Rapor Dizayn'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object DBMemo2: TDBMemo
         Left = 0
         Top = 266
-        Width = 656
-        Height = 221
+        Width = 654
+        Height = 201
         Align = alClient
         DataSource = DataSource2
         Font.Charset = DEFAULT_CHARSET
@@ -138,7 +126,7 @@ object frmPaket: TfrmPaket
       object DBNavigator2: TDBNavigator
         Left = 0
         Top = 241
-        Width = 656
+        Width = 654
         Height = 25
         DataSource = DataSource2
         Align = alTop
@@ -148,7 +136,7 @@ object frmPaket: TfrmPaket
       object DBGrid2: TDBGrid
         Left = 0
         Top = 0
-        Width = 656
+        Width = 654
         Height = 241
         Align = alTop
         DataSource = DataSource2
@@ -160,6 +148,91 @@ object frmPaket: TfrmPaket
         TitleFont.Style = []
       end
     end
+    object cxTabSheet3: TcxTabSheet
+      Caption = 'Klinik2019Dpr'
+      ImageIndex = 2
+      object Klinik2019Dpr: TMemo
+        Left = 0
+        Top = 0
+        Width = 654
+        Height = 467
+        Align = alClient
+        Lines.Strings = (
+          'Klinik2019Dpr')
+        TabOrder = 0
+      end
+    end
+    object cxTabSheet4: TcxTabSheet
+      Caption = 'Kullan'#305'c'#305' Veritabanlar'#305
+      ImageIndex = 3
+      object Splitter1: TSplitter
+        Left = 389
+        Top = 35
+        Height = 432
+        ExplicitLeft = 488
+        ExplicitTop = 232
+        ExplicitHeight = 100
+      end
+      object Panel3: TPanel
+        Left = 0
+        Top = 0
+        Width = 654
+        Height = 35
+        Align = alTop
+        TabOrder = 0
+        object Button1: TButton
+          Left = 3
+          Top = 4
+          Width = 75
+          Height = 25
+          Caption = 'Listele'
+          TabOrder = 0
+          OnClick = Button1Click
+        end
+        object Button2: TButton
+          Left = 104
+          Top = 4
+          Width = 121
+          Height = 25
+          Caption = 'Se'#231'ili SQL Uygula'
+          TabOrder = 1
+          OnClick = Button2Click
+        end
+      end
+      object Panel4: TPanel
+        Left = 0
+        Top = 35
+        Width = 389
+        Height = 432
+        Align = alLeft
+        Caption = 'Panel4'
+        TabOrder = 1
+        object DBGrid3: TDBGrid
+          Left = 1
+          Top = 1
+          Width = 387
+          Height = 430
+          Align = alClient
+          DataSource = DataSource3
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'MS Sans Serif'
+          TitleFont.Style = []
+        end
+      end
+      object txtLog: TMemo
+        Left = 392
+        Top = 35
+        Width = 262
+        Height = 432
+        Align = alClient
+        Lines.Strings = (
+          '')
+        TabOrder = 2
+      end
+    end
   end
   object Panel1: TPanel
     Left = 0
@@ -167,7 +240,7 @@ object frmPaket: TfrmPaket
     Width = 664
     Height = 53
     Align = alTop
-    TabOrder = 3
+    TabOrder = 2
     object SpeedButton4: TSpeedButton
       Left = 4
       Top = 2
@@ -177,84 +250,115 @@ object frmPaket: TfrmPaket
       OnClick = SpeedButton4Click
     end
     object SpeedButton1: TSpeedButton
-      Left = 105
+      Left = 104
       Top = 2
-      Width = 97
+      Width = 65
       Height = 26
       Caption = 'Paket '#199#305'kar'
       Enabled = False
+      Visible = False
       OnClick = SpeedButton1Click
     end
     object SpeedButton3: TSpeedButton
-      Left = 206
+      Left = 188
       Top = 2
-      Width = 170
+      Width = 337
       Height = 26
-      Caption = 'Exe '#39'leri Sunucuya G'#246'nder'
+      Caption = 'Dosyalar'#305' Sunucuya G'#246'nder'
       Enabled = False
       OnClick = SpeedButton3Click
     end
     object btPanodanYapistir: TSpeedButton
-      Left = 459
-      Top = 4
-      Width = 158
+      Left = 535
+      Top = 2
+      Width = 126
       Height = 26
       Caption = 'Panodan SQL Yap'#305#351't'#305'r'
       Enabled = False
       OnClick = btPanodanYapistirClick
     end
     object label111: TLabel
-      Left = 528
-      Top = 32
+      Left = 535
+      Top = 34
       Width = 67
       Height = 13
       Caption = 'ID Art'#305#351' miktar'#305
       FocusControl = SpinEdit1
     end
     object btnGit: TSpeedButton
-      Left = 105
-      Top = 26
-      Width = 97
+      Left = 104
+      Top = 2
+      Width = 65
       Height = 26
       Caption = 'Git....'
       Enabled = False
+      Visible = False
       OnClick = btnGitClick
     end
+    object Label2: TLabel
+      Left = 143
+      Top = 34
+      Width = 38
+      Height = 13
+      Caption = 'App.Ver'
+    end
+    object Label3: TLabel
+      Left = 339
+      Top = 34
+      Width = 53
+      Height = 13
+      Caption = 'DB.Update'
+    end
+    object Label4: TLabel
+      Left = 229
+      Top = 34
+      Width = 63
+      Height = 13
+      Caption = 'DLL Versiyon'
+    end
+    object Label5: TLabel
+      Left = 440
+      Top = 34
+      Width = 18
+      Height = 13
+      Caption = 'yvK'
+    end
     object ComboBox1: TComboBox
-      Left = 380
+      Left = 107
       Top = 4
-      Width = 73
+      Width = 70
       Height = 21
       ItemIndex = 1
       TabOrder = 0
-      Text = 'OSGB'
+      Text = 'DIYALIZ'
       OnChange = ComboBox1Change
       Items.Strings = (
         ''
-        'OSGB')
+        'DIYALIZ')
     end
-    object Versiyon: TMemo
-      Left = 207
+    object txtVersiyon: TMemo
+      Left = 188
       Top = 28
-      Width = 167
+      Width = 40
       Height = 23
+      Color = clYellow
       Lines.Strings = (
         '')
       TabOrder = 1
-      Visible = False
     end
     object txtRev: TMemo
-      Left = 380
+      Left = 397
       Top = 28
-      Width = 73
+      Width = 40
       Height = 23
+      Color = clYellow
       Lines.Strings = (
         '')
       TabOrder = 2
     end
     object SpinEdit1: TSpinEdit
-      Left = 608
-      Top = 28
+      Left = 613
+      Top = 30
       Width = 46
       Height = 22
       Hint = 'araya script sokmak laz'#305'm gelirse atlamas'#305' i'#231#252'n'
@@ -277,6 +381,54 @@ object frmPaket: TfrmPaket
       TabOrder = 4
       OnClick = cbSonBirAyClick
     end
+    object txtDLLVersiyon: TMemo
+      Left = 296
+      Top = 28
+      Width = 40
+      Height = 23
+      Color = clYellow
+      Lines.Strings = (
+        '')
+      TabOrder = 5
+    end
+    object yvK: TMemo
+      Left = 462
+      Top = 28
+      Width = 62
+      Height = 23
+      Color = clYellow
+      Lines.Strings = (
+        '')
+      TabOrder = 6
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 553
+    Width = 664
+    Height = 35
+    Align = alBottom
+    TabOrder = 3
+    Visible = False
+    object progressFilename: TLabel
+      Left = 1
+      Top = 1
+      Width = 662
+      Height = 13
+      Align = alTop
+      Alignment = taCenter
+      Caption = '...'
+      Transparent = False
+      ExplicitWidth = 9
+    end
+    object pb: TProgressBar
+      Left = 1
+      Top = 16
+      Width = 662
+      Height = 18
+      Align = alBottom
+      TabOrder = 0
+    end
   end
   object DataSource1: TDataSource
     DataSet = table1
@@ -286,8 +438,8 @@ object frmPaket: TfrmPaket
   object OpenDialog1: TOpenDialog
     Filter = '*.sql'
     InitialDir = 'C:\NoktaDiyaliz\SQLBAKIM\UPDATE'
-    Left = 98
-    Top = 276
+    Left = 66
+    Top = 292
   end
   object IdFTP1: TIdFTP
     OnStatus = IdFTP1Status
@@ -306,54 +458,75 @@ object frmPaket: TfrmPaket
     ProxySettings.ProxyType = fpcmNone
     ProxySettings.Port = 0
     ReadTimeout = 0
-    Left = 354
-    Top = 196
+    Left = 330
+    Top = 140
   end
   object table1: TADOQuery
-    Connection = DATALAR.Hedef
+    Connection = DATALAR.Master
     OnNewRecord = table1NewRecord
     Parameters = <>
     SQL.Strings = (
-      'select * from UPDATE_CMD_OSGB'
-      'where Modul = '#39'O'#39
+      'select * from UPDATE_CMD'
+      'where Modul = '#39'K'#39
       'order by ID')
-    Left = 536
+    Left = 568
     Top = 104
   end
   object DataSource2: TDataSource
     DataSet = ADO_Rapor_Dizayn
-    Left = 512
-    Top = 192
+    Left = 488
+    Top = 232
   end
   object ADO_Rapor_Dizayn: TADOQuery
     Connection = DATALAR.Hedef
     Parameters = <>
     SQL.Strings = (
       'select * from RaporlarDizayn')
-    Left = 584
-    Top = 192
+    Left = 576
+    Top = 232
   end
   object ado_sql: TADOQuery
-    Connection = Kaynak
+    Connection = DATALAR.Master
     CursorType = ctStatic
     Parameters = <>
     SQL.Strings = (
       
         'select SLVV s,SLXX u ,SLYY p , SLZZ db from parametreler where S' +
         'LK = '#39'GA'#39' and SLB = '#39'00'#39)
-    Left = 208
-    Top = 96
+    Left = 64
+    Top = 232
   end
-  object Kaynak: TADOConnection
-    CommandTimeout = 0
-    ConnectionString = 
-      'Provider=SQLOLEDB.1;Password=5353;Persist Security Info=True;Use' +
-      'r ID=sa;Initial Catalog=DIALIZ;Data Source=cmptr'
-    ConnectionTimeout = 20
-    KeepConnection = False
-    LoginPrompt = False
-    Provider = 'SQLOLEDB.1'
-    Left = 257
-    Top = 97
+  object HTTP1: TIdHTTP
+    AllowCookies = True
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
+    Request.ContentLength = -1
+    Request.ContentRangeEnd = -1
+    Request.ContentRangeStart = -1
+    Request.ContentRangeInstanceLength = -1
+    Request.ContentType = 'text/html'
+    Request.Accept = 'text/html, */*'
+    Request.BasicAuthentication = False
+    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    Request.Ranges.Units = 'bytes'
+    Request.Ranges = <>
+    HTTPOptions = [hoForceEncodeParams]
+    Left = 280
+    Top = 144
+  end
+  object DataSource3: TDataSource
+    DataSet = ADO_Databases
+    Left = 288
+    Top = 272
+  end
+  object ADO_Databases: TADOQuery
+    Connection = DATALAR.Master
+    OnNewRecord = table1NewRecord
+    Parameters = <>
+    SQL.Strings = (
+      'select * from sys.sysdatabases'
+      'where sid = 0xDDA391E50F3F8A43AC54F20D2480ADCC')
+    Left = 320
+    Top = 272
   end
 end

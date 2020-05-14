@@ -196,8 +196,6 @@ begin
       datalar.HastaKabulWS.KabulOku;
 
       if datalar.HastaKabulWS.Takip.sonucKodu = '0000'
-//      Sonuc := KabulOku(_TakipNo_,HastaBil,datalar.HastaKabul,0);
-//      if Sonuc = '0000'
       Then Begin
           ToolBar1.Visible := true;
           txtTakipBilgisi.Lines.Add('Takip No       :  ' + datalar.HastaKabulWS.Takip.takipNo);
@@ -213,10 +211,11 @@ begin
           txtTakipBilgisi.Lines.Add('ProvizYon Tipi :  ' + datalar.HastaKabulWS.Takip.provizyonTipi);
           txtTakipBilgisi.Lines.Add('Branþ          :  ' + datalar.HastaKabulWS.takip.bransKodu);
 
-          datalar.Bilgi.TakipNo := HastaBil.Takip;
-          datalar.Bilgi.BasvuruNo := HastaBil.BasvuruNo;
+          datalar.Bilgi.TakipNo := datalar.HastaKabulWS.Takip.takipNo;
+          datalar.Bilgi.BasvuruNo := datalar.HastaKabulWS.Takip.hastaBasvuruNo;
           datalar.Bilgi.dosyaNo := _dosyaNO_;
           datalar.Bilgi.gelisNo := _gelisNO_;
+          _BasvuruNo_ := datalar.HastaKabulWS.Takip.hastaBasvuruNo;
           frmTakipBilgisiOku._HastaAdSoyad_ := _HastaAdSoyad_;
       End
       else

@@ -136,7 +136,7 @@ begin
   IC.ValueField := 'SirketKod';
   IC.DisplayField := 'Tanimi';
   IC.BosOlamaz := False;
-  IC.Filter := '';
+  IC.Filter := ' FirmaTip = 1';
   setDataStringKontrol(self,IC,'SirketKod','Þirket',Kolon1,'',280,0,alNone,'');
   TcxImageComboKadir(FindComponent('SirketKod')).Properties.OnEditValueChanged := PropertiesEditValueChanged;//SirketlerPropertiesChange;
 

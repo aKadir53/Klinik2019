@@ -4,7 +4,7 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Popup Form'
-  ClientHeight = 411
+  ClientHeight = 670
   ClientWidth = 769
   Color = 13750737
   Font.Charset = TURKISH_CHARSET
@@ -22,7 +22,7 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
   TextHeight = 13
   object cxPanelBottom: TcxGroupBox
     Left = 0
-    Top = 376
+    Top = 635
     Align = alBottom
     PanelStyle.Active = True
     TabOrder = 0
@@ -62,13 +62,13 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
     Style.Font.Style = [fsBold]
     Style.IsFontAssigned = True
     TabOrder = 1
-    Height = 271
+    Height = 530
     Width = 769
     object cxGrid3: TcxGridKadir
       Left = 3
-      Top = 36
+      Top = 57
       Width = 763
-      Height = 120
+      Height = 358
       Align = alClient
       Font.Charset = TURKISH_CHARSET
       Font.Color = clWindowText
@@ -81,6 +81,8 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
       LevelTabs.Style = 1
       ExceleGonder = False
       PopupForm = False
+      ExplicitTop = 36
+      ExplicitHeight = 379
       object DBGrid: TcxGridDBTableView
         OnDblClick = DBGridDblClick
         Navigator.Buttons.OnButtonClick = DBGridNavigatorButtonsButtonClick
@@ -344,7 +346,7 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
     end
     object GrpAciklama: TcxGroupBox
       Left = 3
-      Top = 156
+      Top = 415
       Align = alBottom
       TabOrder = 2
       Visible = False
@@ -360,10 +362,115 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
         Width = 757
       end
     end
+    object pnlEpikrizAyar: TcxGroupBox
+      Left = 3
+      Top = 57
+      Align = alClient
+      Caption = 'Medulaya Gidecek Epikriz Ayarlar'#305
+      ParentFont = False
+      Style.Font.Charset = TURKISH_CHARSET
+      Style.Font.Color = clWindowText
+      Style.Font.Height = -11
+      Style.Font.Name = 'Tahoma'
+      Style.Font.Style = [fsBold]
+      Style.IsFontAssigned = True
+      TabOrder = 3
+      Visible = False
+      ExplicitTop = 36
+      ExplicitHeight = 379
+      Height = 358
+      Width = 763
+      object txtSeansSikayet: TcxCheckListBox
+        Left = 3
+        Top = 15
+        Width = 757
+        Height = 308
+        Align = alClient
+        Items = <
+          item
+            Text = #304'lk Diyaliz Tarihi'
+          end
+          item
+            Tag = 1
+            Text = 'Kan Grubu'
+          end
+          item
+            Tag = 2
+            Text = 'Ktv/urr'
+          end
+          item
+            Tag = 3
+            Text = 'Hepatit Marker'
+          end
+          item
+            Tag = 4
+            Text = #304'leti'#351'im Bilgileri'
+          end
+          item
+            Tag = 5
+            Text = 'Seans Say'#305's'#305
+          end
+          item
+            Tag = 6
+            Text = 'Geldi'#287'i Merkez'
+          end
+          item
+            Tag = 7
+            Text = 'PD Takibi Yap'#305'lm'#305#351't'#305'r'
+          end
+          item
+            Tag = 8
+            Text = 'Epikriz A'#231#305'klamas'#305
+          end
+          item
+            Tag = 9
+            Text = #304'deal Kilo - Heparinizasyon - Diyalizat'
+          end
+          item
+            Tag = 10
+            Text = 'Soy-TedaviGe'#231'mi'#351
+          end>
+        ParentFont = False
+        Style.Font.Charset = TURKISH_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -11
+        Style.Font.Name = 'Tahoma'
+        Style.Font.Style = [fsBold]
+        Style.IsFontAssigned = True
+        TabOrder = 0
+        ExplicitHeight = 329
+      end
+      object btnMedulaEpikrizAyarKaydet: TcxButton
+        Left = 3
+        Top = 323
+        Width = 757
+        Height = 25
+        Align = alBottom
+        Caption = 'Kaydet'
+        TabOrder = 1
+        OnClick = btnMedulaEpikrizAyarKaydetClick
+        ExplicitTop = 344
+      end
+    end
+    object txtAltTable: TcxImageComboKadir
+      Left = 3
+      Top = 36
+      Align = alTop
+      Properties.ClearKey = 46
+      Properties.DropDownRows = 20
+      Properties.Items = <>
+      Properties.OnChange = txtAltTablePropertiesChange
+      TabOrder = 4
+      Visible = False
+      BosOlamaz = False
+      FilterSet = fsNone
+      ExplicitTop = 15
+      Width = 763
+    end
   end
   object GrpAciklamaText: TcxGroupBox
     Left = 0
-    Top = 271
+    Top = 530
     Align = alBottom
     TabOrder = 2
     Visible = False

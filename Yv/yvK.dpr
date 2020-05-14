@@ -1,4 +1,4 @@
-program Yv;
+program yvK;
 
 uses
   Vcl.Forms,

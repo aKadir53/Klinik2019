@@ -66,12 +66,12 @@ var
   bb : integer;
   ss : string;
 begin
-      if ButtonClick = True then exit;
+   if ButtonClick = True then exit;
    ss := (Webbrowser1.Document as ihtmldocument2).body.parentelement.outerhtml;
  //  cxMemo1.Text := (Webbrowser1.Document as ihtmldocument2).body.parentelement.outerhtml;
    bb := pos('Evrak Ref. No : </td><td class="ui-panelgrid-cell" role="gridcell">',ss);
 
-   ShowMessage(copy(ss,bb+67,6));
+  // ShowMessage(copy(ss,bb+67,6));
 
       idoc := Webbrowser1.document as IHTMLDocument2;
       ov := 'INPUT';
@@ -99,10 +99,19 @@ begin
 
                             if _uygulama = 'Medula'
                             Then begin
-                              if iInputElement.Get_name = 'j_username'
+                              if iInputElement.Get_name = 'j_id_9:userName' //'j_username'
                               then iInputElement.Set_value(_user);
 
-                              if iInputElement.Get_name = 'j_password'
+                              if iInputElement.Get_name = 'j_id_9:j_id_j' //'j_password'
+                              then iInputElement.Set_value(_pas);
+                            end;
+
+                            if _uygulama = 'ENabiz'
+                            then begin
+                              if iInputElement.Get_name = 'NQUser'
+                              then iInputElement.Set_value(_user);
+
+                              if iInputElement.Get_name = 'NQPassword'
                               then iInputElement.Set_value(_pas);
                             end;
                            (*

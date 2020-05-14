@@ -37,7 +37,6 @@ type
     SifirGoster: TcxCheckBox;
     txtTarih2: TcxDateEditKadir;
     DataSource2: TDataSource;
-    Ado_GunSonuOzetLog: TADOTable;
     cxGrid2: TcxGridKadir;
     cxGridGonderimLog: TcxGridDBTableView;
     cxGridGonderimLogtarih1: TcxGridDBColumn;
@@ -58,6 +57,8 @@ type
     chkTumAy: TcxCheckBox;
     ADO_SQL: TADOQuery;
     DataSource1: TDataSource;
+    Ado_GunSonuOzetLog: TADOQuery;
+    lblMesaj: TcxLabel;
     procedure btnListClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure txtTarihPropertiesChange(Sender: TObject);
@@ -108,6 +109,7 @@ begin
      Ado_GunSonuOzetLog.FieldByName('tarih2').AsDateTime := txtTarih2.Date;
      Ado_GunSonuOzetLog.FieldByName('SonucMesaj').AsString := sonuc;
      Ado_GunSonuOzetLog.FieldByName('SendUser').AsString := datalar.username;
+     Ado_GunSonuOzetLog.FieldByName('sirketKod').AsString := datalar.AktifSirket;
      Ado_GunSonuOzetLog.Post;
 
 
@@ -136,7 +138,10 @@ var
 begin
      DurumGoster(True);
      try
-       Ado_GunSonuOzetLog.Active := True;
+       //Ado_GunSonuOzetLog.Active := False;
+       datalar.QuerySelect(Ado_GunSonuOzetLog,
+                           'select * from GunSonuOzetGonderimLog where sirketKod = ' + QuotedStr(datalar.AktifSirket));
+
        sifir := strtoint(ifThen(SifirGoster.EditValue=True,'1','0'));
 
        if chkTumAy.Checked
@@ -208,6 +213,7 @@ begin
 
   if cxPageControl1.ActivePage = cxTabSheet2
   Then BEgin
+
      sifir := strtoint(ifThen(SifirGoster.EditValue=True,'1','0'));
 
      if chkTumAy.Checked
@@ -242,7 +248,14 @@ begin
      XMLDocument1.Active := true;
      XMLDocument1.SaveToFile('c:\NoktaV3\GunSonuOzetMesaj.xml');
      WebBrowser1.Navigate('c:\NoktaV3\GunSonuOzetMesaj.xml');
-  End;
+
+     btnGonder.Enabled := True;
+
+  End
+  else
+     btnGonder.Enabled := False;
+
+
 end;
 
 procedure TfrmGunSonuOzet.FormCreate(Sender: TObject);
@@ -259,13 +272,17 @@ begin
   if (key = VK_F12)// and (Shift = [ssShift]) and (Shift = [ssCtrl])
   then begin
     _Tip_ := 'M';
-    btnGonder.Caption := 'Gönderm';
+//    btnGonder.Caption := 'Gönderm';
+    lblMesaj.Visible := True;
+    btnList.Click;
   end;
 
   if (key = VK_F11) //and (Shift = [ssShift]) and (Shift = [ssCtrl])
   then begin
     _Tip_ := '';
-    btnGonder.Caption := 'Gönder';
+    lblMesaj.Visible := False;
+    btnList.Click;
+  //  btnGonder.Caption := 'Gönder';
   end;
 
 end;

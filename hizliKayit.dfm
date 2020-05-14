@@ -4,7 +4,7 @@ object frmHizliKayit: TfrmHizliKayit
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'frmHizliKayit'
-  ClientHeight = 496
+  ClientHeight = 500
   ClientWidth = 912
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -23,10 +23,10 @@ object frmHizliKayit: TfrmHizliKayit
     Left = 337
     Top = 36
     Width = 575
-    Height = 460
+    Height = 464
     Align = alClient
     TabOrder = 1
-    ClientRectBottom = 453
+    ClientRectBottom = 457
     ClientRectLeft = 3
     ClientRectRight = 568
     ClientRectTop = 3
@@ -68,13 +68,13 @@ object frmHizliKayit: TfrmHizliKayit
     Style.Font.Style = [fsBold]
     Style.IsFontAssigned = True
     TabOrder = 2
-    Height = 460
+    Height = 464
     Width = 575
     object cxGrid2: TcxGrid
       Left = 3
       Top = 15
       Width = 569
-      Height = 435
+      Height = 439
       Align = alClient
       Font.Charset = TURKISH_CHARSET
       Font.Color = clWindowText
@@ -88,7 +88,7 @@ object frmHizliKayit: TfrmHizliKayit
       ExplicitLeft = 2
       ExplicitTop = -2
       ExplicitWidth = 571
-      ExplicitHeight = 460
+      ExplicitHeight = 464
       object GridEkstre: TcxGridDBTableView
         Navigator.Buttons.First.Visible = True
         Navigator.Buttons.PriorPage.Visible = True
@@ -313,7 +313,7 @@ object frmHizliKayit: TfrmHizliKayit
     Left = 0
     Top = 36
     Width = 337
-    Height = 460
+    Height = 464
     Align = alLeft
     Caption = 'Panel1'
     TabOrder = 3
@@ -351,15 +351,7 @@ object frmHizliKayit: TfrmHizliKayit
         Left = 120
         Top = 34
         Style.BorderStyle = ebsUltraFlat
-        Style.LookAndFeel.NativeStyle = False
-        Style.LookAndFeel.SkinName = 'mcskin'
         Style.TransparentBorder = True
-        StyleDisabled.LookAndFeel.NativeStyle = False
-        StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-        StyleFocused.LookAndFeel.NativeStyle = False
-        StyleFocused.LookAndFeel.SkinName = 'mcskin'
-        StyleHot.LookAndFeel.NativeStyle = False
-        StyleHot.LookAndFeel.SkinName = 'mcskin'
         TabOrder = 1
         Width = 121
       end
@@ -609,33 +601,9 @@ object frmHizliKayit: TfrmHizliKayit
         ParentShowHint = False
         ShowHint = True
         Style.BorderStyle = ebsUltraFlat
-        Style.LookAndFeel.NativeStyle = False
-        Style.LookAndFeel.SkinName = 'mcskin'
         Style.TransparentBorder = True
-        StyleDisabled.LookAndFeel.NativeStyle = False
-        StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-        StyleFocused.LookAndFeel.NativeStyle = False
-        StyleFocused.LookAndFeel.SkinName = 'mcskin'
-        StyleHot.LookAndFeel.NativeStyle = False
-        StyleHot.LookAndFeel.SkinName = 'mcskin'
         TabOrder = 16
         Width = 84
-      end
-      object txtTel: TcxTextEdit
-        Left = 120
-        Top = 79
-        Style.BorderStyle = ebsUltraFlat
-        Style.LookAndFeel.NativeStyle = False
-        Style.LookAndFeel.SkinName = 'mcskin'
-        Style.TransparentBorder = True
-        StyleDisabled.LookAndFeel.NativeStyle = False
-        StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-        StyleFocused.LookAndFeel.NativeStyle = False
-        StyleFocused.LookAndFeel.SkinName = 'mcskin'
-        StyleHot.LookAndFeel.NativeStyle = False
-        StyleHot.LookAndFeel.SkinName = 'mcskin'
-        TabOrder = 17
-        Width = 121
       end
       object cxLabel14: TcxLabel
         Left = 8
@@ -656,16 +624,8 @@ object frmHizliKayit: TfrmHizliKayit
         Left = 120
         Top = 101
         Style.BorderStyle = ebsUltraFlat
-        Style.LookAndFeel.NativeStyle = False
-        Style.LookAndFeel.SkinName = 'mcskin'
         Style.TransparentBorder = True
-        StyleDisabled.LookAndFeel.NativeStyle = False
-        StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-        StyleFocused.LookAndFeel.NativeStyle = False
-        StyleFocused.LookAndFeel.SkinName = 'mcskin'
-        StyleHot.LookAndFeel.NativeStyle = False
-        StyleHot.LookAndFeel.SkinName = 'mcskin'
-        TabOrder = 19
+        TabOrder = 18
         Width = 210
       end
       object cxLabel15: TcxLabel
@@ -683,6 +643,16 @@ object frmHizliKayit: TfrmHizliKayit
         Height = 17
         Width = 110
       end
+      object txtTel: TcxMaskEdit
+        Left = 120
+        Top = 79
+        Properties.EditMask = '!\(999\)000-00-00;1;_'
+        Properties.MaxLength = 0
+        Properties.OnValidate = MaskEditPropertiesValidate
+        TabOrder = 20
+        Text = '(   )   -  -  '
+        Width = 121
+      end
     end
     object cxGroupBox2: TcxGroupBox
       Left = 1
@@ -697,17 +667,17 @@ object frmHizliKayit: TfrmHizliKayit
       Style.Font.Style = [fsBold]
       Style.IsFontAssigned = True
       TabOrder = 1
-      Height = 325
+      Height = 329
       Width = 335
       object cxPageControl2: TcxPageControl
         Left = 3
         Top = 15
         Width = 329
-        Height = 300
+        Height = 304
         Align = alClient
         TabOrder = 0
         Properties.ActivePage = cxTabSheet1
-        ClientRectBottom = 293
+        ClientRectBottom = 297
         ClientRectLeft = 3
         ClientRectRight = 322
         ClientRectTop = 26
@@ -809,16 +779,8 @@ object frmHizliKayit: TfrmHizliKayit
             Top = 73
             Properties.ReadOnly = True
             Style.BorderStyle = ebsUltraFlat
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
             Style.TextStyle = [fsBold]
             Style.TransparentBorder = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
             TabOrder = 5
             Width = 196
           end
@@ -827,16 +789,8 @@ object frmHizliKayit: TfrmHizliKayit
             Top = 51
             Properties.ReadOnly = True
             Style.BorderStyle = ebsUltraFlat
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
             Style.TextStyle = [fsBold]
             Style.TransparentBorder = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
             TabOrder = 6
             Width = 196
           end
@@ -873,38 +827,22 @@ object frmHizliKayit: TfrmHizliKayit
           object txtTakipNo: TcxTextEdit
             Left = 120
             Top = 4
-            Properties.ReadOnly = True
+            Properties.ReadOnly = False
             Style.BorderStyle = ebsUltraFlat
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
             Style.TextStyle = [fsBold]
             Style.TransparentBorder = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
             TabOrder = 9
-            Width = 106
+            Width = 102
           end
           object txtBasvuruNo: TcxTextEdit
-            Left = 228
+            Left = 223
             Top = 4
-            Properties.ReadOnly = True
+            Properties.ReadOnly = False
             Style.BorderStyle = ebsUltraFlat
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
             Style.TextStyle = [fsBold]
             Style.TransparentBorder = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
             TabOrder = 10
-            Width = 88
+            Width = 93
           end
           object cxLabel7: TcxLabel
             Left = 9
@@ -931,18 +869,11 @@ object frmHizliKayit: TfrmHizliKayit
           object txtTcKimlikNo: TcxTextEdit
             Left = 120
             Top = 27
+            Properties.ReadOnly = True
             Style.BorderStyle = ebsUltraFlat
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
             Style.TransparentBorder = True
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
             TabOrder = 13
-            Width = 106
+            Width = 196
           end
           object cxLabel13: TcxLabel
             Left = 9
@@ -961,35 +892,42 @@ object frmHizliKayit: TfrmHizliKayit
           end
           object txtSigortaliTuru: TcxImageComboKadir
             Left = 120
-            Top = 119
+            Top = 120
             Properties.ClearKey = 46
             Properties.Items = <>
+            Properties.ReadOnly = True
             TabOrder = 15
+            TableName = 'Medula_SigortaliTurleri'
+            Conn = DATALAR.ADOConnection2
+            ValueField = 'Kod'
+            DisplayField = 'tanimi'
             BosOlamaz = False
-            FilterSet = fsNone
-            Width = 106
-          end
-          object txtDevredilenKurum: TcxTextEdit
-            Left = 120
-            Top = 141
-            Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.SkinName = 'mcskin'
-            StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.SkinName = 'mcskin'
-            StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.SkinName = 'mcskin'
-            StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.SkinName = 'mcskin'
-            TabOrder = 16
-            Width = 105
+            FilterSet = fsSigortaliTur
+            Width = 196
           end
           object txtdogumTarihi: TcxDateEditKadir
             Left = 120
             Top = 97
-            TabOrder = 17
+            Properties.ReadOnly = True
+            TabOrder = 16
             BosOlamaz = False
             ValueTip = tvString
-            Width = 106
+            Width = 196
+          end
+          object txtDevredilenKurum: TcxImageComboKadir
+            Left = 120
+            Top = 143
+            Properties.ClearKey = 46
+            Properties.Items = <>
+            Properties.ReadOnly = True
+            TabOrder = 17
+            TableName = 'Medula_DevredilenKurumlar'
+            Conn = DATALAR.ADOConnection2
+            ValueField = 'Kod'
+            DisplayField = 'tanimi'
+            BosOlamaz = False
+            FilterSet = fsDevKurum
+            Width = 196
           end
         end
         object cxTabSheet2: TcxTabSheet
@@ -1010,7 +948,7 @@ object frmHizliKayit: TfrmHizliKayit
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.SkinName = 'mcskin'
             TabOrder = 0
-            Height = 267
+            Height = 271
             Width = 319
           end
         end

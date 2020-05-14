@@ -228,7 +228,7 @@ Begin
        kayitTip := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
 
-        if  (kayitTip = 'Yeni Kayýt')
+        if  (kayitTip = 'ONAY')
         Then Begin
            dosyaNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
@@ -521,6 +521,7 @@ begin
    KurumMNT := TenayENA.KurumBilgileri.Create;
    KurumMNT.KullaniciAdi := datalar._labusername;
    KurumMNT.Kodu := datalar._labkurumkod;
+   KurumMNT.KurumKodu := datalar._labkurumkod;
    KurumMNT.Sifre := datalar._labsifre;
    HTSO.KurumBilgileri := KurumMNT;
 
@@ -767,7 +768,7 @@ begin
           sql := 'select h.name1,h.Tarih,l.islemKodu from hareketlerLab h ' +
                  ' join labtestler_firma l on l.butKodu = h.code and h.tip1 = l.tip and l.LabID = ' + QuotedStr(datalar._labID) +
                  ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis +
-                 ' and charindex(''.'',h.code) = 0 and h.tip1 = l.tip';
+                 ' and charindex(''.'',h.code) = 0 and h.tip1 = l.tip and h.onay = 1';
 
                 (*
                  ' union all ' +

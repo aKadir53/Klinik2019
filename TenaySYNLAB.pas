@@ -75,7 +75,7 @@ Begin
        kayitTip := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
 
-        if  (kayitTip = 'Yeni Kayýt')
+        if  (kayitTip = 'ONAY')
         Then Begin
            dosyaNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
@@ -222,7 +222,7 @@ begin
                 if (HTSOTCCvp.Sonuclar[0] = nil) and (length(HTSOTCCvp.Sonuclar) = 1)
                 then  begin
                    txtLog.Lines.Add(inttostr(HTSOTC.TC) + ' - Sonuç Bulunamadý');
-                   exit;
+                   Continue;
                 end;
 
                       for _Sonuclar_ in HTSOTCCvp.Sonuclar do
@@ -282,26 +282,26 @@ begin
                                       sonucA := trim(StringReplace(SonucA,'(','',[rfReplaceAll]));
                                       sonucA := trim(StringReplace(SonucA,')','',[rfReplaceAll]));
 
-                                      sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
+                                      sql := 'update hareketler set Gd = ' + QuotedStr(sonuc) + //dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
                                        datalar.QueryExec(ado,sql);
 
-                                      sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
+                                      sql := 'update hareketler set islemAciklamasi  = dbo.fn_gecersizKarakterHarf(' + QuotedStr(sonucA) + ')' +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
                                       datalar.QueryExec(ado,sql);
                                    End
                                    else
                                    begin
                                       try
-                                       sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
+                                       sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_TetkikSonuclar_.Sonuc) + ')' +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
                                        datalar.QueryExec(ado,sql);
                                       except
-                                         sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
+                                         sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(_TetkikSonuclar_.Sonuc) +
                                                 ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and tip1 = ' + QuotedStr(_F_) +
                                                 ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
                                          datalar.QueryExec(ado,sql);
@@ -389,10 +389,11 @@ begin
 
     GelisSYNLAB.GelisTipi := GelisTipi.DiyalizGiris;
 
-    sql := 'select * from hareketlerLab h ' +
+    sql := 'select h.*,l.*,(select Tarih from hareketlerSeans hs where hs.dosyaNo = h.dosyaNo and hs.gelisNo = h.gelisNo and hs.KanAlindimi = 1) KanAlimTarihi ' +
+           ' from hareketlerLab h ' +
            ' join labtestler_Firma l on l.butKodu = h.code and l.labID = ' + QuotedStr(datalar._labID) +
-           ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and onay = 1 and gelisNo = ' + gelis +
-           ' and charindex(''.'',code) = 0 and h.tip1 = l.tip';
+           ' where h.dosyaNo = ' + QuotedStr(dosyaNo) + ' and onay = 1 and h.gelisNo = ' + gelis +
+           ' and charindex(''.'',h.code) = 0 and h.tip1 = l.tip';
     datalar.QuerySelect(ado,sql);
     j := ado.RecordCount;
     SetLength(istekler,j);
@@ -411,9 +412,9 @@ begin
       istek.KapId := 26;
       istek.OrnekTurId := ifThen(TurId = '','0',TurId);
       ATarih := TXSDateTime.Create;
-      ATarih.Year := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('Tarih').AsDateTime),1,4));
-      ATarih.Month := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('Tarih').AsDateTime),5,2));
-      ATarih.Day := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('Tarih').AsDateTime),7,2));
+      ATarih.Year := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('KanAlimTarihi').AsDateTime),1,4));
+      ATarih.Month := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('KanAlimTarihi').AsDateTime),5,2));
+      ATarih.Day := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('KanAlimTarihi').AsDateTime),7,2));
       istek.AlindigiTarih := ATarih;
 
       istekler[i] := istek;

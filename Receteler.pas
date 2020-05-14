@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
   cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit, DB,
-  cxDBData, cxCurrencyEdit, cxGridLevel, cxGridBandedTableView, kadir,
+  cxDBData, cxCurrencyEdit, cxGridLevel, cxGridBandedTableView, kadir,getformClass,
   cxGridDBBandedTableView, cxGridCustomTableView, cxGridTableView, cxGridExportLink,
   cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, StdCtrls, Mask,
    Buttons, sBitBtn, ExtCtrls, ADODB,kadirType,GirisUnit,KadirLabel,
@@ -29,9 +29,9 @@ type
     ADO_Receteler: TADOQuery;
     Ds_cxGrid2: TDataSource;
     Receteler_sayfalar: TcxPageControl;
-    cxTabSheet1: TcxTabSheet;
-    cxTabSheet2: TcxTabSheet;
-    cxGrid2: TcxGrid;
+    sayfa_receteler: TcxTabSheet;
+    sayfa_ilacsayilari: TcxTabSheet;
+    cxGrid2: TcxGridKadir;
     ReceteDetay: TcxGridDBTableView;
     cxGridDBBandedTableView1: TcxGridDBBandedTableView;
     cxGridDBBandedColumn1: TcxGridDBBandedColumn;
@@ -51,7 +51,7 @@ type
     cxGridDBBandedColumn12: TcxGridDBBandedColumn;
     cxGridDBBandedColumn13: TcxGridDBBandedColumn;
     cxGridLevel1: TcxGridLevel;
-    cxGrid1: TcxGrid;
+    cxGrid1: TcxGridKadir;
     Recete: TcxGridDBTableView;
     cxGridLevel2: TcxGridLevel;
     ADO_ReceteDetay: TADOQuery;
@@ -63,7 +63,7 @@ type
     ReceteDetaykullanZamanUnit: TcxGridDBColumn;
     ReceteDetaykullanimAdet2: TcxGridDBColumn;
     ReceteDetayadet: TcxGridDBColumn;
-    cxGrid3: TcxGrid;
+    cxGrid3: TcxGridKadir;
     cxGridDBTableView1: TcxGridDBTableView;
     cxGridDBBandedTableView9: TcxGridDBBandedTableView;
     cxGridDBBandedColumn27: TcxGridDBBandedColumn;
@@ -91,7 +91,7 @@ type
     cxGridDBTableView1toplamDoz: TcxGridDBColumn;
     DataSource3: TDataSource;
     ADO_Hast: TADOQuery;
-    cxGrid4: TcxGrid;
+    cxGrid4: TcxGridKadir;
     cxGridDBTableView2: TcxGridDBTableView;
     cxGridDBColumn12: TcxGridDBColumn;
     cxGridDBColumn13: TcxGridDBColumn;
@@ -124,8 +124,8 @@ type
     cxGridLevel4: TcxGridLevel;
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
-    cxTabSheet3: TcxTabSheet;
-    cxGrid5: TcxGrid;
+    sayfa_hastailacsayilari: TcxTabSheet;
+    cxGrid5: TcxGridKadir;
     cxGridRecetelerGrup: TcxGridDBTableView;
     cxGridDBColumn23: TcxGridDBColumn;
     cxGridDBColumn24: TcxGridDBColumn;
@@ -199,8 +199,70 @@ type
     txtHastaBilgisi: TcxTextEdit;
     cxLabel1: TcxLabel;
     ReceteTanimi: TcxGridDBColumn;
-    cxSplitter1: TcxSplitter;
     cxSplitter2: TcxSplitter;
+    cxGridDBTableView1Column1: TcxGridDBColumn;
+    R1: TMenuItem;
+    cxGridRecetelerGrupColumn9: TcxGridDBColumn;
+    sayfa_doktorilacsayilari: TcxTabSheet;
+    DoktorIlacGrid: TcxGridKadir;
+    cxGridDBTableView3: TcxGridDBTableView;
+    cxGridDBColumn1: TcxGridDBColumn;
+    cxGridDBColumn2: TcxGridDBColumn;
+    cxGridDBColumn3: TcxGridDBColumn;
+    cxGridDBColumn4: TcxGridDBColumn;
+    cxGridDBColumn5: TcxGridDBColumn;
+    cxGridDBBandedTableView5: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn14: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn15: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn16: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn17: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn18: TcxGridDBBandedColumn;
+    cxGridDBBandedTableView6: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn19: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn20: TcxGridDBBandedColumn;
+    cxGridDBBandedTableView7: TcxGridDBBandedTableView;
+    cxGridDBBandedTableView8: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn21: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn22: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn23: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn24: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn25: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn26: TcxGridDBBandedColumn;
+    cxGridLevel6: TcxGridLevel;
+    DoktorReceteGrid: TcxGridKadir;
+    cxGridDBTableView4: TcxGridDBTableView;
+    cxGridDBColumn6: TcxGridDBColumn;
+    cxGridDBColumn7: TcxGridDBColumn;
+    cxGridDBColumn8: TcxGridDBColumn;
+    cxGridDBColumn9: TcxGridDBColumn;
+    cxGridDBColumn10: TcxGridDBColumn;
+    cxGridDBColumn11: TcxGridDBColumn;
+    cxGridDBColumn26: TcxGridDBColumn;
+    cxGridDBColumn38: TcxGridDBColumn;
+    cxGridDBColumn39: TcxGridDBColumn;
+    cxGridDBColumn40: TcxGridDBColumn;
+    cxGridDBColumn41: TcxGridDBColumn;
+    cxGridDBBandedTableView21: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn66: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn67: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn68: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn69: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn70: TcxGridDBBandedColumn;
+    cxGridDBBandedTableView22: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn71: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn72: TcxGridDBBandedColumn;
+    cxGridDBBandedTableView23: TcxGridDBBandedTableView;
+    cxGridDBBandedTableView24: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn73: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn74: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn75: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn76: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn77: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn78: TcxGridDBBandedColumn;
+    cxGridLevel7: TcxGridLevel;
+    cxGridDBTableView3Column1: TcxGridDBColumn;
+    cxSplitter1: TcxSplitter;
+    cxSplitter3: TcxSplitter;
     procedure TopPanelButonClick(Sender: TObject);
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure cxGridDBTableView1DblClick(Sender: TObject);
@@ -212,6 +274,8 @@ type
     procedure ReceteFocusedRecordChanged(Sender: TcxCustomGridTableView;
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
+    procedure Y1Click(Sender: TObject);
+    procedure cxGridDBTableView3DblClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -229,11 +293,20 @@ implementation
 
 
 procedure TfrmReceteler.cxButtonCClick(Sender: TObject);
+var
+ F : TGirisForm;
+ GirisFormRecord : TGirisFormRecord;
 begin
   datalar.KontrolUserSet := False;
   inherited;
   if datalar.KontrolUserSet = True then exit;
 
+
+  GirisFormRecord.F_ResourceID_ := ADO_Receteler.FieldByName('id').AsString;
+  GirisFormRecord.F_dosyaNo_ := ADO_Receteler.FieldByName('dosyaNo').AsString;;
+  GirisFormRecord.F_gelisNo_ := ADO_Receteler.FieldByName('gelisNo').AsString;
+  GirisFormRecord.F_HastaAdSoyad_ := ADO_Receteler.FieldByName('HASTAADI').AsString + ' ' +
+                                     ADO_Receteler.FieldByName('HASTASOYADI').AsString;
 
   case TControl(sender).Tag  of
     0 : begin
@@ -243,10 +316,19 @@ begin
          // post;
          //ShowMessage('Ýptal');
         end;
-   -1 : begin
+   -7 : begin
 
+            DurumGoster(True,False,'Hastanýn Reçeteleri Yükleniyor...');
+            try
+              F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet);
+              F._foto_ := _foto_;
+              if F <> nil then F.ShowModal;
+            finally
+              DurumGoster(False,False);
 
-   end;
+            end;
+
+        end;
    end;
   //a
 end;
@@ -326,6 +408,20 @@ begin
   datalar.QuerySelect(ADO_Hast,sql);
 end;
 
+procedure TfrmReceteler.cxGridDBTableView3DblClick(Sender: TObject);
+var
+  sql : string;
+begin
+  sql := 'select r.*,h.HASTAADI,h.HASTASOYADI from recete r ' +
+         ' join receteDetay rd on R.id = RD.receteId ' +
+         ' join hastakart h on h.dosyaNo = r.dosyaNO ' +
+         ' where convert(varchar,tarih,112) between ' + txtTopPanelTarih1.GetSQLValue + ' and ' + txtTopPanelTarih2.GetSQLValue +
+         ' and rd.ilacKodu = ' + QuotedStr(DoktorIlacGrid.Dataset.FieldByName('ilacKodu').AsString) +
+         ' and h.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+         //in (select sirketKod from SIRKETLER_TNM_view where doktor = ' + QuotedStr(datalar.doktorKodu)  + ')' +
+         ' order by h.HASTAADI , h.HASTASOYADI ' ;
+  datalar.QuerySelect(DoktorReceteGrid.Dataset,sql);
+end;
 procedure TfrmReceteler.D1Click(Sender: TObject);
 begin
   cxGridRecetelerGrup.ViewData.Expand(true);
@@ -360,6 +456,80 @@ begin
 end;
 
 
+procedure TfrmReceteler.Y1Click(Sender: TObject);
+var
+  sql , id , dosyaNo: string;
+  ado,ado1 : TADOQuery;
+  x : integer;
+  TopluDataset : TDataSetKadir;
+begin
+
+   if Recete.Controller.SelectedRowCount = 0 then exit;
+
+
+   for x := 0 to Recete.Controller.SelectedRowCount - 1 do
+   begin
+       id := id + ',' + inttostr(Recete.DataController.GetValue(Recete.Controller.SelectedRows[x].RecordIndex,
+                                                                Recete.DataController.GetItemByFieldName('id').Index));
+   end;
+
+
+ //  id := ADO_Receteler.fieldbyname('id').AsString;
+   dosyaNo := ADO_Receteler.fieldbyname('dosyaNo').AsString;
+
+   ado := TADOQuery.Create(nil);
+   ado.Connection := datalar.ADOConnection2;
+
+   ado.close;
+   ado.SQL.Clear;
+   sql := 'exec sp_epikriz ' + QuotedStr(dosyaNo) + ',' + QuotedStr('Kurum');
+   datalar.QuerySelect(ado,sql);
+   TopluDataset.Dataset1 := ado;
+
+
+   ado1 := TADOQuery.Create(nil);
+   ado1.Connection := datalar.ADOConnection2;
+
+   ado1.close;
+   ado1.SQL.Clear;
+   try
+       (*
+       if chkBarkod.Checked
+       then begin
+       sql := ' select * from Recete R ' +
+                'left join gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
+                'left join hastaKart H on H.dosyaNo = R.dosyaNo ' +
+                ' where convert(varchar,R.Tarih,112) between ' + tarihal(txttarih1E.Date) +
+                ' and ' + tarihal(txttarih2E.Date) +
+                ' and r.id IN (select datavalue from dbo.StrToTable(' + QuotedStr(copy(id,2,500)) + ','',''))' +
+                ' order by R.id';
+       end
+       else
+       begin
+       *)
+       sql := ' select * from Recete R ' +
+                'left join receteDetay D on R.id = D.ReceteId ' +
+                'left join Hasta_gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
+                'left join OSGB_MASTER.dbo.ilacListesi I on I.barkod = D.ilacKodu ' +
+                'left join hastaKart H on H.dosyaNo = R.dosyaNo ' +
+                ' where convert(varchar,R.Tarih,112) between ' + txtTopPanelTarih1.GetSQLValue +
+                ' and ' + txtTopPanelTarih2.GetSQLValue +
+                ' and r.id IN (select datavalue from dbo.StrToTable(' + QuotedStr(copy(id,2,500)) + ','',''))' +
+                ' order by R.id';
+
+      // end;
+       datalar.QuerySelect(ado1,sql);
+       TopluDataset.Dataset2 := ado1;
+
+       PrintYap('050T','\Reçete Yazdýr Toplu',inttoStr(TagfrmHastaRecete) ,TopluDataset,kadirType.pTNone);
+
+
+   finally
+    ado.Free;
+    ado1.Free;
+   end;
+end;
+
 procedure TfrmReceteler.TopPanelButonClick(Sender: TObject);
 var
  sql,SirketKod : string;
@@ -369,22 +539,57 @@ begin
   sirketKod := datalar.AktifSirket;
   // else SirketKod := '';
 
-  sql := 'exec sp_Receteler ' + QuotedStr(sirketKod) + ',' +
-  txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' + 'G,' + QuotedStr(datalar.doktorKodu);
-  datalar.QuerySelect(Ado_Receteler_Grup,sql);
+  if Receteler_sayfalar.ActivePage = sayfa_receteler
+  then begin
+    sql := 'exec sp_Receteler ' + QuotedStr(sirketKod) + ',' +
+    txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' + QuotedStr('') + ',' + QuotedStr('');
+    datalar.QuerySelect(Ado_Receteler,sql);
+  end;
 
-  sql := 'exec sp_Receteler ' + QuotedStr(sirketKod) + ',' +
-  txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' + QuotedStr('') + ',' + QuotedStr('');
-  datalar.QuerySelect(Ado_Receteler,sql);
+  if Receteler_sayfalar.ActivePage = sayfa_hastailacsayilari
+  then begin
+    sql := 'exec sp_Receteler ' + QuotedStr(sirketKod) + ',' +
+    txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' + 'G,' + QuotedStr(datalar.doktorKodu);
+    datalar.QuerySelect(Ado_Receteler_Grup,sql);
+  end;
 
-  sql := 'select ilacKodu,ilacAdi,sum(adet) toplamAdet , sum (kullanimAdet*kullanimadet2) toplamDoz from recete R ' +
-         ' join HastaKart p on p.dosyaNo = r.dosyaNo ' +
-         ' join receteDetay RD on R.id = RD.receteId ' +
-         ' where p.SirketKod like ' + QuotedStr('%'+sirketKod+'%') +
-         ' and convert(varchar,tarih,112) between ' + txtTopPanelTarih1.GetSQLValue+ ' and ' + txtTopPanelTarih2.GetSQLValue +
-        // ' and p.sirketKod in (select sirketKod from SIRKETLER_TNM_view where doktor = ' + QuotedStr(datalar.doktorKodu)  + ') ' +
-         '  group by ilacKodu,ilacAdi ';
-  datalar.QuerySelect(ADO_toplam,sql);
+  if Receteler_sayfalar.ActivePage = sayfa_ilacsayilari
+  then begin
+    sql := 'select rd.ilacKodu,rd.ilacAdi,sum(rd.adet) toplamAdet , atctur.tanimi Tur, sum (kullanimAdet*kullanimadet2) toplamDoz from recete R ' +
+           ' join HastaKart p on p.dosyaNo = r.dosyaNo ' +
+           ' join receteDetay RD on R.id = RD.receteId ' +
+           '  left join OSGB_MASTER.dbo.ilacListesi IL on IL.barkod = RD.ilacKodu ' +
+           '  left join OSGB_MASTER.dbo.ATC_Kodlari atc on atc.kod = IL.etkenMadde ' +
+           '  left join OSGB_MASTER.dbo.ATC_Kodlari_Tur atctur on atctur.kod = atc.TurKodu ' +
+           ' where p.SirketKod like ' + QuotedStr('%'+sirketKod+'%') +
+           ' and convert(varchar,tarih,112) between ' + txtTopPanelTarih1.GetSQLValue+ ' and ' + txtTopPanelTarih2.GetSQLValue +
+          // ' and p.sirketKod in (select sirketKod from SIRKETLER_TNM_view where doktor = ' + QuotedStr(datalar.doktorKodu)  + ') ' +
+           '  group by rd.ilacKodu,rd.ilacAdi, atctur.tanimi ';
+    datalar.QuerySelect(ADO_toplam,sql);
+  end;
+
+
+  if Receteler_sayfalar.ActivePage = sayfa_doktorilacsayilari
+  then begin
+    sql := 'select rd.ilacKodu,rd.ilacAdi,sum(rd.adet) toplamAdet , atctur.tanimi Tur, dr.tanimi doktor, sum (kullanimAdet*kullanimadet2) toplamDoz from recete R ' +
+           ' join HastaKart p on p.dosyaNo = r.dosyaNo ' +
+           ' join receteDetay RD on R.id = RD.receteId ' +
+           '  left join OSGB_MASTER.dbo.ilacListesi IL on IL.barkod = RD.ilacKodu ' +
+           '  left join OSGB_MASTER.dbo.ATC_Kodlari atc on atc.kod = IL.etkenMadde ' +
+           '  left join OSGB_MASTER.dbo.ATC_Kodlari_Tur atctur on atctur.kod = atc.TurKodu ' +
+           ' left join DoktorlarT dr on dr.kod = r.doktor ' +
+           ' where p.SirketKod like ' + QuotedStr('%'+sirketKod+'%') +
+           ' and convert(varchar,tarih,112) between ' + txtTopPanelTarih1.GetSQLValue+ ' and ' + txtTopPanelTarih2.GetSQLValue +
+          // ' and p.sirketKod in (select sirketKod from SIRKETLER_TNM_view where doktor = ' + QuotedStr(datalar.doktorKodu)  + ') ' +
+           '  group by rd.ilacKodu,rd.ilacAdi, atctur.tanimi,dr.tanimi ';
+    datalar.QuerySelect(DoktorIlacGrid.Dataset,sql);
+
+  end;
+
+
+
+
+
 
 end;
 
@@ -409,6 +614,9 @@ end;
 procedure TfrmReceteler.FormCreate(Sender: TObject);
 begin
   inherited;
+
+  menu := PopupMenu1;
+
   TopPanel.Visible := true;
   TapPanelElemanVisible(True,True,True,false,false,False,False,false,False,False,False,False);
   txtTopPanelTarih1.Date := date;

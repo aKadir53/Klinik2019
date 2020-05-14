@@ -12,7 +12,7 @@ uses
   InvokeRegistry, SOAPHTTPClient, Rio, DB,cxMemo, cxPC, dxSkinsCore, dxSkinsDefaultPainters,
   dxSkinscxPCPainter, cxPCdxBarPopupMenu, cxStyles, cxCustomData, cxFilter,
   cxData, cxDataStorage, cxDBData, cxCurrencyEdit, cxGridDBTableView,
-  cxGridLevel, cxGridCustomTableView, cxGridTableView,
+  cxGridLevel, cxGridCustomTableView, cxGridTableView, cxCheckGroup,
   cxGridBandedTableView, cxGridDBBandedTableView, cxClasses,
   cxGridCustomView, cxGrid, cxCheckBox, dxSkinBlack, dxSkinBlue, dxSkinCaramel,
   dxSkinCoffee, dxSkinDarkRoom, dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans,
@@ -43,7 +43,6 @@ type
     MalzemeptalEt1: TMenuItem;
     N3: TMenuItem;
     SeanslarSistemeYaz1: TMenuItem;
-    N4: TMenuItem;
     mHizmetleriKaydet1: TMenuItem;
     N5: TMenuItem;
     FaturayaAt1: TMenuItem;
@@ -156,6 +155,13 @@ type
     cxSplitter1: TcxSplitter;
     S4: TMenuItem;
     cxStyle5: TcxStyle;
+    S5: TMenuItem;
+    T2: TMenuItem;
+    R2: TMenuItem;
+    I1: TMenuItem;
+    TakiplerColumn7: TcxGridDBColumn;
+    GridHizmetlerColumn1: TcxGridDBColumn;
+    TakiplerColumnEpikriz: TcxGridDBColumn;
     procedure cxButtonCClick(Sender: TObject);
     procedure mnSe1Click(Sender: TObject);
     procedure mptal1Click(Sender: TObject);
@@ -191,6 +197,7 @@ type
     procedure TakiplerStylesGetContentStyle(Sender: TcxCustomGridTableView;
       ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
       out AStyle: TcxStyle);
+    procedure I1Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -215,6 +222,79 @@ uses  rapor, //TedaviBilgisi, Seanslar,
       HastaKart, //HastaListe,
       SeansHakedis, TedaviKart,AnaUnit;
 {$R *.dfm}
+
+procedure TfrmTakipKontrol.I1Click(Sender: TObject);
+var
+  satir, satirlar, satirs, r: integer;
+  Sonuc, BasvuruNo, sql, msg, takip, dosyaNo, gelisNo , Tip,gelisSIRANO : string;
+  ado: TADOQuery;
+  secili: Boolean;
+begin
+(*
+  if UserRight('Donem Sonlandýrma', 'Okunan Hizmet Sisteme Yaz') = false Then
+  Begin
+    ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Yok',
+      'Sistem Yöneticinizle Görüþün',
+      'Okunan Hizmet Sisteme Yaz', 'info');
+    exit;
+  End;
+  *)
+
+  if mrYes = ShowMessageSkin(
+    'Seçilen Takipler Ýçin Medula Kayýt numaralarý sisteme yazýlacak', 'Onaylýyormusunuz ?',
+    '', 'msg') then
+  begin
+   DurumGoster(True,True);
+   pBar.Properties.Max := Takipler.Controller.SelectedRowCount;
+   pBar.Position := 0;
+
+   ado := TADOQuery.Create(nil);
+
+   try
+    for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
+    begin
+      pnlDurumDurum.Caption :=
+      Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+      Takipler.DataController.GetItemByFieldName('ADSOYAD').Index);
+      Application.ProcessMessages;
+
+  //    Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[satir].RecordIndex;
+      takip := varToStr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 0));
+      dosyaNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
+      gelisNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 2);
+      gelisSIRANO := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, Takipler.DataController.GetItemByFieldName('SIRANO').Index);
+
+      try
+          //ADO_TahlillSQL.close;
+        //  ADO_TahlillSQL.Parameters[0].Value := takip;
+        //  ADO_TahlillSQL.Open;
+        //  ADO_TahlillSQL.First;
+
+          datalar.QuerySelect(ado,'sp_TakipKontrolTakipNoDetay ' + QuotedStr(takip));
+
+          while not ado.Eof do
+          begin
+               sql := 'update Hareketler set islemSiraNo = ' + QuotedStr(ado.fieldbyname('islemSiraNo').AsString) +
+                      'from hareketler h ' +
+                      ' join hasta_gelisler hg on hg.SIRANO = h.gelisSIRANO ' +
+                      ' where isnull(Eski_sirano,sirano) = ' +  QuotedStr(ado.fieldbyname('hizmetSunucuRefNo').AsString) +
+                      ' and takipno = ' + QuotedStr(takip);
+               datalar.QueryExec(sql);
+               ado.Next;
+          end;
+          pBar.Position := pBar.Position + 1;
+      except on e : exception do
+       begin
+        txtHatalar.Lines.Add(takip + ' : ' + e.Message);
+       end;
+      end;
+    end;
+   finally
+     DurumGoster(False);
+     ado.Free;
+   end;
+  end;
+end;
 
 function TfrmTakipKontrol.Init(Sender : TObject) : Boolean;
 begin
@@ -523,7 +603,8 @@ begin
         sql :=
               'exec sp_TakipKontrolListesi ' + txtTopPanelTarih1.GetSQLValue + ',' +
                                                txtTopPanelTarih2.GetSQLValue + ',' +
-                                               QuotedStr(datalar.AktifSirket);
+                                               QuotedStr(datalar.AktifSirket) + ',' +
+                                               QuotedStr(ifThen(chkList.EditValue = '1','H','E'));
         datalar.QuerySelect(ADO_SQL, sql);
        (*
         ADO_SQL.First;
@@ -741,6 +822,8 @@ begin
               datalar.QueryExec(sql);
               sql := 'delete from gssTakipOkuTahlilSonuc where TakipNO = ' + QuotedStr(takip);
               datalar.QueryExec(sql);
+              sql := 'delete from gssTakipOkuTani where TakipNO = ' + QuotedStr(takip);
+              datalar.QueryExec(sql);
               sql :=
                 'delete from gssTakipOkuTetkikvdRadyoloji where TakipNO = ' + QuotedStr(takip);
               datalar.QueryExec(sql);
@@ -784,8 +867,8 @@ end;
 procedure TfrmTakipKontrol.HizmetleriptalEt1Click(Sender: TObject);
 var
   satir, satirlar, satirs, x: integer;
-  Sonuc, BasvuruNo, sql, msg, takip, dosyaNo, gelisNo: string;
-  ado: TADOQuery;
+  Sonuc, BasvuruNo, sql, msg, takip, dosyaNo, gelisNo , tip : string;
+  islemSiraNos ,HastaneRefNo,sysTakipNo,eNabizSonuc ,mesajTipi: string;
   secili: Boolean;
 begin
 
@@ -795,118 +878,135 @@ begin
       'Sistem Yöneticinizle Görüþün', '', 'info');
     exit;
   End;
-
-  ado := TADOQuery.Create(nil);
-  ado.Connection := datalar.ADOConnection2;
+  tip := TMenuItem(sender).Hint;
 
   satir := 1;
   satirlar := Takipler.DataController.RowCount - 1;
 
+  DurumGoster(True,True);
+  pBar.Properties.Max := Takipler.Controller.SelectedRowCount;
+  pBar.Position := 0;
 
-  StatusBar1.Panels[0].Text := 'Hizmetler Siliniyor...';
+  try
+      StatusBar1.Panels[0].Text := 'Hizmetler Siliniyor...';
 
-  if mrYes = ShowMessageSkin(
-    'Seçilen Takipler Ýçin Hizmet Silme Ýþlemi Baþlayacak',
-    'Onaylýyormusunuz ?', '', 'msg') then
-  begin
-    for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
-    begin
-      Takipler.DataController.FocusedRowIndex :=
-        Takipler.Controller.SelectedRows[satir].RecordIndex;
-      // x := Takipler.DataController.GetFocusedRecordIndex;
-      Application.ProcessMessages;
-      // gridAktif.GetCheckBoxState(1,satir,secili);
-
-      takip := Takipler.DataController.GetValue
-        (Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
-      dosyaNo := Takipler.DataController.GetValue
-        (Takipler.Controller.SelectedRows[satir].RecordIndex, 2);
-      gelisNo := Takipler.DataController.GetValue
-        (Takipler.Controller.SelectedRows[satir].RecordIndex, 3);
-
-      islemSiraDoldur(TMenuItem(Sender).tag);
-
-      if length(datalar.islemSiralari) = 0 then
-        Continue;
-
-      if takip <> '' then
-        msg := HizmetKaydiIptal(takip)
-      else
-        Continue;
-
-      if msg = '0000' Then
-      Begin
-        if TMenuItem(Sender).tag = -7 then
+      if mrYes = ShowMessageSkin(
+        'Seçilen Takipler Ýçin Hizmet Silme Ýþlemi Baþlayacak',
+        'Onaylýyormusunuz ?', '', 'msg') then
+      begin
+        for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
         begin
-          sql :=
-            'update hareketler set islemSiraNo = '''''
-            + ' where Tip = ''S'' and dosyaNo = ' + QuotedStr(dosyaNo)
-            + ' and gelisNo = ' + gelisNo;
-          datalar.QueryExec(ado, sql);
-        end;
+        //  Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[satir].RecordIndex;
+           // x := Takipler.DataController.GetFocusedRecordIndex;
+          Application.ProcessMessages;
+          // gridAktif.GetCheckBoxState(1,satir,secili);
+          takip := varToStr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+                     Takipler.DataController.GetItemByFieldName('TakipNo').Index));
+          dosyaNo := varTostr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+                     Takipler.DataController.GetItemByFieldName('dosyano').Index));
 
-        if TMenuItem(Sender).tag = -8 then
-        begin
-          sql := ' update hareketler set islemSiraNo = ''''' +
-            ' from hareketler h join labtestler l on l.butKodu = h.code ' +
-            ' where dosyaNo = ' + QuotedStr(dosyaNo)
-            + ' and gelisNo = ' + gelisNo + ' and l.tip = 2';
-          datalar.QueryExec(ado, sql);
-        end;
+          gelisNo := varTostr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+                     Takipler.DataController.GetItemByFieldName('gelisNo').Index));
 
-        if TMenuItem(Sender).tag = -9 then
-        begin
-          sql := ' update hareketlerIS set islemSiraNo = ''''' +
-            ' where dosyaNo = ' + QuotedStr(dosyaNo)
-            + ' and gelisNo = ' + gelisNo;
-          datalar.QueryExec(ado, sql);
-        end;
 
-        if TMenuItem(Sender).tag = -10 then
-        begin
-          sql := ' update hareketler set islemSiraNo = ''''' +
-            ' from hareketler h join labtestler l on l.butKodu = h.code ' +
-            ' where dosyaNo = ' + QuotedStr(dosyaNo)
-            + ' and gelisNo = ' + gelisNo + ' and l.tip = 3';
-          datalar.QueryExec(ado, sql);
-        end;
+         pnlDurumDurum.Caption :=
+         varTostr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+                                                   Takipler.DataController.GetItemByFieldName('ADSOYAD').Index)) ;
 
-        if TMenuItem(Sender).tag = -11 then
-        begin
 
-          sql :=
-            'update gelisDetay set TalepSira = '''''
-            + ' where dosyaNo = ' + QuotedStr(dosyaNo)
-            + ' and gelisNo = ' + gelisNo;
-          datalar.QueryExec(ado, sql);
+        //  ADO_TahlillSQL.close;
+       //   ADO_TahlillSQL.Parameters[0].Value := takip;
+       //   ADO_TahlillSQL.Open;
+       //   islemSiraDoldur(TMenuItem(Sender).tag);
 
-          sql :=
-            'update gelisDetay set islemSiraNoYatak = '''''
-            + ' where dosyaNo = ' + QuotedStr(dosyaNo)
-            + ' and gelisNo = ' + gelisNo;
-          datalar.QueryExec(ado, sql);
+          TakipNoHizmetIslemSiraNo(Takip,tip);
 
-          sql := 'update hareketler set islemSiraNo = ''''' +
-            ' where dosyaNo = ' + QuotedStr(dosyaNo)
-            + ' and gelisNo = ' + gelisNo;
-          datalar.QueryExec(ado, sql);
+          if length(datalar.islemSiralari) = 0 then
+            Continue;
 
-          sql := 'update Anamnez_Icd set islemSiraNo = ''''' +
-            ' where dosyaNo = ' + QuotedStr(dosyaNo)
-            + ' and gelisNo = ' + gelisNo;
-          datalar.QueryExec(ado, sql);
-        end;
+          if (takip <> '') and (length(datalar.islemSiralari) > 0)
+           then begin
 
-        txtHatalar.Lines.Add(takip + ' : Hizmetler Ýptal Edildi');
+                // msg := HizmetKaydiIptal(takip)
 
-      End
-      Else
-        txtHatalar.Lines.Add(msg);
+               if Length(datalar.islemSiralari) > 0
+               then begin
+                   msg := HizmetKaydiIptal(Takip);
+                   txtHatalar.Lines.Add('Medula Ýptal : ' + msg);
+                   if msg = '0000'
+                   Then Begin
+                      HizmetIptalSonucDBYaz;
+                      setlength(datalar.islemSiralari,0);
+                     ///// -- ENabiz Sil -- ////
+                      islemSiraNos :=  TakipNoTetkikIslemRefNo(Takip,tip);
+                      mesajTipi := 'Hizmet Sil';
+                      ENabizHizmetSil(HastaneRefNo,sysTakipNo,eNabizSonuc,islemSiraNos);
+                      txtHatalar.Lines.Add(eNabizSonuc + ' Silinen Hizmetler : ' + islemSiraNos);
+                   End
+                   Else
+                    txtHatalar.Lines.Add('Tetkikler Meduladan Ýptal edilemedi : ' + msg);
+               end
+               else
+                  txtHatalar.Lines.Add('islemSiraNo Boþ');
 
-    End;
+          end
+          else
+            Continue;
+          (*
+          if msg = '0000' Then
+          Begin
+            if TMenuItem(Sender).tag = -7 then
+            begin
+              sql :=
+                'update hareketler set islemSiraNo = '''''
+                + ' where Tip = ''S'' and dosyaNo = ' + QuotedStr(dosyaNo)
+                + ' and gelisNo = ' + gelisNo;
+              datalar.QueryExec(sql);
+            end;
 
-  End;
-  StatusBar1.Panels[0].Text := '.';
+            if TMenuItem(Sender).tag = -8 then
+            begin
+              sql :=
+                'update hareketler set islemSiraNo = '''''
+                + ' where Tip = ''L'' and dosyaNo = ' + QuotedStr(dosyaNo)
+                + ' and gelisNo = ' + gelisNo;
+              datalar.QueryExec(sql);
+
+            end;
+
+            if TMenuItem(Sender).tag = -9 then
+            begin
+              sql := ' update hareketlerIS set islemSiraNo = ''''' +
+                ' where dosyaNo = ' + QuotedStr(dosyaNo)
+                + ' and gelisNo = ' + gelisNo;
+              datalar.QueryExec(sql);
+            end;
+
+            if TMenuItem(Sender).tag = -10 then
+            begin
+              sql := ' update hareketler set islemSiraNo = ''''' +
+                ' from hareketler h join labtestler l on l.butKodu = h.code ' +
+                ' where dosyaNo = ' + QuotedStr(dosyaNo)
+                + ' and gelisNo = ' + gelisNo + ' and l.tip = 3';
+              datalar.QueryExec(sql);
+            end;
+
+            txtHatalar.Lines.Add(takip + ' : Hizmetler Ýptal Edildi');
+
+          End
+          Else
+            txtHatalar.Lines.Add(msg);
+                  *)
+          pBar.Position := pBar.Position + 1;
+        End;
+
+      End;
+
+  finally
+    DurumGoster(false);
+    StatusBar1.Panels[0].Text := '.';
+  end;
+
 
 end;
 
@@ -1037,8 +1137,8 @@ begin
   *)
 
   if mrYes = ShowMessageSkin(
-    'Seçilen Takipler Ýçin Seans Alma Ýþlemi Baþlayacak', 'Onaylýyormusunuz ?',
-    '', 'msg') then
+    'Seçilen Takipler Ýçin Okunan Seanslar Sisteme Yazýlacak', 'DÝKKAT ! Mevcut Seanslar Silinecek',
+    'Onaylýyormusunuz', 'msg') then
   begin
     for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
     begin
@@ -1238,12 +1338,14 @@ var
   fark: double;
   hatali: TstringList;
   ado: TADOQuery;
-  tedavi, Sonuc, takipNo, BasvuruNo, sql, ts : string;
+  tedavi, Sonuc, takipNo, BasvuruNo, sql, ts ,tip : string;
+  sysTakipNo,islemRefNo,mesajTipi,HastaneRefNo,eNabizSonuc : string;
   x, r: integer;
 Begin
 
   if not LisansKontrol(fark) = True Then
     exit;
+  tip := TMenuItem(sender).Hint;
 
   DurumGoster(True,True);
   pBar.Properties.Max := Takipler.Controller.SelectedRowCount;
@@ -1251,12 +1353,44 @@ Begin
   try
     for r := 0 to Takipler.Controller.SelectedRowCount - 1 do
     begin
-      Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[r].RecordIndex;
+    //  Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[r].RecordIndex;
       Application.ProcessMessages;
-      takipNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex, 1);
-      BasvuruNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex, 7);
+      takipNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex,
+                 Takipler.DataController.GetItemByFieldName('TakipNo').Index  );
+      BasvuruNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex,
+                 Takipler.DataController.GetItemByFieldName('basvuruNo').Index );
 
-      HizmetKayitVeriSeti(takipNo,BasvuruNo, 'D','G','Tümü','',sonuc);
+      sysTakipNo := varTostr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex,
+                    Takipler.DataController.GetItemByFieldName('sysTakipNo').Index));
+
+      HastaneRefNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex,
+                      Takipler.DataController.GetItemByFieldName('SIRANO').Index );
+
+      pnlDurumDurum.Caption :=
+      varTostr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex,
+                                                   Takipler.DataController.GetItemByFieldName('ADSOYAD').Index)) ;
+
+
+      if datalar.eNabizKayit = 'Evet'
+      then begin
+          mesajTipi := 'Hizmet Kayýt';
+          ENabizHizmetKayit(HastaneRefNo,sysTakipNo,eNabizSonuc,islemRefNo);
+         // eNabizSonuc := 'S0000';
+          sleep(500);
+          txtHatalar.Lines.Add('ENabýz Hizmet Kayýt : ' + sysTakipNo + '-' + eNabizSonuc);
+          if copy(eNabizSonuc,1,5) = 'S0000'
+          then begin
+            HizmetKayitVeriSeti(takipNo,BasvuruNo, 'D','G',tip,'',sonuc);
+            txtHatalar.Lines.Add(sonuc);
+          end;
+      end
+      else
+      begin
+            HizmetKayitVeriSeti(takipNo,BasvuruNo, 'D','G',tip,'',sonuc);
+            txtHatalar.Lines.Add(sonuc);
+      end;
+
+
       pBar.Position := pBar.Position + 1;
     End;
 
@@ -1297,6 +1431,8 @@ begin
 end;
 
 procedure TfrmTakipKontrol.FormCreate(Sender: TObject);
+var
+  ii : TcxCheckGroupItem;
 begin
   inherited;
   Menu := PopupMenu1;
@@ -1312,8 +1448,14 @@ begin
   cxPanel.Visible := false;
 
   TopPanel.Visible := True;
-  TapPanelElemanVisible(True,True,True,False,False,False,True,False,False,False,True,False);
+  TapPanelElemanVisible(True,True,True,False,False,False,True,False,False,False,True,False,True);
 //  Liste.DataController.DataSource := DataSource;
+
+  chkList.Properties.Items.Clear;
+  ii := chkList.Properties.Items.Add;
+  ii.Caption := 'Takip Kontrol Yapma';
+  chkList.Width := 200;
+  chkList.EditValue := '0';
 
   Sayfa3_Kolon3.Visible := False;
   Sayfa3_Kolon2.Visible := False;
@@ -1432,19 +1574,24 @@ procedure TfrmTakipKontrol.TakiplerFocusedRecordChanged
 begin
   if AFocusedRecord = nil then exit;
 
-  cxGroupBox1.Caption := 'Açýklama  [ ' + AFocusedRecord.Values[3] + ' ]';
-  dn := AFocusedRecord.Values[1];
-  gn := AFocusedRecord.Values[2];
+  cxGroupBox1.Caption := 'Açýklama  [ ' + Takipler.DataController.GetValue(AFocusedRecord.RecordIndex,
+                                           Takipler.DataController.GetItemByFieldName('ADSOYAD').Index) + ' ]';
+  dn := Takipler.DataController.GetValue(AFocusedRecord.RecordIndex,
+                           Takipler.DataController.GetItemByFieldName('dosyaNo').Index);
+  gn := Takipler.DataController.GetValue(AFocusedRecord.RecordIndex,
+                           Takipler.DataController.GetItemByFieldName('gelisNo').Index);
 
   ADO_TahlillSQL.close;
-  ADO_TahlillSQL.Parameters[0].Value := AFocusedRecord.Values[0];
+  ADO_TahlillSQL.Parameters[0].Value := varTostr(Takipler.DataController.GetValue(AFocusedRecord.RecordIndex,
+                           Takipler.DataController.GetItemByFieldName('takipNo').Index));
   ADO_TahlillSQL.Open;
 
  // ADO_DigerSistem.close;
  // ADO_DigerSistem.Parameters[0].Value := AFocusedRecord.Values[1];
  // ADO_DigerSistem.Open;
 
-  cxMemo1.Lines.Text := AFocusedRecord.Values[11];
+  cxMemo1.Lines.Text := varToStr(Takipler.DataController.GetValue(AFocusedRecord.RecordIndex,
+                           Takipler.DataController.GetItemByFieldName('aciklama').Index));
   GridHizmetler.ViewData.Expand(true);
 
   // ShowMessage(AFocusedRecord.Values[5]);
@@ -1458,10 +1605,8 @@ var
 begin
   inherited;
 
-
-//  i := TcxGridDBTableView(Sender).FindItemByName('DurumDetay').Index;
-
-  if (ARecord.Values[11] = '')
+  if (varToStr(Takipler.DataController.GetValue(ARecord.RecordIndex,
+       Takipler.DataController.GetItemByFieldName('DurumDetay').Index)) = '')
     Then
     AStyle := cxStyle2
   Else

@@ -32,7 +32,7 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
       Height = 346
       Align = alClient
       TabOrder = 0
-      Properties.ActivePage = cxTabHastaGelis
+      Properties.ActivePage = cxTabHastaListe
       Properties.TabPosition = tpBottom
       ClientRectBottom = 316
       ClientRectLeft = 3
@@ -80,13 +80,17 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
           Height = 262
           Align = alClient
           TabOrder = 1
+          TabStop = False
           object cxGridHastaListesi: TcxGridDBTableView
             OnDblClick = cxGridHastaListesiDblClick
             OnFocusedRecordChanged = cxGridHastaListesiFocusedRecordChanged
+            DataController.Filter.Options = [fcoCaseInsensitive]
             DataController.Summary.DefaultGroupSummaryItems = <>
             DataController.Summary.FooterSummaryItems = <>
             DataController.Summary.SummaryGroups = <>
+            FilterRow.InfoText = 'Ara'
             FilterRow.Visible = True
+            FilterRow.ApplyChanges = fracImmediately
             OptionsData.Deleting = False
             OptionsData.Editing = False
             OptionsData.Inserting = False
@@ -143,6 +147,7 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
             Height = 288
             Align = alClient
             TabOrder = 0
+            TabStop = False
             object cxGridHastaGelis: TcxGridDBTableView
               OnFocusedRecordChanged = cxGridHastaGelisFocusedRecordChanged
               DataController.DataModeController.GridMode = True
@@ -204,8 +209,10 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
       Height = 146
       Width = 243
       object foto1: TcxImage
+        Tag = -100
         Left = 3
         Top = 2
+        TabStop = False
         Properties.GraphicClassName = 'TJPEGImage'
         Properties.PopupMenuLayout.MenuItems = []
         Properties.ReadOnly = True

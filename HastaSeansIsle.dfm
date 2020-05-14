@@ -26,6 +26,7 @@ object frmHastaSeans: TfrmHastaSeans
     TabOrder = 0
     Properties.ActivePage = Seanslar_Sayfa
     Properties.Style = 11
+    OnPageChanging = PageControl_SeansPageChanging
     ClientRectBottom = 554
     ClientRectLeft = 3
     ClientRectRight = 893
@@ -863,6 +864,20 @@ object frmHastaSeans: TfrmHastaSeans
               Position.ColIndex = 49
               Position.RowIndex = 0
             end
+            object ListeSColumn8: TcxGridDBBandedColumn
+              DataBinding.FieldName = 'GIRISYOLU_ENF'
+              Visible = False
+              Position.BandIndex = 0
+              Position.ColIndex = 50
+              Position.RowIndex = 0
+            end
+            object ListeSColumn9: TcxGridDBBandedColumn
+              DataBinding.FieldName = 'yeniSiraNo'
+              Visible = False
+              Position.BandIndex = 0
+              Position.ColIndex = 51
+              Position.RowIndex = 0
+            end
           end
           object cxGrid2Level1: TcxGridLevel
             GridView = ListeS
@@ -957,13 +972,379 @@ object frmHastaSeans: TfrmHastaSeans
         end
       end
     end
+    object TabMalzeme: TcxTabSheet
+      Caption = 'Malzeme'
+      ImageIndex = 2
+      object MalzemeList: TcxGridKadir
+        Left = 0
+        Top = 0
+        Width = 890
+        Height = 528
+        Cursor = crHandPoint
+        Align = alClient
+        PopupMenu = PopupMenu1
+        TabOrder = 0
+        ExceleGonder = False
+        PopupForm = False
+        object GridMalzeme: TcxGridDBBandedTableView
+          DataController.DataModeController.SmartRefresh = True
+          DataController.DataSource = DataSource5
+          DataController.Options = [dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoImmediatePost]
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <
+            item
+              Format = '##'
+              Kind = skCount
+              Column = cxGridDBBandedColumn47
+            end>
+          DataController.Summary.SummaryGroups = <>
+          OptionsBehavior.AlwaysShowEditor = True
+          OptionsCustomize.ColumnGrouping = False
+          OptionsCustomize.ColumnSorting = False
+          OptionsCustomize.GroupBySorting = True
+          OptionsData.Deleting = False
+          OptionsData.Inserting = False
+          OptionsSelection.MultiSelect = True
+          OptionsView.NoDataToDisplayInfoText = 'Listelenecek Kay'#305't Yok'
+          OptionsView.DataRowHeight = 25
+          OptionsView.Footer = True
+          OptionsView.GridLines = glHorizontal
+          OptionsView.GroupByBox = False
+          OptionsView.GroupByHeaderLayout = ghlHorizontal
+          OptionsView.HeaderAutoHeight = True
+          OptionsView.HeaderHeight = 35
+          OptionsView.BandHeaderHeight = 20
+          Bands = <
+            item
+              Caption = 'Malzeme Bilgileri'
+              Styles.Header = cxStyle2
+              Width = 863
+            end>
+          object cxGridDBBandedColumn27: TcxGridDBBandedColumn
+            Caption = 'G No'
+            DataBinding.FieldName = 'GelisNo'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Visible = False
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            HeaderGlyphAlignmentHorz = taCenter
+            Options.Editing = False
+            Options.FilteringPopup = False
+            Options.Sorting = False
+            Styles.Content = cxStyle3
+            Styles.Header = cxStyle3
+            Width = 28
+            Position.BandIndex = -1
+            Position.ColIndex = -1
+            Position.RowIndex = -1
+          end
+          object cxGridDBBandedColumn28: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'hastaAdi'
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            HeaderGlyphAlignmentHorz = taCenter
+            Options.Editing = False
+            Styles.Content = cxStyle3
+            Styles.Header = cxStyle3
+            Width = 137
+            Position.BandIndex = -1
+            Position.ColIndex = -1
+            Position.RowIndex = -1
+            IsCaptionAssigned = True
+          end
+          object cxGridDBBandedColumn31: TcxGridDBBandedColumn
+            Caption = 'Tak'#305'p No'
+            DataBinding.FieldName = 'Tak'#305'pNo'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            HeaderGlyphAlignmentHorz = taCenter
+            Options.Editing = False
+            Options.FilteringPopup = False
+            Options.Sorting = False
+            Styles.Content = cxStyle3
+            Styles.Header = cxStyle3
+            Width = 48
+            Position.BandIndex = -1
+            Position.ColIndex = -1
+            Position.RowIndex = -1
+          end
+          object cxGridDBBandedColumn32: TcxGridDBBandedColumn
+            Caption = 'Ba'#351'vuru No'
+            DataBinding.FieldName = 'basvuruNo'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            HeaderGlyphAlignmentHorz = taCenter
+            Options.Editing = False
+            Options.FilteringPopup = False
+            Options.Sorting = False
+            Styles.Content = cxStyle3
+            Styles.Header = cxStyle3
+            Width = 57
+            Position.BandIndex = -1
+            Position.ColIndex = -1
+            Position.RowIndex = -1
+          end
+          object cxGridDBBandedColumn33: TcxGridDBBandedColumn
+            Caption = 'Tc Kimlik No'
+            DataBinding.FieldName = 'TCKIMLIKNO'
+            Visible = False
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 77
+            Position.BandIndex = -1
+            Position.ColIndex = -1
+            Position.RowIndex = -1
+          end
+          object cxGridDBBandedColumn34: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'rTarih'
+            Visible = False
+            Position.BandIndex = -1
+            Position.ColIndex = -1
+            Position.RowIndex = -1
+          end
+          object cxGridDBBandedColumn45: TcxGridDBBandedColumn
+            Caption = 'Barkodu(UBB)'
+            DataBinding.FieldName = 'UBB'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 106
+            Position.BandIndex = 0
+            Position.ColIndex = 2
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn35: TcxGridDBBandedColumn
+            Caption = 'Medula Gonder'
+            DataBinding.FieldName = 'ISLENDIMI'
+            PropertiesClassName = 'TcxCheckBoxProperties'
+            Properties.Alignment = taCenter
+            Properties.DisplayChecked = 'E'
+            Properties.DisplayUnchecked = 'H'
+            Properties.ImmediatePost = True
+            Properties.ValueChecked = 'E'
+            Properties.ValueUnchecked = 'H'
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 44
+            Position.BandIndex = 0
+            Position.ColIndex = 9
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn36: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'KURUMTIPI'
+            Visible = False
+            Position.BandIndex = -1
+            Position.ColIndex = -1
+            Position.RowIndex = -1
+          end
+          object cxGridDBBandedColumn37: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'HastaneRefNo'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Visible = False
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 71
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn38: TcxGridDBBandedColumn
+            Caption = 'Malzeme Ad'#305
+            DataBinding.FieldName = 'NAME1'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 96
+            Position.BandIndex = 0
+            Position.ColIndex = 3
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn39: TcxGridDBBandedColumn
+            Caption = 'Onay'
+            DataBinding.FieldName = 'onay'
+            PropertiesClassName = 'TcxCheckBoxProperties'
+            Properties.ValueChecked = 1
+            Properties.ValueUnchecked = 0
+            Visible = False
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Styles.Header = cxStyle3
+            Width = 35
+            Position.BandIndex = 0
+            Position.ColIndex = 7
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn40: TcxGridDBBandedColumn
+            Caption = 'Adet'
+            DataBinding.FieldName = 'ADET'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 42
+            Position.BandIndex = 0
+            Position.ColIndex = 4
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn42: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Gd'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.DisplayFormat = ',0.00;-,0.00'
+            Visible = False
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Styles.Content = cxStyle3
+            Styles.Header = cxStyle3
+            Width = 59
+            Position.BandIndex = 0
+            Position.ColIndex = 5
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn43: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Cd'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.DisplayFormat = ',0.00;-,0.00'
+            Visible = False
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Styles.Content = cxStyle3
+            Styles.Header = cxStyle3
+            Width = 57
+            Position.BandIndex = 0
+            Position.ColIndex = 6
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn46: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'islemSiraNo'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 89
+            Position.BandIndex = 0
+            Position.ColIndex = 8
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn47: TcxGridDBBandedColumn
+            Caption = 'RefNo'
+            DataBinding.FieldName = 'SIRANO'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 54
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+          object GridMalzemeColumn1: TcxGridDBBandedColumn
+            Caption = 'Lot'
+            DataBinding.FieldName = 'lot'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 35
+            Position.BandIndex = 0
+            Position.ColIndex = 10
+            Position.RowIndex = 0
+          end
+          object GridMalzemeColumn2: TcxGridDBBandedColumn
+            Caption = 'Parti Kodu'
+            DataBinding.FieldName = 'partiKodu'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 91
+            Position.BandIndex = 0
+            Position.ColIndex = 11
+            Position.RowIndex = 0
+          end
+          object GridMalzemeColumn3: TcxGridDBBandedColumn
+            Caption = 'Seri No'
+            DataBinding.FieldName = 'seriNo'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 66
+            Position.BandIndex = 0
+            Position.ColIndex = 12
+            Position.RowIndex = 0
+          end
+          object GridMalzemeColumn4: TcxGridDBBandedColumn
+            Caption = 'F Tanimlayici No'
+            DataBinding.FieldName = 'firmaTanimlayiciNo'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 137
+            Position.BandIndex = 0
+            Position.ColIndex = 13
+            Position.RowIndex = 0
+          end
+          object GridMalzemeColumn5: TcxGridDBBandedColumn
+            Caption = 'S.Alis Tarihi'
+            DataBinding.FieldName = 'malzemeSatinAlisTarihi'
+            PropertiesClassName = 'TcxDateEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 103
+            Position.BandIndex = 0
+            Position.ColIndex = 14
+            Position.RowIndex = 0
+          end
+          object GridMalzemeColumn6: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'yeniSiraNo'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 15
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridLevel5: TcxGridLevel
+          GridView = GridMalzeme
+        end
+      end
+    end
     object Sayfa_Log: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object txtLog: TcxMemo
         Left = 0
         Top = 0
@@ -978,36 +1359,36 @@ object frmHastaSeans: TfrmHastaSeans
   end
   object PopupMenu5: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 264
-    Top = 176
+    Left = 80
+    Top = 120
     object S2: TMenuItem
       Tag = -11
       Caption = 'Seanslar'#305' Olu'#351'tur'
       ImageIndex = 80
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object S3: TMenuItem
       Tag = -10
       Caption = 'Sil'
       ImageIndex = 43
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object S1: TMenuItem
       Tag = 1
       Caption = 'Seans'#305' Onayla'
       ImageIndex = 0
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object S7: TMenuItem
       Caption = 'Seans Onay '#304'ptal'
       ImageIndex = 33
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object Y1: TMenuItem
       Tag = -50
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object N6: TMenuItem
       Caption = '-'
@@ -1020,19 +1401,19 @@ object frmHastaSeans: TfrmHastaSeans
         Tag = -9
         Caption = 'Seanslar'#305' Medulaya Kaydet'
         ImageIndex = 15
-        OnClick = cxButtonCClick
+        OnClick = c
       end
       object S4: TMenuItem
         Tag = -8
         Caption = 'Seans'#305' Meduladan '#304'ptal Et'
         ImageIndex = 13
-        OnClick = cxButtonCClick
+        OnClick = c
       end
       object D1: TMenuItem
         Tag = -7
         Caption = 'Damar '#304'zi Kontrolu Yap'
         ImageIndex = 106
-        OnClick = cxButtonCClick
+        OnClick = c
       end
     end
     object N1: TMenuItem
@@ -1042,7 +1423,7 @@ object frmHastaSeans: TfrmHastaSeans
       Tag = -22
       Caption = 'E-Nab'#305'z Hizmet Kay'#305't'
       ImageIndex = 118
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object N7: TMenuItem
       Caption = '-'
@@ -1052,7 +1433,7 @@ object frmHastaSeans: TfrmHastaSeans
       Caption = 'Seans '#304'zlem Formu'
       ImageIndex = 51
       Visible = False
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object N8: TMenuItem
       Caption = '-'
@@ -1061,18 +1442,18 @@ object frmHastaSeans: TfrmHastaSeans
       Tag = -4
       Caption = 'Seans'#305' D'#252'zenle'
       ImageIndex = 51
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object K1: TMenuItem
       Tag = -20
       Caption = 'Kan Alinan Seans Olarak '#304#351'aretle'
       ImageIndex = 117
-      OnClick = cxButtonCClick
+      OnClick = c
     end
     object KanAlinanSeansOlarakaretle1: TMenuItem
       Tag = -21
       Caption = 'Kan Alimini '#304'ptal Et'
-      OnClick = cxButtonCClick
+      OnClick = c
     end
   end
   object ADO_Detay_toplam: TADOQuery
@@ -1114,13 +1495,13 @@ object frmHastaSeans: TfrmHastaSeans
         'WHERE substring(convert(varchar,gd.Tarih,112),1,6) = :@t1  AND g' +
         'd.Tip = '#39'S'#39' and k.KURUMTIPI in ('#39'1'#39','#39'99'#39') and hk.dosyaNo =:@dn'
       '')
-    Left = 144
-    Top = 266
+    Left = 48
+    Top = 274
   end
   object DataSource5: TDataSource
     DataSet = ADO_Detay_toplam
-    Left = 80
-    Top = 234
+    Left = 48
+    Top = 218
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 616
@@ -1193,5 +1574,58 @@ object frmHastaSeans: TfrmHastaSeans
     GrupCol = 0
     Left = 528
     Top = 152
+  end
+  object PopupMenu1: TPopupMenu
+    Images = DATALAR.imag24png
+    Left = 208
+    Top = 128
+    object S8: TMenuItem
+      Tag = -20
+      Caption = 'Sil'
+      ImageIndex = 130
+      OnClick = M2Click
+    end
+    object M2: TMenuItem
+      Tag = -10
+      Caption = 'Malzeme Ekle'
+      ImageIndex = 129
+      OnClick = M2Click
+    end
+    object G1: TMenuItem
+      Caption = 'Gruptan Malzeme Ekle'
+      Visible = False
+    end
+  end
+  object MalzemeAc: TListeAc
+    ListeBaslik = 'Malzemeler'
+    TColcount = 6
+    TColsW = '65,65,150,65,50,50'
+    Table = 
+      '(select code,UBBCODE,SAG.tanimi grup,NAME1,TOPGIR,TOPCIK from IL' +
+      'ACSARF I join Stok_Ana_Grup SAG on SAG.kod = I.GRUP) tt   '
+    Conn = DATALAR.ADOConnection2
+    Filtercol = 0
+    BaslikRenk = clBlack
+    DipRenk = clBlack
+    Kolonlar.Strings = (
+      'Code'
+      'UBBCODE'
+      'NAME1'
+      'Grup'
+      'TOPGIR'
+      'TOPCIK')
+    KolonBasliklari.Strings = (
+      'Malzeme Kodu'
+      'Barkodu(UBB)'
+      'Urun Ad'#305
+      'Grubu'
+      'Top.Giren'
+      'Top.'#199#305'kan')
+    Calistir = fgEvet
+    BiriktirmeliSecim = False
+    Grup = False
+    GrupCol = 0
+    Left = 280
+    Top = 176
   end
 end

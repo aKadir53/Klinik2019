@@ -1,0 +1,199 @@
+<XmlTransformation Version="1.0"><Transform Direction="ToCds"><SelectEach dest="DATAPACKET\ROWDATA\ROW" from="\Envelope\soap:Body\ReLabSonucListesiResponse\ReLabSonucListesiResult\diffgr:diffgram\NewDataSet\hstsonuclar"><Select dest="@GELISREF" from="\GELISREF"/><Select dest="@HASTAADI" from="\HASTAADI"/><Select dest="@HASTAREF" from="\HASTAREF"/><Select dest="@HASTATCKNO" from="\HASTATCKNO"/><Select dest="@RAPORTARIHI" from="\RAPORTARIHI"/><Select dest="@GELISTARIHI" from="\GELISTARIHI"/><Select dest="@TESTADI" from="\TESTADI"/><Select dest="@TESTREF" from="\TESTREF"/><Select dest="@SONUC" from="\SONUC"/><Select dest="@SONUCBIRIM" from="\SONUCBIRIM"/><Select dest="@SONUCTEXT" from="\SONUCTEXT"/></SelectEach></Transform><XmlSchema RootName="Envelope"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Envelope" type="EnvelopeType"/>
+  <xs:complexType name="EnvelopeType">
+    <xs:sequence>
+      <xs:element name="soap:Body" type="soap:BodyType"/>
+    </xs:sequence>
+    <xs:attribute name="xmlns:soap" type="xs:string"/>
+    <xs:attribute name="xmlns:xsi" type="xs:string"/>
+    <xs:attribute name="xmlns:xsd" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="Body" type="BodyType"/>
+  <xs:complexType name="BodyType">
+    <xs:sequence>
+      <xs:element name="ReLabSonucListesiResponse" type="ReLabSonucListesiResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReLabSonucListesiResponse" type="ReLabSonucListesiResponseType"/>
+  <xs:complexType name="ReLabSonucListesiResponseType">
+    <xs:sequence>
+      <xs:element name="ReLabSonucListesiResult" type="ReLabSonucListesiResultType"/>
+      <xs:element name="gndref" type="gndrefType"/>
+      <xs:element name="gndrefs" type="gndrefsType"/>
+      <xs:element name="tstref" type="tstrefType"/>
+      <xs:element name="hstref" type="hstrefType"/>
+      <xs:element name="glmref" type="glmrefType"/>
+      <xs:element name="fromglstar" type="fromglstarType"/>
+      <xs:element name="toglstar" type="toglstarType"/>
+      <xs:element name="HataMesaji" type="HataMesajiType"/>
+    </xs:sequence>
+    <xs:attribute name="xmlns" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="ReLabSonucListesiResult" type="ReLabSonucListesiResultType"/>
+  <xs:complexType name="ReLabSonucListesiResultType">
+    <xs:sequence>
+      <xs:element name="xs:schema" type="xs:schemaType"/>
+      <xs:element name="diffgr:diffgram" type="diffgr:diffgramType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="schema" type="schemaType"/>
+  <xs:complexType name="schemaType">
+    <xs:sequence>
+      <xs:element name="xs:element" type="xs:elementType"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="xmlns" type="xs:string"/>
+    <xs:attribute name="xmlns:xs" type="xs:string"/>
+    <xs:attribute name="xmlns:msdata" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="element" type="elementType"/>
+  <xs:complexType name="elementType">
+    <xs:sequence>
+      <xs:element name="xs:complexType" type="xs:complexTypeType"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="complexType" type="complexTypeType"/>
+  <xs:complexType name="complexTypeType">
+    <xs:sequence>
+      <xs:element name="xs:choice" type="xs:choiceType"/>
+      <xs:element name="xs:sequence" type="xs:sequenceType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="choice" type="choiceType"/>
+  <xs:complexType name="choiceType">
+    <xs:sequence>
+      <xs:element name="xs:element" type="xs:elementType"/>
+    </xs:sequence>
+    <xs:attribute name="minOccurs" type="xs:string"/>
+    <xs:attribute name="maxOccurs" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="element" type="elementType"/>
+  <xs:complexType name="elementType">
+    <xs:sequence>
+      <xs:element name="xs:complexType" type="xs:complexTypeType"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="sequence" type="sequenceType"/>
+  <xs:complexType name="sequenceType">
+    <xs:sequence>
+      <xs:element name="xs:element" type="xs:elementType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="element" type="elementType"/>
+  <xs:complexType name="elementType">
+    <xs:sequence/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="minOccurs" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="diffgram" type="diffgramType"/>
+  <xs:complexType name="diffgramType">
+    <xs:sequence>
+      <xs:element name="NewDataSet" type="NewDataSetType"/>
+    </xs:sequence>
+    <xs:attribute name="xmlns:msdata" type="xs:string"/>
+    <xs:attribute name="xmlns:diffgr" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="NewDataSet" type="NewDataSetType"/>
+  <xs:complexType name="NewDataSetType">
+    <xs:sequence>
+      <xs:element name="hstsonuclar" type="hstsonuclarType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="xmlns" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="hstsonuclar" type="hstsonuclarType"/>
+  <xs:complexType name="hstsonuclarType">
+    <xs:sequence>
+      <xs:element name="GELISREF" type="GELISREFType"/>
+      <xs:element name="HASTAADI" type="HASTAADIType"/>
+      <xs:element name="HASTAREF" type="HASTAREFType"/>
+      <xs:element name="HASTATCKNO" type="HASTATCKNOType"/>
+      <xs:element name="RAPORTARIHI" type="RAPORTARIHIType"/>
+      <xs:element name="GELISTARIHI" type="GELISTARIHIType"/>
+      <xs:element name="TESTADI" type="TESTADIType"/>
+      <xs:element name="TESTREF" type="TESTREFType"/>
+      <xs:element name="SONUC" type="SONUCType"/>
+      <xs:element name="SONUCBIRIM" type="SONUCBIRIMType"/>
+      <xs:element name="SONUCTEXT" type="SONUCTEXTType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GELISREF" type="GELISREFType"/>
+  <xs:simpleType name="GELISREFType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="HASTAADI" type="HASTAADIType"/>
+  <xs:simpleType name="HASTAADIType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="HASTAREF" type="HASTAREFType"/>
+  <xs:simpleType name="HASTAREFType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="HASTATCKNO" type="HASTATCKNOType"/>
+  <xs:simpleType name="HASTATCKNOType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="RAPORTARIHI" type="RAPORTARIHIType"/>
+  <xs:simpleType name="RAPORTARIHIType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="GELISTARIHI" type="GELISTARIHIType"/>
+  <xs:simpleType name="GELISTARIHIType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="TESTADI" type="TESTADIType"/>
+  <xs:simpleType name="TESTADIType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="TESTREF" type="TESTREFType"/>
+  <xs:simpleType name="TESTREFType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="SONUC" type="SONUCType"/>
+  <xs:simpleType name="SONUCType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="SONUCBIRIM" type="SONUCBIRIMType"/>
+  <xs:complexType name="SONUCBIRIMType">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:element name="SONUCTEXT" type="SONUCTEXTType"/>
+  <xs:simpleType name="SONUCTEXTType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="gndref" type="gndrefType"/>
+  <xs:simpleType name="gndrefType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="gndrefs" type="gndrefsType"/>
+  <xs:simpleType name="gndrefsType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="tstref" type="tstrefType"/>
+  <xs:simpleType name="tstrefType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="hstref" type="hstrefType"/>
+  <xs:simpleType name="hstrefType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="glmref" type="glmrefType"/>
+  <xs:simpleType name="glmrefType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="fromglstar" type="fromglstarType"/>
+  <xs:simpleType name="fromglstarType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="toglstar" type="toglstarType"/>
+  <xs:simpleType name="toglstarType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="HataMesaji" type="HataMesajiType"/>
+  <xs:simpleType name="HataMesajiType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+</xs:schema>]]></XmlSchema><CdsSkeleton/><XslTransform/><Skeleton><![CDATA[<?xml version="1.0"?><DATAPACKET Version="2.0"><METADATA><FIELDS><FIELD attrname="GELISREF" fieldtype="string" WIDTH="7"/><FIELD attrname="HASTAADI" fieldtype="string" WIDTH="12"/><FIELD attrname="HASTAREF" fieldtype="string" WIDTH="6"/><FIELD attrname="HASTATCKNO" fieldtype="string" WIDTH="11"/><FIELD attrname="RAPORTARIHI" fieldtype="string" WIDTH="25"/><FIELD attrname="GELISTARIHI" fieldtype="string" WIDTH="25"/><FIELD attrname="TESTADI" fieldtype="string" WIDTH="26"/><FIELD attrname="TESTREF" fieldtype="string" WIDTH="4"/><FIELD attrname="SONUC" fieldtype="string" WIDTH="5"/><FIELD attrname="SONUCBIRIM" fieldtype="string" WIDTH="7"/><FIELD attrname="SONUCTEXT" fieldtype="string" WIDTH="32"/></FIELDS><PARAMS/></METADATA><ROWDATA/><METADATA><FIELDS><FIELD attrname="GELISREF" fieldtype="string" WIDTH="7"/><FIELD attrname="HASTAADI" fieldtype="string" WIDTH="12"/><FIELD attrname="HASTAREF" fieldtype="string" WIDTH="6"/><FIELD attrname="HASTATCKNO" fieldtype="string" WIDTH="11"/><FIELD attrname="RAPORTARIHI" fieldtype="string" WIDTH="25"/><FIELD attrname="GELISTARIHI" fieldtype="string" WIDTH="25"/><FIELD attrname="TESTADI" fieldtype="string" WIDTH="26"/><FIELD attrname="TESTREF" fieldtype="string" WIDTH="4"/><FIELD attrname="SONUC" fieldtype="string" WIDTH="5"/><FIELD attrname="SONUCBIRIM" fieldtype="string" WIDTH="7"/><FIELD attrname="SONUCTEXT" fieldtype="string" WIDTH="32"/></FIELDS><PARAMS/></METADATA><ROWDATA/></DATAPACKET>
+]]></Skeleton></XmlTransformation>

@@ -4,7 +4,7 @@ interface
 
 uses  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
       Dialogs, ADODB,registry,ComCtrls,StdCtrls,db,ExtCtrls,AdvGrid, DBAdvGrd,
-      ShellApi,forms,data_model1,Grids,JvToolEdit,
+      ShellApi,forms,data_model1,Grids,JvToolEdit,IdCoderMIME,
 
       Mask, Math,  Printers,
       EditType, StrUtils, Menus,  SHDocVw, ActiveX,  Buttons,
@@ -118,6 +118,8 @@ function Kurumadi(_kurum : string) : string;
 function CariAd(_cariKod : string) : string;
 procedure ilComboDoldur (combo : TComboBox);
 function KillTaskc(Dosyadi: string): integer;
+function Encode64(s: string): string;
+function Decode64(s: string): string;
 
 
 const
@@ -169,7 +171,29 @@ uses message,Tlhelp32;
 
 
 
+function Encode64(s: string): string;
+var
+  IdEncoderMIME: TIdEncoderMIME;
+begin
+  IdEncoderMIME := TIdEncoderMIME.Create(nil);
+  try
+    Result := IdEncoderMIME.EncodeString(s);
+  finally
+    IdEncoderMIME.Free;
+  end;
+end;
 
+function Decode64(s: string): string;
+var
+  IdDecoderMIME: TIdDecoderMIME;
+begin
+  IdDecoderMIME := TIdDecoderMIME.Create(nil);
+  try
+    Result := IdDecoderMIME.DecodeString(s);
+  finally
+    IdDecoderMIME.Free;
+  end;
+end;
 
 
 function KillTaskc(Dosyadi: string): integer;

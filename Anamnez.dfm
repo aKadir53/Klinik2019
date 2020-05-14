@@ -11,11 +11,12 @@ object frmAnamnez: TfrmAnamnez
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object IseGirisMuayene: TcxGridKadir
-    Left = -16
-    Top = 70
+    Left = 64
+    Top = 8
     Width = 513
     Height = 219
     Font.Charset = DEFAULT_CHARSET
@@ -26,6 +27,7 @@ object frmAnamnez: TfrmAnamnez
     ParentFont = False
     TabOrder = 0
     ExceleGonder = False
+    PopupForm = False
     object GridList: TcxGridDBBandedTableView
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
@@ -139,18 +141,20 @@ object frmAnamnez: TfrmAnamnez
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 256
-    Top = 72
+    Left = 344
+    Top = 16
     object T1: TMenuItem
       Tag = -1
       Caption = 'Tanilar'
       ImageIndex = 71
+      Visible = False
       OnClick = cxButtonCClick
     end
     object T2: TMenuItem
       Tag = -3
       Caption = 'Tetkik Ekle - Sonu'#231' G'#246'r'
       ImageIndex = 47
+      Visible = False
       OnClick = cxButtonCClick
     end
     object M1: TMenuItem

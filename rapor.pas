@@ -86,7 +86,7 @@ type
   public
        topluset : TDataSetKadir;
        procedure raporData1(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
-       procedure raporDataDokuman(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
+       procedure raporDataDokuman(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '' ; SayfaGizle : string = '');
 
        procedure raporData2(dataset : TDataSetKadir ; kod , dosya : string ; SablonLoad : sablonTip = stHayir; Expo : Boolean = True);
        procedure raporDataIcerikYukle(kod : string);
@@ -171,6 +171,8 @@ begin
   finally
   // template.free;
   end;
+
+
 
  RichView := TfrxRichView(frxReport1.FindObject(ObjeName));
  if RichView = nil then
@@ -429,11 +431,12 @@ begin
 end;
 
 
-procedure TfrmRapor.raporDataDokuman(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
+procedure TfrmRapor.raporDataDokuman(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '' ; SayfaGizle : string = '');
 var
   template : TStream;
   Table : TADOQuery;
 begin
+
 
   frxDesigner1.OnShow:= DesignerOnShow;
   frmRapor.Caption := kod + ' - ' + caption;
@@ -503,6 +506,11 @@ begin
   frxReport1.ReportOptions.Name := frmRapor.Caption;
   frxReport1.PrepareReport(True);
 
+  if SayfaGizle <> ''
+  then
+    if Assigned(frxReport1.FindObject(SayfaGizle))
+    then
+     TfrxPage(frxReport1.FindObject(SayfaGizle)).Visible := False;
 
   if printTip = pTYazdir
   then begin
@@ -750,6 +758,9 @@ end;
 
 procedure TfrmRapor.btnOnIzleClick(Sender: TObject);
 begin
+
+
+
     // frxDBDataset1.DataSet := data;
      frxReport1.PreviewOptions.Buttons := [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator];
      frxReport1.PrintOptions.ShowDialog := True;

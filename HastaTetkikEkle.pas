@@ -407,9 +407,13 @@ begin
               try
                 sql := 'exec sp_HastaLabSonucToplu ' + QuotedStr(tarihal(tarih1)) + ',' +
                                                        QuotedStr(tarihal(tarih2)) + ',' +
-                                                       QuotedStr(_dosyaNO_);
+                                                       QuotedStr(_dosyaNO_) + ',' +
+                                                       QuotedStr(datalar.AktifSirket);
+
                 datalar.QuerySelect(sql);
                 TopluDataset.Dataset0 := datalar.QuerySelect(sql);
+
+                TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
 
                 PrintYap('112','\Lab Sonuç Yazdýr (Toplu)',intToStr(TagfrmHastaTetkikEkle),TopluDataset);
 
@@ -429,9 +433,23 @@ var
    CaxP , G_ure , C_ure, demir , demirbaglama ,Dca,alb : double;
    ca , p , URR , Kt_VB , Kt_vj , Ts : double;
    x : integer;
-
+   Ado : TADOQuery;
 begin
 
+
+    sql := 'sp_KtvHesapla ' + QuotedStr(_dosyaNo_) + ',' + _gelisNo_ + ',' + QuotedStr('D');
+    Ado := datalar.QuerySelect(sql);
+    try
+    txtTS.EditValue := ado.FieldByName('TS').AsString;
+    txtktv.Text := ado.FieldByName('ktv').AsString;
+    txtUrr.Text := ado.FieldByName('urr').AsString;
+    txtDuzCa.Text := ado.FieldByName('duzca').AsString;
+
+    finally
+      ado.free;
+    end;
+
+  (*
     try
 
       if ADO_TetkikDegerlendir.Locate('dosyaNo;gelisNo',VarArrayOf([_gelisNO_,_gelisNO_]),[]) = True
@@ -489,7 +507,7 @@ begin
         ShowMessageSkin(e.Message,'','','info');
      end;
     end;
-
+        *)
 end;
 
 procedure TfrmHastaTetkikEkle.spKtvClick(Sender: TObject);
@@ -497,11 +515,26 @@ var
    CaxP , G_ure , C_ure , iKilo , kilofark , g,c ,Dca  ,alb ,demirbaglama,Ts : double;
    x : integer;
    ca , p , URR , Kt_VB , Kt_vj,demir: double;
+   ado : TADOQuery;
 begin
 
     iKilo := idealKilo(_dosyaNo_);
     kilofark := SonSeansGCKilo(_dosyaNo_,_gelisNo_ , g,c);
 
+
+    sql := 'sp_KtvHesapla ' + QuotedStr(_dosyaNo_) + ',' + _gelisNo_ + ',' + QuotedStr('D2');
+    Ado := datalar.QuerySelect(sql);
+
+    try
+    txtTS.EditValue := ado.FieldByName('TS').AsString;
+    txtktv.Text := ado.FieldByName('ktv').AsString;
+    txtUrr.Text := ado.FieldByName('urr').AsString;
+    txtDuzCa.Text := ado.FieldByName('duzca').AsString;
+    finally
+      ado.free;
+    end;
+
+  (*
     try
 
       if ADO_TetkikDegerlendir.Locate('dosyaNo;gelisNo',VarArrayOf([_gelisNO_,_gelisNO_]),[]) = True
@@ -561,7 +594,7 @@ begin
      end;
 
     end;
-
+        *)
 end;
 
 procedure TfrmHastaTetkikEkle.cxBtnDegerlendirClick(Sender: TObject);

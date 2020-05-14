@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Grids, BaseGrid, AdvGrid, Buttons, adodb,GirisUnit,
-   ExtCtrls,kadir, StrUtils , asprev,ComObj,
+   ExtCtrls,kadir, StrUtils , asprev,ComObj, KadirType,
   Menus,   AdvObj, cxGraphics, cxLookAndFeels,
   cxLookAndFeelPainters, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
   dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
@@ -518,7 +518,18 @@ var
  // PagePreview : TPagePreview;
   L : TStringList;
   sql ,txtTarih1 , txtTarih2 ,ay1 , ay2 : string;
+  TopluDataset : TDataSetKadir;
 begin
+     TopluDataset.Dataset1 := datalar.ADO_SQL;
+     TopluDataset.Dataset2 := DATALAR.ADO_AktifSirket;
+
+   if txtTip.ItemIndex = 0
+   Then
+     PrintYap('034','\SeansDagilim','',TopluDataset,pTNone)
+   Else
+     PrintYap('043','\SeansDagilim','',TopluDataset,pTNone);
+
+(*
 
 
      ay1 := formatfloat('00',txtDonem.ItemIndex);
@@ -529,7 +540,8 @@ begin
 
    if txtTip.ItemIndex = 0
    Then Begin
-     sql := 'exec sp_SeansGostergesiYazdýr' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',''R''';
+     sql := 'exec sp_SeansGostergesi' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 +
+            ',' + QuotedStr(datalar.AktifSirket) + ',''R''';
      datalar.ADO_SQL.Close;
      datalar.ADO_SQL.SQL.Clear;
      datalar.QuerySelect(datalar.ADO_SQL,sql);
@@ -559,7 +571,7 @@ begin
       frmRapor.ShowModal;
    End; 
 
-
+    *)
 
 end;
 
@@ -597,7 +609,7 @@ begin
   //   ShowMessageSkin('SeansGostergesi.XLS','Dosyasý Oluþturuldu','','info');
 
 
-(*
+  (*
   FStream := TFileStream.Create('SeansGostergesi.xls', fmCreate);
   try
     XlsBeginStream(FStream, 0);
@@ -617,12 +629,12 @@ begin
     then begin
        xls := CreateOLEObject('Excel.Application');
 
-       xlw := xls.WorkBooks.Open(FileName := 'c:\NoktaV3\SeansGostergesi.xls', Password := '', ReadOnly := True);
+       xlw := xls.WorkBooks.Open(FileName := 'SeansGostergesi.xls', Password := '', ReadOnly := True);
 
     end;
 
   end;
-  *)
+      *)
 end;
 
 procedure TfrmSeansDagilimi.FormShow(Sender: TObject);

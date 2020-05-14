@@ -23,24 +23,25 @@ object frmSKSKriter: TfrmSKSKriter
     Align = alClient
     TabOrder = 0
     ExceleGonder = False
-    ExplicitWidth = 669
+    PopupForm = False
     object Grid_Sks_TanimDBTableView1: TcxGridDBTableView
-      Navigator.Buttons.First.Visible = True
-      Navigator.Buttons.PriorPage.Visible = True
-      Navigator.Buttons.Prior.Visible = True
-      Navigator.Buttons.Next.Visible = True
-      Navigator.Buttons.NextPage.Visible = True
-      Navigator.Buttons.Last.Visible = True
+      Navigator.Buttons.OnButtonClick = Grid_Sks_TanimDBTableView1NavigatorButtonsButtonClick
+      Navigator.Buttons.First.Visible = False
+      Navigator.Buttons.PriorPage.Visible = False
+      Navigator.Buttons.Prior.Visible = False
+      Navigator.Buttons.Next.Visible = False
+      Navigator.Buttons.NextPage.Visible = False
+      Navigator.Buttons.Last.Visible = False
       Navigator.Buttons.Insert.Visible = True
       Navigator.Buttons.Append.Visible = False
       Navigator.Buttons.Delete.Visible = True
       Navigator.Buttons.Edit.Visible = True
       Navigator.Buttons.Post.Visible = True
       Navigator.Buttons.Cancel.Visible = True
-      Navigator.Buttons.Refresh.Visible = True
-      Navigator.Buttons.SaveBookmark.Visible = True
-      Navigator.Buttons.GotoBookmark.Visible = True
-      Navigator.Buttons.Filter.Visible = True
+      Navigator.Buttons.Refresh.Visible = False
+      Navigator.Buttons.SaveBookmark.Visible = False
+      Navigator.Buttons.GotoBookmark.Visible = False
+      Navigator.Buttons.Filter.Visible = False
       Navigator.Visible = True
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
@@ -62,6 +63,7 @@ object frmSKSKriter: TfrmSKSKriter
       OptionsView.Indicator = True
       OptionsView.RowSeparatorColor = clBlack
       object Grid_Sks_TanimDBTableView1sira: TcxGridDBColumn
+        Caption = 'Sira'
         DataBinding.FieldName = 'sira'
         HeaderAlignmentHorz = taCenter
       end
@@ -122,6 +124,16 @@ object frmSKSKriter: TfrmSKSKriter
     end
     object Grid_Sks_TanimLevel1: TcxGridLevel
       GridView = Grid_Sks_TanimDBTableView1
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    Images = DATALAR.imag24png
+    Left = 184
+    Top = 128
+    object G1: TMenuItem
+      Caption = 'G'#246'sterge Tan'#305'm Kartlar'#305
+      ImageIndex = 28
+      OnClick = G1Click
     end
   end
 end

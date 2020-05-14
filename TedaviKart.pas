@@ -441,7 +441,7 @@ begin
 
    case TfrmTedaviBilgisi(self).Tag  of
      TagfrmHastaRecete,
-     TagfrmPersonelRecete,
+     TagfrmPersonelRecete,TagfrmIseGiris,TagfrmAnamnez,
      TagfrmHastaTetkikEkle,
      TagfrmHastaIlacTedavi,
      TagfrmHastaDiyalizIzlem,

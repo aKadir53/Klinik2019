@@ -39,7 +39,7 @@ begin
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
 
-   sql := 'update gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
+   sql := 'update Hasta_gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
           ',LabRefId = ' + QuotedStr(refId) +
           ' where SIRANO = ' + id;
    datalar.QueryExec(ado,sql);
@@ -54,7 +54,7 @@ var
  sm,ss , dosyaNo,gelisNo,id , Field, kayitTip : string;
   x , r : Integer;
 Begin
-      datalar.Login;
+
       HTISynevo := TenayServiceSYNLAB_SYNEVO_CENTRO.Order.Create;
       HTICvpSynevo := TenayServiceSYNLAB_SYNEVO_CENTRO.HastakaydetCevap.Create;
       GelisSynevo := TenayServiceSYNLAB_SYNEVO_CENTRO.Gelis.Create;
@@ -81,7 +81,7 @@ Begin
                                     MkDir('C:\NoktaV3\Synevo');
 
     //  datalar.TenayMNT_XMLDosya_Name := '';
-      For I := 0 to gridAktif.Controller.SelectedRowCount - 1 do
+      For x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
       Begin
 
        sleep(1000);
@@ -89,7 +89,7 @@ Begin
        kayitTip := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
 
-        if  (kayitTip = 'Yeni Kayýt')
+        if  (kayitTip = 'ONAY')
         Then Begin
            dosyaNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
@@ -104,6 +104,7 @@ Begin
 
                  if HTISynevo <> nil
                  Then begin
+                    HTISynevo.KurumBilgileri := KurumSynevo;
 
                      datalar.Lab.URL := datalar._laburl;
 
@@ -371,7 +372,7 @@ var
   _TetkikSonuclar_ : TenayServiceSYNLAB_SYNEVO_CENTRO.TetkikSonuc;
   KurumMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri;
   I,s , testAdet , sonucAdet , j , x , Tc : integer;
-  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,
+  dosyaNo,gelisNo,testKod,kod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,
   _tc_,kayitTip : string;
   ado : TADOQuery;
   t : boolean;
@@ -461,9 +462,14 @@ begin
                                 'Sonuc : ' + _TetkikSonuclar_.Sonuc + ' - ' +
                                 onaytarihi);
                                 _F_ := '';
-                                testKod := KodEslestirNormalDeger(
-                                           ifthen(_TetkikSonuclar_.Kodu = '',_TetkikSonuclar_.AltTestKodu,_TetkikSonuclar_.Kodu),
-                                           inttostr(_TetkikSonuclar_.OrnekTurId),min,max, _F_);
+
+                                if _TetkikSonuclar_.AltTest = True
+                                then
+                                  kod := _TetkikSonuclar_.Kodu
+                                else
+                                  kod := _TetkikSonuclar_.AltTestKodu;
+
+                                testKod := KodEslestirNormalDeger(kod,'',min,max, _F_);
 
 
                                 if testKod <> ''
@@ -475,7 +481,10 @@ begin
                                    _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'Neg','NEG',[rfReplaceAll]);
                                    _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,',','.',[rfReplaceAll]);
                                    _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'-','',[rfReplaceAll]);
-
+                                   _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'&lt;','',[rfReplaceAll]);
+                                   _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'&gt;','',[rfReplaceAll]);
+                                   _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'>','',[rfReplaceAll]);
+                                   _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'<','',[rfReplaceAll]);
 
                                    _TetkikSonuclar_.Aciklama := StringReplace(_TetkikSonuclar_.Aciklama,'Neg','NEG',[rfReplaceAll]);
                                    _TetkikSonuclar_.Aciklama := StringReplace(_TetkikSonuclar_.Aciklama,'Poz','POZ',[rfReplaceAll]);
@@ -493,19 +502,38 @@ begin
                                    Else
                                    if (pos('POZ',_TetkikSonuclar_.Aciklama) > 0)
                                    Then sonuc := '1'
-                                   Else sonuc := _TetkikSonuclar_.Sonuc;
+                                   Else sonuc := Trim(_TetkikSonuclar_.Sonuc);
+
+
 
                                    if (testKod = '907440') or
                                       (testKod = '906610') or
                                       (testKod = '906630') or
                                       (testKod = '906660')
                                    Then Begin
-                                       sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + sonuc + ')' +
-                                             // ',islemAciklamasi = ' + _TetkikSonuclar_.Aciklama +
-                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
-                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
-                                       datalar.QueryExec(sql);
+                                      if (strtofloat(max) > 0) and
+                                        ((sonuc <> '-1') and (sonuc <> '1'))
+                                      then begin
+                                       try
+                                        if strtofloat(sonuc) < strtofloat(max)
+                                        Then sonuc := '-1' else sonuc := '1';
+                                       except end;
+                                      end;
+
+                                     try
+                                        sql := 'update hareketler set Gd = ' + sonuc  +
+                                                ',islemAciklamasi = ' + QuotedStr(_TetkikSonuclar_.Sonuc) +
+                                                ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                                                ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                                        datalar.QueryExec(sql);
+                                     except
+                                           sql := 'update hareketler ' +
+                                                  ',islemAciklamasi = ' + _TetkikSonuclar_.Sonuc +
+                                                  ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                                                  ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                                           datalar.QueryExec(sql);
+                                     end;
 
                                    End
                                    else
@@ -515,7 +543,7 @@ begin
                                             //  ',islemAciklamasi = ' + _TetkikSonuclar_.Sonuc +
                                               ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                               ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-                                       datalar.QueryExec(sql);
+                                          datalar.QueryExec(sql);
                                       except
                                           sql := 'update hareketler ' +
                                               ',islemAciklamasi = ' + _TetkikSonuclar_.Sonuc +
@@ -564,7 +592,6 @@ begin
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
   try
-
       HastaTenay := TenayServiceSYNLAB_SYNEVO_CENTRO.Order.Create;
 
       sql := 'select * from HastaKart where dosyano = ' + QuotedStr(dosyaNo);
@@ -586,89 +613,72 @@ begin
       Dtarih.Month := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,5,2));
       Dtarih.Day := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,7,2));
 
-     // DTarih.AsDate := tarihyap(ado.fieldbyname('DOGUMTARIHI').Asstring);
-
       HastaTenay.DogumTarihi := DTarih;
 
-
-      sql := 'select BHDAT,ornekNo,KanAlimZamani from gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
+      sql := 'select BHDAT,ornekNo,CikisOrnekNo,SIRANO from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
       datalar.QuerySelect(ado,sql);
 
-      KanAlimZamani := ado.fieldbyname('KanAlimZamani').AsDateTime;
-
-
-      HastaTenay.OrnekNo := 0;
+      HastaTenay.OrnekNo := strtoint(ifthen(ado.fieldbyname(Field).AsString = '',
+                               '0',ado.fieldbyname(Field).AsString));
 
       if ado.FieldByName(Field).AsString <> ''
       then  begin
           GelisSynevo := TenayServiceSYNLAB_SYNEVO_CENTRO.Gelis.Create;
-          GelisSynevo.ReferansNo := ado.fieldbyname('ornekNo').AsString;
-          GelisSynevo.OrnekNo := 0;
-
-
+          GelisSynevo.ReferansNo := ado.fieldbyname('SIRANO').AsString;
+          GelisSynevo.OrnekNo :=
+          strtoint(ifthen(ado.fieldbyname(Field).AsString = '',
+                               '0',ado.fieldbyname(Field).AsString));
 
           TTarih := TXSDateTime.Create;
-          TTarih.Year := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,1,4));
-          TTarih.Month := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,5,2));
-          TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
-
-
-       //   TTarih.AsDate := tarihyap(ado.fieldbyname('BHDAT').Asstring);
+          TTarih.Year := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('BHDAT').AsDateTime),1,4));
+          TTarih.Month := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('BHDAT').AsDateTime),5,2));
+          TTarih.Day := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('BHDAT').AsDateTime),7,2));
 
           GelisSynevo.Tarih := TTarih;
 
           GelisSynevo.GelisTipi := TenayServiceSYNLAB_SYNEVO_CENTRO.GelisTipi.DiyalizGiris;
 
-    sql := 'select * from hareketlerLab h ' +
-           ' join labtestler_Firma l on l.butKodu = h.code and l.LabID = ' + QuotedStr(datalar._labID) +
-           ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and onay = 1 and gelisNo = ' + gelis +
-           ' and charindex(''.'',code) = 0 and l.tip = 2';
-    datalar.QuerySelect(ado,sql);
-    j := ado.RecordCount;
-    SetLength(istekler,j);
+          sql := 'select h.*,l.*,lt.TurId,(select Tarih from hareketlerSeans hs where hs.dosyaNo = h.dosyaNo and hs.gelisNo = h.gelisNo and hs.KanAlindimi = 1) KanAlimTarihi ' +
+                 ' from hareketlerLab h ' +
+                 ' join labtestler_Firma l on l.butKodu = h.code and l.LabID = ' + QuotedStr(datalar._labID) +
+                 ' join LabTestler lt on lt.butKodu = h.CODE and h.tip1 = lt.uygulamaAdet' +
+                 ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and onay = 1 and gelisNo = ' + gelis +
+                 ' and charindex(''.'',code) = 0 and h.tip1 = l.tip';
+          datalar.QuerySelect(ado,sql);
+          j := ado.RecordCount;
+          SetLength(istekler,j);
 
-    while not ado.Eof do
-    begin
-      istek := TenayServiceSYNLAB_SYNEVO_CENTRO.Tetkik.Create;
-     // istek.LogId := ado.fieldbyname('SIRANO').AsInteger;
-      ckod := '';
-      kod := KodEslestirKod(ado.fieldbyname('code').AsString,ckod,TurId);
+          while not ado.Eof do
+          begin
+            istek := TenayServiceSYNLAB_SYNEVO_CENTRO.Tetkik.Create;
+            istek.Kodu := ado.fieldbyname('islemKodu').AsString;
+            istek.Adi := ado.fieldbyname('NAME1').AsString;
+            istek.KapId := 26;
 
-      istek.Kodu := kod;
-      istek.Adi := ado.fieldbyname('NAME1').AsString;
-      istek.KapId := 26;
-      istek.OrnekTurId := ifThen(TurId = '','0',TurId);
-      ATarih := TXSDateTime.Create;
-      ATarih.Year := strtoint(copy(ado.fieldbyname('Tarih').Asstring,1,4));
-      ATarih.Month := strtoint(copy(ado.fieldbyname('Tarih').Asstring,5,2));
-      ATarih.Day := strtoint(copy(ado.fieldbyname('Tarih').Asstring,7,2));
-      istek.AlindigiTarih := ATarih;
+            TurId := ado.fieldbyname('TurId').AsString;
 
+            if ado.fieldbyname('Tip1').AsString = 'C'
+            Then
+              istek.OrnekTurId := ifThen(TurId = '','147',TurId)
+            Else
+              istek.OrnekTurId := ifThen(TurId = '','0',TurId);
 
-      istekler[i] := istek;
-      i := i + 1;
+            ATarih := TXSDateTime.Create;
+            ATarih.Year := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('KanAlimTarihi').AsDateTime),1,4));
+            ATarih.Month := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('KanAlimTarihi').AsDateTime),5,2));
+            ATarih.Day := strtoint(copy(FormatDateTime('YYYYMMDD', ado.fieldbyname('KanAlimTarihi').AsDateTime),7,2));
 
-      if ckod <> ''
-      Then begin
-        j := j +1;
-        SetLength(istekler,j);
-        istek := TenayServiceSYNLAB_SYNEVO_CENTRO.Tetkik.Create;
-       // istek.LogId := ado.fieldbyname('SIRANO').AsInteger+1000;
-        istek.Kodu := ckod;
-        istek.Adi := ado.fieldbyname('NAME1').AsString;
-        istek.KapId := 26;
-        istek.OrnekTurId := '147';
-        istek.AlindigiTarih := ATarih;
-        istekler[i] := istek;
-        i := i + 1;
-      end;
-      ado.Next;
-    end;
+            istek.AlindigiTarih := ATarih;
 
+            istekler[i] := istek;
+            i := i + 1;
 
-         GelisSynevo.Tetkikler := istekler;
-         HastaTenay.Gelis := GelisSynevo;
-         OrderSynevo := HastaTenay;
+            ado.Next;
+          end;
+
+          GelisSynevo.Tetkikler := istekler;
+          HastaTenay.Gelis := GelisSynevo;
+          OrderSynevo := HastaTenay;
       end
       else
         OrderSynevo := nil;

@@ -136,6 +136,7 @@ object frmHastaListeD: TfrmHastaListeD
         OptionsData.Deleting = False
         OptionsData.Editing = False
         OptionsData.Inserting = False
+        OptionsSelection.MultiSelect = True
         OptionsView.NavigatorOffset = 20
         OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
         OptionsView.CellAutoHeight = True
@@ -497,7 +498,6 @@ object frmHastaListeD: TfrmHastaListeD
       Tag = -2
       Caption = 'Seans Kart'#305
       ImageIndex = 80
-      Visible = False
       OnClick = cxButtonCClick
       FormId = 0
     end
@@ -526,6 +526,7 @@ object frmHastaListeD: TfrmHastaListeD
       end
       object He3: TMenuItemModul
         Caption = 'Hepatit / Tele'
+        Visible = False
         OnClick = H1Click
         FormId = 0
       end
@@ -567,6 +568,24 @@ object frmHastaListeD: TfrmHastaListeD
       Tag = 9997
       Caption = 'Excele G'#246'nder'
       ImageIndex = 75
+      OnClick = cxButtonCClick
+    end
+    object H1: TMenuItem
+      Tag = -100
+      Caption = 'Hasta Tan'#305'm Kartlar'#305
+      ImageIndex = 6
+      OnClick = cxButtonCClick
+    end
+    object M1: TMenuItem
+      Tag = -110
+      Caption = 'MedEczane'
+      ImageIndex = 103
+      OnClick = cxButtonCClick
+    end
+    object E3: TMenuItem
+      Tag = -111
+      Caption = 'E-Nab'#305'z Doktor Eri'#351'im'
+      ImageIndex = 133
       OnClick = cxButtonCClick
     end
   end

@@ -3,7 +3,7 @@ unit HastaListeD;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils,StrUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, ADODB, Grids, StdCtrls,dxLayoutControl, jpeg,
   Buttons,  ExtCtrls, DBGrids,  KadirLabel,Kadir,KadirType,GetFormClass,
   DBGridEh, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
@@ -75,6 +75,9 @@ type
     N4: TMenuItem;
     HastaYllkTekikCetveli1: TMenuItem;
     ListeColumn3: TcxGridDBColumn;
+    H1: TMenuItem;
+    M1: TMenuItem;
+    E3: TMenuItem;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -122,7 +125,7 @@ type
 
 const formGenislik = 700;
       formYukseklik = 600;
-
+      FotoTable = 'select * from PersonelFoto where dosyaNo = %s';
 
 var
   frmHastaListeD: TfrmHastaListeD;
@@ -152,6 +155,8 @@ var
  GirisFormRecord : TGirisFormRecord;
  F : TGirisForm;
  Datasets : TDataSetKadir;
+ x , satir : integer;
+ dosyaNo , dosyaNos ,sql : string;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -160,7 +165,7 @@ begin
   GirisFormRecord.F_dosyaNo_ := _Dataset.FieldByName('dosyaNo').AsString;
   GirisFormRecord.F_gelisNo_ := _Dataset.FieldByName('gelisNo').AsString;
   GirisFormRecord.F_GelisSIRANO := _Dataset.FieldByName('SIRANO').AsString;
-  GirisFormRecord.F_provizyonTarihi_ := _Dataset.FieldByName('BHDAT').AsString;
+  GirisFormRecord.F_provizyonTarihi_ := FormatDateTime('YYYYMMDD', _Dataset.FieldByName('BHDAT').AsDateTime);
   GirisFormRecord.F_HastaAdSoyad_ := _Dataset.FieldByName('HASTAADI').AsString + ' ' +
                                      _Dataset.FieldByName('HASTASOYADI').AsString;
   GirisFormRecord.F_TakipNo_ := _Dataset.FieldByName('TakipNO').AsString;
@@ -169,6 +174,22 @@ begin
   GirisFormRecord.F_Makina_ := _Dataset.FieldByName('MakinaNo').AsString;
   GirisFormRecord.F_Seans_ := _Dataset.FieldByName('Seans').AsString;
   GirisFormRecord.F_mobilTel_ := _Dataset.FieldByName('EV_TEL1').AsString;
+
+  GirisFormRecord.F_SeansBilgi.DiyalizorTipi := _Dataset.FieldByName('DiyalizorTipi').AsString;
+  GirisFormRecord.F_SeansBilgi.DiyalizorCinsi := _Dataset.FieldByName('DiyalizorCinsi').AsString;
+  GirisFormRecord.F_SeansBilgi.Diyalizat := _Dataset.FieldByName('D').AsString;
+  GirisFormRecord.F_SeansBilgi.YA := _Dataset.FieldByName('YA').AsString;
+  GirisFormRecord.F_SeansBilgi.Diyalizor := _Dataset.FieldByName('Diyalizor').AsString;
+  GirisFormRecord.F_SeansBilgi.GirisYolu := _Dataset.FieldByName('GIRISYOLU').AsString;
+  GirisFormRecord.F_SeansBilgi.Heparin := _Dataset.FieldByName('HEPARIN').AsString;
+  GirisFormRecord.F_SeansBilgi.HeparinTip := _Dataset.FieldByName('HEPARINTIP').AsString;
+  GirisFormRecord.F_SeansBilgi.HeparinUyg := _Dataset.FieldByName('HEPARINUYG').AsString;
+  GirisFormRecord.F_SeansBilgi.Igne := _Dataset.FieldByName('Igne').AsString;
+  GirisFormRecord.F_SeansBilgi.IgneV := _Dataset.FieldByName('IgneV').AsString;
+  GirisFormRecord.F_SeansBilgi.APH := _Dataset.FieldByName('APH').AsString;
+  GirisFormRecord.F_SeansBilgi.Na := _Dataset.FieldByName('Na').AsString;
+
+
   if _Dataset.RecordCount = 0 then exit;
 
   case Tcontrol(sender).tag of
@@ -228,6 +249,71 @@ begin
           F := FormINIT(TagfrmKanTetkikTakip,GirisFormRecord,ikHayir);
           if F <> nil then F.ShowModal;
        end;
+-110 : begin
+         if datalar.doktorKodu <> ''
+         then begin
+             if FindTab(AnaForm.sayfalar,TagfrmMedEczane)
+             Then begin
+               F := TGirisForm(FormClassType(TagfrmMedEczane));
+               TGirisForm(FormClassType(TagfrmMedEczane))._dosyaNO_ := '';
+               TGirisForm(FormClassType(TagfrmMedEczane))._value_ := 'MedEczane';
+               TGirisForm(FormClassType(TagfrmMedEczane))._TC_ := _Dataset.FieldByName('TCKimlikNo').AsString;
+               TGirisForm(FormClassType(TagfrmMedEczane))._HastaAdSoyad_ :=   GirisFormRecord.F_HastaAdSoyad_;
+               TGirisForm(FormClassType(TagfrmMedEczane)).Init(F);
+             end
+             Else begin
+              F := FormINIT(TagfrmMedEczane,self,GirisFormRecord,'',NewTab(AnaForm.sayfalar,TagfrmMedEczane),ikEvet,'Giriþ');
+              if F <> nil then F.show;
+             end;
+         end
+         else
+           ShowMessageSkin('Doktor Kullanýcýsý Olmalýsýnýz','','','info');
+       end;
+
+-111 : begin
+         if datalar.doktorKodu <> ''
+         then
+           ENabizDoktorErisim(datalar._userSaglikNet2_,datalar._passSaglikNet2_,_Dataset.FieldByName('TCKimlikNo').AsString,datalar.doktorTC)
+         else
+         begin
+           ShowMessageSkin('Doktor Kullanýcýsý Olmalýsýnýz','','','info');
+         end;
+       end;
+
+-100 : begin
+              if DirectoryExists('C:\NoktaV3\QR') = False
+              then
+                MkDir('C:\NoktaV3\QR');
+
+          DurumGoster(True);
+
+          try
+            for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+            begin
+               Application.ProcessMessages;
+               satir := Liste.Controller.SelectedRows[x].RecordIndex;
+               dosyaNo := varToSTr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+               dosyaNos := dosyaNos + ifthen(dosyaNos = '','',',') + dosyaNo;
+               FotoEkle('',dosyaNo);
+               QRBarkod('http://185.99.199.39:8079?dosyaNo=' + dosyaNo,'C:\NoktaV3\QR\' + dosyaNo +'.jpg');
+               QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\QR\' + dosyaNo+'.jpg');
+            end;
+
+              sql := 'select * from hastakart h ' +
+                     'left join PersonelFoto p on h.dosyano = p.dosyano ' +
+                     'where h.dosyaNo in (select datavalue from dbo.strTotable(' + QuotedStr(dosyaNos) + ','',''))' ;
+
+              Datasets.Dataset0 := datalar.QuerySelect(sql);
+              Datasets.Dataset2 := datalar.ADO_AktifSirket;
+              Datasets.Dataset3 := datalar.ADO_aktifSirketLogo;
+              PrintYap('PKBT','Hasta Kart Toplu','',Datasets,kadirType.pTNone);
+
+          finally
+            DurumGoster(False);
+          end;
+
+
+       end;
 
 
  330,9020 : begin
@@ -261,6 +347,8 @@ begin
 end;
 
 procedure TfrmHastaListeD.FormCreate(Sender: TObject);
+var
+ d : string;
 begin
   cxPanel.Visible := false;
  // ToolBar1.Visible := false;
@@ -268,6 +356,13 @@ begin
   ClientHeight := AnaForm.ClientHeight - (AnaForm.ToolBar1.Height + AnaForm.dxStatusBar1.Height+50);
   ClientWidth := formGenislik;
   Olustur(self,TableName,'Hasta Listesi',23);
+
+  if datalar.LisansTipDeger = '1'
+  then
+    E3.Visible := False
+  else
+    E3.Visible := True;
+
   Menu := PopupMenu1;
   Tag := TagfrmHastaListeD;
 
@@ -288,8 +383,9 @@ begin
 
   Liste.DataController.DataSource := DataSource;
 
-  txtDonemTopPanel.Yil := copy(tarihal(date()),1,4);
-  txtDonemTopPanel.EditValue := copy(tarihal(date()),5,2);
+  txtDonemTopPanel.Yil := copy(FormatDateTime('YYYYMMDD', date()),1,4);
+  d := copy(FormatDateTime('YYYYMMDD', date()),5,2);
+  txtDonemTopPanel.EditValue := copy(FormatDateTime('YYYYMMDD', date()),5,2);
 
  // txtay.ItemIndex :=  strtoint(copy(tarihal(date()),5,2))-1;
 

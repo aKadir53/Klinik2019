@@ -57,7 +57,7 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
         Top = 0
         Width = 656
         Height = 494
-        ActivePage = TabSheet6
+        ActivePage = TabSheet7
         Align = alClient
         Images = DATALAR.imag24png
         TabHeight = 25
@@ -223,6 +223,14 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
                 Footers = <>
                 Title.Caption = 'Tip'
                 Width = 100
+              end
+              item
+                DynProps = <>
+                EditButtons = <>
+                FieldName = 'aciklama'
+                Footers = <>
+                Title.Caption = 'Aciklama'
+                Width = 80
               end>
             object RowDetailData: TRowDetailPanelControlEh
             end

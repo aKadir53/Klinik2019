@@ -68,6 +68,8 @@ type
     cxGrid1Level1: TcxGridLevel;
     txtLog: TcxMemo;
     gridHastalarColumn5: TcxGridDBBandedColumn;
+    R2: TMenuItem;
+    M1: TMenuItem;
 
     procedure TopPanelButonClick(Sender: TObject);
     procedure ADO_ReceteAfterScroll(DataSet: TDataSet);
@@ -112,7 +114,7 @@ var
   recete,doktorKullanici,doktorsifre,pin,url,cardType : string;
   doktorTc : string;
   ss : PWideChar;
-  sql : string;
+  sql , yol , yol1 : string;
 begin
   url := (datalar.receteURL);
  (*
@@ -135,6 +137,12 @@ begin
   doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
   TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsInteger);
   cardType :=  SelectAdo.FieldByName('cardType').AsString;
+
+  yol := ExtractFilePath(Application.ExeName) + 'BouncyCastle.Crypto17.dll';
+  yol1 := ExtractFilePath(Application.ExeName) + 'BouncyCastle.Crypto.dll';
+
+  DeleteFile(yol1);
+  CopyFile(PWideChar(yol),PWideChar(yol1),False);
 
   dllHandle := LoadLibrary(NoktaDLL);
   try
@@ -324,7 +332,7 @@ var
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
  x : integer;
- dosyaNo ,ReceteId,tel,msj,EreceteNo,hasta,sonuc : string;
+ dosyaNo ,ReceteId,tel,msj,EreceteNo,hasta,sonuc,jsonText : string;
  SS : TStringList;
 begin
   inherited;
@@ -341,6 +349,7 @@ begin
   try
     case Tcontrol(sender).tag of
    -7  : begin
+
             DurumGoster(True,False,'Hastanýn Reçeteleri Yükleniyor...');
             F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet);
             F._foto_ := _foto_;
@@ -415,6 +424,16 @@ begin
 
               end;
          end;
+ -100 : begin
+            jsonText := datalar.QuerySelect('RenkliReceteJson ' + ADO_Recete.FieldByName('id').AsString + ',1').Fields[0].AsString;
+            if Recetem(jsonText) = 'Recetem'
+            Then begin
+              datalar.QueryExec('Update recete set ereceteNo = ' + QuotedStr('Recetem') +
+                                ' where id = ' + QuotedStr(ADO_Recete.FieldByName('id').AsString));
+            End;
+
+        end;
+
     end;
   finally
     DurumGoster(False);
@@ -473,6 +492,8 @@ var
  Form : TGirisForm;
  dosyaNo : string;
 begin
+
+   if gridHastalar.Controller.SelectedRowCount = 0 then exit;
    satir := gridHastalar.Controller.SelectedRows[0].RecordIndex;
    dosyaNo := varTostr(gridHastalar.DataController.GetValue(satir,gridHastalar.DataController.GetItemByFieldName('dosyaNo').Index));
 

@@ -37,6 +37,7 @@ type
     Barth1: TMenuItem;
     GridListColumn9: TcxGridDBColumn;
     E2: TMenuItem;
+    GridListColumn10: TcxGridDBColumn;
     procedure DiyalizTipPropertiesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
@@ -79,17 +80,20 @@ end;
 procedure TfrmKtvListesi.cxButtonCClick(Sender: TObject);
 var
   formul : string;
+  satir : integer;
 begin
    inherited;
 
-   datalar.KtvUrr.dosyaNo := GridListe.Dataset.FieldByName('dosyaNo').AsString;
-   datalar.KtvUrr.gelisNo := GridListe.Dataset.FieldByName('gelisNo').AsString;
-   datalar.KtvUrr.hasta := GridListe.Dataset.FieldByName('ad').AsString;
-   datalar.KtvUrr.Ktv := GridListe.Dataset.FieldByName('kt_v').AsFloat;
-   datalar.KtvUrr.Urr := GridListe.Dataset.FieldByName('urr').AsFloat;
-   datalar.KtvUrr.DuzCa := GridListe.Dataset.FieldByName('DuzCa').AsFloat;
-   datalar.KtvUrr.CaxP := GridListe.Dataset.FieldByName('CaxP').AsFloat;
-   datalar.KtvUrr.TS := GridListe.Dataset.FieldByName('TS').AsFloat;
+   satir := GridList.Controller.SelectedRows[0].RecordIndex;
+
+   datalar.KtvUrr.dosyaNo := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('dosyaNo').Index);
+   datalar.KtvUrr.gelisNo := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('gelisNo').Index);
+   datalar.KtvUrr.hasta := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('ad').Index);
+   datalar.KtvUrr.Ktv :=  GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('Kt_v').Index);
+   datalar.KtvUrr.Urr := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('Urr').Index);
+   datalar.KtvUrr.DuzCa := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('DuzCa').Index);
+   datalar.KtvUrr.CaxP := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('CaxP').Index);
+   datalar.KtvUrr.TS := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('TS').Index);
 
    case Tcontrol(sender).Tag of
    -10 : begin
@@ -168,7 +172,7 @@ var
 begin
   DurumGoster(True,True,'Hesaplamalar Yapýlýyor...',-1,GridList.Controller.SelectedRowCount);
   try
-  if mrYes = ShowMessageSkin('Ktv,URR,CaxP,Düzenlenmil Ca deðerleri hesaplanacak','Test Sonuçlarýnýn ve giriþ çýkýþ kilolarýnýn girili olmasý gereklidir','Devam Edilsinmi','msg' )
+  if mrYes = ShowMessageSkin('Ktv,URR,CaxP,Düzenlenmiþ Ca deðerleri hesaplanacak','Test Sonuçlarýnýn ve giriþ çýkýþ kilolarýnýn girili olmasý gereklidir','Devam Edilsinmi','msg' )
   Then Begin
      for i := 0 to GridList.Controller.SelectedRowCount - 1 do
      begin

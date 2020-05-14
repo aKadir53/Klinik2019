@@ -147,7 +147,11 @@ uses
     TeleEKG,
     TopluReceteImzala,
     TopluHastaTedaviList,
-    KonsultasyonForm;
+    KonsultasyonForm,
+    MedEczane,
+    CalisanGeriBildirimAnket,
+    itsBildirim,
+    itsBildirimPaket;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -290,8 +294,11 @@ begin
    TagfrmFirmaKart : Result := TfrmFirmaKart;
    TagfrmMerkezBilgisi : Result := TfrmMerkezBilgisi;
    TagfrmHizmetKart : Result := TfrmHizmetKart;
-   TagfrmPopupDBGridForm,TagfrmBolum,TagfrmBirim,TagfrmEkipmanTuru,
-   TagfrmEkipmanTuruOzellik,TagfrmFirmaYetkili : Result := TfrmPopupDBGridForm;
+
+   TagfrmPopupDBGridForm,TagfrmBolum,TagfrmBirim,TagfrmEkipmanTuru,TagfrmSahaSaglikGozetimTanim,
+    TagfrmISGKurulToplantiTanim, TagfrmCalisanGeriBildirimAnketSoruTanim,
+     TagfrmEkipmanTuruOzellik,TagfrmFirmaYetkili,TagfrmMadulaEpiktizTanim : Result := TfrmPopupDBGridForm;
+
    TagfrmPopupDBVerticalGridForm : Result := TfrmPopupDBVerticalGridForm;
    TagfrmHizliKayitPersonel, TagfrmHizliKayitDisAktarimlar : Result := TfrmHizliKayit;
    TagfrmReceteSablon : Result := TfrmReceteSablon;
@@ -396,9 +403,14 @@ begin
    TagfrmTopluHastaRecete : Result := TfrmTopluHastaRecete;
    TagfrmTopluHastaTedaviListesi : Result := TfrmTopluHastaTedaviListesi;
    TagfrmHastaKonsultasyon : Result := TfrmHastaKonsultasyon;
+   TagfrmMedEczane,TagfrmMedula,TagfrmENabiz,TagfrmUyum : Result := TfrmMedEczane;
+   TagfrmCalisanGeriBildirimAnket : Result := TfrmCalisanGeriBildirimAnket;
+   TagfrmITS : Result := TfrmITS;
+   TagfrmITSPaket : Result := TfrmITSPaket;
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
 end;
+
 
 function FormClassType(formId : integer) : TComponent;
 begin
@@ -406,9 +418,13 @@ begin
    TagfrmPersonelKart : Result := frmPersonelKart;
    TagfrmFirmaKart : Result := frmFirmaKart;
    TagfrmMerkezBilgisi : Result := frmMerkezBilgisi;
+
    TagfrmHizmetKart : Result := frmHizmetKart;
-   TagfrmPopupDBGridForm,TagfrmBolum,TagfrmBirim,TagfrmSube,TagfrmFirmaISGEkip,
-   TagFirmaCalismalari,TagfrmEkipmanTuru,TagfrmEkipmanTuruOzellik,TagfrmFirmaYetkili : Result := frmPopupDBGridForm;
+   TagfrmPopupDBGridForm,TagfrmBolum,TagfrmBirim,TagfrmSube,TagfrmFirmaISGEkip,TagfrmSahaSaglikGozetimTanim,
+    TagfrmISGKurulToplantiTanim,TagfrmCalisanGeriBildirimAnketSoruTanim,
+     TagFirmaCalismalari,TagfrmEkipmanTuru,TagfrmEkipmanTuruOzellik,
+      TagfrmFirmaYetkili,TagfrmMadulaEpiktizTanim : Result := frmPopupDBGridForm;
+
    TagfrmPopupDBVerticalGridForm : Result := frmPopupDBVerticalGridForm;
    TagfrmHizliKayitPersonel, TagfrmHizliKayitDisAktarimlar : Result := frmHizliKayit;
    TagfrmReceteSablon : Result := frmReceteSablon;
@@ -514,7 +530,10 @@ begin
    TagfrmTopluHastaRecete : Result := frmTopluHastaRecete;
    TagfrmTopluHastaTedaviListesi : Result := frmTopluHastaTedaviListesi;
    TagfrmHastaKonsultasyon : Result := frmHastaKonsultasyon;
-
+   TagfrmMedEczane,TagfrmMedula,TagfrmENabiz,TagfrmUyum : Result := frmMedEczane;
+   TagfrmCalisanGeriBildirimAnket : Result := frmCalisanGeriBildirimAnket;
+   TagfrmITS : Result := frmITS;
+   TagfrmITSPaket : Result := frmITSPaket;
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
 
   end;
@@ -628,9 +647,15 @@ begin
      TagfrmTeleEkg : frmTeleEkg  := TfrmTeleEkg.Create(Tab);
      TagfrmTopluHastaRecete : frmTopluHastaRecete   := TfrmTopluHastaRecete .Create(Tab);
      TagfrmTopluHastaTedaviListesi : frmTopluHastaTedaviListesi   := TfrmTopluHastaTedaviListesi .Create(Tab);
+     TagfrmMedEczane,TagfrmMedula,TagfrmENabiz,TagfrmUyum : frmMedEczane := TfrmMedEczane.Create(Tab);
+     TagfrmCalisanGeriBildirimAnket : frmCalisanGeriBildirimAnket := TfrmCalisanGeriBildirimAnket.Create(Tab);
+     TagfrmITS : frmITS  := TfrmITS.Create(Tab);
+     TagfrmITSPaket : frmITSPaket  := TfrmITSPaket.Create(Tab);
+
   end;
   try
-    if not (Form is TGirisForm) then
+
+    if not (Form is TGirisForm) and not (Form = nil) then
     begin
       Form.BorderStyle := bsToolWindow;
       Form.Align := alNone;
@@ -684,6 +709,7 @@ begin
     TGirisForm(Form)._TedaviTuru_ := Values.F_TedaviTuru_;
     TGirisForm(Form)._SeansBilgi := Values.F_SeansBilgi;
     TGirisForm(Form)._sysTakipNo_ := Values.F_sysTakipNo;
+    TGirisForm(Form)._pasifSebeb_ := Values.F_PasifSebeb_;
     TGirisForm(Form).Tag := FormTag;
     TgirisForm(Form).Parent := Tab;
     TGirisForm(Form).BringToFront;
@@ -772,6 +798,8 @@ begin
      TagfrmRTFSablon : frmRTFSablon := TfrmRTFSablon.Create(Tab);
      TagfrmSirketEkipmanList : frmFirmaEkipmanList := TfrmFirmaEkipmanList.Create(Tab);
      TagfrmSirketYillikCalismaPlan : frmSirketYillikCalismaPlan  := TfrmSirketYillikCalismaPlan.Create(Tab);
+     TagfrmSirketYillikEgitimPlan : frmSirketYillikEgitimPlan  := TfrmSirketYillikEgitimPlan.Create(Tab);
+
      TagfrmKroki : frmKroki  := TfrmKroki.Create(Tab);
      TagfrmOrtamOlcum : frmSirketOrtamOlcum := TfrmSirketOrtamOlcum.Create(Tab);
      TagfrmCihazKontrolListesi : frmCihazKontrolListesi := TfrmCihazKontrolListesi.Create(Tab);
@@ -810,6 +838,10 @@ begin
      TagfrmTeleEkg : frmTeleEkg  := TfrmTeleEkg.Create(Tab);
      TagfrmTopluHastaRecete : frmTopluHastaRecete   := TfrmTopluHastaRecete .Create(Tab);
      TagfrmTopluHastaTedaviListesi : frmTopluHastaTedaviListesi   := TfrmTopluHastaTedaviListesi .Create(Tab);
+     TagfrmMedEczane,TagfrmMedula,TagfrmENabiz,TagfrmUyum : frmMedEczane := TfrmMedEczane.Create(Tab);
+     TagfrmCalisanGeriBildirimAnket : frmCalisanGeriBildirimAnket := TfrmCalisanGeriBildirimAnket.Create(Tab);
+     TagfrmITS : frmITS  := TfrmITS.Create(Tab);
+     TagfrmITSPaket : frmITSPaket  := TfrmITSPaket.Create(Tab);
   end;
   try
     Form := TGirisForm(FormClassType(abs(FormTag)));
@@ -870,7 +902,9 @@ begin
     TagfrmMerkezBilgisi : Application.CreateForm(TfrmMerkezBilgisi,frmMerkezBilgisi);
     TagfrmHizmetKart : Application.CreateForm(TfrmHizmetKart,frmHizmetKart);
     TagfrmPopupDBGridForm,TagfrmBolum,TagfrmBirim,TagfrmSube,TagfrmFirmaISGEkip,
-    TagFirmaCalismalari,TagfrmEkipmanTuru,TagfrmEkipmanTuruOzellik,TagfrmFirmaYetkili: Application.CreateForm(TfrmPopupDBGridForm , frmPopupDBGridForm);
+    TagFirmaCalismalari,TagfrmEkipmanTuru,TagfrmEkipmanTuruOzellik,TagfrmFirmaYetkili,
+     TagfrmSahaSaglikGozetimTanim,TagfrmCalisanGeriBildirimAnketSoruTanim,
+      TagfrmISGKurulToplantiTanim,TagfrmMadulaEpiktizTanim : Application.CreateForm(TfrmPopupDBGridForm , frmPopupDBGridForm);
     TagfrmPopup : Application.CreateForm(TfrmPopup , frmPopup);
     TagfrmDoktorlar,TagfrmIGU,TagfrmDigerSaglikPers :  Application.CreateForm(TfrmDoktorlar, frmDoktorlar);
     TagfrmHemsireler : Application.CreateForm(TfrmHemsireler, frmHemsireler);
@@ -964,6 +998,7 @@ begin
     TagfrmHastaDiyalizIzlemListesi : Application.CreateForm(TfrmIzlem,frmIzlem);
     TagfrmKtvListesi : Application.CreateForm(TfrmKtvListesi,frmKtvListesi);
     TagfrmHastaKonsultasyon : Application.CreateForm(TfrmHastaKonsultasyon,frmHastaKonsultasyon);
+    TagfrmMedEczane : Application.CreateForm(TfrmMedEczane ,frmMedEczane );
 
   end;
   try
@@ -1009,6 +1044,7 @@ begin
     TGirisForm(Form)._TedaviTuru_ := Value.F_TedaviTuru_;
     TGirisForm(Form)._SeansBilgi := Value.F_SeansBilgi;
     TGirisForm(Form)._sysTakipNo_ := Value.F_sysTakipNo;
+    TGirisForm(Form)._pasifSebeb_ := Value.F_PasifSebeb_;
     TGirisForm(Form).GonderenForm := Nil;
 
   except

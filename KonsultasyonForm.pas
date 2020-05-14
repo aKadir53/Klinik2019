@@ -69,6 +69,7 @@ begin
     case TMenuItem(sender).Tag  of
       -1 : begin
               TopluDataset.Dataset0 := KonsList.dataset;
+              TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
               PrintYap('053','Konsultasyon Form',intToStr(TagfrmHastaKonsultasyon),TopluDataset);
            end;
 

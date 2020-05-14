@@ -115,31 +115,14 @@ object frmHastaKart: TfrmHastaKart
     Left = 296
     Top = 53
     Properties.ClearKey = 46
-    Properties.Items = <
-      item
-        Description = 'Vatanda'#351
-        Value = '0'
-      end
-      item
-        Description = 'Yeni Do'#287'an'
-        Value = '1'
-      end
-      item
-        Description = 'S'#305#287#305'nmac'#305
-        Value = '2'
-      end
-      item
-        Description = 'Yabanc'#305
-        Value = '4'
-      end
-      item
-        Description = 'Kimliksiz'
-        Value = '6'
-      end>
+    Properties.Items = <>
     TabOrder = 3
+    TableName = 'SKRS_HASTATIPI'
+    Filter = ' AKTIF = 1'
+    ValueField = 'Kodu'
+    DisplayField = 'ADI'
     BosOlamaz = False
-    ItemList = '0;Vatanda'#351',1;Yeni Do'#287'an,2;S'#305#287#305'nmac'#305',4;Yabanc'#305',6;Kimliksiz'
-    FilterSet = fsNone
+    FilterSet = fsVatandasTip
     Width = 121
   end
   object seansGunleri: TcxCheckGroup
@@ -622,6 +605,13 @@ object frmHastaKart: TfrmHastaKart
           Position.ColIndex = 4
           Position.RowIndex = 0
         end
+        object GridGelislerColumn1: TcxGridDBBandedColumn
+          DataBinding.FieldName = 'Yas'
+          Visible = False
+          Position.BandIndex = 0
+          Position.ColIndex = 5
+          Position.RowIndex = 0
+        end
       end
       object cxGridGelisLevel1: TcxGridLevel
         GridView = GridGelisler
@@ -820,8 +810,8 @@ object frmHastaKart: TfrmHastaKart
     Top = 117
   end
   object PopupMenu2: TPopupMenu
-    Left = 400
-    Top = 272
+    Left = 392
+    Top = 232
   end
   object cxStyleRepository2: TcxStyleRepository
     PixelsPerInch = 96
@@ -877,8 +867,8 @@ object frmHastaKart: TfrmHastaKart
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 456
-    Top = 272
+    Left = 472
+    Top = 232
     object Kapat1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -1068,6 +1058,12 @@ object frmHastaKart: TfrmHastaKart
         Tag = -34
         Caption = 'SysTakipNo Sorgula'
         ImageIndex = 118
+        OnClick = cxButtonCClick
+      end
+      object H3: TMenuItem
+        Tag = -39
+        Caption = 'Hizmet Detay(Takip Bilgisi)'
+        ImageIndex = 67
         OnClick = cxButtonCClick
       end
     end

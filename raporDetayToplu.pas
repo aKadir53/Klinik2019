@@ -130,7 +130,7 @@ type
     function RaporAciklamaEkle(RaporTakip,aciklama,TakipformNo : string ; var msg : string) : string;
     procedure B1Click(Sender: TObject);
     procedure cxRadioGroup1PropertiesChange(Sender: TObject);
-    procedure cxButtonCClick(Sender: TObject);
+    procedure cxKaydetClick(Sender: TObject);
     procedure YeniRapor;
     procedure RaporMeduladanOku;
     procedure RaporMeduladanSil;
@@ -403,7 +403,7 @@ var
   rapor,doktorKullanici,doktorsifre,pin,url,cardType : string;
   doktorTc : string;
   ss : PWideChar;
-  sql : string;
+  sql , yol , yol1 : string;
 begin
   url := raporIlacURL;
   sql := 'sp_HastaRaporToXML ' + RaporGrid.Dataset.FieldByName('sira').AsString;
@@ -417,6 +417,12 @@ begin
   doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
   TesisKodu :=  (SelectAdo.FieldByName('tesisKodu').AsInteger);
   cardType :=  SelectAdo.FieldByName('cardType').AsString;
+
+  yol := ExtractFilePath(Application.ExeName) + 'BouncyCastle.Crypto17.dll';
+  yol1 := ExtractFilePath(Application.ExeName) + 'BouncyCastle.Crypto.dll';
+
+  DeleteFile(yol1);
+  CopyFile(PWideChar(yol),PWideChar(yol1),False);
 
   dllHandle := LoadLibrary(LIB_DLL);
   try
@@ -502,6 +508,7 @@ begin
                                   RaporGrid.Dataset.edit;
                                   RaporGrid.Dataset.FieldByName('raporTakipNo').AsString := Copy(Sonuc,6,10);
                                   RaporGrid.Dataset.post;
+                                  //ShowMessageSkin('Ýþlem Baþarýlý','','','info');
                                 end;
                               finally
                                 DurumGoster(False,False,'');
@@ -521,6 +528,7 @@ begin
                                   RaporGrid.Dataset.edit;
                                   RaporGrid.Dataset.FieldByName('raporTakipNo').AsString := '';
                                   RaporGrid.Dataset.post;
+                                  //ShowMessageSkin('Ýþlem Baþarýlý','','','info');
                                 end;
                               finally
                                 DurumGoster(False,False,'');
@@ -537,6 +545,7 @@ begin
                                   RaporGrid.Dataset.edit;
                                   RaporGrid.Dataset.FieldByName('Onay').AsString := '1';
                                   RaporGrid.Dataset.post;
+                                  //ShowMessageSkin('Ýþlem Baþarýlý','','','info');
                                 end;
                               finally
                                 DurumGoster(False,False,'');
@@ -553,6 +562,7 @@ begin
                                   RaporGrid.Dataset.edit;
                                   RaporGrid.Dataset.FieldByName('Onay').AsString := '0';
                                   RaporGrid.Dataset.post;
+                                  //ShowMessageSkin('Ýþlem Baþarýlý','','','info');
                                 end;
                               finally
                                 DurumGoster(False,False,'');
@@ -641,7 +651,7 @@ end;
 
 
 
-procedure TfrmHastaRaporlari.cxButtonCClick(Sender: TObject);
+procedure TfrmHastaRaporlari.cxKaydetClick(Sender: TObject);
 begin
   datalar.KontrolUserSet := False;
   inherited;

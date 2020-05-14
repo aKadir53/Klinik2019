@@ -519,6 +519,9 @@ object frmIzlem: TfrmIzlem
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <>
+          FilterRow.InfoText = 'Ara'
+          FilterRow.Visible = True
+          FilterRow.ApplyChanges = fracImmediately
           OptionsData.Deleting = False
           OptionsData.Editing = False
           OptionsData.Inserting = False
@@ -1390,6 +1393,13 @@ object frmIzlem: TfrmIzlem
             Position.RowIndex = 0
             IsCaptionAssigned = True
           end
+          object gridHastalarColumn4: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'gelisSIRANO'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 8
+            Position.RowIndex = 0
+          end
         end
         object cxGrid1Level1: TcxGridLevel
           GridView = gridHastalar
@@ -1514,6 +1524,12 @@ object frmIzlem: TfrmIzlem
       Tag = -10
       Caption = 'TD'#304'S Verilerini G'#252'ncelle'
       ImageIndex = 14
+      OnClick = cxButtonCClick
+    end
+    object U2: TMenuItem
+      Tag = -100
+      Caption = 'Doktor ve Muayene Tarihi D'#252'zenle'
+      ImageIndex = 49
       OnClick = cxButtonCClick
     end
     object ExceleGnder1: TMenuItem

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="HastaKaydet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="c" type="tns:HastaKaydetGiris" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="HastaKaydetGiris">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="KullaniciAdi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="GonderenKurumKodu" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Hasta" type="tns:HastaBilgileri" />
+          <s:element minOccurs="0" maxOccurs="1" name="Gelis" type="tns:GelisBilgileri" />
+          <s:element minOccurs="0" maxOccurs="1" name="Istek" type="tns:ArrayOfIstekBilgileri" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="HastaBilgileri">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ReferansId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TCKimlik" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Adi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Soyadi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Cinsiyeti" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DogumTarihi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DogumYeri" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="BabaAdi" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="GelisBilgileri">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ReferansId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Tarih" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Aciklama" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfIstekBilgileri">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="IstekBilgileri" nillable="true" type="tns:IstekBilgileri" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="IstekBilgileri">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ReferansId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Kod" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Adi" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="HastaKaydetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="HastaKaydetResult" type="tns:HastaKaydetSonuc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="HastaKaydetSonuc">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Sonuc" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="SonucMesaji" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="OrderId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Hareketler" type="tns:ArrayOfHareketDetay" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfHareketDetay">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="HareketDetay" nillable="true" type="tns:HareketDetay" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="HareketDetay">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Kod" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TestId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="SonucMesaji" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SonucOku">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="giris" type="tns:SonucOkuGiris" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SonucOkuGiris">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="KullaniciAdi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="GonderenKurumKodu" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="GelisReferansId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrnekNo" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SonucOkuResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SonucOkuResult" type="tns:SonucOkuSonuc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SonucOkuSonuc">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="SonucMesaji" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Hasta" type="tns:HastaBilgileri" />
+          <s:element minOccurs="0" maxOccurs="1" name="TurKodu" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TurAdi" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TestAdet" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Testler" type="tns:ArrayOfTest" />
+          <s:element minOccurs="1" maxOccurs="1" name="RaporAdet" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Raporlar" type="tns:ArrayOfRapor" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfTest">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Test" nillable="true" type="tns:Test" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Test">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Kod" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TestKod" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="GrupAdi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Adi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sonuc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Birim" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NormalDeger" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Aciklama" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Barkod" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="KayitTarihi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SonucTarihi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OnayTarihi" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfRapor">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Rapor" nillable="true" type="tns:Rapor" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Rapor">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ReferansId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Kod" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Adi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RichSonuc" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="HastaListesi">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="giris" type="tns:HastaListesiGiris" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="HastaListesiGiris">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="KullaniciAdi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="GonderenKurumKodu" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="BasTarih" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SonTarih" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="HastaListesiResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="HastaListesiResult" type="tns:HastaListesiSonuc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="HastaListesiSonuc">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="SonucMesaji" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Adet" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Hasta" type="tns:ArrayOfHastalar" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfHastalar">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Hastalar" nillable="true" type="tns:Hastalar" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Hastalar">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="OrnekNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TCKimlikNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Adi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Soyadi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="KayitTarihi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TurKodu" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TurAdi" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="HastaKaydetSoapIn">
+    <wsdl:part name="parameters" element="tns:HastaKaydet" />
+  </wsdl:message>
+  <wsdl:message name="HastaKaydetSoapOut">
+    <wsdl:part name="parameters" element="tns:HastaKaydetResponse" />
+  </wsdl:message>
+  <wsdl:message name="SonucOkuSoapIn">
+    <wsdl:part name="parameters" element="tns:SonucOku" />
+  </wsdl:message>
+  <wsdl:message name="SonucOkuSoapOut">
+    <wsdl:part name="parameters" element="tns:SonucOkuResponse" />
+  </wsdl:message>
+  <wsdl:message name="HastaListesiSoapIn">
+    <wsdl:part name="parameters" element="tns:HastaListesi" />
+  </wsdl:message>
+  <wsdl:message name="HastaListesiSoapOut">
+    <wsdl:part name="parameters" element="tns:HastaListesiResponse" />
+  </wsdl:message>
+  <wsdl:portType name="HastaIslemleriSoap">
+    <wsdl:operation name="HastaKaydet">
+      <wsdl:input message="tns:HastaKaydetSoapIn" />
+      <wsdl:output message="tns:HastaKaydetSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SonucOku">
+      <wsdl:input message="tns:SonucOkuSoapIn" />
+      <wsdl:output message="tns:SonucOkuSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="HastaListesi">
+      <wsdl:input message="tns:HastaListesiSoapIn" />
+      <wsdl:output message="tns:HastaListesiSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HastaIslemleriSoap" type="tns:HastaIslemleriSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="HastaKaydet">
+      <soap:operation soapAction="http://tempuri.org/HastaKaydet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SonucOku">
+      <soap:operation soapAction="http://tempuri.org/SonucOku" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HastaListesi">
+      <soap:operation soapAction="http://tempuri.org/HastaListesi" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="HastaIslemleriSoap12" type="tns:HastaIslemleriSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="HastaKaydet">
+      <soap12:operation soapAction="http://tempuri.org/HastaKaydet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SonucOku">
+      <soap12:operation soapAction="http://tempuri.org/SonucOku" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HastaListesi">
+      <soap12:operation soapAction="http://tempuri.org/HastaListesi" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HastaIslemleri">
+    <wsdl:port name="HastaIslemleriSoap" binding="tns:HastaIslemleriSoap">
+      <soap:address location="http://81.214.108.120:1080/Tenayservice.asmx" />
+    </wsdl:port>
+    <wsdl:port name="HastaIslemleriSoap12" binding="tns:HastaIslemleriSoap12">
+      <soap12:address location="http://81.214.108.120:1080/Tenayservice.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

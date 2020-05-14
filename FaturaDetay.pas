@@ -266,9 +266,18 @@ begin
 
   end;
   -26 : begin
-          List := ListeAcCreate('HIZMET','code,name1,kdv,SATISF00',
-                               'HizmetKod,HizmetTaným,Kdv,Fiyat',
-                               '50,250,50,80','List','Hizmet Listesi','',4,True);
+          if varToStr(TcxImageComboKadir(FindComponent('ozelKod')).EditValue) = '3'
+          then
+             List := ListeAcCreate('StokKart_View','code,name1,tanimi,0',
+                                  'StokKod,StokTaným,StokTipi,Fiyat',
+                                  '50,250,50,80','List','Hizmet Listesi','',4,True)
+
+          else
+            List := ListeAcCreate('HIZMET','code,name1,kdv,SATISF00',
+                                  'HizmetKod,HizmetTaným,Kdv,Fiyat',
+                                  '50,250,50,80','List','Hizmet Listesi','',4,True);
+
+
           try
             L := List.ListeGetir;
             if High (L) >= 0 then
@@ -277,8 +286,13 @@ begin
               try
                 FaturaGrid.Dataset.FieldByName('hizmetkodu').AsString := L[0].kolon1;
                 FaturaGrid.Dataset.FieldByName('hizmetAdi').AsString := L[0].kolon2;
-                FaturaGrid.Dataset.FieldByName('kdv').AsString := L[0].kolon3;
-                FaturaGrid.Dataset.FieldByName('fiyat').AsString := L[0].kolon4;
+
+                if varToStr(TcxImageComboKadir(FindComponent('ozelKod')).EditValue) <> '3'
+                Then begin
+                  FaturaGrid.Dataset.FieldByName('kdv').AsString := L[0].kolon3;
+                  FaturaGrid.Dataset.FieldByName('fiyat').AsString := L[0].kolon4;
+                end;
+
                 FaturaGrid.Dataset.post;
               except
                 FaturaGrid.Dataset.Cancel;
@@ -309,6 +323,8 @@ var
 begin
   inherited;
 
+  ClientWidth := 780;
+  ClientHeight := 630;
 
   cxPanel.Visible := True;
   Menu := PopupMenu1;
@@ -327,9 +343,12 @@ begin
 
   setDataString(self,'FaturaNo','Fatura Ref.No',Kolon1,'FaturaID',50,True,'',false,0,'0');
 
-  setDataString(self,'GIBFaturaNo','Fatura GIB No',Kolon1,'FaturaID',100,False,'',True);
-  setDataString(self,'Guid','Fatura Guid',Kolon1,'FaturaID',250,False,'',True);
+  setDataString(self,'GIBFaturaNo','Fatura GIB No',Kolon1,'FaturaID',120,False,'',True);
+ // setDataString(self,'Guid','Fatura Guid',Kolon1,'FaturaID',250,False,'',True);
 
+  FaturaTarihi := TcxDateEditKadir.Create(Self);
+  FaturaTarihi.ValueTip := tvDate;
+  setDataStringKontrol(self,FaturaTarihi,'FaturaTarihi','Fatura Tarihi',Kolon1,'FaturaID',100);
 
   (*
   List := ListeAcCreate('SIRKETLER_TNM','sirketKod,tanimi,Aktif',
@@ -389,9 +408,7 @@ begin
   setDataStringKontrol(self,FaturaOzelKodlari,'OzelKod','Fatura Özel Kod',Kolon1,'FT',100);
   OrtakEventAta(FaturaOzelKodlari);
 
-  FaturaTarihi := TcxDateEditKadir.Create(Self);
-  FaturaTarihi.ValueTip := tvDate;
-  setDataStringKontrol(self,FaturaTarihi,'FaturaTarihi','Fatura Tarihi',Kolon1,'FT',100);
+
 
   FaturaTip := TcxImageComboKadir.Create(self);
   FaturaTip.Conn := nil;

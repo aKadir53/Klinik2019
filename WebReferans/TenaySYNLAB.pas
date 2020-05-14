@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,kadir,
-  adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,cxGridDBTableView,cxProgressBar,
+  adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,cxGridDBTableView,
+  cxProgressBar,
   Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,TenayserviceSYNLAB, cxMemo,
   data_modul;
 
@@ -20,13 +21,13 @@ implementation
 
 
 var
-   HTIMNT : Order;
-   KurumMNT : KurumBilgileri;
-   GelisSYNLAB : Gelis;
-   istekMNT : Tetkik;
-   isteklerMNT : Array_Of_Tetkik;
-   doktorMNT : Doktor;
-   HTICvpMNT : HastakaydetCevap;
+   HTIMNT : TenayserviceSYNLAB.Order;
+   KurumMNT : TenayserviceSYNLAB.KurumBilgileri;
+   GelisSYNLAB : TenayserviceSYNLAB.Gelis;
+   istekMNT : TenayserviceSYNLAB.Tetkik;
+   isteklerMNT : TenayserviceSYNLAB.Array_Of_Tetkik;
+   doktorMNT : TenayserviceSYNLAB.Doktor;
+   HTICvpMNT : TenayserviceSYNLAB.HastakaydetCevap;
 
 procedure ornekdurumyaz(durum,id,refId : string);
 var
@@ -56,7 +57,7 @@ Begin
       GelisSYNLAB := Gelis.Create;
       doktorMNT := Doktor.Create;
       KurumMNT := KurumBilgileri.Create;
-
+      datalar.Lab.URL := datalar._laburl;
 
      if not DirectoryExists('C:\NoktaV3\SYNLAB')
      then
@@ -89,11 +90,11 @@ Begin
            HTIMNT.KurumBilgileri := KurumMNT;
 
       //     datalar.TenayMNT.URL := datalar._laburl;
-     //      datalar.TenayMNT_XMLDosya_Name := 'C:\NoktaV3\SYNLAB\HastaKaydet_' + dosyaNo + '_' + gelisNo + '.XML';
+           datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\SYNLAB\HastaKaydet_' + dosyaNo + '_' + gelisNo + '.XML';
 
 
            try
-            HTICvpMNT := (datalar.Lab as TenayWebServiceSoap).HastaKaydet(HTIMNT);
+            HTICvpMNT := (datalar.Lab as TenayserviceSYNLAB.TenayWebServiceSoapSYNLAB).HastaKaydet(HTIMNT);
            except on e : Exception do
              begin
                sm := e.Message;
@@ -127,9 +128,9 @@ procedure TenaySonucAlTCdenSYNLAB(_dosyaNo,_gelisNo: string ; trh1 : string  ; t
                                   gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar);
 var
  // Service : TenayserviceV4.TenayWebServiceSoapMNT;
-  HTSOTC : TCSonuclariQuery;
-  HTSOTCCvp : TCSonuclariResult;
-  KurumMNT : KurumBilgileri;
+  HTSOTC :TenayserviceSYNLAB.TCSonuclariQuery;
+  HTSOTCCvp : TenayserviceSYNLAB.TCSonuclariResult;
+  KurumMNT : TenayserviceSYNLAB.KurumBilgileri;
   I,s , testAdet , j , x  : integer;
   dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,kayitTip : string;
   ado : TADOQuery;
@@ -137,19 +138,24 @@ var
   Http : THTTPRIO;
   Tarih : TXSDateTime;
   tc : Int64;
-    _Sonuclar_ : OrnekSonuc;
-  _TetkikSonuclar_ : TetkikSonuc;
+    _Sonuclar_ : TenayserviceSYNLAB.OrnekSonuc;
+  _TetkikSonuclar_ : TenayserviceSYNLAB.TetkikSonuc;
 begin
        datalar.Login;
-       KurumMNT := KurumBilgileri.Create;
+       KurumMNT := TenayserviceSYNLAB.KurumBilgileri.Create;
        KurumMNT.KullaniciAdi := datalar._labusername;
        KurumMNT.Kodu := datalar._labkurumkod;
        KurumMNT.Sifre := datalar._labsifre;
+       datalar.Lab.URL := datalar._laburl;
+
+       if not DirectoryExists('C:\NoktaV3\SYNLAB')
+       then
+        MkDir('C:\NoktaV3\SYNLAB');
+
+        datalar.HTTP_XMLDosya_Name := '';
 
 
 
-
-   datalar.Lab.URL := datalar._laburl;
    txtLog.Lines.Clear;
 
    progres.Properties.Max := gridAktif.Controller.SelectedRowCount;
@@ -176,8 +182,8 @@ begin
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('TCKIMLIKNO').Index)));
 
 
-                    HTSOTC := TCSonuclariQuery.Create;
-                    HTSOTCCvp := TCSonuclariResult.Create;
+                    HTSOTC := TenayserviceSYNLAB.TCSonuclariQuery.Create;
+                    HTSOTCCvp := TenayserviceSYNLAB.TCSonuclariResult.Create;
                     Tarih := TXSDateTime.Create;
                     tarih.Year := strtoint(copy(trh1,1,4));
                     tarih.Month := strtoint(copy(trh1,5,2));
@@ -191,9 +197,12 @@ begin
                     HTSOTC.TC :=  Tc;
                     HTSOTC.KurumBilgileri := KurumMNT;
 
+                    datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\SYNLAB\_SonucAl_' + dosyaNo + '_' + gelisNo + '.XML';
+
 
                    try
-                    HTSOTCCvp := (datalar.lab as TenayWebServiceSoap).TCSonuclariGetir(HTSOTC);
+                    //HTSOTCCvp := GetTenayWebServiceSoapSYNLAB(False,datalar._laburl).TCSonuclariGetir(HTSOTC);
+                    HTSOTCCvp := (datalar.lab as TenayserviceSYNLAB.TenayWebServiceSoapSYNLAB).TCSonuclariGetir(HTSOTC);
                    except on e : Exception do
                      begin
                        sm := e.Message;

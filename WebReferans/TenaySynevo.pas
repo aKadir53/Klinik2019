@@ -138,51 +138,7 @@ Begin
 
 
                  end;
-{$region 'eski kod 1'}
-     (*
-        if  (t = True) and (gridAktif.Cells[8,I] = 'Yeni Kayýt')
-        Then Begin
-           dosyaNo := gridAktif.Cells[1,I];
-           gelisNo := gridAktif.Cells[2,I];
-           id := gridAktif.Cells[6,I];
 
-                 Field := 'OrnekNo';
-                 HTIMNT := OrderCENTRO(dosyaNo,gelisNo,Field);
-
-                 if HTIMNT <> nil
-                 Then begin
-
-                     datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\Centro\HastaKaydet_' + dosyaNo + '_' + gelisNo;
-
-                     try
-                      HTICvpMNT := (datalar.Lab as tenayserviceCENTRO.TenayWebServiceSoap).HastaKaydet(HTIMNT);
-                     except on e : Exception do
-                       begin
-                         sm := e.Message;
-                         ss := 'Hata';
-                       end;
-                     end;
-
-                     if (HTICvpMNT.Kod = '1') and (HTICvpMNT.Mesaj = '')
-                     then begin
-                       ornekdurumyaz('Gönderildi',id,inttostr(HTICvpMNT.ReferansId));
-                       txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' +
-                       HTIMNT.Gelis.ReferansNo + ' - ' + HTICvpMNT.Mesaj + ' ' + 'Ýþlem Baþarýlý');
-                     end
-                     else
-                     begin
-                       txtLog.Lines.Add(HTIMNT.Gelis.ReferansNo + ' : ' + HTICvpMNT.Mesaj);
-                     end;
-
-                     if ss = 'Hata'
-                     Then
-                      txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' +
-                      HTIMNT.Gelis.ReferansNo + ' - ' + sm );
-
-
-                 end;
-           *)
-           {$endregion }
           Progres.Position := Progres.Position + 1;
 
         End;

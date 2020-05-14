@@ -3260,7 +3260,7 @@ object frmYv: TfrmYv
   object Progress: TcxProgressBar
     Left = 217
     Top = 65
-    Properties.Max = 11.000000000000000000
+    Properties.Max = 15.000000000000000000
     Properties.OverloadValue = 6.000000000000000000
     Properties.PeakValue = 2.000000000000000000
     TabOrder = 0
@@ -3334,7 +3334,6 @@ object frmYv: TfrmYv
     Kind = lfOffice11
     NativeStyle = False
     SkinName = 'UserSkin'
-    UseSkins = False
     Left = 392
     Top = 88
   end
@@ -3357,8 +3356,8 @@ object frmYv: TfrmYv
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 320
-    Top = 8
+    Left = 128
+    Top = 96
   end
   object IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL
     MaxLineAction = maException
@@ -3367,8 +3366,8 @@ object frmYv: TfrmYv
     SSLOptions.Mode = sslmUnassigned
     SSLOptions.VerifyMode = []
     SSLOptions.VerifyDepth = 0
-    Left = 400
-    Top = 8
+    Left = 216
+    Top = 96
   end
   object IdTCPClient1: TIdTCPClient
     ConnectTimeout = 0

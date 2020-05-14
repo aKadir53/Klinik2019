@@ -106,10 +106,6 @@ object frmUsers: TfrmUsers
     object cxTabSheet2: TcxTabSheet
       Caption = 'Men'#252' Yetkileri'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object cxGrid1: TcxGrid
         Left = 0
         Top = 0
@@ -180,10 +176,6 @@ object frmUsers: TfrmUsers
     object cxTabSheet3: TcxTabSheet
       Caption = 'Kullan'#305'c'#305'n'#305'n Firmalar'#305
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object cxGroupBox1: TcxGroupBox
         Left = 0
         Top = 0
@@ -203,9 +195,6 @@ object frmUsers: TfrmUsers
           TabOrder = 0
           OnClick = cxButtonKadirTaniEkleClick
           NewButtonVisible = False
-          ExplicitLeft = 280
-          ExplicitTop = 3
-          ExplicitHeight = 38
         end
         object cxButtonKadirTaniEkle: TcxButtonKadir
           Tag = 1
@@ -218,9 +207,6 @@ object frmUsers: TfrmUsers
           TabOrder = 1
           OnClick = cxButtonKadirTaniEkleClick
           NewButtonVisible = False
-          ExplicitLeft = 192
-          ExplicitTop = 3
-          ExplicitHeight = 38
         end
       end
     end
@@ -372,7 +358,7 @@ object frmUsers: TfrmUsers
   end
   object User_Menu_Settings_DataSource: TDataSource
     DataSet = User_Menu_Settings
-    Left = 104
+    Left = 160
     Top = 336
   end
   object User_Menu_Settings_: TADOTable
@@ -428,13 +414,13 @@ object frmUsers: TfrmUsers
   end
   object UserGroup_Menu_Settings_DataSource: TDataSource
     DataSet = UserGroup_Menu_Settings
-    Left = 280
-    Top = 416
+    Left = 208
+    Top = 480
   end
   object UserGroupSettings_DataSource: TDataSource
     DataSet = UserGroupSettings
-    Left = 120
-    Top = 416
+    Left = 56
+    Top = 480
   end
   object UserGroup: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -494,8 +480,10 @@ object frmUsers: TfrmUsers
     Connection = DATALAR.ADOConnection2
     Parameters = <>
     SQL.Strings = (
-      'select Kullanici,MI.Menu,UMS.ID,Izin from UserMenuSettings UMS'
-      'join MenuIslem MI on MI.KAYITID = UMS.ID')
+      'select Kullanici,MI.Menu,UMS.ID,Izin,LisansTip'
+      ' from UserMenuSettings UMS'
+      'join MenuIslem MI on MI.KAYITID = UMS.ID'
+      '')
     Left = 56
     Top = 336
   end

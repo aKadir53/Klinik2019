@@ -25,7 +25,7 @@ begin
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
 
-   sql := 'update gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
+   sql := 'update Hasta_gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
           ',LabRefId = ' + QuotedStr(refId) +
           ' where SIRANO = ' + id;
    datalar.QueryExec(ado,sql);
@@ -75,8 +75,8 @@ begin
       Then Begin
         for _tetkikSonucu_ in Cvp.tetkikSonuc do
         begin
-             sql := 'update gelisler  set ornekNo = ' + QuotedStr(inttostr(_tetkikSonucu_.OrnekNo)) +
-                     ' from gelisler g ' +
+             sql := 'update Hasta_gelisler  set ornekNo = ' + QuotedStr(inttostr(_tetkikSonucu_.OrnekNo)) +
+                     ' from Hasta_gelisler g ' +
                      ' join hastakart h on h.dosyaNo = g.dosyaNo ' +
                      ' where TCKIMLIKNO = ' + QuotedStr(_tetkikSonucu_.TcNo) +
                      ' and BHDAT between ' + QuotedStr(tarihal(t1)) + ' and ' + QuotedStr(tarihal(t2));
@@ -120,51 +120,72 @@ begin
            Cvp.tetkikSonuc[x].Deger:= StringReplace(Cvp.tetkikSonuc[x].Deger,'Neg','NEG',[rfReplaceAll]);
            Cvp.tetkikSonuc[x].Deger := StringReplace(Cvp.tetkikSonuc[x].Deger,',','.',[rfReplaceAll]);
 
-
-           if (pos('NEG',Cvp.tetkikSonuc[x].Deger) > 0)
-           Then sonuc := '-1'
-           Else
-           if (pos('POZ',Cvp.tetkikSonuc[x].Deger) > 0)
-           Then sonuc := '1'
-           Else sonuc := Cvp.tetkikSonuc[x].Deger;
-
-          sonuc := trim(StringReplace(StringReplace(Cvp.tetkikSonuc[x].Deger,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
+           sonuc := trim(StringReplace(StringReplace(Cvp.tetkikSonuc[x].Deger,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
 
            if (testKod = '907440') or
               (testKod = '906610') or
               (testKod = '906630') or
               (testKod = '906660')
            Then Begin
-              sonuc := trim(StringReplace(sonuc,'(','',[rfReplaceAll]));
-              sonuc := trim(StringReplace(sonuc,')','',[rfReplaceAll]));
-              sonuc := trim(StringReplace(sonuc,'NEGATÝF','',[rfReplaceAll]));
-              sonuc := trim(StringReplace(sonuc,'POZÝTÝF','',[rfReplaceAll]));
-              sonuc := trim(StringReplace(sonuc,'-','',[rfReplaceAll]));
 
-              sonucA := sonuc;
+              if (pos('NEG',Cvp.tetkikSonuc[x].Deger) > 0)
+              Then sonuc := '-1'
+              Else
+              if (pos('POZ',Cvp.tetkikSonuc[x].Deger) > 0)
+              Then sonuc := '1'
+              Else sonuc := Cvp.tetkikSonuc[x].Deger;
+
+              sonucA := Cvp.tetkikSonuc[x].Deger;
+              sonucA := trim(StringReplace(sonucA,'(','',[rfReplaceAll]));
+              sonucA := trim(StringReplace(sonucA,')','',[rfReplaceAll]));
+              sonucA := trim(StringReplace(sonucA,'NEGATÝF','',[rfReplaceAll]));
+              sonucA := trim(StringReplace(sonucA,'POZÝTÝF','',[rfReplaceAll]));
+              sonucA := trim(StringReplace(sonucA,'-','',[rfReplaceAll]));
+              sonucA := trim(StringReplace(sonucA,'_','',[rfReplaceAll]));
+
+              (*
               try
                if strtofloat(sonuc) < strtofloat(max)
                Then sonuc := '-1' else sonuc := '1';
               except end;
+              *)
+                try
+                  sql :=  'update hareketler set gd = ' + sonuc +
+                          ',islemAciklamasi  = ' + QuotedStr(sonucA) +
+                          ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                          ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
+                          ' and Tip1 = ' + QuotedStr(_F_);
+                  datalar.QueryExec(ado,sql);
+                except
+                  sql :=  'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
+                          ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                          ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
+                          ' and Tip1 = ' + QuotedStr(_F_);
 
-              sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
-                     ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-              datalar.QueryExec(ado,sql);
-           End;
+                  datalar.QueryExec(ado,sql);
+                end;
+           End
+           Else
+           begin
 
 
-          try
-           sql := 'update hareketler set ' + _F_ + '= ' + sonuc +
-                    ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+              try
+               sql := 'update hareketler set gd = ' + sonuc +
+                        ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                        ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
+                        ' and Tip1 = ' + QuotedStr(_F_);
 
-           datalar.QueryExec(ado,sql);
-          except
-             sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
-                    ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-             datalar.QueryExec(ado,sql);
+               datalar.QueryExec(ado,sql);
+              except
+                 sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
+                        ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                        ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
+                        ' and Tip1 = ' + QuotedStr(_F_);
+                 datalar.QueryExec(ado,sql);
 
-          end;
+              end;
 
+           end;
         End;
       end; // test for end
       ornekdurumyaz('Sonuç Alýndý',id,'');
@@ -188,6 +209,11 @@ begin
    progres.Position := 0;
 
 
+  if not DirectoryExists('C:\NoktaV3\BIYOTIP')
+  then
+   MkDir('C:\NoktaV3\BIYOTIP');
+
+
    for i := 0 to gridAktif.Controller.SelectedRowCount - 1 do
    begin
      Application.ProcessMessages;
@@ -208,18 +234,20 @@ begin
 
            Cvp := OrnekNoyaGoreSorgulaResponse.Create;
 
-         try
-           Cvp := (datalar.Lab as IstekGonderSoap).OrnekNoyaGoreSorgula(Gon);
-         except on e : exception do
-           begin
-              ShowMessage(e.Message);
-           end;
-         end;
+           datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\BIYOTIP\BIYOTIP_' + intTostr(Gon.OrnekNo) +'.xml';
 
-        if Cvp.OrnekNoyaGoreSorgulaResult.SonucKodu = '0000'
-        Then Begin
-          sonucYaz;
-        End else txtLog.Lines.Add(inttostr(Cvp.OrnekNoyaGoreSorgulaResult.DonenId) + ' - ' + Cvp.OrnekNoyaGoreSorgulaResult.SonucMesaji);
+           try
+             Cvp := (datalar.Lab as IstekGonderSoap).OrnekNoyaGoreSorgula(Gon);
+           except on e : exception do
+             begin
+                ShowMessage(e.Message);
+             end;
+           end;
+
+           if Cvp.OrnekNoyaGoreSorgulaResult.SonucKodu = '0000'
+           Then Begin
+            sonucYaz;
+           End else txtLog.Lines.Add(inttostr(Cvp.OrnekNoyaGoreSorgulaResult.DonenId) + ' - ' + Cvp.OrnekNoyaGoreSorgulaResult.SonucMesaji);
 
 
 

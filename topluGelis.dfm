@@ -525,10 +525,6 @@ object frmTopluGelis: TfrmTopluGelis
     object TabSheet2: TTabSheet
       Caption = #304#351'lem Raporu'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object txtHatalar: TMemo
         Left = 0
         Top = 0
@@ -632,6 +628,7 @@ object frmTopluGelis: TfrmTopluGelis
           OptionsView.GroupByBox = False
           OptionsView.HeaderHeight = 35
           OptionsView.RowSeparatorColor = clBlack
+          Styles.OnGetContentStyle = ListeStylesGetContentStyle
           object ListeADSOYAD: TcxGridDBColumn
             Caption = 'Ad'#305' Soyad'#305
             DataBinding.FieldName = 'ADSOYAD'
@@ -982,6 +979,7 @@ object frmTopluGelis: TfrmTopluGelis
           Top = 1
           Align = alLeft
           Caption = 'Geli'#351' A'#231#305'l'#305'rken Takipler Al'#305'ns'#305'n m'#305'?'
+          Enabled = False
           Properties.Columns = 2
           Properties.Items = <
             item
@@ -1025,15 +1023,32 @@ object frmTopluGelis: TfrmTopluGelis
           Caption = 'K.Al'#305'm Seans'
           Transparent = True
         end
+        object txtDoktor: TcxImageComboKadir
+          Left = 535
+          Top = 23
+          Properties.ClearKey = 46
+          Properties.Items = <>
+          TabOrder = 7
+          TableName = 'DoktorlarT'
+          Filter = ' Aktif = 1'
+          Conn = DATALAR.ADOConnection2
+          ValueField = 'kod'
+          DisplayField = 'tanimi'
+          BosOlamaz = False
+          FilterSet = fsDoktorlar
+          Width = 192
+        end
+        object cxLabel4: TcxLabel
+          Left = 536
+          Top = 8
+          Caption = 'Doktor'
+          Transparent = True
+        end
       end
     end
     object SayfaLog: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object txtLog: TcxMemo
         Left = 0
         Top = 0
@@ -1049,7 +1064,7 @@ object frmTopluGelis: TfrmTopluGelis
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 28
+    Left = 284
     Top = 182
     object P1: TMenuItem
       Tag = -50
@@ -1109,6 +1124,15 @@ object frmTopluGelis: TfrmTopluGelis
       Caption = 'Excel Aktar'
       ImageIndex = 75
       OnClick = cxButtonCClick
+    end
+  end
+  object cxStyleRepository1: TcxStyleRepository
+    Left = 72
+    Top = 168
+    PixelsPerInch = 96
+    object cxStyle1: TcxStyle
+      AssignedValues = [svColor]
+      Color = 10329599
     end
   end
 end

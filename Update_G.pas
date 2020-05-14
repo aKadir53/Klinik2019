@@ -68,7 +68,7 @@ type
     procedure btnListeClick(Sender: TObject);
     function DownloadFile(SourceFile, DestFile: string): Boolean;
     procedure FormShow(Sender: TObject);
-    procedure GuncellemeBilgileri;
+  //  procedure GuncellemeBilgileri;
     function  GetCompName: string;
 
     procedure gridDetayCheckBoxClick(Sender: TObject; ACol, ARow: Integer;
@@ -154,6 +154,7 @@ begin
      Result := Buffer;
 end;
 
+(*
 procedure TfrmUpdate.GuncellemeBilgileri;
 var
    sql : string;
@@ -165,7 +166,7 @@ begin
     datalar.QueryExec(datalar.ADO_SQL3,sql);
 
 end;
-
+  *)
 function TfrmUpdate.DownloadFile(SourceFile, DestFile: string): Boolean;
 begin
    try
@@ -194,33 +195,8 @@ begin
     pnlBilgi.Caption := 'Son Güncelleme : ' + FormattedTarih(datalar.ADO_SQL.FieldList[1].AsString) +
                         ' Güncelleme ID :' + datalar.ADO_SQL.FieldList[2].AsString;
 
-     (*
-      if datalar.ADOConnection1.Connected = false
-      then begin
-               deneme := 1;
-               while deneme < 3 do
-               begin
-                    try
-                         txtinfo.Caption := 'Server Baðlantýsý Yapýlýyor...('+IntToStr (deneme)+')';
-                         Application.ProcessMessages;
-                         SQL_Host_Baglan;
-                         Application.ProcessMessages;
-                         txtinfo.Caption := '';
-                         deneme := 3;
-                    except
-                          txtinfo.Caption := '';
-                          deneme := deneme + 1;
-                    end;
-               end;
 
-               if DATALAR.ADOConnection1.Connected = false
-               then begin
-                         txtLOG.Lines.Add('Server Baðlantý Hatasý');
-                         exit;
-                    end;
-      end;
-      *)
-    sql := 'select * from OSGB_MASTER.dbo.UPDATE_CMD where ID > ' + IntToStr (FSonGuncelleme) + ' and Modul = ''O''' + ' and ID <= ' + IntToStr (FSonYayinlananGuncelleme) +
+    sql := 'select * from OSGB_MASTER.dbo.UPDATE_CMD where ID > ' + IntToStr (FSonGuncelleme) + ' and Modul = ''K''' + ' and ID <= ' + IntToStr (FSonYayinlananGuncelleme) +
            ' Order by ID ';
     datalar.QuerySelect(datalar.Ado_Guncellemeler,sql);
 
@@ -421,7 +397,7 @@ begin
     except
       on e: exception do
       begin
-        txtLOG.Lines.Add('Baðlantý Hatasý , Ýnternetinizi Kontrol Edip Tekrar Denayiniz...' + e.Message);
+        txtLOG.Lines.Add('Baðlantý Hatasý , Ýnternetinizi Kontrol Edip Tekrar Deneyiniz...' + e.Message);
         raise;
       end;
     end;

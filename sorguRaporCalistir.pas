@@ -14,7 +14,7 @@ uses
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
   dxSkinMoneyTwins, dxSkinsDefaultPainters, cxButtons, cxStyles,
   dxSkinscxPCPainter, cxCurrencyEdit, dxmdaset, cxGridBandedTableView,
-  cxGridDBBandedTableView;
+  cxGridDBBandedTableView,cxPC, cxContainer;
 
 
 type
@@ -30,6 +30,7 @@ type
     memParamsDatavalue: TStringField;
     memParamsDataparams: TStringField;
     memParamsDatasira: TIntegerField;
+    chkYeniSekme: TcxCheckBox;
 
    procedure sp_params(_sp_ , _kod_ : string);
     procedure btnCalistirGoruntuleClick(Sender: TObject);
@@ -50,7 +51,7 @@ var
   sp_name , _kod : string;
   ParametreYukleOK : integer = 0;
   dataset : Tdataset;
-
+  pageInc : integer = 1;
 implementation
  uses data_modul,rapor,Sorgulamalar;
 {$R *.dfm}
@@ -126,6 +127,11 @@ var
     TopluDataset : TDataSetKadir;
     Columns : TStringList;
     obje : TComponent;
+    aTabSheet : TcxTabSheet;
+    Grid : TcxGridKadir;
+    cxGrid : TcxGrid;
+    GridDataSource : TDataSource;
+    GridAdo : TADOQuery;
 begin
 
   try
@@ -153,16 +159,46 @@ begin
 
      sql := 'exec ' + sp_name + ' ' + trim(copy(sqlp,2,1000));
 
-     datalar.Ado_Sorgulamalar.Close;
-     datalar.Ado_Sorgulamalar.SQL.Clear;
-     datalar.QuerySelect(datalar.Ado_Sorgulamalar,sql);
 
-  //   ds := datalar.Ado_Sorgulamalar;
+     inc(pageInc);
+     if chkYeniSekme.Checked
+     then begin
 
-     frmSorgulamalar.cxGrid3DBBandedTableView1.ClearItems;
-     frmSorgulamalar.cxGrid3DBBandedTableView1.DataController.CreateAllItems(true);
-     frmSorgulamalar.cxGrid3DBBandedTableView1.OptionsView.ColumnAutoWidth := true;
+        aTabSheet := NewTab(frmSorgulamalar.Sonuclar_Page ,Self.Tag+pageInc);
+        aTabSheet.Caption := frmSorgulamalar.ADO_SQL1.fieldbyname('raporAdi').AsString;
 
+        try
+          GridAdo := TADOQuery.Create(frmSorgulamalar);
+          GridDataSource := TDataSource.Create(frmSorgulamalar);
+          GridDataSource.DataSet := GridAdo;
+          datalar.QuerySelect(GridAdo,sql);
+          Grid := CreateGrid('Grid'+intToStr(pageInc),aTabSheet,GridDataSource);
+          Grid.Align := alClient;
+          Grid.ExceleGonder := True;
+          Grid.ExcelFileName := frmSorgulamalar.ADO_SQL1.fieldbyname('raporAdi').AsString;
+        except on e : exception do
+          begin
+            ShowMessageSkin(e.Message,'','','info');
+            aTabSheet.Free;
+            frmSorgulamalar.Sonuclar_Page.ActivePageIndex := 1;
+          end;
+        end;
+
+     end
+     else
+     begin
+       datalar.Ado_Sorgulamalar.Close;
+       datalar.Ado_Sorgulamalar.SQL.Clear;
+       datalar.QuerySelect(datalar.Ado_Sorgulamalar,sql);
+
+       frmSorgulamalar.cxGrid3DBBandedTableView1.ClearItems;
+       frmSorgulamalar.cxGrid3DBBandedTableView1.DataController.CreateAllItems(true);
+       frmSorgulamalar.cxGrid3DBBandedTableView1.OptionsView.ColumnAutoWidth := true;
+       frmSorgulamalar.Sonuclar_Page.ActivePageIndex := 1;
+
+       TopluDataset.Dataset0 := datalar.Ado_Sorgulamalar;
+       PrintYap(_kod,sp_name,'',TopluDataset,pTNone);
+     end;
 
      (*
      with frmSorgulamalar.cxGrid3DBBandedTableView1.DataController.Summary.FooterSummaryItems.Add as
@@ -190,15 +226,13 @@ begin
      end;
      *)
 
-     TopluDataset.Dataset0 := datalar.Ado_Sorgulamalar;
-     PrintYap(_kod,sp_name,'',TopluDataset,pTNone);
 
   finally
    //  datalar.ADO_RAPORLAR1.Active := false;
    //  datalar.Ado_Sorgulamalar.Active := false;
   end;
 
-     frmSorgulamalar.cxPageControl2.ActivePageIndex := 1;
+
 
      close;
 
@@ -314,7 +348,7 @@ begin
 
        end; // for end
 
-       ClientHeight := dxStatusBar1.Height + cxTopPanel.Height  + btnCalistirGoruntule.Height + 50 + (Columns.Count * 23);
+       ClientHeight := dxStatusBar1.Height + cxTopPanel.Height  + btnCalistirGoruntule.Height + 70 + (Columns.Count * 23);
 
     finally
         Tips.Free;

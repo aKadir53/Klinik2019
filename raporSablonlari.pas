@@ -3,7 +3,7 @@ unit raporSablonlari;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,strutils,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,strutils,dateutils,
   Dialogs, Grids, DBGridEh, StdCtrls, Buttons, sBitBtn, ExtCtrls, DB, ADODB,
   DBCtrls, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,kadir,
   cxContainer, cxEdit, cxGroupBox, GirisUnit,KadirType,
@@ -270,6 +270,7 @@ var
   sql : string;
   ado : TADOQuery;
 begin
+  if cxGridHastaGelis.Controller.SelectedRowCount = 0 Then exit;
 
   case TMenuItem(sender).Tag of
    -1 : begin
@@ -303,14 +304,21 @@ begin
            if _ResourceID <> ''
            then begin
                  datalar.ADOConnection2.BeginTrans;
+
                  try
                      Tani.First;
                      while not Tani.Eof do
                      Begin
-                       datalar.QueryExec('insert into IlacRaporTeshisler(RaporSira,teshiskodu,ICD10Kodu) ' +
+                       datalar.QueryExec('insert into IlacRaporTeshisler(RaporSira,teshiskodu,ICD10Kodu,baslangicTarihi,bitisTarihi) ' +
                                          'values(' + _ResourceID + ','
                                                    + QuotedStr(Tani.FieldByName('teshisKodu').AsString) + ','
-                                                   + QuotedStr(Tani.FieldByName('ICD10Kodu').AsString) + ')');
+                                                   + QuotedStr(Tani.FieldByName('ICD10Kodu').AsString) + ','
+                                                   + QuotedStr(FormatDateTime('YYYYMMDD',Date)) + ','
+                                                   + QuotedStr(FormatDateTime('YYYYMMDD',incYear(Date,2))) +
+                                                   ')'
+
+
+                                                   );
 
                        Tani.Next;
                      End;
@@ -337,12 +345,15 @@ begin
                      datalar.QueryExec('Update Raporlar set Aciklama = ' + QuotedStr(SablonAciklama.FieldByName('aciklama').AsString) +
                                        ' where sira = ' + _ResourceID);
                      datalar.ADOConnection2.CommitTrans;
+                     ShowMessageSkin('Rapor Þablondan Dolduruldu','','','info');
                  except on e : Exception do
                    begin
                     datalar.ADOConnection2.RollbackTrans;
                     ShowMessageSkin(e.Message,'','','info');
                    end;
                  end;
+
+
            end;
 
        end;

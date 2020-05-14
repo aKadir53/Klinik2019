@@ -88,7 +88,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               DataController.Filter.Active = True
               DataController.Filter.TranslateBetween = True
               DataController.Filter.TranslateLike = True
-              DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+              DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText, dcoImmediatePost]
               DataController.Summary.DefaultGroupSummaryItems = <
                 item
                   Format = '# Adet Tetkik'
@@ -128,6 +128,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
               OptionsView.Footer = True
               OptionsView.FooterMultiSummaries = True
+              OptionsView.GroupByBox = False
               OptionsView.GroupByHeaderLayout = ghlHorizontal
               OptionsView.HeaderAutoHeight = True
               OptionsView.IndicatorWidth = 0
@@ -209,7 +210,6 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
                 Properties.Alignment.Vert = taVCenter
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
-                Options.Editing = False
                 Width = 80
               end
               object cxGridTetkiklerKurum: TcxGridDBColumn

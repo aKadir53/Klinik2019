@@ -49,6 +49,7 @@ type
 const
   UYUM = 'UYUMOSGB.exe';
   Nokta = 'Klinik2019.exe';
+  ver = 2;
 
 var
   frmYv: TfrmYv;
@@ -98,13 +99,14 @@ end;
 
 function TfrmYv.Download(URL, User, Pass, FileName :  string ; FullURL : string = '443'): Boolean;
 const
-  BufferSize = 1024;
+  BufferSize = 2048*2;
 var
   hSession, hURL: HInternet;
   Buffer: array[1..BufferSize] of Byte;
   BufferLen: DWORD;
   F: File;
 begin
+   Progress.Position := 0;
    Result := False;
    hSession := InternetOpen('', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0) ;
 
@@ -128,13 +130,17 @@ begin
       try
         repeat
           InternetReadFile(hURL, @Buffer, SizeOf(Buffer), BufferLen) ;
-          BlockWrite(f, Buffer, BufferLen)
+          BlockWrite(f, Buffer, BufferLen);
+
+          Progress.Position := Progress.Position + BufferSize;
+          Application.ProcessMessages;
+
         until BufferLen = 0;
       finally
         CloseFile(f) ;
         Result := True;
-        Progress.Position := Progress.Position + 1;
-        Application.ProcessMessages;
+        //Progress.Position := Progress.Position + BufferSize;
+        //Application.ProcessMessages;
       end;
     finally
       InternetCloseHandle(hURL)
@@ -246,131 +252,290 @@ var
  dosya : TFileStream;
  exeFile , appData : string;
 begin
-
- KillTaskt('Klinik2019.exe');
-// KillTaskt('UYUMOSGB.exe');
+   KillTaskt('Klinik2019.exe');
 
 
- if ForceDirectories ('C:\NoktaV3') then
-  begin
+   if not ForceDirectories ('C:\NoktaV3') then
+   begin
+     MkDir('C:\NoktaV3');
+   end;
 
-    if FileExists('C:\NoktaV3\ALPEMIXCMX.exe') = False
-    Then begin
-      try
-        filename := 'ALPEMIXCMX.exe';
-        Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-      finally
-      end;
-    end;
+   if not ForceDirectories ('C:\NoktaV3\Recetem') then
+   begin
+     MkDir('C:\NoktaV3\Recetem');
+   end;
 
 
-     try
-      filename := 'NoktaDLL.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+   if paramStr(1) = 'kur'
+   then begin
 
-     try
-      filename := 'EFaturaDLL.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+           if FileExists('C:\NoktaV3\ALPEMIXCMX.exe') = False
+           Then begin
+             try
+               filename := 'ALPEMIXCMX.exe';
+               Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+             finally
+             end;
+           end;
+
+           Progress.Properties.Max := 1247744;
+           try
+            filename := 'NoktaDLL.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
+
+           Progress.Properties.Max := 507392;
+           try
+            filename := 'EFaturaDLL.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
+
+           Progress.Properties.Max := 507392;
+           try
+            filename := 'SmsApi.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+            finally
+           end;
+           /// recetem
+           Progress.Properties.Max := 25000;
+           try
+            filename := 'Recetem.exe';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
+                      ///
+           Progress.Properties.Max := 675752;
+           try
+            filename := 'Newtonsoft.Json.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
+
+           try
+            filename := 'salt.dat';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
+
+           try
+            filename := 'RenkliRsaPublicKey.txt';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\RenkliRsaPublicKey.pem');
+           finally
+           end;
+
+           Progress.Properties.Max := 22016;
+           try
+            filename := 'RenkliEncryption.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
+
+           Progress.Properties.Max := 2531328;
+           try
+            filename := 'BouncyCastle.Crypto.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
+           ///// recetem
+
+           Progress.Properties.Max := 1503232;
+           try
+            filename := 'BouncyCastle.Crypto.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
 
 
-     try
-      filename := 'SmsApi.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-      finally
-     end;
+           Progress.Properties.Max := 146432;
+           try
+            filename := 'EdocLib.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
+
+           try
+            filename := 'Net.Pkcs11.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
+
+           Progress.Properties.Max := 4059436;
+           try
+            filename := 'itextsharp.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
+
+           Progress.Properties.Max := 884736;
+           try
+            filename := 'Microsoft.Web.Services3.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
+
+           Progress.Properties.Max := 269344;
+           try
+            filename := 'Microsoft.VisualBasic.PowerPacks.Vs.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+           finally
+           end;
 
 
-     try
-      filename := 'BouncyCastle.Crypto.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+           Progress.Properties.Max := 15014425;
+           try
+             filename := Nokta;
+             txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+             Application.ProcessMessages;
+             Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+            finally
+            end;
 
-     try
-      filename := 'EdocLib.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+            exeFile := Nokta;
 
-     try
-      filename := 'Net.Pkcs11.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+            ShellExecute(Handle,'open', pwidechar('C:\NoktaV3\'+filename),
+                      pwidechar(''), nil, SW_SHOWNORMAL);
 
+            p := DesktopPath;
+            CreateLink('C:\NoktaV3\' + exeFile,'','', p+'\Klinik2019.lnk');
 
-     try
-      filename := 'itextsharp.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+            halt;
+   end
+   else
+   begin
+       Progress.Properties.Max := 1247744;
+       try
+        filename := 'NoktaDLL.dll';
+        txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+        Application.ProcessMessages;
+        Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+       finally
+       end;
 
-     try
-      filename := 'Microsoft.Web.Services3.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+       Progress.Properties.Max := 507392;
+       try
+        filename := 'EFaturaDLL.dll';
+        txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+        Application.ProcessMessages;
+        Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+       finally
+       end;
 
-     try
-      filename := 'Microsoft.VisualBasic.PowerPacks.Vs.dll';
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+        Progress.Properties.Max := 15014425;
+        try
+          filename := Nokta;
+          txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+          Application.ProcessMessages;
+          Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+          Progress.Position := Progress.Properties.Max;
+        finally
+        end;
 
-     try
-     (*
-      GetEnvironmentVariable('COMPUTERNAME');
-      appData := GetEnvironmentVariable('TEMP');
-      appData := StringReplace(GetEnvironmentVariable('APPDATA'),'Roaming','',[rfReplaceAll]);
-      appData := appData+'Local\Microsoft\Windows\INetCache\Klinik2019.exe';
-      DeleteFile(appData);
-      *)
-      filename := Nokta;
-      Download('https://www.noktayazilim.net/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
-     finally
-     end;
+           /// recetem
+           Progress.Properties.Max := 25000;
+           try
+            filename := 'Recetem.exe';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
+                      ///
+           Progress.Properties.Max := 675752;
+           try
+            filename := 'Newtonsoft.Json.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
 
+           try
+            filename := 'salt.dat';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
 
-   //   filename := 'RDP.rtf';
-   //   dosya := TFileStream.Create('C:\OSGB\RDP.rtf',fmCreate);
-   //   HTTP1.Get('https://www.noktayazilim.net/RDP.rtf' ,TStream(dosya));
+           try
+            filename := 'RenkliRsaPublicKey.txt';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\RenkliRsaPublicKey.pem');
+           finally
+           end;
 
-    //  filename := 'SonucRaporu.rtf';
-    //  dosya := TFileStream.Create('C:\OSGB\RDP.SonucRaporu',fmCreate);
-    //  HTTP1.Get('https://www.noktayazilim.net/SonucRaporu.rtf' ,TStream(dosya));
+           Progress.Properties.Max := 22016;
+           try
+            filename := 'RenkliEncryption.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
 
+           Progress.Properties.Max := 2531328;
+           try
+            filename := 'BouncyCastle.Crypto.dll';
+            txtinfo.Caption := filename + ' Kopyalanýyor Lütfen Bekleyiniz...';
+            Application.ProcessMessages;
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/Recetem/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\Recetem\'+filename);
+           finally
+           end;
+           ///// recetem
 
-    exeFile := Nokta;
-
-    filename := 'C:\NoktaV3\Klinik2019.exe';
-    ShellExecute(Handle,'open', pwidechar(filename),
-                pwidechar(''), nil, SW_SHOWNORMAL);
-
-    p := DesktopPath;
-    CreateLink('C:\NoktaV3\' + exeFile,'','', p+'\Klinik2019.lnk');
-
-    halt;
-    //x
-  end
+        ShellExecute(Handle,'open', pwidechar('C:\NoktaV3\'+filename),
+          pwidechar(''), nil, SW_SHOWNORMAL);
+        halt;
+   end;
 end;
 
 procedure TfrmYv.HTTP1Work(ASender: TObject; AWorkMode: TWorkMode;
   AWorkCount: Int64);
 begin
- // Progress.Position := Progress.Position + AWorkCount;
- // Application.ProcessMessages;
+  Progress.Position := Progress.Position + AWorkCount;
+  Application.ProcessMessages;
 end;
 
 procedure TfrmYv.HTTP1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
   AWorkCountMax: Int64);
 begin
+  Progress.Properties.Max := AWorkCountMax;
+  Progress.Position := 0;
   txtinfo.Caption := filename + ' Yükleniyor , Lütfen Bekleyiniz ... ';
-  Progress.Position := Progress.Position + 1;
-  Application.ProcessMessages;
+//  Application.ProcessMessages;
 end;
 
 procedure TfrmYv.HTTP1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
@@ -382,7 +547,7 @@ end;
 procedure TfrmYv.Timer1Timer(Sender: TObject);
 begin
  Timer1.Enabled := false;
- Progress.Properties.Max := 8;
+// Progress.Properties.Max := 8;
  cxButton1.Click;
 end;
 

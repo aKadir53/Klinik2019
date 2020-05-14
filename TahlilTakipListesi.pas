@@ -22,7 +22,7 @@ uses
   dxSkinXmas2008Blue, Menus, cxGroupBox, cxRadioGroup, sGauge,
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
-  cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel;
+  cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxCheckGroup;
 
 type
   TfrmTahliltakip = class(TGirisForm)
@@ -149,6 +149,10 @@ type
     T6: TMenuItem;
     cxStyle9: TcxStyle;
     T7: TMenuItem;
+    ListeColumn4: TcxGridDBBandedColumn;
+    ListeColumn5: TcxGridDBBandedColumn;
+    cxStyle10: TcxStyle;
+    chkBand: TcxCheckGroup;
     procedure cxButtonCClick(Sender: TObject);
     procedure Tarih;
     procedure T1Click(Sender: TObject);
@@ -169,9 +173,10 @@ type
     procedure btnListClick(Sender: TObject);
     procedure K2Click(Sender: TObject);
     procedure S1Click(Sender: TObject);
-
+    procedure BandVisible(band2 : Boolean = True ; band3 : Boolean = True ; band4 : Boolean = True ; band5 : Boolean = True);
 
   private
+
     { Private declarations }
   public
     { Public declarations }
@@ -191,9 +196,27 @@ implementation
 
 
 function TfrmTahliltakip.Init(Sender : TObject) : Boolean;
+var
+  c : integer;
+  kolonBaslik : string;
 begin
   ADO_Uyar.Active := true;
   tarih2.Date := ayliktarih(date,tarih1);
+
+  // Hemogramlarýn kolon baþlýklarýný labtestlerden alýp yazýyor. Dinamik olarak.
+  for c := 0 to Liste.ColumnCount - 1 do
+  begin
+       if pos('901620',Liste.Columns[c].DataBinding.FieldName) > 0
+       Then begin
+         kolonBaslik :=
+         datalar.QuerySelect('select tanimi from LabTestler where butKodu = '
+                    + QuotedStr(Liste.Columns[c].DataBinding.FieldName) ).FieldByName('tanimi').AsString;
+
+         if kolonBaslik <> '' then Liste.Columns[c].Caption := kolonBaslik;
+       end;
+  end;
+
+
   Result := True;
 end;
 
@@ -384,6 +407,8 @@ var
    DatasetKadir ,topluset : TDataSetKadir;
 begin
 
+   if ADO_TetkiklerHastaList.Eof then exit;
+   
   _dosyaNo_ := ADO_TetkiklerHastaList.FieldByName('dosyaNo').AsString;
   _gelisNo_ := ADO_TetkiklerHastaList.FieldByName('g').AsString;
   _Tarih := copy(tarihal(tarih1.Date),1,4);
@@ -494,15 +519,37 @@ begin
   end;
 end;
 
+procedure TfrmTahliltakip.BandVisible(band2 : Boolean = True ; band3 : Boolean = True ; band4 : Boolean = True ; band5 : Boolean = True);
+var
+  c : integer;
+begin
+    Liste.Bands[2].Visible := band2;
+    Liste.Bands[3].Visible := band3;
+    Liste.Bands[4].Visible := band4;
+    Liste.Bands[5].Visible := band5;
+
+
+
+
+
+end;
+
 procedure TfrmTahliltakip.btnListClick(Sender: TObject);
 var
   sql ,apm : string;
+  band : string;
 begin
+
     DurumGoster;
     try
       if chkMisafir.Checked
       Then apm := '0,1'
       Else apm := '0,1,2';
+
+      band := chkBand.EditValue;
+
+      BandVisible((copy(band,1,1) = '1'), (copy(band,2,1) = '1') ,
+                  (copy(band,3,1) = '1') ,(copy(band,4,1) = '1'));
 
      // exec sp_dbcmptlevel DIALIZ,90
 
@@ -512,7 +559,7 @@ begin
              ',@apm = ' + QuotedStr(apm) +
              ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
       datalar.QuerySelect(ADO_TetkiklerHastaList,sql);
-      finally
+    finally
       DurumGoster(False);
     end;
 end;
@@ -579,28 +626,32 @@ begin
    *)
 end;
 
+
+
 procedure TfrmTahliltakip.ListeCustomDrawCell(Sender: TcxCustomGridTableView;
   ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
   var ADone: Boolean);
 begin
-(*
+
  try
-    if AViewInfo.Item.Index in [1..41]
+    if AViewInfo.Item.Index in [1..55]
     Then Begin
       if VarToStr(AViewInfo.GridRecord.Values[AViewInfo.Item.Index]) = '0'
       then begin
         ACanvas.Brush.Color := $008080FF;
         ACanvas.Font.Color := clWhite;
-      end
+      end;
+      (*
       else
       if chk.Checked
        then
          if TestKodToNormalDeger(inttostr(AViewInfo.Item.Tag),'','',AViewInfo.GridRecord.Values[AViewInfo.Item.Index]) = False
           then ACanvas.Brush.Color := $0080FFFF;
+          *)
     End;
   except
   end;
-  *)
+
 end;
 
 procedure TfrmTahliltakip.ListeDblClick(Sender: TObject);

@@ -129,6 +129,53 @@ type
                       url : string;
                       cardType : PWideChar); stdcall;
 
+  TFaturaGonder = procedure(FaturaXML : PWideChar;
+                      kullaniciAdi : PWideChar;
+                      sifre : PWideChar;
+                      var sonuc : PWideChar;
+                      url : PWideChar;
+                      Taslak : PWideChar); stdcall;
+
+  TFaturaIptal = procedure(FaturaGuid : PWideChar;
+                      kullaniciAdi : PWideChar;
+                      sifre : PWideChar;
+                      var sonuc : PWideChar;
+                      url : PWideChar); stdcall;
+  TFaturaPDF = procedure(FaturaGuid : PWideChar;
+                      kullaniciAdi : PWideChar;
+                      sifre : PWideChar;
+                      var sonuc : PWideChar;
+                      url : PWideChar;
+                      smtpClientHost : PWideChar;
+                      Username : PWideChar;
+                      Password : PWideChar;
+                      alici : PWideChar;
+                      konu : PWideChar;
+                      msj : PWideChar
+                      ); stdcall;
+
+  TFaturaDurum = procedure(FaturaGuid : PWideChar;
+                      kullaniciAdi : PWideChar;
+                      sifre : PWideChar;
+                      var sonuc : PWideChar;
+                      url : PWideChar); stdcall;
+
+  TFaturalariOku = procedure(kullaniciAdi : PWideChar;
+                      sifre : PWideChar;
+                      var sonuc : PWideChar;
+                      url : PWideChar;
+                      StartDate : PWideChar;
+                      EndDate : PWideChar); stdcall;
+
+  TRecetem = procedure(jsonText : PWideChar;
+                      var sonuc : PWideChar); stdcall;
+
+  TENabizDoktorErisim = procedure(kullaniciAdi : PWideChar;
+                                  sifre : PWideChar;
+                                  HastaTc : PWideChar;
+                                  DoktorTc : PWideChar;
+                                  uygulamaKodu : PWideChar); stdcall;
+
   TImzaliGiris = Procedure(var sonucMesaj : PWideChar);stdCall;
   TImzaliSeansKapatKapat = Procedure(islemRefNo : integer ; var sonucMesaj : PWideChar);stdCall;
 
@@ -141,6 +188,12 @@ type
     url : string;
     calismaYon : integer;
     BarkodBasim : string;
+  end;
+
+type
+  TUzmanMuayeneForm = record
+    Doktor : string;
+    MuayeneTarihi : string;
   end;
 
 
@@ -316,6 +369,8 @@ type
     itakiDeger : string;
     yas : variant;
     ISI : variant;
+    Enfeksiyon : string;
+    yeniSiraNo : string;
    end;
 
 type
@@ -366,6 +421,49 @@ type
       adres : string;
     End;
 
+
+type
+    THastaKabul = record
+      tckimlikNo : string;
+      muayeneAcilisTarihi : string;
+      sosyalGuvenlikNo : string;
+      karneNo : string;
+      yakinlikKodu : string;
+      TakipTuru : string;
+      provizyonTuru : string;
+      devredilenKurum : string;
+      Durum : string;
+      Adi : string;
+      Sadi : string;
+      DTarihi : string;
+      Cinsiyet : string;
+      Doktor : string;
+      yas : string;
+      tedaviTuru : string;
+      tedaviTipi : string;
+      TakipNo : string;
+      YatisBitisTarihi : string;
+      donorTc : string;
+      BransKodu : string;
+      ProvizyonTarihi : string;
+      BasvuruNo : string;
+      ilkTakip : string;
+      dosyaNo : string;
+      gelisNo : string;
+      bebekSira : string;
+      BebekDTarihi : string;
+      ArrayOfAdliGecmis : array of TAdliGecmis;
+      sevkedenTesisKodu : integer;
+      kilo : string;
+      boy : string;
+      diyalizTedaviTipi : integer;
+      DT : TXSDateTime;
+      id : integer;
+      telefon : string;
+      adres : string;
+      plakaNo : string;
+      vakaTarihi : string;
+    End;
 
 type
     TGelisDuzenle = record
@@ -491,6 +589,8 @@ type
      protokolNo : variant;
      raporCaption : variant;
      duzenleyenDoktor : variant;
+     SablonBilgisi : string;
+     Tanilar : string;
    end;
 
 type
@@ -500,6 +600,9 @@ type
     aktif: integer;
     adoz: real;
     tekdoz: real;
+    kullanimPeryotBirim : string;
+    kullanimZaman : string;
+    kutuAdet : string;
   End;
 
 type
@@ -696,6 +799,8 @@ type
     AcikAlan : string;
   End;
 
+
+
 type
   TGirisFormRecord = Record
     F_dosyaNO_ : string;
@@ -742,6 +847,7 @@ type
     F_DogumTarihi : string;
     F_HASTAADI : string;
     F_HASTASOYADI : string;
+    F_PasifSebeb_ : variant;
   End;
 
 type
@@ -838,6 +944,9 @@ type
     GozlemGrubu : String;
     DenetimTarihi : String;
     DenetimDefterNo : String;
+    BirSonrakiDenetimTarihi : String;
+    DenetimiPlanlayan : String;
+    DenetimOnaylamaTarihi : String;
   end;
 
   ArrayOfString = array of string;
@@ -964,6 +1073,27 @@ type
   end;
 
 
+  TIndikatorTanim = record
+      gostergeKodu : string;
+      tanimi : string;
+      amac : string;
+      formul : string;
+      altGosterge : string;
+      HedefTanimi : string;
+      peryot : string;
+      sorumlular : string;
+      paylasilacakKisiler : string;
+      dikkatedilecekhususlar : string;
+  end;
+
+  TAnket = record
+    id : integer;
+    tarih : Tdate;
+    sirketKod : string;
+    anketSayi : integer;
+    anketTip : integer;
+  end;
+
   TIntegerArray = array of Integer;
 
 
@@ -1049,6 +1179,7 @@ Const
   TagfrmIsKazasi = 610;
   TagfrmAbout = 620;
   TagfrmSahaSaglikGozetim = 630;
+  TagfrmSahaSaglikGozetimTanim = 631;
   TagfrmCihazKontrol = 635;
   TagfrmFirmaKontrol = 636;
   TagfrmIGU = 640;
@@ -1076,6 +1207,7 @@ Const
   TagfrmSirketSahaGozetim = 860;
   TagfrmCariHesapBorcAlacakToplam = 870;
   TagfrmISGKurulToplanti = 880;
+  TagfrmISGKurulToplantiTanim = 881;
   TagfrmKKD = 890;
   TagfrmTedarikci = 900;
   TagfrmCekler = 910;
@@ -1100,7 +1232,9 @@ Const
   TagfrmSKS_YeniDokuman = 1060;
   TagfrmOlayBildirim = 1070;
   TagfrmKlorOlcum = 1080;
-
+  TagfrmCalisanGeriBildirimAnket = 2000;
+  TagfrmCalisanGeriBildirimAnketSoruTanim = 2001;
+  TagfrmMadulaEpiktizTanim = 2002;
 
   TagfrmHastaKart = 5001;
   TagfrmTopluSeans = 5003;
@@ -1119,6 +1253,13 @@ Const
   TagfrmTopluHastaTedaviListesi = 5060;
   TagfrmHastaKonsultasyon = 5070;
 
+  TagfrmMedEczane = 5080;
+  TagfrmMedula = 5081;
+  TagfrmENabiz = 5082;
+  TagfrmUyum = 5083;
+
+  TagfrmITS = 6000;
+  TagfrmITSPaket = 6001;
 
   Kaydet = 0;
   Sil = 1;
@@ -1134,13 +1275,22 @@ Const
   SISTEMTIP = 10;
   DERMANLAB = 8;
   AHENK = 1;
+  SIMGE = 22;
+  BIOLAB = 7;
+  ELAB = 24;
+  INTERKOMLAB = 26;
+  DUZENLAB = 16;
+  AENLAB = 13;
+  ERBILLAB = 12;
+  DERENLAB = 5;
+
 
   ExceleGonder = 9997;
   SeansTarihiUpdate = 0;
   SeansDoktorUpdate = 1;
   SeansInsert = 2;
   ReceteIlacEkle = 3;
-  ReceteSablonIlacEkle=31;
+  ReceteSablonIlacEkle = 31;
   ReceteAckEkle = 4;
   ReceteIlacDuzenle = 5;
   ReceteAckDuzenle = 6;
@@ -1228,6 +1378,7 @@ Const
   hastaGelisDuzenle = 74;
   raporInsert = 75;
   raporUpdate = 76;
+  raporSablon = -76;
   ReceteYeniPersonel = 77;
   ReceteDuzenlePersonel = 78;
   hastaTakipleriGetir = 79;
@@ -1252,6 +1403,17 @@ Const
   talimatDuzenle = 103;
   yeniKonsultasyon = 104;
   konsultasyonDuzenle = 105;
+  indikatorKart = 106;
+
+  yeniAnket = 107;
+  AnketDuzenle = 108;
+  UzmanMuayeneDoktorTarihDuzenle = 109;
+
+  PortaldenFaturaOku = 200;
+  MobilUygulamaLinki = 300;
+
+  ITSAlimBildir = 6000;
+  ITSSarfBildir = 6001;
 
 
 

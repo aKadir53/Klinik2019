@@ -42,86 +42,7 @@ begin
 
    ado.Free;
 end;
-     (*
-procedure TenayOrderKaydetSYNLAB(gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar);
-var
- I,x : integer;
- t : boolean;
- sm,ss , dosyaNo,gelisNo,id ,kayitTip: string;
-Begin
-      datalar.Login;
-      HTIMNT := Order.Create;
-      HTICvpMNT := HastakaydetCevap.Create;
-      GelisSYNLAB := Gelis.Create;
-      doktorMNT := Doktor.Create;
-      KurumMNT := KurumBilgileri.Create;
 
-
-     if not DirectoryExists('C:\NoktaV3\SYNLAB')
-     then
-      MkDir('C:\NoktaV3\SYNLAB');
-
-      datalar.HTTP_XMLDosya_Name := '';
-
-   for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
-   begin
-       sleep(1000);
-       Application.ProcessMessages;
-       kayitTip := varToStr(gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
-
-        if  (kayitTip = 'Yeni Kayýt')
-        Then Begin
-           dosyaNo := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
-           gelisNo := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
-           id := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
-
-
-           HTIMNT := OrderSYNLAB(dosyaNo,gelisNo);
-           KurumMNT := KurumBilgileri.Create;
-           KurumMNT.KullaniciAdi := datalar._labusername;
-           KurumMNT.Sifre := datalar._labsifre;
-           KurumMNT.Kodu := datalar._labkurumkod;
-           HTIMNT.KurumBilgileri := KurumMNT;
-
-      //     datalar.TenayMNT.URL := datalar._laburl;
-     //      datalar.TenayMNT_XMLDosya_Name := 'C:\NoktaV3\SYNLAB\HastaKaydet_' + dosyaNo + '_' + gelisNo + '.XML';
-
-
-           try
-            HTICvpMNT := (datalar.Lab as TenayWebServiceSoap).HastaKaydet(HTIMNT);
-           except on e : Exception do
-             begin
-               sm := e.Message;
-               ss := 'Hata';
-             end;
-           end;
-
-           Progres.Position := Progres.Position + 1;
-
-         //  ss := HTICvpMNT.Kod;
-           if ss <> 'Hata'
-           Then Begin
-              ornekdurumyaz('Gönderildi',id,inttostr(HTICvpMNT.ReferansId));
-
-             txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' +
-             inttostr(HTIMNT.OrnekNo) + ' - ' + HTICvpMNT.Mesaj + ' ' + 'Ýþlem Baþarýlý');
-           End
-           Else
-            txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' +
-            inttostr(HTIMNT.OrnekNo) + ' - ' + HTICvpMNT.Mesaj + ' ' + sm + ' ' + datalar.TenayMNTRequest);
-
-        End;
-      End; // for end
-      Progres.Visible := false;
-   //   datalar.TenayMNT_XMLDosya_Name := '';
-  //    txtinfo.Caption := '.';
-
-End;
-   *)
 procedure TenaySonucAlTCdenSISTEM(_dosyaNo,_gelisNo: string ; trh1 : string  ; trh2 : string ;
                                   gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar);
 var
@@ -165,6 +86,9 @@ begin
    for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
    begin
        sleep(1000);
+       ss := '';
+       sm := '';
+
        Application.ProcessMessages;
        kayitTip := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
@@ -286,20 +210,20 @@ begin
                                       sonucA := trim(StringReplace(SonucA,'(','',[rfReplaceAll]));
                                       sonucA := trim(StringReplace(SonucA,')','',[rfReplaceAll]));
 
-                                      sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
+                                      sql := 'update hareketler set Gd = ' + QuotedStr(Sonuc) +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
                                        datalar.QueryExec(ado,sql);
 
-                                      sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
+                                      sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(_TetkikSonuclar_.Sonuc) +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
                                       datalar.QueryExec(ado,sql);
                                    End
                                    else
                                    begin
                                       try
-                                       sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
+                                       sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_TetkikSonuclar_.Sonuc) + ')' +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
@@ -334,122 +258,5 @@ begin
 end;
 
 
-    (*
-function OrderSYNLAB(dosyaNo : string ; gelis : string) : Order;
-var
-  sql           : string;
-  HastaTenay    : TenayServiceSYNLAB.Order;
-  GelisSYNLAB   : TenayServiceSYNLAB.Gelis;
-  istekler      : TenayServiceSYNLAB.Array_Of_Tetkik;
-  istek         : TenayServiceSYNLAB.Tetkik;
-
-  ado           : TADOQuery;
-  i , j         : integer;
-  ckod,kod,
-  TurId         : string;
-  DTarih,TTarih,
-  ATarih        : TXSDateTime;
-
-begin
-  ado := TADOQuery.Create(nil);
-  ado.Connection := datalar.ADOConnection2;
-  HastaTenay := Order.Create;
-
-  sql := 'select * from HastaKart where dosyano = ' + QuotedStr(dosyaNo);
-  datalar.QuerySelect(ado,sql);
-
-  HastaTenay.DosyaNo  := dosyaNo;
-  HastaTenay.KimlikNo := ado.fieldbyname('TCKIMLIKNO').AsString;
-  HastaTenay.Adi      := ado.fieldbyname('HASTAADI').AsString;
-  HastaTenay.Soyadi   := ado.fieldbyname('HASTASOYADI').AsString;
-  HastaTenay.BabaAdi  := ado.fieldbyname('BABAADI').AsString;
-  HastaTenay.AnneAdi  := ado.fieldbyname('ANAADI').AsString;
-
-  if (ado.fieldbyname('CINSIYETI').AsString = '0')
-  Then HastaTenay.Cinsiyeti := Cinsiyet.Erkek
-  else HastaTenay.Cinsiyeti := Cinsiyet.Kadin;
-
-  DTarih := TXSDateTime.Create;
-  Dtarih.Year := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,1,4));
-  Dtarih.Month := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,5,2));
-  Dtarih.Day := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,7,2));
-  HastaTenay.DogumTarihi := DTarih;
-
-
-    sql := 'select * from gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
-    datalar.QuerySelect(ado,sql);
-
-    HastaTenay.OrnekNo := strtoint(ifthen(ado.fieldbyname('OrnekNo').AsString = '',
-                               '0',ado.fieldbyname('OrnekNo').AsString));
-
-    GelisSYNLAB := TenayServiceSYNLAB.Gelis.Create;
-    GelisSYNLAB.ReferansNo := ado.fieldbyname('SIRANO').AsString;
-    GelisSYNLAB.OrnekNo := strtoint(ifthen(ado.fieldbyname('OrnekNo').AsString = '',
-                               '0',ado.fieldbyname('OrnekNo').AsString));
-
-    TTarih := TXSDateTime.Create;
-    TTarih.Year := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,1,4));
-    TTarih.Month := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,5,2));
-    TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
-    GelisSYNLAB.Tarih := TTarih;
-
-    GelisSYNLAB.GelisTipi := GelisTipi.DiyalizGiris;
-
-    sql := 'select * from hareketlerLab h ' +
-           ' join labtestler_Firma l on l.butKodu = h.code and l.labID = ' + QuotedStr(datalar._labID) +
-           ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and onay = 1 and gelisNo = ' + gelis +
-           ' and charindex(''.'',code) = 0 and l.tip = 2';
-    datalar.QuerySelect(ado,sql);
-    j := ado.RecordCount;
-    SetLength(istekler,j);
-
-    while not ado.Eof do
-    begin
-      istek := Tetkik.Create;
-     // istek.LogId := ado.fieldbyname('SIRANO').AsInteger;
-      ckod := '';
-      kod := KodEslestirKod(ado.fieldbyname('code').AsString,ckod,TurId);
-
-      istek.Kodu := kod;
-      istek.Adi := ado.fieldbyname('NAME1').AsString;
-      istek.KapId := 26;
-      istek.OrnekTurId := ifThen(TurId = '','0',TurId);
-      ATarih := TXSDateTime.Create;
-      ATarih.Year := strtoint(copy(ado.fieldbyname('Tarih').Asstring,1,4));
-      ATarih.Month := strtoint(copy(ado.fieldbyname('Tarih').Asstring,5,2));
-      ATarih.Day := strtoint(copy(ado.fieldbyname('Tarih').Asstring,7,2));
-      istek.AlindigiTarih := ATarih;
-
-
-      istekler[i] := istek;
-      i := i + 1;
-
-      if ckod <> ''
-      Then begin
-        j := j +1;
-        SetLength(istekler,j);
-        istek := Tetkik.Create;
-       // istek.LogId := ado.fieldbyname('SIRANO').AsInteger+1000;
-        istek.Kodu := ckod;
-        istek.Adi := ado.fieldbyname('NAME1').AsString;
-        istek.KapId := 26;
-        istek.OrnekTurId := '147';
-        istek.AlindigiTarih := ATarih;
-        istekler[i] := istek;
-        i := i + 1;
-      end;
-      ado.Next;
-    end;
-
-    GelisSYNLAB.Tetkikler := istekler;
-    HastaTenay.Gelis := GelisSYNLAB;
-
-
-
-
-  ado.Free;
-  result := HastaTenay;
-end;
-  *)
 
 end.

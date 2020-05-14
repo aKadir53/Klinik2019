@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,kadir,
-  adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,AdvGrid,DateUtils,
+  adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,DateUtils,
   Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,sGauge,ServiceReferansLab,
   data_modul,cxGridDBTableView, cxMemo,cxProgressBar,DBClient;
 
@@ -75,14 +75,14 @@ var
   XML : TXMLData;
   XMLString , sm , hata ,dosyaNo,gelisNo,id , sonuc ,testKod , _F_ ,sql , msj : string;
   SonucListesi : ReLabSonucListesiResult;
-  I : integer;
+  I,x : integer;
   t : boolean;
   ado : TADOQuery;
 
 procedure SonucYaz(dataset : TClientDataSet ; id : string);
 var
   x : integer;
-  t1,t2 ,sonucAciklama: string;
+  sonucAciklama,min ,max,Field: string;
 begin
 
    txtLog.Lines.Clear;
@@ -98,9 +98,13 @@ begin
      try
         dosyaNO := '0';
         gelisNo := '0';
-        TCdenDosyaNoGelisNo(dataset.FieldByName('HASTATCKNO').AsString,t1,t2,dosyaNo,gelisNo,id);
+
+        TCdenDosyaNoGelisNo(dataset.FieldByName('HASTATCKNO').AsString,
+                            fromglstar, toglstar ,
+                            dosyaNo,gelisNo,id);
+
         _F_ := '';
-        testKod := KodEslestir(dataset.FieldByName('TESTREF').AsString,_F_);
+        testKod := KodEslestirNormalDeger(dataset.FieldByName('TESTREF').AsString,'',min,max,_F_);
 
         txtLog.Lines.Add(dataset.FieldByName('HASTATCKNO').AsString + ' ' +
                        dataset.FieldByName('HASTAADI').AsString + '/ ' +
@@ -134,22 +138,41 @@ begin
          Else
          sonuc := Sonuc;
 
-        try
-         sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + sonuc + ')' +
-                ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
-                ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+         if (testKod = '907440') or
+            (testKod = '906610') or
+            (testKod = '906630') or
+            (testKod = '906660')
+         Then Begin
+             sql := 'update hareketler set Gd = ' + sonuc +
+                    ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                    ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+             datalar.QueryExec(sql);
 
-         datalar.QueryExec(sql);
+            sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucAciklama) +
+                      ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                      ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+            datalar.QueryExec(sql);
+         End
+         else
+         begin
+
+              try
+               sql := 'update hareketler set Gd = ' + sonuc +
+                      ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                      ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+
+               datalar.QueryExec(sql);
 
 
-        except on e : exception do
-          begin
-           sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucAciklama) +
-                  ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
-                  ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-           datalar.QueryExec(sql);
-          end;
-        end;
+              except on e : exception do
+                begin
+                 sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucAciklama) +
+                        ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                        ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                 datalar.QueryExec(sql);
+                end;
+              end;
+         end;
       End;
 
      except on ee : Exception do
@@ -175,8 +198,10 @@ begin
     MkDir('C:\NoktaV3\Referans');
 
   datalar.Lab.URL := datalar._laburl;
-  fromglstar := FormatDateTime('YYYYMMDD',t1);
-  toglstar := FormatDateTime('YYYYMMDD',t2);
+  fromglstar := FormatDateTime('YYYY-MM-DD',t1);
+  toglstar := FormatDateTime('YYYY-MM-DD',t2);
+
+
 
   SonucListesi := ReLabSonucListesiResult.Create;
 
@@ -184,7 +209,6 @@ begin
   gndrefs := datalar._labsifre;
 
   datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\Referans\Referans_SonucAl.XML';
-
 
   try
    SonucListesi := (datalar.Lab as ReLabSonucOkuSoap).ReLabSonucListesi(gndref,gndrefs,tstref,hstref,glmref,fromglstar,toglstar,msj);
@@ -195,8 +219,7 @@ begin
    end;
   end;
 
-
-
+  id := glmref;
   try
     //txtinfo.Caption := 'Sonuçlar Sisteme Yazýlýyor...';
    Application.ProcessMessages;

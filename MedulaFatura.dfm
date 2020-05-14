@@ -237,8 +237,10 @@ object frmMedulaFatura: TfrmMedulaFatura
             Caption = 'Birim Fiyat'
             DataBinding.FieldName = 'birimFiyat'
             PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Vert = taVCenter
             Properties.DisplayFormat = '#,###.00'
-            Visible = False
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
             Width = 56
           end
           object FaturaListtutar: TcxGridDBColumn
@@ -423,6 +425,10 @@ object frmMedulaFatura: TfrmMedulaFatura
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
           end
+          object FaturaListColumn5: TcxGridDBColumn
+            DataBinding.FieldName = 'MedulaEpikriz'
+            Visible = False
+          end
         end
         object cxGridLevel4: TcxGridLevel
           Caption = 'Hastalar'
@@ -437,7 +443,7 @@ object frmMedulaFatura: TfrmMedulaFatura
         Height = 625
         Align = alClient
         TabOrder = 1
-        Properties.ActivePage = fatura_sayfa2
+        Properties.ActivePage = cxTabSheet1
         ClientRectBottom = 618
         ClientRectLeft = 3
         ClientRectRight = 296
@@ -787,7 +793,7 @@ object frmMedulaFatura: TfrmMedulaFatura
           end
         end
         object fatura_sayfa2: TcxTabSheet
-          Caption = 'Hizmet Kodu Toplamlar'#305
+          Caption = 'Hizmet Toplam'
           ImageIndex = 1
           object cxGrid1: TcxGridKadir
             Left = 0
@@ -1085,6 +1091,21 @@ object frmMedulaFatura: TfrmMedulaFatura
             end
           end
         end
+        object cxTabSheet1: TcxTabSheet
+          Caption = 'Fatura Epikriz'
+          ImageIndex = 2
+          object txtFaturaEpikriz: TcxMemo
+            Left = 0
+            Top = 0
+            Align = alClient
+            Lines.Strings = (
+              'txtFaturaEpikriz')
+            Properties.ReadOnly = True
+            TabOrder = 0
+            Height = 592
+            Width = 293
+          end
+        end
       end
       object cxSplitter1: TcxSplitter
         Left = 879
@@ -1317,13 +1338,13 @@ object frmMedulaFatura: TfrmMedulaFatura
       'where F.takipNo =:@t'
       'order by g.Tarih'
       '')
-    Left = 440
-    Top = 314
+    Left = 696
+    Top = 330
   end
   object DataSource2: TDataSource
     DataSet = ADO_Detay
-    Left = 504
-    Top = 314
+    Left = 696
+    Top = 386
   end
   object ADO_Detay_toplam: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1337,12 +1358,12 @@ object frmMedulaFatura: TfrmMedulaFatura
       'WHERE g.BHDAT BETWEEN '#39'20150201'#39' AND '#39'20150228'#39
       'GROUP BY d.sutKodu')
     Left = 696
-    Top = 186
+    Top = 202
   end
   object DataSource3: TDataSource
     DataSet = ADO_Detay_toplam
-    Left = 760
-    Top = 186
+    Left = 696
+    Top = 250
   end
   object DataSource1: TDataSource
     Left = 72

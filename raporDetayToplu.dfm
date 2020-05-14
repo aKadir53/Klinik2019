@@ -15,7 +15,6 @@ object frmHastaRaporlari: TfrmHastaRaporlari
   Position = poMainFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object RaporGrid: TcxGridKadir
@@ -184,7 +183,7 @@ object frmHastaRaporlari: TfrmHastaRaporlari
         Width = 102
       end
       object ListeRaporlarColumn8: TcxGridDBColumn
-        Caption = 'Onay'
+        Caption = 'Ba'#351'hekim Onay'
         DataBinding.FieldName = 'raporOnay'
         PropertiesClassName = 'TcxImageComboBoxProperties'
         Properties.Alignment.Horz = taCenter
@@ -219,10 +218,11 @@ object frmHastaRaporlari: TfrmHastaRaporlari
     Left = 40
     Top = 256
     object Kapat1: TMenuItem
-      Tag = -30
+      Tag = 9999
       Caption = 'Kapat'
       ImageIndex = 18
-      OnClick = cxButtonCClick
+      Visible = False
+      OnClick = cxKaydetClick
     end
     object M1: TMenuItem
       Caption = 'Medula'
@@ -233,13 +233,13 @@ object frmHastaRaporlari: TfrmHastaRaporlari
         Enabled = False
         ImageIndex = 76
         Visible = False
-        OnClick = cxButtonCClick
+        OnClick = cxKaydetClick
       end
       object RaporuMeduladanOku1: TMenuItem
         Tag = -5
         Caption = 'Raporu Meduladan Oku'
         ImageIndex = 36
-        OnClick = cxButtonCClick
+        OnClick = cxKaydetClick
       end
       object RaporuMeduladanSil1: TMenuItem
         Tag = 12
@@ -247,25 +247,25 @@ object frmHastaRaporlari: TfrmHastaRaporlari
         Enabled = False
         ImageIndex = 43
         Visible = False
-        OnClick = cxButtonCClick
+        OnClick = cxKaydetClick
       end
       object B1: TMenuItem
         Tag = 13
         Caption = 'Ba'#351'hekim Onay'#305' Ver'
         ImageIndex = 49
-        OnClick = cxButtonCClick
+        OnClick = cxKaydetClick
       end
       object B2: TMenuItem
         Tag = 14
         Caption = 'Ba'#351'hekim Onay'#305' Red'
         ImageIndex = 50
-        OnClick = cxButtonCClick
+        OnClick = cxKaydetClick
       end
       object RaporAra1: TMenuItem
         Tag = -9
         Caption = 'Rapor Ara'
         ImageIndex = 12
-        OnClick = cxButtonCClick
+        OnClick = cxKaydetClick
       end
     end
   end

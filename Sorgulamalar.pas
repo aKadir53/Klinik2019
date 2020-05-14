@@ -19,8 +19,8 @@ uses
 
 type
   TfrmSorgulamalar = class(TGirisForm)
-    cxPageControl2: TcxPageControl;
-    cxTabSheet6: TcxTabSheet;
+    Sonuclar_Page: TcxPageControl;
+    SorgularTab: TcxTabSheet;
     Panel5: TPanel;
     Splitter1: TSplitter;
     Panel6: TPanel;
@@ -30,11 +30,11 @@ type
     Label18: TLabel;
     cxDBMemo1: TcxDBMemo;
     gridRaporlar: TDBGridEh;
-    cxTabSheet7: TcxTabSheet;
+    TabSonuc: TcxTabSheet;
     cxGrid3: TcxGrid;
     cxGrid3DBBandedTableView1: TcxGridDBBandedTableView;
     cxGridLevel2: TcxGridLevel;
-    cxTabSheet8: TcxTabSheet;
+    SQlTab: TcxTabSheet;
     SQL_text: TMemo;
     Panel8: TPanel;
     SQL_grid: TDBGridEh;
@@ -82,6 +82,10 @@ type
     procedure ADO_SQL1AfterScroll(DataSet: TDataSet);
     procedure Y1Click(Sender: TObject);
     procedure SatirYukle;
+    procedure Sonuclar_PageCanCloseEx(Sender: TObject; ATabIndex: Integer;
+      var ACanClose: Boolean);
+    procedure Sonuclar_PagePageChanging(Sender: TObject; NewPage: TcxTabSheet;
+      var AllowChange: Boolean);
 
   private
     { Private declarations }
@@ -242,6 +246,7 @@ begin
   Menu := ToolMenu;
   cxPanel.Visible := False;
   Image2.Visible := False;
+  Sonuclar_Page.Properties.CloseButtonMode := cbmNone;
 end;
 
 procedure TfrmSorgulamalar.O1Click(Sender: TObject);
@@ -307,6 +312,33 @@ begin
     txtParams.Text := ADO_SQL1.fieldbyname('_params_').AsString;
     txtParamsTip.Text := ADO_SQL1.fieldbyname('_paramsTip_').AsString;
     txtIC_Params.Text := ADO_SQL1.fieldbyname('IC_Params').AsString;
+end;
+
+procedure TfrmSorgulamalar.Sonuclar_PageCanCloseEx(Sender: TObject;
+  ATabIndex: Integer; var ACanClose: Boolean);
+var
+  Comp : TComponent;
+begin
+ if ATabIndex in [0,1,2]
+ then begin
+   ACanClose := False;
+ end
+ else begin
+   Comp := Sonuclar_Page.Pages[ATabIndex].Components[0];
+   ACanClose := True;
+ end;
+
+end;
+
+procedure TfrmSorgulamalar.Sonuclar_PagePageChanging(Sender: TObject;
+  NewPage: TcxTabSheet; var AllowChange: Boolean);
+begin
+   if NewPage.PageIndex in [0,1,2]
+   then
+     Sonuclar_Page.Properties.CloseButtonMode := cbmNone
+   else
+     Sonuclar_Page.Properties.CloseButtonMode := cbmActiveTab;
+
 end;
 
 procedure TfrmSorgulamalar.Y1Click(Sender: TObject);

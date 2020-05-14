@@ -24,7 +24,7 @@ uses
   JvExControls, JvAnimatedImage, JvGIFCtrl, DBAdvGrid, EditType,kadir,kadirType,KadirLabel,
   cxCalendar, cxGroupBox, cxRadioGroup, cxButtons, FScxGrid,getFormClass,
   cxCheckComboBox, cxLabel, cxImageComboBox, cxPCdxBarPopupMenu, cxCheckBox,
-  cxPC, cxCheckGroup, cxSplitter;
+  cxPC, cxCheckGroup, cxSplitter, cxMemo;
 
 type
   TfrmMedulaFatura = class(TGirisForm)
@@ -166,6 +166,9 @@ type
     cxGridLevel1: TcxGridLevel;
     cxSplitter1: TcxSplitter;
     D1: TMenuItem;
+    cxTabSheet1: TcxTabSheet;
+    FaturaListColumn5: TcxGridDBColumn;
+    txtFaturaEpikriz: TcxMemo;
     procedure TopPanelButonClick(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure txtKurumTipiChange(Sender: TObject);
@@ -232,7 +235,7 @@ var
   islemTip , OnayTip , SgkBildir : string;
 
 implementation
-uses AnaUnit,rapor;
+uses AnaUnit,rapor,MedEczane;
 
 {$R *.dfm}
 
@@ -242,8 +245,10 @@ begin
 
    txtDonemTopPanel.Yil := copy(tarihal(date()),1,4);
    txtDonemTopPanel.EditValue := copy(tarihal(date()),5,2);
-   KurumTipTopPanel.EditValue := 1;
+   KurumTipTopPanel.ItemIndex := 1;
    chkList.EditValue := '10';
+
+   chkList.Properties.OnEditValueChanged := TopPanelPropertiesChange;
 
    Result := True;
 end;
@@ -527,6 +532,7 @@ begin
             txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue + ',' +
             '3' + ',' +
             '1' + ',' +
+            '1' + ',' +
             QuotedStr(datalar.AktifSirket);
 
 
@@ -554,13 +560,13 @@ begin
      exit;
    End;
    *)
-(*
+
    if LisansKontrol(fark) = False
    Then Begin
      ShowMessageSkin('Lisans Yenileyin','','','info');
      exit;
    End;
-  *)
+
 
 
    tip := '';
@@ -1222,7 +1228,7 @@ begin
 
               if datalar.FaturaKayitWS.FaturaIptalCevap.sonucKodu = '0000'
               Then Begin
-                   sql := 'update kurumFatura set BirimFiyat = 0 , tutar = 0 , kdv = 8 , KdvTutar = 0 ,faturatutar = 0 ,' +
+                   sql := 'update kurumFatura set BirimFiyat = 0 ,  kdv = 8,faturatutar = 0 ,' +
                           'GSSFaturaTeslimNo = ' + QuotedStr('') +
                           ' where GSSFaturaTeslimNo = ' + QuotedStr(_teslimNumaralari[0]);
                    datalar.QueryExec(sql);
@@ -1258,6 +1264,7 @@ begin
 
 //   chkList.Properties.OnEditValueChanged := PropertiesEditValueChanged;
 
+//   KurumTipTopPanel.ItemIndex := 1;
 
    chkList.Properties.Items.Clear;
    Chk := chkList.Properties.Items.Add;
@@ -1271,7 +1278,7 @@ begin
    Chk.Tag := 2;
 
    chkList.EditValue := '100';
-   chkList.Properties.OnEditValueChanged := TopPanelPropertiesChange;
+//   chkList.Properties.OnEditValueChanged := TopPanelPropertiesChange;
 
 
    chkList.Width := 400;
@@ -1398,15 +1405,20 @@ procedure TfrmMedulaFatura.FaturaListFocusedRecordChanged(
   AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
 begin
   inherited;
+   if AFocusedRecord = nil then exit;
 
-   if DatasetOpen = True
-   then begin
+   ado_detay.Close;
+   ADO_Detay.Parameters[0].Value := varToStr(FaturaList.DataController.GetValue(
+                                         AFocusedRecord.RecordIndex,FaturaList.DataController.GetItemByFieldName('takipNo').Index));
+   ADO_Detay.Open;
 
-    ado_detay.Close;
-    ADO_Detay.Parameters[0].Value := cxGrid4.Dataset.FieldByName('takipNo').AsString;
-    ADO_Detay.Open;
 
-   end;
+
+   txtFaturaEpikriz.Text :=
+       varToStr(FaturaList.DataController.GetValue(
+        AFocusedRecord.RecordIndex,FaturaList.DataController.GetItemByFieldName('MedulaEpikriz').Index))
+
+
 
 end;
 
@@ -1426,9 +1438,32 @@ begin
 end;
 
 procedure TfrmMedulaFatura.D1Click(Sender: TObject);
+var
+  u,s : string;
+  F : TGirisForm;
+  GirisFormRecord : TGirisFormRecord;
 begin
   //DonemSonlandir := 'C:\Users\Cmptr\Desktop\HTMLSAYFA.html';
-  UyumSoftPortalGit(datalar._donemuser,datalar._donemsifre,'C:\Users\Cmptr\Desktop\HTMLSAYFA.html','Medula');
+//  UyumSoftPortalGit(datalar._donemuser,datalar._donemsifre,'https://medula.sgk.gov.tr/hastane/login.jsf','Medula');
+
+   u := datalar._donemuser;
+   s := datalar._donemsifre;
+
+   if FindTab(AnaForm.sayfalar,TagfrmMedula)
+   Then begin
+    (*
+     F := TGirisForm(FormClassType(TagfrmMedula));
+     TfrmMedEczane(F)._user := u;
+     TfrmMedEczane(F)._pas := s;
+     TGirisForm(FormClassType(TagfrmMedula)).Init(F);
+     *)
+   end
+   Else begin
+    F := FormINIT(TagfrmMedula,self,GirisFormRecord,'',NewTab(AnaForm.sayfalar,TagfrmMedula),ikHayir,'Giriþ');
+    TfrmMedEczane(F)._user := u;
+    TfrmMedEczane(F)._pas := s;
+    if F <> nil then F.show;
+   end;
 end;
 
 procedure TfrmMedulaFatura.Onay1Click(Sender: TObject);

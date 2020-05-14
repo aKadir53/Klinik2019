@@ -56,6 +56,13 @@ type
     GridEkstreCins: TcxGridDBBandedColumn;
     GridEkstreYas: TcxGridDBBandedColumn;
     GridEkstreColumn1: TcxGridDBBandedColumn;
+    GridEkstreColumn2: TcxGridDBBandedColumn;
+    GridEkstreColumn3: TcxGridDBBandedColumn;
+    GridEkstreColumn4: TcxGridDBBandedColumn;
+    cxStyleRepository1: TcxStyleRepository;
+    cxStyle1: TcxStyle;
+    GridEkstreDoktor: TcxGridDBBandedColumn;
+    GridEkstreHemsire: TcxGridDBBandedColumn;
     procedure K1Click(Sender: TObject);
     procedure B1Click(Sender: TObject);
     procedure adoAfterPost(DataSet: TDataSet);
@@ -64,6 +71,9 @@ type
     procedure Y1Click(Sender: TObject);
     procedure H1Click(Sender: TObject);
     procedure TopPanelButonClick(Sender: TObject);
+    procedure GridEkstreEditKeyDown(Sender: TcxCustomGridTableView;
+      AItem: TcxCustomGridTableItem; AEdit: TcxCustomEdit; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -109,6 +119,7 @@ var
   ado_S : TADOQuery;
   konum : TBookmark;
 begin
+(*
   ado_S := TADOQuery.Create(nil);
   ado_S.Connection := datalar.ADOConnection2;
 
@@ -148,7 +159,7 @@ begin
 
   ado_S.Free;
 
-
+   *)
 end;
 
 procedure TfrmKiloOrder.E1Click(Sender: TObject);
@@ -165,21 +176,45 @@ begin
   cxPanel.Visible := false;
 
   TopPanel.Visible := True;
-  TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False,False);
+  TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False,True);
  // GridEkstre.DataController.DataSource := DataSource;
 
-   (*
+
    chkList.Properties.Items.Clear;
    Chk := chkList.Properties.Items.Add;
-   Chk.Caption := 'Kilo Deðerleri Ýþlenmemiþ Hastalar';
+   Chk.Caption := 'Seans Onaylý Hastalar';
    Chk.Tag := 0;
+   chkList.Width := 350;
+
    Chk := chkList.Properties.Items.Add;
-   Chk.Caption := 'Tansiyon Deðerleri Ýþlenmemiþ Hastalar';
+   Chk.Caption := 'Kilo Girilmemiþ Hastalar';
    Chk.Tag := 1;
+
+   chkList.EditValue := '10';
+
+
+ (*
    Chk := chkList.Properties.Items.Add;
    Chk.Caption := 'Gelinmeyen Seanslarý Göster';
    Chk.Tag := 2;
-     *)
+   *)
+
+end;
+
+procedure TfrmKiloOrder.GridEkstreEditKeyDown(Sender: TcxCustomGridTableView;
+  AItem: TcxCustomGridTableItem; AEdit: TcxCustomEdit; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+
+  if key = 13
+  then
+    if AItem = GridEkstreCIKISKILO
+    then begin
+      ado.Next;
+      TcxCustomGridTableView(sender).Controller.FocusedItem := GridEkstreIdealKilo;
+    end;
+
 
 end;
 
@@ -235,16 +270,25 @@ end;
 
 procedure TfrmKiloOrder.TopPanelButonClick(Sender: TObject);
 var
-  sql : string;
+  sql , durum : string;
 begin
+
+   TcxImageComboBoxProperties(GridEkstreDoktor.Properties).Items :=
+   AnaForm.Doktorlar.Properties.Items;
+
+   TcxImageComboBoxProperties(GridEkstreHemsire.Properties).Items :=
+   AnaForm.Hemsireler.Properties.Items;
+
   sql :='select h.dosyaNo,h.gelisNo, h.sirano,HK.TCKIMLIKNO, hk.HASTAADI+'' ''+hk.HASTASOYADI HastaAdi ,Tarih,' +
-        ' hk.IdealKilo,GIRISKILO,CIKISKILO ,dbo.fn_yas(HK.dogumTARIHI) Yas, CINSIYETI cins,' +
-        ' tanG,Tanc,NabizG,NabizC,TanGK,TanCK,KanAlindimi,h.durum ' +
+        ' h.IdealKilo,GIRISKILO,CIKISKILO ,h.verilecekSivi,h.makinaNo,dbo.fn_yas(HK.dogumTARIHI) Yas, CINSIYETI cins,' +
+        ' tanG,Tanc,NabizG,NabizC,TanGK,TanCK,KanAlindimi,h.durum,h.Ates,h.hemsire,h.doktor ' +
         ' from hareketler h ' +
         ' join hastakart hk on hk.dosyaNo = h.dosyaNo ' +
         ' where Tarih between ' + txtTopPanelTarih1.GetSQLValue('YYYY-MM-DD') + ' and ' + txtTopPanelTarih2.GetSQLValue('YYYY-MM-DD') +
         ' and hk.sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and h.Tip = ''S''' +
-        ' and h.Seans = ' + QuotedStr(txtSeansTopPanel.Text);
+        ' and case when ' + QuotedStr(txtSeansTopPanel.Text) + ' = '''' then h.Seans else ' + QuotedStr(txtSeansTopPanel.Text) + ' end = h.Seans' +
+        ' and h.durum = ' + copy(chkList.EditingValue,1,1) +
+        ifThen(copy(chkList.EditingValue,2,1) = '1',' and (GIRISKILO = 0 or CIKISKILO = 0)','');
 
   datalar.QuerySelect(ado,sql);
 
@@ -255,7 +299,9 @@ procedure TfrmKiloOrder.Y1Click(Sender: TObject);
 var
   TopluDataset : TDataSetKadir;
 begin
-    TopluDataset.Dataset1 := _Dataset;
+    TopluDataset.Dataset0 := datalar.ADO_AktifSirket;
+    TopluDataset.Dataset1 := datalar.ADO_aktifSirketLogo;
+    TopluDataset.Dataset2 := ado;
     PrintYap('211','\KiloOrder','',TopluDataset,pTNone);
 end;
 

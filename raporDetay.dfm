@@ -5,7 +5,7 @@ object frmRaporDetay: TfrmRaporDetay
   BorderStyle = bsSizeToolWin
   Caption = 'frmRaporDetay'
   ClientHeight = 636
-  ClientWidth = 916
+  ClientWidth = 1084
   Color = 13750737
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,9 +20,9 @@ object frmRaporDetay: TfrmRaporDetay
   PixelsPerInch = 96
   TextHeight = 13
   object RaporGrid: TcxGridKadir
-    Left = 8
+    Left = -96
     Top = 8
-    Width = 900
+    Width = 1025
     Height = 193
     Font.Charset = TURKISH_CHARSET
     Font.Color = clWindowText
@@ -213,6 +213,17 @@ object frmRaporDetay: TfrmRaporDetay
         HeaderAlignmentVert = vaCenter
         Width = 40
       end
+      object ListeRaporlarColumn12: TcxGridDBColumn
+        Caption = 'Doktor'
+        DataBinding.FieldName = 'duzenleyenDoktor'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Items = <>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 100
+      end
     end
     object cxGridLevel2: TcxGridLevel
       Caption = 'Hastalar'
@@ -300,8 +311,8 @@ object frmRaporDetay: TfrmRaporDetay
   end
   object PopupMenu3: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 240
-    Top = 352
+    Left = 296
+    Top = 256
     object Kapat1: TMenuItem
       Tag = -30
       Caption = 'Kapat'

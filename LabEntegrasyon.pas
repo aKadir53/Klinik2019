@@ -22,7 +22,8 @@ uses
   dxSkinOffice2007Silver, dxSkinOffice2010Black, dxSkinOffice2010Blue,
   dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver,
   dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008, dxSkinValentine,
-  dxSkinXmas2008Blue, cxCalendar, cxCurrencyEdit,cxCheckGroup, SQLMemMain;
+  dxSkinXmas2008Blue, cxCalendar, cxCurrencyEdit,cxCheckGroup, SQLMemMain,
+  cxSplitter, cxGridBandedTableView, cxGridDBBandedTableView, cxCheckBox;
 
 type
   TfrmLabEntegrasyon = class(TGirisForm)
@@ -96,6 +97,42 @@ type
     ListeColumn12: TcxGridDBColumn;
     ListeColumn14: TcxGridDBColumn;
     ListeColumn15: TcxGridDBColumn;
+    GridHizmet: TcxGridKadir;
+    GridHizmetler: TcxGridDBTableView;
+    GridHizmetlertakipNo: TcxGridDBColumn;
+    GridHizmetlerHizmetTuru: TcxGridDBColumn;
+    GridHizmetlersutKodu: TcxGridDBColumn;
+    GridHizmetlerTanm: TcxGridDBColumn;
+    GridHizmetlerSonuc: TcxGridDBColumn;
+    GridHizmetlerhizmetSunucuRefNo: TcxGridDBColumn;
+    cxGridDBBandedTableView29: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn92: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn93: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn94: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn95: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn96: TcxGridDBBandedColumn;
+    cxGridDBBandedTableView30: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn97: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn98: TcxGridDBBandedColumn;
+    cxGridDBBandedTableView31: TcxGridDBBandedTableView;
+    cxGridDBBandedTableView32: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn99: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn100: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn101: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn102: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn103: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn104: TcxGridDBBandedColumn;
+    cxGridLevel7: TcxGridLevel;
+    cxSplitter1: TcxSplitter;
+    PopupMenu2: TPopupMenu;
+    i1: TMenuItem;
+    S2: TMenuItem;
+    O2: TMenuItem;
+    Y3: TMenuItem;
+    Tetkikler: TListeAc;
+    E3: TMenuItem;
+    K2: TMenuItem;
+    ListeColumn16: TcxGridDBColumn;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -118,6 +155,14 @@ type
 
     procedure IslemItemSub1Click(Sender: TObject);
     procedure IslemItemSub2Click(Sender: TObject);
+    procedure IslemItemSub3Click(Sender: TObject);
+
+    procedure i1Click(Sender: TObject);
+    procedure GridHizmetlerFocusedRecordChanged(Sender: TcxCustomGridTableView;
+      APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
+      ANewItemRecordFocusingChanged: Boolean);
+
+    procedure TetkikEkle;
 
   private
     { Private declarations }
@@ -150,13 +195,22 @@ implementation
   Referans,
   TenaySISTEMTIP,
   Derman,
-  TenayAhenk;
+  TenayAhenk,
+  TenaySIMGE,
+  TenayBIOLAB,
+  ELABUnit,
+  Interkom,
+  Duzen,
+  AEN,
+  LiosERBIL,
+  LiosDEREN;
 
 {$R *.dfm}
 
 
 function TfrmLabEntegrasyon.Init(Sender : TObject) : Boolean;
 begin
+   ChangeButtonListClick := True;
    Result := True;
 end;
 
@@ -165,9 +219,9 @@ end;
 procedure TfrmLabEntegrasyon.IslemItemSub1Click(Sender: TObject);
 var
   GirisFormRecord : TGirisFormRecord;
+  ornekNo : string;
 begin
-   if Liste.Controller.SelectedRowCount = 0 then exit;
-
+  if Liste.Controller.SelectedRowCount = 0 then exit;
 
   case TMenuItem(Sender).Tag of
     BIYOTIP : begin
@@ -186,6 +240,15 @@ begin
                   DurumGoster(False);
                 end;
               end;
+    BIOLAB : begin
+                DurumGoster(True,True);
+                try
+                  TenayOrderKaydetBIOLAB(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+             end;
+
     SYNEVO  : begin
                 DurumGoster(True,True);
                 try
@@ -210,11 +273,19 @@ REFERANSLAB : begin
                   DurumGoster(False);
                 end;
                end;
+      SIMGE : begin
+                DurumGoster(True,True);
+                try
+                  TenayOrderKaydetSIMGE(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+               end;
 
    CentroLab : begin
                 DurumGoster(True,True);
                 try
-                   //TenaySonucAlCENTRO(Liste,txtLog,pBar);
+                   TenayOrderKaydetCENTRO(Liste,txtLog,pBar);
                 finally
                   DurumGoster(False);
                 end;
@@ -236,13 +307,69 @@ REFERANSLAB : begin
                 finally
                   DurumGoster(False);
                 end;
+             end;
+
+    ELAB  : begin
+                DurumGoster(True,True);
+                try
+                  ELABOrderKaydet(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+             end;
+
+INTERKOMLAB : begin
+                DurumGoster(True,True);
+                try
+                  HastaListeAl(txtTopPanelTarih1.Text, Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
               end;
 
+ DUZENLAB : begin
+                DurumGoster(True,True);
+                try
+                    OrderKaydetDuzen(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+
+ ERBILLAB : begin
+                DurumGoster(True,True);
+                try
+                    TestEkle(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
   end;
 
 
 
 end;
+
+
+procedure TfrmLabEntegrasyon.IslemItemSub3Click(Sender: TObject);
+var
+  glmref : string;
+begin
+   if Liste.Controller.SelectedRowCount = 0 then exit;
+
+  case TMenuItem(Sender).Tag of
+       ELAB : begin
+                DurumGoster(True,True);
+                try
+                  ELABUnit.SonucAlBarkod(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+
+  end;
+end;
+
 
 procedure TfrmLabEntegrasyon.IslemItemSub2Click(Sender: TObject);
 var
@@ -267,10 +394,18 @@ begin
                   DurumGoster(False);
                 end;
               End;
+    BIOLAB  : Begin
+                DurumGoster(True,True);
+                try
+                  TenaySonucAlTCdenBIOLAB('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar,False);
+                finally
+                  DurumGoster(False);
+                end;
+              End;
     SYNEVO  : Begin
                 DurumGoster(True,True);
                 try
-                  TenaySonucAlTCdenSynevo('','','','',Liste,txtLog,pBar,False);
+                  TenaySonucAlTCdenSynevo('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar,False);
                 finally
                   DurumGoster(False);
                 end;
@@ -290,6 +425,14 @@ begin
                       DurumGoster(True,True);
                       try
                         TenaySonucAlTCdenSYNLAB('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar);
+                      finally
+                        DurumGoster(False);
+                      end;
+                  end;
+         SIMGE : begin
+                      DurumGoster(True,True);
+                      try
+                        TenaySonucAlTCdenSIMGE('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar);
                       finally
                         DurumGoster(False);
                       end;
@@ -320,6 +463,74 @@ begin
                   DurumGoster(False);
                 end;
               End;
+ CentroLab  : Begin
+                DurumGoster(True,True);
+                try
+                  TenaySonucAlTCdenCENTRO('','',txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar,False);
+                finally
+                  DurumGoster(False);
+                end;
+              End;
+
+       ELAB : begin
+                DurumGoster(True,True);
+                try
+                  ELABUnit.SonucAl(txtTopPanelTarih1.GetTXSDateTime,txtTopPanelTarih2.GetTXSDateTime,_Dataset,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+
+INTERKOMLAB  : begin
+                DurumGoster(True,True);
+                try
+                  Interkom.SonucAl(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+
+              end;
+
+DUZENLAB  : begin
+                DurumGoster(True,True);
+                try
+                   SonucAlDuzen(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+
+              end;
+
+ AENLAB  : Begin
+                DurumGoster(True,True);
+                try
+                  AENSonucAl('','',txtTopPanelTarih1.EditValue,txtTopPanelTarih2.EditValue,Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              End;
+
+ DERENLAB : begin
+                DurumGoster(True,True);
+                try
+                   LiosDEREN.SonucAl(txtTopPanelTarih1.GetValue('DD.MM.YYYY') ,txtTopPanelTarih2.GetValue('DD.MM.YYYY'),Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+
+
+            end;
+
+ ERBILLAB : begin
+
+                DurumGoster(True,True);
+                try
+                  LiosERBIL.SonucAl(txtTopPanelTarih1.GetValue('DD.MM.YYYY'),txtTopPanelTarih2.GetValue('DD.MM.YYYY'),Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+
+            end;
 
   end;
 end;
@@ -363,6 +574,8 @@ var
  DosyaNos , sql : string;
  ado : TADOQuery;
  topluset : TDataSetKadir;
+  aTabSheet : TcxTabSheet;
+  bTamam : Boolean;
 begin
   datalar.KontrolUserSet := False;
 
@@ -474,9 +687,31 @@ begin
               end;
 
            end;
-       end;
 
-  end;
+       end;
+ 110 : begin
+         if FindTab(AnaForm.sayfalar,TagfrmKtvListesi)
+         Then begin
+           F := TGirisForm(FormClassType(TagfrmKtvListesi));
+           TGirisForm(FormClassType(TagfrmKtvListesi)).Init(F);
+         end
+         Else begin
+          bTamam := False;
+          aTabSheet := NewTab(AnaForm.sayfalar,TagfrmKtvListesi);
+          try
+            F := FormINIT(TagfrmKtvListesi,self,'',aTabSheet,ikEvet,'','');
+            bTamam := F <> nil;
+            if bTamam then F.show;
+          finally
+            if not bTamam then FreeAndNil(aTabSheet);
+          end;
+         end;
+         F.txtTopPanelTarih1.Date := self.txtTopPanelTarih1.Date;
+         F.txtTopPanelTarih2.Date := self.txtTopPanelTarih2.Date;
+
+       end;
+ end;
+
 end;
 
 procedure TfrmLabEntegrasyon.FormCreate(Sender: TObject);
@@ -519,10 +754,14 @@ begin
    IslemItemSub3.Tag := _tag_;
    IslemItemSub1.OnClick :=  IslemItemSub1Click;
    IslemItemSub2.OnClick :=  IslemItemSub2Click;
+   IslemItemSub3.OnClick :=  IslemItemSub3Click;
+
  //  IslemItemSub3.OnClick :=  IslemItemSubClick;
   // IslemItemSub1.OnClick :=  IslemItemSubClick;
 
-   if strToint(datalar._labID) in [ENALAB,SYNEVO,SYNLAB,SISTEMTIP,DERMANLAB,AHENK]
+   if strToint(datalar._labID) in [ENALAB,SYNEVO,SYNLAB,SISTEMTIP,DERMANLAB,AHENK,
+                                   BIOLAB,SIMGE,CentroLab,DUZENLAB,AENLAB,
+                                   ERBILLAB,DERENLAB]
    then begin
      if datalar._LabCalismaYon = '2'
      Then BEgin
@@ -570,33 +809,131 @@ begin
       IslemItem.Visible := True;
       KaydetItem.Visible := false;
       SonucAlItem.Visible := False;
-   end;
- (*
-   if strToint(datalar._labID) = SYNLAB
+   end
+   else
+   if strToint(datalar._labID) = INTERKOMLAB
    then begin
-      IslemItemSub1.Caption := 'Hasta Kaydet';
-      IslemItemSub2.Caption := 'Sonuç Al';
+      IslemItemSub1.Caption := 'Hasta Listesi Oku';
+      IslemItemSub2.Caption := 'Sonuç Al(Barkod)';
       IslemItemSub1.Visible := True;
       IslemItemSub2.Visible := True;
       IslemItemSub3.Visible := False;
       IslemItem.Visible := True;
       KaydetItem.Visible := false;
       SonucAlItem.Visible := False;
-   end;
-   if strToint(datalar._labID) = SISTEMTIP
+   end
+   else
+   if strToint(datalar._labID) = ELAB
    then begin
       IslemItemSub1.Caption := 'Hasta Kaydet';
-      IslemItemSub2.Caption := 'Sonuç Al';
+      IslemItemSub2.Caption := 'Tüm Sonuçlarý Al';
+      IslemItemSub3.Caption := 'Sonuç Al(Barkod)';
       IslemItemSub1.Visible := False;
       IslemItemSub2.Visible := True;
-      IslemItemSub3.Visible := False;
+      IslemItemSub3.Visible := True;
       IslemItem.Visible := True;
       KaydetItem.Visible := false;
       SonucAlItem.Visible := False;
    end;
-   *)
+
+
    inherited;
 
+end;
+
+procedure TfrmLabEntegrasyon.GridHizmetlerFocusedRecordChanged(
+  Sender: TcxCustomGridTableView; APrevFocusedRecord,
+  AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
+var
+ index : integer;
+begin
+  inherited;
+
+end;
+
+procedure TfrmLabEntegrasyon.i1Click(Sender: TObject);
+var
+  siraNO , sonuc : string;
+  satir : integer;
+begin
+  inherited;
+
+
+    siraNO := GridHizmetler.DataController.GetValue(GridHizmetler.Controller.SelectedRows[0].RecordIndex,
+              GridHizmetler.DataController.GetItemByFieldName('siraNo').Index);
+    sonuc :=  varToStr(GridHizmetler.DataController.GetValue(GridHizmetler.Controller.SelectedRows[0].RecordIndex,
+                       GridHizmetler.DataController.GetItemByFieldName('gd').Index));
+
+    case TMenuItem(Sender).Tag of
+    0,1 : begin
+              for satir := 0 to GridHizmetler.Controller.SelectedRowCount - 1 do
+              begin
+                  siraNO := GridHizmetler.DataController.GetValue(GridHizmetler.Controller.SelectedRows[satir].RecordIndex,
+                            GridHizmetler.DataController.GetItemByFieldName('siraNo').Index);
+                  datalar.QueryExec('update hareketler set onay = ' +  intTostr(TMenuItem(Sender).Tag)  + ' where siraNo = ' + siraNo);
+              end;
+              GridHizmet.Dataset.Requery();
+          end;
+
+      2 : begin
+            if sonuc = ''
+            then
+              if mrYEs = ShowMessageSkin('Hizmet Silinecek Emin misiniz?','','','msg')
+              then begin
+               datalar.QueryExec('delete from hareketler where siraNo = ' + siraNo);
+               GridHizmet.Dataset.Requery();
+              end;
+          end;
+
+      3 : begin
+            TetkikEkle;
+          end;
+
+  end;
+
+end;
+
+
+procedure TfrmLabEntegrasyon.TetkikEkle;
+var
+  sql : string;
+  ado : TADOQuery;
+  List : ArrayListeSecimler;
+begin
+
+   Tetkikler.Filter := '%2%';
+
+
+   Tetkikler.SkinName := AnaForm.dxSkinController1.SkinName;
+   Tetkikler.where := ' charindex(''.'',butKodu) = 0  and uygulamaAdet = ''G''';
+   List := Tetkikler.ListeGetir;
+
+   try
+     if length(List) > 0 then
+     begin
+       ado := datalar.QuerySelect('select butKodu,tanimi,uygulamaAdet from labtestler where substring(butKodu,1,6) = ' + QuotedStr(List[0].kolon1));
+       while not ado.Eof do
+       begin
+           sql := 'insert into hareketler (dosyaNo,gelisNo,gelisSIRANO,Tarih,Doktor,adet,code,name1,tip,tip1) ' +
+                  'values(' + QuotedStr(_dosyaNO_) + ',' +
+                              _gelisNo_ + ',' +
+                             _gelisSiraNo_ + ',' +
+                             QuotedStr(NoktasizTarih(_provizyonTarihi_))  + ',' +
+                             QuotedStr(_Doktor_) + ',' +
+                             '1' + ',' +
+                             QuotedStr(ado.FieldByName('butKodu').AsString) + ',' +
+                             QuotedStr(ado.FieldByName('tanimi').AsString) + ',' +
+                             QuotedStr('L') + ',' +
+                             QuotedStr(ado.FieldByName('uygulamaAdet').AsString) + ')';
+           datalar.QueryExec(sql);
+           ado.Next;
+       end;
+     end;
+   finally
+    ado.Free;
+   end;
+
+   GridHizmet.Dataset.Requery;
 end;
 
 procedure TfrmLabEntegrasyon.ListeDblClick(Sender: TObject);
@@ -634,7 +971,7 @@ procedure TfrmLabEntegrasyon.ListeFocusedRecordChanged(
   Sender: TcxCustomGridTableView; APrevFocusedRecord,
   AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
 var
-  Hadi,HSadi,HTc : string;
+  Hadi,HSadi,HTc , SIRANO : string;
   index : integer;
   id , i : integer;
   gun : integer;
@@ -647,6 +984,24 @@ begin
   HTc := _Dataset.FieldByName('TCKIMLIKNO').AsString;//Liste.DataController.GetValue(index,TC.Index);
   HastaBilgiRecordSet(Hadi,HSadi,HTc,'');
   *)
+
+  if AFocusedRecord = nil then exit;
+  index := AFocusedRecord.Index;
+
+  _dosyaNO_ := varToStr(Liste.DataController.GetValue(index,dosyaNo.Index));
+  _gelisNO_ := varToStr(Liste.DataController.GetValue(index,HastaAdi.Index));
+  _gelisSiraNo_ := varToStr(Liste.DataController.GetValue(index,ListeColumn3.Index));
+  _provizyonTarihi_ := varToStr(Liste.DataController.GetValue(index,ListeColumn11.Index));
+
+  SIRANO := varToStr(Liste.DataController.GetValue(index,ListeColumn3.Index));
+  if SIRANO <> ''
+  then
+    datalar.QuerySelect(GridHizmet.Dataset,
+                        'select * from hareketlerLab h ' +
+                        ' join LabTestler l on l.butKodu = h.CODE and h.tip1 = l.uygulamaAdet ' +
+                        ' where gelisSIRANO = ' + SIRANO +
+                        ' and charindex(''.'',code) = 0 order by l.sira'
+                        );
 
 end;
 
@@ -723,7 +1078,37 @@ end;
 procedure TfrmLabEntegrasyon.TopPanelButonClick(Sender: TObject);
 begin
   inherited;
-  Liste.ViewData.Expand(true);
+
+   if (strToint(datalar._labID) = REFERANSLAB) or
+      (strToint(datalar._labID) = BIYOTIP)
+   then begin
+
+   end
+   else
+   begin
+         if RdGroup.EditingValue = 'ONAY'
+        then begin
+          IslemItemSub1.Enabled := True;
+        end
+        else begin
+          IslemItemSub1.Enabled := False;
+        end;
+
+        if RdGroup.EditingValue = 'Gönderildi'
+        then begin
+          IslemItemSub2.Enabled := True;
+          IslemItemSub3.Enabled := True;
+        end
+        else begin
+          IslemItemSub2.Enabled := False;
+          IslemItemSub3.Enabled := False;
+        end;
+
+        PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+
+   end;
+
+        Liste.ViewData.Expand(true);
 end;
 
 procedure TfrmLabEntegrasyon.TopPanelPropertiesChange(Sender: TObject);

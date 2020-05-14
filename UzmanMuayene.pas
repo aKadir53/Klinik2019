@@ -548,7 +548,7 @@ case TControl(sender).Tag  of
                        //   ',Ekst = ' + QuotedStr(varTostr(TcxMemo(FindComponent('Ekst')).EditValue)) +
                        //   ',sistemSorgusu = ' + QuotedStr(gelisSikayetSecili(chkSistemSorgu)) +
                       //    ',psiko = ' + QuotedStr(varTostr(TcxMemo(FindComponent('psiko')).EditValue)) +
-                          ',digerNot = ' + QuotedStr(varTostr(TcxMemo(FindComponent('digerNot')).EditValue)) +
+                          ',digerNot = ' + QuotedStr(varTostr(TcxMemo(FindComponent('digerNot')).EditingValue)) +
                           ',kurukilo = ' + QuotedStr(TcxCurrencyEdit(FindComponent('kurukilo')).Text) +
                           ',D = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('D')).EditValue)) +
                           ',Diyalizor = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('Diyalizor')).EditValue)) +
@@ -711,7 +711,7 @@ begin
   setDataStringKontrol(self,_Tarih_, 'Tarih','Uzman Muayene Tarih',Kolon1,'bb',125);
  // TcxTextEdit(FindComponent('Tarih')).EditValue := date;
 
-  setDataStringIC(self,'doktor','Doktor',Kolon1,'bb1',125,'DoktorlarT','kod','tanimi',' sirketKod = ' + QuotedStr(datalar.AktifSirket));
+  setDataStringIC(self,'doktor','Doktor',Kolon1,'bb1',125,'DoktorlarT','kod','tanimi',' Durum = ''Aktif'' and sirketKod = ' + QuotedStr(datalar.AktifSirket));
   setDataString(self,'id','',Kolon1,'',40,False,'',True,-100);
   TdxLayoutGroup(FindComponent('dxLaid')).Visible := False;
 
@@ -803,7 +803,7 @@ begin
   SetGrid(CreateGrid('cxGridKons',self),'Tarih,ADI,BulguSonuc',
                'TcxTextEditProperties,TcxTextEditProperties,TcxMemoProperties',
                'Tarih,Bolum,BulguSonuc',
-               '80,80,250',
+               '80,80,400',
                '0,0,0',
                'True,True,True',
                '0,0,0'
@@ -813,10 +813,15 @@ begin
 
   setDataStringBLabel(self,'cxGridKons',Kolon4,'ipb',350,'Hasta Konsultasyonlarý', '', '', True, clRed, taCenter);
   setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridKons')) ,'cxGridKons','',Kolon4,'ip',350,450);
-//  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons'))).OptionsView.CellAutoHeight := true;
   TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).Navigator.Visible := False;
   TcxGridKadir(FindComponent('cxGridKons')).Dataset.Name := 'cxGridKonsDS';
 
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).OptionsView.DataRowHeight := 0;
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).OptionsView.CellAutoHeight := True;
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).OptionsData.Editing := True;
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).Columns[0].Editing := False;
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).Columns[1].Editing := False;
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).Columns[2].Editing := False;
 
  // Kolon4.Visible := false;
 

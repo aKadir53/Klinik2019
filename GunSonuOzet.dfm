@@ -54,6 +54,7 @@ object frmGunSonuOzet: TfrmGunSonuOzet
       Height = 37
       Align = alLeft
       Caption = 'G'#246'nder'
+      Enabled = False
       TabOrder = 2
       OnClick = btnGonderClick
     end
@@ -137,15 +138,15 @@ object frmGunSonuOzet: TfrmGunSonuOzet
       ImageIndex = 0
       object cxGrid1: TcxGridKadir
         Left = 0
-        Top = 0
+        Top = 17
         Width = 588
-        Height = 496
+        Height = 479
         Align = alClient
         TabOrder = 0
         ExceleGonder = False
         PopupForm = False
-        ExplicitLeft = 3
-        ExplicitTop = 3
+        ExplicitTop = 24
+        ExplicitHeight = 496
         object gridListe: TcxGridDBTableView
           DataController.DataSource = DataSource1
           DataController.Summary.DefaultGroupSummaryItems = <>
@@ -187,6 +188,24 @@ object frmGunSonuOzet: TfrmGunSonuOzet
         object cxGrid1Level1: TcxGridLevel
           GridView = gridListe
         end
+      end
+      object lblMesaj: TcxLabel
+        Left = 0
+        Top = 0
+        Align = alTop
+        Caption = 'Veriler Manuel D'#252'zenlenebilir'
+        ParentFont = False
+        Style.Font.Charset = DEFAULT_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -11
+        Style.Font.Name = 'Tahoma'
+        Style.Font.Style = [fsBold]
+        Style.IsFontAssigned = True
+        Transparent = True
+        Visible = False
+        ExplicitLeft = 360
+        ExplicitTop = 16
+        ExplicitWidth = 46
       end
     end
     object cxTabSheet2: TcxTabSheet
@@ -320,14 +339,7 @@ object frmGunSonuOzet: TfrmGunSonuOzet
   end
   object DataSource2: TDataSource
     DataSet = Ado_GunSonuOzetLog
-    Left = 112
-    Top = 120
-  end
-  object Ado_GunSonuOzetLog: TADOTable
-    Connection = DATALAR.ADOConnection2
-    CursorType = ctStatic
-    TableName = 'GunSonuOzetGonderimLog'
-    Left = 72
+    Left = 128
     Top = 120
   end
   object XMLDocument2: TXMLDocument
@@ -349,11 +361,22 @@ object frmGunSonuOzet: TfrmGunSonuOzet
         'select * from dbo.fn_KLINIK_KALITE_BILGISI_table('#39'20140101'#39','#39'201' +
         '40111'#39')')
     Left = 72
-    Top = 208
+    Top = 216
   end
   object DataSource1: TDataSource
     DataSet = ADO_SQL
     Left = 112
-    Top = 208
+    Top = 216
+  end
+  object Ado_GunSonuOzetLog: TADOQuery
+    Connection = DATALAR.ADOConnection2
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      
+        'select * from dbo.fn_KLINIK_KALITE_BILGISI_table('#39'20140101'#39','#39'201' +
+        '40111'#39')')
+    Left = 80
+    Top = 120
   end
 end

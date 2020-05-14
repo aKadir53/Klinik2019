@@ -4,7 +4,7 @@ object frmKtvListesi: TfrmKtvListesi
   BorderStyle = bsDialog
   Caption = 'Hesaplanan De'#287'erler'
   ClientHeight = 601
-  ClientWidth = 750
+  ClientWidth = 946
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object frmKtvListesi: TfrmKtvListesi
   object GridListe: TcxGridKadir
     Left = 0
     Top = 0
-    Width = 750
+    Width = 946
     Height = 601
     Align = alClient
     Font.Charset = TURKISH_CHARSET
@@ -35,6 +35,7 @@ object frmKtvListesi: TfrmKtvListesi
     ExcelFileName = 'KtvUrrListesi'
     ExceleGonder = True
     PopupForm = False
+    ExplicitWidth = 750
     object GridList: TcxGridDBTableView
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True
@@ -53,13 +54,11 @@ object frmKtvListesi: TfrmKtvListesi
       Navigator.Buttons.GotoBookmark.Visible = True
       Navigator.Buttons.Filter.Visible = True
       FilterBox.CustomizeDialog = False
-      DataController.DataModeController.DetailInSQLMode = True
       DataController.DataModeController.SyncMode = False
-      DataController.DetailKeyFieldNames = 'takipNo'
+      DataController.Filter.Options = [fcoCaseInsensitive]
       DataController.Filter.Active = True
       DataController.Filter.TranslateBetween = True
       DataController.Filter.TranslateLike = True
-      DataController.KeyFieldNames = 'takipNo'
       DataController.Options = [dcoAnsiSort, dcoCaseInsensitive, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <
@@ -80,6 +79,24 @@ object frmKtvListesi: TfrmKtvListesi
           Kind = skAverage
           FieldName = 'TS'
           Column = GridListColumn7
+        end
+        item
+          Format = '#,###.##'
+          Kind = skAverage
+          FieldName = 'URR'
+          Column = GridListColumn4
+        end
+        item
+          Format = 'Hasta Say'#305's'#305' : #'
+          Kind = skCount
+          FieldName = 'ad'
+          Column = GridListColumn2
+        end
+        item
+          Format = '#,###.##'
+          Kind = skAverage
+          FieldName = 'DuzCa'
+          Column = GridListColumn9
         end>
       DataController.Summary.SummaryGroups = <>
       Filtering.MRUItemsList = False
@@ -95,7 +112,6 @@ object frmKtvListesi: TfrmKtvListesi
       OptionsCustomize.ColumnsQuickCustomization = True
       OptionsData.Deleting = False
       OptionsData.DeletingConfirmation = False
-      OptionsData.Editing = False
       OptionsData.Inserting = False
       OptionsSelection.MultiSelect = True
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
@@ -112,6 +128,7 @@ object frmKtvListesi: TfrmKtvListesi
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 54
       end
       object GridListColumn8: TcxGridDBColumn
@@ -122,14 +139,18 @@ object frmKtvListesi: TfrmKtvListesi
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 47
       end
       object GridListColumn2: TcxGridDBColumn
         Caption = 'Hasta'
         DataBinding.FieldName = 'ad'
         PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 191
       end
       object GridListColumn3: TcxGridDBColumn
@@ -140,6 +161,7 @@ object frmKtvListesi: TfrmKtvListesi
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 100
       end
       object GridListColumn4: TcxGridDBColumn
@@ -149,6 +171,7 @@ object frmKtvListesi: TfrmKtvListesi
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
       end
       object GridListColumn5: TcxGridDBColumn
         Caption = 'Ktv'
@@ -158,6 +181,7 @@ object frmKtvListesi: TfrmKtvListesi
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
       end
       object GridListColumn6: TcxGridDBColumn
         DataBinding.FieldName = 'CaXP'
@@ -166,6 +190,7 @@ object frmKtvListesi: TfrmKtvListesi
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
       end
       object GridListColumn9: TcxGridDBColumn
         DataBinding.FieldName = 'DuzCa'
@@ -174,6 +199,7 @@ object frmKtvListesi: TfrmKtvListesi
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 49
       end
       object GridListColumn7: TcxGridDBColumn
@@ -184,7 +210,13 @@ object frmKtvListesi: TfrmKtvListesi
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 79
+      end
+      object GridListColumn10: TcxGridDBColumn
+        Caption = 'Hata A'#231#305'klamas'#305
+        DataBinding.FieldName = 'Hata'
+        Width = 162
       end
     end
     object cxGridLevel1: TcxGridLevel

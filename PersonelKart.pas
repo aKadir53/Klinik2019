@@ -1072,6 +1072,7 @@ var
   Subeler,sirketlerx: TcxImageComboKadir;
 
 begin
+ _SaveKontrol := True;
   USER_ID.Tag := 0;
   //sirketKod.Tag := 0;
   PopupMenu1.Images := datalar.imag24png;
@@ -1196,7 +1197,7 @@ begin
   Sirketlerx.ValueField := 'SirketKod';
   Sirketlerx.DisplayField := 'Tanimi';
   Sirketlerx.BosOlamaz := False;
-  Sirketlerx.Filter := '';
+  Sirketlerx.Filter := ' FirmaTip = 1';
   Sirketlerx.EditValue := datalar.AktifSirket;
   Sirketlerx.ItemIndex := -1;
  // sirketlerx.tag := -100;
@@ -1238,7 +1239,7 @@ begin
   EV_SEHIR.BosOlamaz := True;
   EV_SEHIR.Filter := '';
   setDataStringKontrol(self,EV_SEHIR,'EV_SEHIR','Ýl',kolon2,'',120);
-  OrtakEventAta(EV_SEHIR);
+//  OrtakEventAta(EV_SEHIR);
 //  setDataStringBLabel(self,'EV_SEHIR',Kolon2,'il',100,' ');
 
 
@@ -1251,7 +1252,7 @@ begin
 //  EV_ILCE.Filter := EV_SEHIR.EditValue;
 //  EV_ILCE.Properties.ReadOnly := True;
   setDataStringKontrol(self,EV_ILCE,'EV_ILCE','Ýlçe',kolon2,'',120);
-  OrtakEventAta(EV_ILCE);
+ // OrtakEventAta(EV_ILCE);
   //  setDataStringB(self,'EV_ILCE','Ýlçe',Kolon2,'ilce',60,ILCE_KODLARI,false,EV_ILCE,'ADI','EV_SEHIR',false);
 //  setDataStringBLabel(self,'EV_ILCE',Kolon2,'ilce',100,' ');
 
@@ -1264,7 +1265,7 @@ begin
   EV_BUCAK.BosOlamaz := True;
 
   setDataStringKontrol(self,EV_BUCAK,'EV_BUCAK','Bucak',kolon2,'',120);
-  OrtakEventAta(EV_BUCAK);
+ // OrtakEventAta(EV_BUCAK);
 
 //  setDataStringB(self,'EV_BUCAK','Bucak',Kolon2,'bucak',60,BUCAK_KODLARI,false,EV_BUCAK,'ADI','EV_ILCE',false);
 //  setDataStringBLabel(self,'EV_BUCAK',Kolon2,'bucak',100,' ');
@@ -1278,7 +1279,7 @@ begin
   EV_KOY.DisplayField := 'ADI';
   EV_KOY.BosOlamaz := True;
   setDataStringKontrol(self,EV_KOY,'EV_KOY','Köyü',kolon2,'',120);
-  OrtakEventAta(EV_KOY);
+//  OrtakEventAta(EV_KOY);
 
  // MAHALLE_KODLARI := ListeAcCreate('SKRS_MAHALLE_KODLARI','KODU,ADI','Kod,Adi','50,100','KODU','MAHALLELER',' KOYKODU = %s',2);
   EV_MAHALLE := TcxImageComboKadir.Create(self);
@@ -1288,7 +1289,7 @@ begin
   EV_MAHALLE.DisplayField := 'ADI';
   EV_MAHALLE.BosOlamaz := True;
   setDataStringKontrol(self,EV_MAHALLE,'EV_MAHALLE','Mahalle',kolon2,'',120);
-   OrtakEventAta(EV_MAHALLE);
+ //  OrtakEventAta(EV_MAHALLE);
 
   setDataString(self,'EV_SOKAK','Sok./Cad.',Kolon2,'',166,True);
   setDataString(self,'EV_ADRES','Adres Diðer',Kolon2,'',166);
@@ -1747,7 +1748,7 @@ begin
 
             case ADO_Gelisler.FieldByName('AnemnezEkranTipi').AsInteger of
               1 : F := FormINIT(TagfrmIseGiris,GirisFormRecord,ikHayir,'');
-              2 : F := FormINIT(TagfrmAnamnez,GirisFormRecord,ikEvet,'');
+              2 : F := FormINIT(TagfrmAnamnez,GirisFormRecord,ikHayir,'');
             end;
 
 

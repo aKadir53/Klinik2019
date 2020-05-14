@@ -22,19 +22,22 @@ object frmStokKarti: TfrmStokKarti
       Tag = -1
       Caption = 'Yeni'
       ImageIndex = 28
+      Visible = False
       OnClick = cxButtonCClick
     end
     object K1: TMenuItem
       Caption = 'Kaydet'
+      Visible = False
     end
     object S1: TMenuItem
       Caption = 'Sil'
+      Visible = False
     end
   end
   object Stoklar: TListeAc
     ListeBaslik = 'Stok Kartlar'#305
     TColcount = 4
-    TColsW = '50,80,150,80'
+    TColsW = '50,80,150,80,80'
     Table = 'StokKart_View'
     Conn = DATALAR.ADOConnection2
     Filtercol = 0
@@ -44,12 +47,14 @@ object frmStokKarti: TfrmStokKarti
       'id'
       'code'
       'NAME1'
-      'tanimi')
+      'tanimi'
+      'mevcut')
     KolonBasliklari.Strings = (
       'ID'
       'Stok Kodu'
       'Stok Tan'#305'm'#305
-      'Grup Tan'#305'm'#305)
+      'Grup Tan'#305'm'#305
+      'Mevcut')
     Calistir = fgEvet
     BiriktirmeliSecim = False
     SkinName = 'Lilian'

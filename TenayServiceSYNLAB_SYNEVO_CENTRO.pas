@@ -651,9 +651,10 @@ type
   // ************************************************************************ //
   BaseClass = class(TRemotable)
   private
+    FWebUserKurumId: Integer;
   published
+    property WebUserKurumId: Integer  read FWebUserKurumId write FWebUserKurumId;
   end;
-
 
 
   // ************************************************************************ //

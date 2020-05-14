@@ -120,6 +120,8 @@ type
     List: TListeAc;
     Tip: TcxImageComboBox;
     K1: TMenuItem;
+    GridGelislerColumn1: TcxGridDBBandedColumn;
+    H3: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxButtonCClick(Sender: TObject);
@@ -566,7 +568,7 @@ begin
    sql := 'exec sp_HastaGelisKaydet ' +
           '@dosyaNo = ' + #39 + dosyaNo.Text + #39 + ',' +
           '@gelisNo = 0 ,' +
-          '@BHDAT = ' + #39 + tarihal(_Tarih_) + #39 + ',' +
+          '@BHDAT = ' + QuotedStr(FormatDateTime('YYYYMMDD',_Tarih_)) + ',' +
           '@doktor = ' + QuotedStr(datalar.GelisDuzenleRecordK.doktor)+ ',' +
           '@SERVIS = ' + QuotedStr(datalar.GelisDuzenleRecordK.BransKodu) + ',' +
           '@TEDAVITURU = ' + QuotedStr(datalar.GelisDuzenleRecordK.TedaviTuru) + ',' +
@@ -836,15 +838,19 @@ function TfrmHastaKart.TakipSil;
 var
   sql : string;
 begin
+        if MrYES = ShowMessageSkin('Takip Silinecek Eminmisiniz?','','','msg')
+        then begin
           DurumGoster();
-          Application.ProcessMessages;
+          try
+            TakipSil_3(_TakipNo_);
 
+            cxGridGelis.Dataset.Requery();
+            cxGridGelis.Dataset.Next;
 
-          TakipSil_3(_TakipNo_);
-
-          cxGridGelis.Dataset.Requery();
-          cxGridGelis.Dataset.Next;
-          DurumGoster(False);
+          finally
+            DurumGoster(False)
+          end;
+        end;
 end;
 
 procedure TfrmHastaKart.FotoNewRecord;
@@ -866,7 +872,7 @@ end;
 
 procedure TfrmHastaKart.FotoEkle(islem : string = 'Ekle');
 var
- Fo : TFileOpenDialog;
+ Fo : TOpenDialog;
  filename,dosyaNo ,dosyaTip : string;
  jp : TJPEGImage;
  image : TcxImage;
@@ -894,8 +900,9 @@ begin
   else
   if islem = 'Ekle'
   then begin
-      Fo := TFileOpenDialog.Create(nil);
+      Fo := TOpenDialog.Create(nil);
       try
+        Fo.Filter := 'Jpeg Dosyalarý (*.jpg)|*.jpg';
         if not fo.Execute then Exit;
         filename := fo.FileName;
         dosyaTip := ExtractFileExt(filename);
@@ -1013,7 +1020,18 @@ begin
         except
         end;
        end;
-   end;
+  end;
+
+
+  if TcxImageComboBox(FindComponent('PasifSebeb')).EditValue = 5
+  Then begin
+    Disabled(self,True);
+    _pasifSebeb_ := 5;
+    PopupMenuEnabled(Self,PopupMenu1,False);
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+  end;
+
+
 end;
 
 procedure TfrmHastaKart.cxEditEnter(Sender: TObject);
@@ -1044,6 +1062,10 @@ begin
   if cxGridGelis.Dataset.Active
   Then begin
     _gelisNo_ := cxGridGelis.Dataset.FieldByName('gelisNo').AsString;
+    _TedaviTuru_ := cxGridGelis.Dataset.FieldByName('TEDAVITURU').AsString;
+    _TakipNo_ := cxGridGelis.Dataset.FieldByName('TakipNo').AsString;
+    _BasvuruNo_ := cxGridGelis.Dataset.FieldByName('basvuruNo').AsString;
+
     if _gelisNO_ <> ''
     then  begin
       _gelisNo_ := ifThen(_gelisNo_ = '','0',_gelisNo_);
@@ -1067,6 +1089,7 @@ procedure TfrmHastaKart.cxTextEditBKeyDown(Sender: TObject; var Key: Word;
 begin
    inherited;
    cxButtonEditPropertiesButtonClick(TcxButtonEditKadir(sender),-1);
+
 end;
 
 procedure TfrmHastaKart.cxTextEditKeyDown(Sender: TObject; var Key: Word;
@@ -1182,6 +1205,8 @@ begin
   end;
 
 
+
+
 end;
 
 
@@ -1202,6 +1227,7 @@ var
   Subeler,sirketlerx: TcxImageComboKadir;
 
 begin
+ _SaveKontrol := True;
   USER_ID.Tag := 0;
   //sirketKod.Tag := 0;
   PopupMenu1.Images := datalar.imag24png;
@@ -1265,8 +1291,8 @@ begin
   VatandasTip.Conn := datalar.ADOConnection2;
   VatandasTip.TableName := 'SKRS_HASTATIPI';
   VatandasTip.DisplayField := 'ADI';
-  VatandasTip.ValueField := 'Entegrasyon_Kodu';
-  VatandasTip.Filter := '';
+  VatandasTip.ValueField := 'Kodu';
+  VatandasTip.Filter := 'AKTIF = 1';
   setDataStringKontrol(self,VatandasTip, 'VatandasTip','Vatandaþ Tipi  ',Kolon1,'',100);
 
   UYRUK := ListeAcCreate('SKRS_ULKE_KODLARI','KODU,ADI','Kod,Ülke Adi',
@@ -1304,8 +1330,8 @@ begin
   setDataString(self,'SicilNo','Sigorta No',Kolon2,'',120);
   setDataStringBLabel(self,'BosSatir1',Kolon2,'',10);
 
-  setDataString(self,'EV_TEL1','Mobil Tel',Kolon2,'',120);
-  setDataString(self,'EV_TEL2','Sabit Tel',Kolon2,'',120);
+  setDataString(self,'EV_TEL1','Mobil Tel',Kolon2,'',120,False,'',False,1,'',ecNormal,'!\(599\)000-00-00;1;_');
+  setDataString(self,'EV_TEL2','Sabit Tel',Kolon2,'',120,False,'',False,1,'',ecNormal,'!\(999\)000-00-00;1;_');
 
 
   EV_SEHIR := TcxImageComboKadir.Create(self);
@@ -1407,7 +1433,7 @@ begin
   Sirketlerx.ValueField := 'SirketKod';
   Sirketlerx.DisplayField := 'Tanimi';
   Sirketlerx.BosOlamaz := False;
-  Sirketlerx.Filter := '';
+  Sirketlerx.Filter := ' FirmaTip = 1';
   Sirketlerx.EditValue := datalar.AktifSirket;
   Sirketlerx.ItemIndex := -1;
   setDataStringKontrol(self,sirketlerx,'SirketKod','',Kolon4,'',160,0,alNone,'');
@@ -1447,6 +1473,7 @@ begin
   setDataStringKontrol(self,ilkTaniTarihi, 'ilkTaniTarihi','Ýlk Taný Tarihi',Sayfa2_Kolon1,'',100);
 
   BASLANGIC := TcxDateEditKadir.Create(self);
+  BASLANGIC.ValueTip := tvDate;
   setDataStringKontrol(self,BASLANGIC, 'BASLANGIC','Ýlk Diyaliz Tarihi',Sayfa2_Kolon1,'',100);
 
   merkezdeBaslangic := TcxDateEditKadir.Create(self);
@@ -1529,7 +1556,7 @@ begin
 procedure TfrmHastaKart.FormShow(Sender: TObject);
 begin
   inherited;
-  //
+//
 end;
 
 procedure TfrmHastaKart.seansGunleriPropertiesEditValueChanged(Sender: TObject);
@@ -1542,10 +1569,32 @@ begin
 end;
 
 procedure TfrmHastaKart.cxKaydetClick(Sender: TObject);
+var
+ Ceptel,Evtel : string;
 begin
   case TControl(sender).Tag  of
-    0 :begin
+Kaydet :begin
          if TcxTextEdit(FindComponent('dosyaNo')).Text = '' then exit;
+
+         Ceptel := varToStr(TcxCustomEdit(FindComponent('EV_TEL1')).EditValue);
+         Ceptel := trim(StringReplace(StringReplace(StringReplace(Ceptel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+         Evtel := varToStr(TcxCustomEdit(FindComponent('EV_TEL2')).EditValue);
+         Evtel := trim(StringReplace(StringReplace(StringReplace(Evtel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+
+         if (Length(Ceptel) > 0) and (Length(Ceptel) < 10)
+         then begin
+           ShowMessageSkin('Mobil Tel Hatalý','','','info');
+           TcxCustomEdit(FindComponent('EV_TEL1')).SetFocus;
+           exit;
+         end;
+
+         if (Length(Evtel) > 0) and (Length(Evtel) < 10)
+         then begin
+           ShowMessageSkin('Sabit Tel Hatalý','','','info');
+           TcxCustomEdit(FindComponent('EV_TEL2')).SetFocus;
+           exit;
+         end;
+
 
     (*
         if StrToint(VarToStr(TcxImageComboKadir(FindComponent('VatandasTip')).EditValue)) in [0,1]
@@ -1688,18 +1737,19 @@ begin
   inherited;
   if datalar.KontrolUserSet = True then exit;
 
-
   try
     GirisFormRecord.F_dosyaNo_ := dosyaNo.Text;
     GirisFormRecord.F_gelisNo_ := cxGridGelis.Dataset.FieldByName('gelisNo').AsString;
     GirisFormRecord.F_GelisSIRANO := cxGridGelis.Dataset.FieldByName('SIRANO').AsString;
     GirisFormRecord.F_MuayeneProtokolNo_ := cxGridGelis.Dataset.FieldByName('PROTOKOLNO').AsString;
-    GirisFormRecord.F_provizyonTarihi_ := NoktasizTarih(cxGridGelis.Dataset.FieldByName('Tarih').AsString);
+    GirisFormRecord.F_provizyonTarihi_ := FormatDateTime('YYYYMMDD', cxGridGelis.Dataset.FieldByName('Tarih').AsDateTime);
     GirisFormRecord.F_TC_ := sqlRun.FieldByName('TCKimlikNo').AsString;
     GirisFormRecord.F_Doktor_ := cxGridGelis.Dataset.FieldByName('doktor').AsString;
     GirisFormRecord.F_SigortaliTur_ := '';
     GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
-    GirisFormRecord.F_mobilTel_ := vartoStr(TcxTextEdit(FindComponent('EV_TEL1')).Text);
+    GirisFormRecord.F_mobilTel_ :=
+       trim(StringReplace(StringReplace(StringReplace(vartoStr(TcxTextEdit(FindComponent('EV_TEL1')).Text),'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+
     GirisFormRecord.F_firmaKod_ := TcxImageComboKadir(FindComponent('SirketKod')).EditValue;
     GirisFormRecord.F_Yupass_ := cxGridGelis.Dataset.FieldByName('Yupass').AsString;
     GirisFormRecord.F_DevKurum_ := varToStr(TcxImageComboKadir(FindComponent('kurumTip')).EditValue);
@@ -1713,6 +1763,7 @@ begin
     GirisFormRecord.F_SeansSira_ := '';
     GirisFormRecord.F_sysTakipNo := cxGridGelis.Dataset.FieldByName('sysTakipNo').AsString;
     GirisFormRecord.F_firmaKod_ := DATALAR.AktifSirket;
+    GirisFormRecord.F_PasifSebeb_ := sqlRun.FieldByName('PasifSebeb').AsString;
 
     GirisFormRecord.F_SeansBilgi.DiyalizorCinsi := sqlRun.FieldByName('DiyalizorCinsi').AsString;
     GirisFormRecord.F_SeansBilgi.DiyalizorTipi := sqlRun.FieldByName('DiyalizorTipi').AsString;
@@ -1728,6 +1779,8 @@ begin
     GirisFormRecord.F_SeansBilgi.Diyalizat := sqlRun.FieldByName('D').AsString;
     GirisFormRecord.F_SeansBilgi.Diyalizor := sqlRun.FieldByName('Diyalizor').AsString;
     GirisFormRecord.F_SeansBilgi.Kilo := sqlRun.FieldByName('IdealKilo').AsString;
+    GirisFormRecord.F_SeansBilgi.yas := cxGridGelis.Dataset.FieldByName('Yas').AsString;
+
 
 
     _TakipNo_ := cxGridGelis.Dataset.FieldByName('TakipNo').AsString;
@@ -1854,8 +1907,9 @@ begin
        end;
 
  -28 : begin
-         tel := dosyaNoHastaTel(_dosyaNO_,TcxTextEdit(FindComponent('EV_TEL1')).Text);
-         SMSSend(tel,msj,_HastaAdSoyad_);
+          tel := dosyaNoHastaTel(_dosyaNO_,TcxTextEdit(FindComponent('EV_TEL1')).Text);
+          tel := trim(StringReplace(StringReplace(StringReplace(tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+          SMSSend(tel,msj,_HastaAdSoyad_);
        end;
  -29 : begin
             F := FormINIT(TagfrmRaporDetay,GirisFormRecord,ikEvet,'');
@@ -1913,6 +1967,12 @@ begin
           if F <> nil then F.ShowModal;
        end;
 
+ -39 : begin
+          datasetiDoldur(_TakipNo_,_TedaviTuru_, _BasvuruNo_,TopluDataset);
+          PrintYap('014','Hizmet Detay','',TopluDataset,kadirType.pTNone);
+       end;
+
+
  -50 : begin
           FotoEkle(TControl(sender).hint);
        end;
@@ -1954,7 +2014,7 @@ begin
                                   ' join HastaKart H on H.dosyaNO = g.dosyaNo ' +
                                   ' where h.dosyaNO = ' + QuotedStr(dosyaNo.EditText) +
                                   ' order by g.gelisNo ');
-         PrintYap('DEV','Dýþ Evraklar','',TopluDataset,kadirType.pTOnIzle);
+         PrintYap('DEV','Dýþ Evraklar','',TopluDataset,kadirType.pTNone);
 
        end;
 

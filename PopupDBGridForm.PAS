@@ -21,7 +21,7 @@ uses
   cxGridDBBandedTableView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, cxLabel, cxCheckBox,
   cxImageComboBox, cxMemo,adoDb,cxDBLookupComboBox,cxButtonEdit, cxRichEdit,
-  Vcl.DBCtrls, cxDBRichEdit;
+  Vcl.DBCtrls, cxDBRichEdit, cxCheckListBox;
 
 type
   TfrmPopupDBGridForm = class(TGirisForm)
@@ -66,6 +66,10 @@ type
     S1: TMenuItem;
     GrpAciklamaText: TcxGroupBox;
     txtAciklamaText: TcxMemo;
+    pnlEpikrizAyar: TcxGroupBox;
+    txtSeansSikayet: TcxCheckListBox;
+    btnMedulaEpikrizAyarKaydet: TcxButton;
+    txtAltTable: TcxImageComboKadir;
     procedure FormCreate(Sender: TObject);
     procedure txtMsgEnter(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -86,7 +90,12 @@ type
     procedure DataRead(_record_ : Pointer);
     procedure GridColumnAllReadOnly;
     procedure DBGridDblClick(Sender: TObject);
-
+    procedure BeforePost(DataSet: TDataSet);
+    procedure NewRecord(DataSet: TDataSet);
+    procedure btnMedulaEpikrizAyarKaydetClick(Sender: TObject);
+    function gelisSikayetSecili(c : TcxCheckListBox) : string;
+    procedure gelisSikayetSec(cL : TcxCheckListBox ; c : string);
+    procedure txtAltTablePropertiesChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -111,6 +120,50 @@ implementation
 uses message, data_modul , anaUnit;
 
 {$R *.DFM}
+
+procedure TfrmPopupDBGridForm.gelisSikayetSec(cL : TcxCheckListBox ; c : string);
+var
+  r : integer;
+  _r_ : string;
+begin
+    for r := 0 to cL.Items.Count - 1 do
+    begin
+       cL.Items[r].Checked := False;
+    end;
+
+    for r := 1 to length(c) do
+    begin
+       _r_ := c[r];
+       _r_ := StringReplace(_r_,'A','10',[rfReplaceAll]);
+       _r_ := StringReplace(_r_,'B','11',[rfReplaceAll]);
+       cL.Items[strtoint(_r_)].Checked := True;
+    end;
+
+end;
+
+
+function TfrmPopupDBGridForm.gelisSikayetSecili(c : TcxCheckListBox) : string;
+const
+   A = 10; B = 11;
+var
+  r : integer;
+  cs ,_r_: string;
+begin
+    for r := 0 to c.Items.Count - 1 do
+    begin
+       case r of
+          0..9 : begin _r_ := inttostr(r); end;
+          10 : begin _r_ := 'A'; end;
+          11 : begin _r_ := 'B'; end;
+          else _r_ := '';
+       end;
+
+       if c.Items[r].Checked then cs := cs + _r_;
+    end;
+
+    result := cs;
+
+end;
 
 procedure TfrmPopupDBGridForm.GridColumnAllReadOnly;
 var
@@ -153,6 +206,17 @@ begin
        end;
    end;
 
+
+
+end;
+
+procedure TfrmPopupDBGridForm.btnMedulaEpikrizAyarKaydetClick(Sender: TObject);
+var
+  sql : string;
+begin
+  sql := 'update parametreler set SLVV = ' + QuotedStr(gelisSikayetSecili(txtSeansSikayet)) +
+         ' where SLK = ''EA'' and SLB = ''00''';
+  datalar.QueryExec(sql);
 
 
 end;
@@ -433,6 +497,77 @@ begin
       Result := True;
     end;
 
+    TagfrmMadulaEpiktizTanim
+                     :
+                 begin
+                    ClientWidth := 400;
+                    txtTable.Conn := Datalar.ADOConnection2;
+                    txtTable.TableName := 'PopupDBGridFormTabloTanim';
+                    txtTable.ValueField := 'id';
+                    txtTable.DisplayField := 'tanimi';
+                    OrtakEventAta(txtTable);
+                    indexFieldName := '1=1';
+                    cxPanel.Visible := false;
+                    cxPanelBottom.Visible := False;
+                    txtTable.Enabled := True;
+                    txtTable.Visible := True;
+                    txtTable.Filter := ' aktif = 1 and id in (38)';
+                    SayfaCaption('','','','','');
+                    Result := True;
+
+                 end;
+
+TagfrmCalisanGeriBildirimAnketSoruTanim
+                     :
+                 begin
+                    ClientWidth := 400;
+                    txtTable.Conn := Datalar.ADOConnection2;
+                    txtTable.TableName := 'PopupDBGridFormTabloTanim';
+                    txtTable.ValueField := 'id';
+                    txtTable.DisplayField := 'tanimi';
+                    OrtakEventAta(txtTable);
+                    indexFieldName := '1=1';
+                    cxPanel.Visible := false;
+                    txtTable.Enabled := True;
+                    txtTable.Visible := True;
+                    txtTable.Filter := ' aktif = 1 and id in (37)';
+                    SayfaCaption('','','','','');
+                    Result := True;
+                 end;
+
+TagfrmSahaSaglikGozetimTanim
+                     :
+                 begin
+                    txtTable.Conn := Datalar.ADOConnection2;
+                    txtTable.TableName := 'PopupDBGridFormTabloTanim';
+                    txtTable.ValueField := 'id';
+                    txtTable.DisplayField := 'tanimi';
+                    OrtakEventAta(txtTable);
+                    indexFieldName := '1=1';
+                    cxPanel.Visible := false;
+                    txtTable.Enabled := True;
+                    txtTable.Visible := True;
+                    txtTable.Filter := ' aktif = 1 and id in (9,10,11)';
+                    SayfaCaption('','','','','');
+                    Result := True;
+                 end;
+TagfrmISGKurulToplantiTanim
+                     :
+                 begin
+                    ClientWidth := 400;
+                    txtTable.Conn := Datalar.ADOConnection2;
+                    txtTable.TableName := 'PopupDBGridFormTabloTanim';
+                    txtTable.ValueField := 'id';
+                    txtTable.DisplayField := 'tanimi';
+                    OrtakEventAta(txtTable);
+                    indexFieldName := '1=1';
+                    cxPanel.Visible := false;
+                    txtTable.Enabled := True;
+                    txtTable.Visible := True;
+                    txtTable.Filter := ' aktif = 1 and id in (35,36)';
+                    SayfaCaption('','','','','');
+                    Result := True;
+                 end;
   TagfrmEkipmanTuru  :
                  begin
                    cxPanel.Visible := false;
@@ -653,6 +788,7 @@ begin
               DBgrid.Columns[i].Properties.Alignment.Horz := taRightJustify;
               TcxCurrencyEditProperties(DBgrid.Columns[i].Properties).DisplayFormat := '#';
              // DBgrid.Columns[i].Width := DBgrid.Columns[i].BestFitMaxWidth;
+             DBgrid.Columns[i].Width := 40;
              end;
             if SameText (Tips[i], 'intF') then
              begin
@@ -660,6 +796,7 @@ begin
               DBgrid.Columns[i].Properties.Alignment.Horz := taRightJustify;
               TcxCurrencyEditProperties(DBgrid.Columns[i].Properties).DisplayFormat := '#,###.##';
              // DBgrid.Columns[i].Width := DBgrid.Columns[i].BestFitMaxWidth;
+             DBgrid.Columns[i].Width := 40;
              end;
             if SameText (Tips[i], 'string') then
              begin
@@ -667,6 +804,7 @@ begin
               TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Vert := taVCenter;
            //   TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Horz := taCenter;
             //  DBgrid.Columns[i].Width := DBgrid.Columns[i].BestFitMaxWidth;
+             DBgrid.Columns[i].Width := 100;
              end;
             if Pos('maskEdit',Tips[i]) > 0 then
              begin
@@ -677,7 +815,7 @@ begin
               MaskEdit := StringReplace(MaskEdit,'-',' ',[rfReplaceAll]);
 
               TcxMaskEditProperties(DBgrid.Columns[i].Properties).EditMask := MaskEdit;
-
+              DBgrid.Columns[i].Width := 100;
            //   TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Horz := taCenter;
             //  DBgrid.Columns[i].Width := DBgrid.Columns[i].BestFitMaxWidth;
              end;
@@ -686,18 +824,19 @@ begin
               DBgrid.Columns[i].PropertiesClassName := 'TcxRichEditProperties';
           //    TcxRichEditProperties(DBgrid.Columns[i].Properties).PlainText := True;
         //      TcxRichEditProperties(DBgrid.Columns[i].Properties).StreamModes := [resmPlainRtf];
-              DBgrid.Columns[i].Width := 200;
+              DBgrid.Columns[i].Width := 350;
               TcxRichEditProperties(DBgrid.Columns[i].Properties).VisibleLineCount := 4;
               TcxRichEditProperties(DBgrid.Columns[i].Properties).ScrollBars := ssBoth;
               //TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Vert := taVCenter;
            //   TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Horz := taCenter;
-              DBgrid.Columns[i].BestFitMaxWidth := 400;
+           //   DBgrid.Columns[i].BestFitMaxWidth := 400;
              end;
             if SameText (Tips[i], 'Check') then
              begin
               DBgrid.Columns[i].PropertiesClassName := 'TcxCheckBoxProperties';
               TcxCheckBoxProperties(DBgrid.Columns[i].Properties).ValueChecked := 1;
               TcxCheckBoxProperties(DBgrid.Columns[i].Properties).ValueUnchecked := 0;
+              DBgrid.Columns[i].Width := 70;
              end;
 
             if SameText (Tips[i], 'CheckBit') then
@@ -710,6 +849,7 @@ begin
             if SameText (Tips[i], 'saat') then
              begin
               DBgrid.Columns[i].PropertiesClassName := 'TcxDateEditProperties';
+              DBgrid.Columns[i].Width := 70;
              end;
 
             if SameText (Tips[i], 'ButtonEdit') then
@@ -727,7 +867,7 @@ begin
                 DBgrid.Columns[i].Properties.Alignment.Horz := taLeftJustify;
                 DBgrid.Columns[i].Properties.OnEditValueChanged := PropertiesEditValueChanged;
                 TcxImageComboBoxProperties(DBgrid.Columns[i].Properties).ClearKey := VK_DELETE;
-
+                DBgrid.Columns[i].Width := 150;
                 ado := TADOQuery.Create(nil);
                 ado.Connection := datalar.ADOConnection2;
                 try
@@ -829,11 +969,13 @@ begin
 
              end;
 
+           (*
             if SameText (Tips[i], 'memo')
             then
               DBgrid.Columns[i].Width := 200
              else
-              DBgrid.Columns[i].Width := 70;
+              DBgrid.Columns[i].Width := 100;
+             *)
 
           end;
          // DBGrid.Columns[0].Visible := false;
@@ -852,7 +994,8 @@ begin
     Columns.Free;
     ReadOnly.Free;
   end;
-  DBgrid.ApplyBestFit;
+
+ // DBgrid.ApplyBestFit;
   colswidth := 0;
 
   for i := 0 to DBgrid.ColumnCount - 1 do
@@ -867,10 +1010,41 @@ begin
 
 end;
 
+procedure TfrmPopupDBGridForm.BeforePost(DataSet: TDataSet);
+begin
+  inherited;
+
+   if (txtTable.EditValue = '10') or
+      (txtTable.EditValue = '11')
+   then begin
+      Dataset.FieldByName('GozlemGrup').AsString := varToStr(txtAltTable.EditValue);
+   end;
+
+   if txtTable.Text = 'Makinalar'
+   then begin
+      Dataset.FieldByName('sirketKod').AsString := datalar.AktifSirket;
+   end;
+
+
+
+
+end;
+
+procedure TfrmPopupDBGridForm.NewRecord(DataSet: TDataSet);
+begin
+  inherited;
+//
+
+
+end;
+
+
 procedure TfrmPopupDBGridForm.Yukle;
 begin
   inherited;
   DBGrid.DataController.DataSource.DataSet := sqlRun;
+  DBGrid.DataController.DataSource.DataSet.BeforePost := BeforePost;
+  DBGrid.DataController.DataSource.DataSet.OnNewRecord := NewRecord;
   DBGrid.DataController.GridView.ClearItems;
   DBGrid.DataController.CreateAllItems(True);
   SetGrid;
@@ -897,6 +1071,37 @@ begin
   ClientWidth := formGenislik;
 end;
 
+procedure TfrmPopupDBGridForm.txtAltTablePropertiesChange(Sender: TObject);
+begin
+  inherited;
+  if txtTable.EditValue = '10'
+  then begin
+    TableName := 'SahaGozlemSoruAltGrup';
+    indexFieldName := ' GozlemGrup = ' + QuotedStr(varToStr(txtAltTable.EditValue));
+    _fields_ := 'GozlemGrup,GozlemAltGrup,Tanimi,Sira';
+    _fieldBaslik_ := 'Grup,Alt Grup Kodu,Tanimi,Sira';
+    _fieldTips_ := 'IC,int,string,int';
+    _ICParams_ :=  'SahaGozlemSoruGrup,GozlemGrup,Tanimi;0;0;0';
+    _fieldReadOnly_  := '0,1,1,1';
+  end;
+
+   if txtTable.EditValue = '11'
+  then begin
+    TableName := 'SahaGozlemSorular';
+    indexFieldName := ' GozlemGrup = ' + QuotedStr(varTostr(txtAltTable.EditValue));
+    _fields_ := 'GozlemGrup,GozlemAltGrup,Konu,Sira';
+    _fieldBaslik_ := 'Grup,Alt Grup Kod,Gözlem Tanimi,Sira';
+    _fieldTips_ := 'IC,IC,string,int';
+    _ICParams_ :=  'SahaGozlemSoruGrup,GozlemGrup,Tanimi;SahaGozlemSoruAltGrup,GozlemAltGrup,Tanimi,GozlemGrup='+ QuotedStr(varTostr(txtAltTable.EditValue))  + ';0;0';
+    _fieldReadOnly_  := '0,1,1,1';
+  end;
+
+
+
+  Yukle;
+
+end;
+
 procedure TfrmPopupDBGridForm.txtMsgEnter(Sender: TObject);
 begin
  //perform(wm_nextdlgctl,0,0);
@@ -909,6 +1114,25 @@ var
   sql : string;
 begin
   inherited;
+
+  if txtTable.EditValue = 38
+  then begin
+    pnlEpikrizAyar.Visible := True;
+    cxGrid3.Visible := False;
+    pnlEpikrizAyar.Visible := True;
+    sql := 'select SLVV from parametreler where slk = ''EA'' and SLB = ''00''';
+    datalar.QuerySelect(sql);
+    gelisSikayetSec(txtSeansSikayet,datalar.QuerySelect(sql).Fields[0].asstring);
+    exit;
+  end
+  else
+  begin
+    pnlEpikrizAyar.Visible := False;
+    cxGrid3.Visible := True;
+  end;
+
+
+
    GrpAciklamaText.Visible := False;
    ado := TADOQuery.Create(nil);
   try
@@ -918,6 +1142,7 @@ begin
     datalar.QuerySelect(ado,sql);
 
     TableName := ado.FieldByName('tableName').AsString;
+    indexFieldName := ' 1=1';
     _fields_ := ado.FieldByName('_fields_').AsString;
     _fieldBaslik_ := ado.FieldByName('_fieldBaslik_').AsString;
     _fieldTips_ := ado.FieldByName('_fieldTips_').AsString;
@@ -925,6 +1150,21 @@ begin
     _fieldReadOnly_  := ado.FieldByName('_fieldReadOnly_').AsString;
 
 
+    if (txtTable.EditValue = '10') or
+       (txtTable.EditValue = '11')
+    then begin
+           txtAltTable.Visible := True;
+           txtAltTable.Conn := datalar.ADOConnection2;
+           txtAltTable.TableName := 'SahaGozlemSoruGrup';
+           txtAltTable.ValueField := 'GozlemGrup';
+           txtAltTable.DisplayField := 'Tanimi';
+           txtAltTable.Filter := '';
+           txtAltTable.Clear;
+           sqlRun.Active := False;
+           exit;
+    end
+    else
+      txtAltTable.Visible := False;
 
     Yukle;
 
@@ -972,13 +1212,17 @@ end;
 procedure TfrmPopupDBGridForm.FormShow(Sender: TObject);
 begin
   inherited;
-  btnYes.Visible := True;
-  btnYes.Caption := '&Tamam';
-  btnIptal.Visible := True;
-  btnIptal.Caption := '&Vazgeç';
-  btnIptal.TabOrder := 0;
-  btnYes.TabOrder := 1;
-  btnIptal.SetFocus;
+
+  if cxPanelBottom.Visible = True
+  then begin
+    btnYes.Visible := True;
+    btnYes.Caption := '&Tamam';
+    btnIptal.Visible := True;
+    btnIptal.Caption := '&Vazgeç';
+    btnIptal.TabOrder := 0;
+    btnYes.TabOrder := 1;
+    btnIptal.SetFocus;
+    end;
 end;
 
 procedure TfrmPopupDBGridForm.FormActivate(Sender: TObject);

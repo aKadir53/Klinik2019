@@ -90,6 +90,54 @@ type
     SatirlarTakipSuresi: TcxGridDBBandedColumn;
     SatirlarKapamaOnayi: TcxGridDBBandedColumn;
     i1: TMenuItem;
+    DofList: TcxGridKadir;
+    cxGridDBTableView2: TcxGridDBTableView;
+    cxGridDBColumn23: TcxGridDBColumn;
+    cxGridDBColumn24: TcxGridDBColumn;
+    cxGridDBColumn25: TcxGridDBColumn;
+    cxGridDBColumn26: TcxGridDBColumn;
+    cxGridDBColumn27: TcxGridDBColumn;
+    cxGridDBColumn28: TcxGridDBColumn;
+    cxGridDBColumn29: TcxGridDBColumn;
+    cxGridDBColumn30: TcxGridDBColumn;
+    cxGridDBColumn31: TcxGridDBColumn;
+    cxGridDBColumn32: TcxGridDBColumn;
+    cxGridDBColumn33: TcxGridDBColumn;
+    cxGridDBColumn34: TcxGridDBColumn;
+    cxGridDBColumn35: TcxGridDBColumn;
+    cxGridDBColumn36: TcxGridDBColumn;
+    cxGridDBColumn37: TcxGridDBColumn;
+    cxGridDBColumn38: TcxGridDBColumn;
+    cxGridDBColumn39: TcxGridDBColumn;
+    cxGridDBColumn40: TcxGridDBColumn;
+    cxGridDBColumn41: TcxGridDBColumn;
+    cxGridDBColumn42: TcxGridDBColumn;
+    cxGridDBColumn43: TcxGridDBColumn;
+    cxGridDBColumn44: TcxGridDBColumn;
+    cxGridDBBandedTableView2: TcxGridDBBandedTableView;
+    DofListesi: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn1: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn2: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn3: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn4: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn5: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn6: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn7: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn8: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn9: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn10: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn11: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn12: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn13: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn14: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn15: TcxGridDBBandedColumn;
+    cxGridLevel1: TcxGridLevel;
+    D1: TMenuItem;
+    D2: TMenuItem;
+    DofListesiColumn1: TcxGridDBBandedColumn;
+    DofListesiColumn2: TcxGridDBBandedColumn;
+    DofListesiColumn3: TcxGridDBBandedColumn;
+    DofListesiColumn4: TcxGridDBBandedColumn;
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -119,6 +167,8 @@ type
       var ADone: Boolean);
     procedure RDSSatirlarNavigatorButtonsButtonClick(Sender: TObject;
       AButtonIndex: Integer; var ADone: Boolean);
+    procedure SayfalarChange(Sender: TObject);
+
     procedure SirketlerPropertiesChange(Sender: TObject);
     procedure SatirSil(rowid : string);
  //   function EArsivGonder(FaturaId : string) : string;
@@ -169,6 +219,32 @@ var
 begin
   sql := 'delete from SirketSahaGozetimDetay where id = ' + QuotedStr(rowid);
   datalar.QueryExec(sql);
+end;
+
+procedure TfrmSirketSahaGozetim.SayfalarChange(Sender: TObject);
+begin
+//
+    if Sayfalar.ActivePageIndex = 1
+    then begin
+      cxPanel.Visible := False;
+      e3.Visible := False;
+      i1.Visible := False;
+      B1.Visible := False;
+      D2.Visible := False;
+    end
+    else
+    begin
+      cxPanel.Visible := True;
+      e3.Visible := True;
+      i1.Visible := True;
+      B1.Visible := True;
+      D2.Visible := True;
+
+    end;
+    Menu := PopupMenu1;
+    PopupMenuToToolBar(self,ToolBar1,Menu);
+
+
 end;
 
 procedure TfrmSirketSahaGozetim.SirketlerPropertiesChange(Sender: TObject);
@@ -610,6 +686,13 @@ begin
 
           PrintYap('DOF','Duzeltici Önleyici Faliyet','',TopluDataset);
         end;
+  -21 : begin
+          TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+           TopluDataset.Dataset1 := datalar.ADO_aktifSirket;
+          TopluDataset.Dataset2 := DofList.Dataset;
+
+          PrintYap('DTL','Duzeltici Takip List','',TopluDataset);
+        end;
   -30 : begin
           FB := FirmaBilgileri(vartostr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue));
           cxExceleGonder(SahaGozetimGrid,'DOF.xls');
@@ -645,9 +728,24 @@ var
   GirisRecord : TGirisFormRecord;
   F : TGirisForm;
 begin
-    F := FormINIT(9010,GirisRecord,ikHayir,'');
-    if F <> nil then F.ShowModal;
+
+    if TcxButtonKadir(sender).tag = -21
+    Then begin
+      datalar.QuerySelect(DofList.Dataset,
+                          'select * from DOF_Takip_Listesi_View  ' +
+                          ' where sirketKod = ' + QuotedStr(datalar.aktifSirket) +
+                          ' and date_create between ' + TcxDateEditKadir(FindComponent('Tarih1')).GetSQLValue  +
+                          ' and ' + TcxDateEditKadir(FindComponent('Tarih2')).GetSQLValue
+                          );
+
+    end;
+
+ //   F := FormINIT(9010,GirisRecord,ikHayir,'');
+  //  if F <> nil then F.ShowModal;
+
+
 end;
+
 
 
 procedure TfrmSirketSahaGozetim.FormCreate(Sender: TObject);
@@ -699,7 +797,7 @@ begin
   sirketlerx.ValueField := 'SirketKod';
   sirketlerx.DisplayField := 'Tanimi';
   sirketlerx.BosOlamaz := False;
-  sirketlerx.Filter := datalar.sirketlerUserFilter;
+  sirketlerx.Filter := ' firmaTip = 1';
   setDataStringKontrol(self,sirketlerx,'SirketKod','Þirket',Kolon1,'trh',230,0,alNone,'');
   TcxImageComboKadir(FindComponent('SirketKod')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
 
@@ -765,6 +863,21 @@ begin
   SahaGozetimGrid.Dataset.BeforeDelete := BeforeDelete;
 
 
+  FaturaTarihi := TcxDateEditKadir.Create(Self);
+  FaturaTarihi.ValueTip := tvDate;
+  FaturaTarihi.Tag := -1;
+  setDataStringKontrol(self,FaturaTarihi,'Tarih1','Tarih Aralýðý',sayfa2_Kolon1,'trh2',100);
+  FaturaTarihi := TcxDateEditKadir.Create(Self);
+  FaturaTarihi.ValueTip := tvDate;
+  FaturaTarihi.Tag := -1;
+  setDataStringKontrol(self,FaturaTarihi,'Tarih2','',sayfa2_Kolon1,'trh2',100);
+  addButton(self,nil,'btnList','','Listele',sayfa2_Kolon1,'trh2',100,ButtonClick,-21);
+
+
+  setDataStringKontrol(self,DofList,'DofList','',sayfa2_Kolon1,'',1,1,alClient);
+
+
+
 
   kolon2.Visible := false;
   kolon3.Visible := false;
@@ -772,7 +885,7 @@ begin
 
 
   //GridFaturalar.DataController.DataSource := DataSource;
-  SayfaCaption('','','','','');
+  SayfaCaption('Döf','Döf Takip Listesi','','','');
   Disabled(self,True);
 end;
 

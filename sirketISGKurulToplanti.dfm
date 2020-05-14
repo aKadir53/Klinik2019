@@ -47,7 +47,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
       OptionsView.GroupByHeaderLayout = ghlHorizontal
       Bands = <
         item
-          Caption = 'Kurul Ekibi'
+          Caption = 'Komite Ekibi'
           Styles.Header = cxStyle8
           Width = 388
         end>
@@ -104,7 +104,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
   object KurulMaddeler: TcxGridKadir
     Left = 32
     Top = 304
-    Width = 540
+    Width = 777
     Height = 169
     TabOrder = 1
     ExceleGonder = False
@@ -286,10 +286,10 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
       OptionsView.GroupByBox = False
       Bands = <
         item
-          Caption = 'Kurul Toplant'#305' G'#252'ndem Maddeleri  , Karar ve Aksiyonlar'
+          Caption = 'Komite Toplant'#305' G'#252'ndem Maddeleri  , Karar ve Aksiyonlar'
           FixedKind = fkLeft
           Styles.Header = cxStyle8
-          Width = 530
+          Width = 460
         end>
       object SatirlarColumn1: TcxGridDBBandedColumn
         Caption = 'Sira No'
@@ -297,7 +297,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.ReadOnly = True
         HeaderAlignmentHorz = taCenter
-        Width = 50
+        Width = 33
         Position.BandIndex = 0
         Position.ColIndex = 0
         Position.RowIndex = 0
@@ -306,7 +306,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         DataBinding.FieldName = 'Madde'
         PropertiesClassName = 'TcxMemoProperties'
         HeaderAlignmentHorz = taCenter
-        Width = 400
+        Width = 659
         Position.BandIndex = 0
         Position.ColIndex = 1
         Position.RowIndex = 0
@@ -314,6 +314,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
       object SatirlarColumn3: TcxGridDBBandedColumn
         DataBinding.FieldName = 'Aksiyon'
         PropertiesClassName = 'TcxMemoProperties'
+        Visible = False
         HeaderAlignmentHorz = taCenter
         Width = 156
         Position.BandIndex = 0
@@ -413,11 +414,26 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         OnClick = cxButtonCClick
       end
     end
-    object M1: TMenuItem
-      Tag = -30
+    object M2: TMenuItem
       Caption = #304'lgililere Mail'
       ImageIndex = 10
-      OnClick = cxButtonCClick
+      object M1: TMenuItem
+        Tag = -30
+        Caption = #199'a'#287'r'#305' Formu'
+        ImageIndex = 10
+        OnClick = cxButtonCClick
+      end
+      object T2: TMenuItem
+        Tag = -40
+        Caption = 'Toplant'#305' Tutana'#287#305
+        OnClick = cxButtonCClick
+      end
+    end
+    object E2: TMenuItem
+      Tag = -50
+      Caption = 'Komite ve Ekip Tan'#305'mla'
+      ImageIndex = 109
+      OnClick = E2Click
     end
   end
   object tmr1: TTimer

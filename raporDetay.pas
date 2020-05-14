@@ -78,9 +78,11 @@ type
     R3: TMenuItem;
     ListeRaporlarColumn10: TcxGridDBColumn;
     ListeRaporlarColumn11: TcxGridDBColumn;
+    ListeRaporlarColumn12: TcxGridDBColumn;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
+   // procedure TedaviRaporKaydet(dosyaNo , raporNo , turu ,Tip : string);
     procedure DoktorKaydet(raporID : string ; var _rapor : RaporDVO);
     procedure TaniKaydet(raporID : string ; var _rapor : RaporDVO);
     function TaniKaydetIlacTeshisY(_tanilar_ : string ;  data : TADOQuery) : ArrayOf_105704153_699425500_nillable_TaniDVO;
@@ -176,7 +178,7 @@ type
     { Public declarations }
     function Init(Sender: TObject) : Boolean; override;
     procedure RaporuMedulayaKaydet;overload;
-    procedure RaporuMedulayaKaydet(islem : integer);overload;
+    procedure RaporuMedulayaKaydet(islem : integer ; raporTakipNo : string);overload;
   end;
 
 const
@@ -199,10 +201,11 @@ var
    hastaDosyaNo ,hastagelisNo , _tarih_ ,takip: string;
    _don : integer;
    RTanilar , RTeshisler , web , local ,_gelisNo_ : string;
+   raporTakipNo : string;
 
 implementation
 
-uses HastaKart, rapor;
+uses HastaKart, rapor , AnaUnit;
    //  TesisList, HastaTakipleri, TeshisListesi,
    //  EtkinMaddeSutKurali, EtkenMaddeListesi,
    //  diyabetTakipFormu,TaniListesi;
@@ -361,9 +364,9 @@ begin
 
 
       case strtoint(trim(copy(RaporGrid.Dataset.fieldbyname('turu').AsString,1,2))) of
-        10 :  PrintYap('053','\Rapor_ilac',intToStr(TagfrmRaporDetay),TopluSet);  //frmRapor.raporData1(frmRapor.topluset,'116','\Rapor_ilac');
+        10 :  PrintYap('116','\Rapor_ilac',intToStr(TagfrmRaporDetay),TopluSet);  //frmRapor.raporData1(frmRapor.topluset,'116','\Rapor_ilac');
          1 :  begin
-                 PrintYap('053','\Rapor_tedavi',intToStr(TagfrmRaporDetay),TopluSet);
+                 PrintYap('116','\Rapor_tedavi',intToStr(TagfrmRaporDetay),TopluSet);
                  //frmRapor.raporData1(frmRapor.topluset,'053','\Rapor_tedavi')
               end;
        End;
@@ -398,7 +401,7 @@ var
 begin
      if datalar.RaporBilgisi.Turu = '10'
      Then
-       Rp := datalar.RaporBilgisi.raporTakipNo
+       Rp := datalar.RaporBilgisi.raporNo //raporTakipNo
      Else
        Rp := datalar.RaporBilgisi.raporNo;
 
@@ -426,7 +429,9 @@ var
   doktorTc : string;
   ss : PWideChar;
   sql : string;
+  yol , yol1: string;
 begin
+
   url := raporIlacURL;
   sql := 'sp_HastaRaporToXML ' + RaporGrid.Dataset.FieldByName('sira').AsString;
   QuerySelect(sql);
@@ -439,6 +444,7 @@ begin
   doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
   TesisKodu :=  (SelectAdo.FieldByName('tesisKodu').AsInteger);
   cardType :=  SelectAdo.FieldByName('cardType').AsString;
+
 
   dllHandle := LoadLibrary(LIB_DLL);
   try
@@ -454,6 +460,7 @@ begin
       raise Exception.Create(LIB_DLL + ' içersinde RaporImzalaGonder bulunamadý!');
 
   finally
+
     FreeLibrary(dllHandle);
   end;
 end;
@@ -503,7 +510,7 @@ end;
 
   *)
 
-procedure TfrmRaporDetay.RaporuMedulayaKaydet(islem : integer);
+procedure TfrmRaporDetay.RaporuMedulayaKaydet(islem : integer ; raporTakipNo : string);
 var
  // receteCvp : SaglikTesisiReceteIslemleri1.EreceteGirisCevapDVO;
   Sonuc : string;
@@ -515,6 +522,7 @@ begin
 
   case islem of
    RaporMedulaKaydet :  begin
+                           if raporTakipNo <> '' then exit;
                            if LisansKontrol(fark) = True
                            Then Begin
                                DurumGoster(True,False,'Rapor Kayýt Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
@@ -537,6 +545,8 @@ begin
                             ShowMessageSkin('Lütfen Lisans Bilgilerinizi Kontrol Ediniz...','Kalan Lisans Süreniz : ' + floattoStr(fark),'Detaylý Bilgi Ýçin Sistem Yöneticisine Baþvurunuz','info');
                          end;
    RaporMedulaSil   :  begin
+                              if raporTakipNo = '' then exit;
+
                               DurumGoster(True,False,'Rapor Ýptal Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
                               try
                                 Sonuc := RaporIslemGonder(_id_,'imzaliEraporSilBilgisi','','','');
@@ -554,7 +564,8 @@ begin
                               end;
                        end;
    RaporBasHekimOnay : begin
-                               DurumGoster(True,False,'Rapor Onay Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
+                              if raporTakipNo = '' then exit;
+                              DurumGoster(True,False,'Rapor Onay Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
                               try
                                 Sonuc := RaporIslemGonder(_id_,'imzaliEraporBashekimOnayBilgisi','','','');
                                 if Copy(Sonuc,1,4) = '0000'
@@ -571,6 +582,7 @@ begin
                               end;
                        end;
    RaporBasHekimOnayRed : begin
+                              if raporTakipNo = '' then exit;
                               DurumGoster(True,False,'Rapor Onay Red Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
                               try
                                 Sonuc := RaporIslemGonder(_id_,'imzaliEraporBashekimOnayRedBilgisi','','','');
@@ -605,32 +617,10 @@ var
    _exe : PAnsiChar;
    Reg : TRegistry;
 begin
-
-  if RaporGrid.Dataset.FieldByName('raporTuru').AsString = '10'
-  then begin
-      Reg := Tregistry.Create;
-      Reg.RootKey := HKEY_CURRENT_USER;
-      Reg.OpenKey('SOFTWARE\NOKTA\Eimza',True);
-      Oku.Enabled := true;
-      _dn_ := RaporGrid.Dataset.fieldbyname('dosyaNo').AsString;
-      _gn_ := RaporGrid.Dataset.fieldbyname('gelisNo').AsString;
-      _id_ := RaporGrid.Dataset.fieldbyname('sira').AsString;
-      _d_ := RaporGrid.Dataset.FieldByName('kod').AsString;
-      _exe :=  PAnsiChar(AnsiString('C:\NoktaV3\E-imza\imza.exe ' + 'IR' + ' '+ _dn_ + ' ' + _gn_ + ' ' + _id_ + ' ' + _d_  + ' ' + datalar.AktifSirket));
-      WinExec(_exe,SW_SHOW);
-
-
-
-  end
-  else
-  begin
     raporNo := RaporGrid.Dataset.FieldByName('raporNo').AsString;
     dosyaNo := RaporGrid.Dataset.FieldByName('dosyaNo').AsString;
     RaporKaydet(dosyaNo,raporNo,'1','1');
-  end;
-
-
-end;
+ end;
 
 
 
@@ -644,7 +634,7 @@ begin
     Then Begin
        Application.ProcessMessages;
           sql := 'insert into Raporlar (dosyaNo,gelisNo,raporNo,raporTarihi,Turu,tedaviRaporTuru,verenTesisKodu,' +
-                                        ' duzenlemeTuru,baslangicTarihi,bitisTarihi,protokolNo,aciklama) ' +
+                                        ' duzenlemeTuru,baslangicTarihi,bitisTarihi,protokolNo,aciklama,Tanilar) ' +
                  ' values (' +
                  QuotedStr(_dosyaNO_) + ',' +
                  QuotedStr(_gelisNO_) + ',' +
@@ -657,7 +647,10 @@ begin
                  QuotedStr(datalar.RaporBilgisi.baslangicTarihi) + ',' +
                  QuotedStr(datalar.RaporBilgisi.bitisTarihi) + ',' +
                  QuotedStr(datalar.RaporBilgisi.protokolNo) + ',' +
-                 QuotedStr(datalar.RaporBilgisi.aciklama) + ')';
+                 QuotedStr(datalar.RaporBilgisi.aciklama) + ',' +
+                 QuotedStr(datalar.RaporBilgisi.Tanilar) +
+
+                 ')';
 
           datalar.QueryExec(sql);
           RaporGrid.Dataset.Requery();
@@ -670,10 +663,14 @@ end;
 
 
 procedure TfrmRaporDetay.cxButtonCClick(Sender: TObject);
+var
+  yol , yol1 : string;
 begin
   datalar.KontrolUserSet := False;
   inherited;
   if datalar.KontrolUserSet = True then exit;
+
+
 
    case TControl(sender).Tag of
   -1 : begin
@@ -690,7 +687,16 @@ begin
                 exit;
               end
               else
-                RaporuMedulayaKaydet(TControl(sender).Tag);
+               if RaporGrid.Dataset.FieldByName('turu').AsString = '10'
+               then
+                RaporuMedulayaKaydet(TControl(sender).Tag , raporTakipNo)
+               else begin
+                    case TControl(sender).Tag of
+                      RaporMedulaKaydet : RaporuMedulayaKaydet;
+                      RaporMedulaSil : RaporMeduladanSil;
+                    end;
+
+               end;
           end;
   -5 : begin
           RaporMeduladanOku;
@@ -931,93 +937,14 @@ var
 
    r,i : integer;
    //OkuDVO;
-  _msg_ , _msg1_ , _msg2_ , _tani_: string;
+  _msg_ , _msg1_ , _msg2_ , _tani_ , _dtt_: string;
 begin
 
-        if datalar.doktorKodu= ''
+        if datalar.doktorKodu = ''
         Then datalar.doktorKodu := datalar.RaporBilgisi.duzenleyenDoktor;
 
-       if Tur = '10'
+       if (Tur = '10') or (Tur = '1')
        then begin
-    //        datalar.Rapor_.URL := datalar.raporIlacURL;
-            if durum = 'BUL'
-            then begin
-                      Ts_RaporBulIlac := saglikTesisiRaporIslemleriWSIlac.eraporSorguIstekDVO.Create;
-                      Ts_RaporCvpIlac := saglikTesisiRaporIslemleriWSIlac.eraporSorguCevapDVO.Create;
-                      Ts_RaporBulIlac.tesisKodu := inttostr(datalar._kurumKod);
-                      Ts_RaporBulIlac.raporTakipNo := RaporNo;
-                      Ts_RaporBulIlac.doktorTcKimlikNo := doktorTC(datalar.doktorKodu);
-
-                      try
-                //         Ts_RaporCvpIlac := (datalar.Rapor_ as saglikTesisiRaporIslemleriWSIlac.SaglikTesisiRaporIslemleri).eraporSorgula(Ts_RaporBulIlac);
-
-                      except
-                           on E: Exception do Showmessage(E.Message,'','','info');
-
-                      end;
-
-
-                      if Ts_RaporCvpIlac.sonucKodu = '0000'
-                      then begin
-                                if Ts_RaporCvpIlac.eraporDVO.raporNo <> null
-                                then
-                                    ShowMessageskin('Rapor Kayýtlý','Rapor No : ' + Ts_RaporCvpIlac.eraporDVO.raporno,
-                                                'Rapor Tarihi : ' + Ts_RaporCvpIlac.eraporDVO.raporTarihi,'info')
-                                else
-                                    ShowMessageskin('Rapor Kayýtlý Deðil',Ts_RaporCvpIlac.eraporDVO.raporno,'','info');
-
-
-                             if Ts_RaporCvpIlac.sonucKodu = '0000'
-                             then begin
-                                     //  ADO_RAPORLAR.Edit;
-                                    //   ADO_RAPORLAR.FieldByName('RaporTakipno').AsString := Ts_RaporCvpIlac.eraporDVO.raporTakipNo;
-                                     //  ADO_RAPORLAR.Post;
-                                   //    ShowMessageSkin('Rapor Baþarý ile Kaydedildi','','','info');
-                             end;
-
-                      end else
-                      begin
-                           ShowMessageskin('',Ts_RaporCvpIlac.uyariMesaji,Ts_RaporCvpIlac.sonucMesaji,'info');
-
-                      end;
-
-
-            end;
-
-            if durum = 'SÝL'
-            then begin
-                      Ts_RaporSilIlac := saglikTesisiRaporIslemleriWSIlac.eraporSilIstekDVO.Create;
-                      Ts_RaporSilCvp := saglikTesisiRaporIslemleriWSIlac.EraporSilCevapDVO.Create;
-                      Ts_RaporSilIlac.tesisKodu := inttostr(datalar._kurumKod);
-                      Ts_RaporSilIlac.raporTakipNo := RaporNo;
-                      Ts_RaporSilIlac.doktorTcKimlikNo := doktorTC(datalar.doktorKodu);
-
-                      try
-                  //       Ts_RaporSilCvp := (datalar.Rapor_ as saglikTesisiRaporIslemleriWSIlac.SaglikTesisiRaporIslemleri).eraporSil(Ts_RaporSilIlac);
-
-                      except
-                           on E: Exception do Showmessage(E.Message,'','','info');
-
-                      end;
-
-
-                      if Ts_RaporSilCvp.sonucKodu = '0000'
-                      then begin
-                                ShowMessageskin('Rapor Meduladan Silindi','','','info');
-                                     //  ADO_RAPORLAR.Edit;
-                                     //  ADO_RAPORLAR.FieldByName('RaporTakipno').AsString := '0';
-                                     //  ADO_RAPORLAR.Post;
-                                   //    ShowMessageSkin('Rapor Baþarý ile Kaydedildi','','','info');
-
-                      end else
-                              ShowMessageSkin(Ts_RaporSilCvp.uyariMesaji,Ts_RaporSilCvp.sonucMesaji,'','info');
-
-
-
-            end;
-       end
-       Else
-       begin
             datalar.RaporIslemWS.RaporCevap := nil;
             datalar.RaporIslemWS.RaporBilgisi.raporBilgisi.no := RaporNo;
             datalar.RaporIslemWS.RaporBilgisi.raporBilgisi.tarih := RaporTarihi;
@@ -1042,8 +969,25 @@ begin
                       then begin
                              if datalar.RaporIslemWS.RaporCevap.raporTuru = '1'
                              Then Begin
-                                if Assigned(datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].diyalizRaporBilgisi)
+                                if (datalar.RaporIslemWS.RaporCevap.tedaviRapor.tedaviRaporTuru = 1) or
+                                   (datalar.RaporIslemWS.RaporCevap.tedaviRapor.tedaviRaporTuru = 8)
                                 then begin
+
+                                     if datalar.RaporIslemWS.RaporCevap.tedaviRapor.tedaviRaporTuru = 1
+                                     then begin
+                                       _dtt_ :=     'But Kodu        : ' + datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].diyalizRaporBilgisi.butkodu + #13 +
+                                                    'Seans Gün       : ' + inttostr(datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].diyalizRaporBilgisi.seansGun) + #13 +
+                                                    'Seans Sayý      : ' + inttostr(datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].diyalizRaporBilgisi.seansSayi) + #13;
+
+
+                                     end
+                                     else
+                                     begin
+                                        _dtt_ :=  'But Kodu        : ' + datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].evHemodiyaliziRaporBilgisi.butkodu + #13 +
+                                                  'Seans Gün       : ' + inttostr(datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].evHemodiyaliziRaporBilgisi.seansGun) + #13 +
+                                                  'Seans Sayý      : ' + inttostr(datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].evHemodiyaliziRaporBilgisi.seansSayi) + #13;
+                                     end;
+
 
                                                  _msg_ :=   'Rapor Medula Sistemine Kayýtlý' + #13 +
                                                     'Rapor No        : ' + datalar.RaporIslemWS.RaporCevap.tedaviRapor.raporDVO.raporBilgisi.no + #13 +
@@ -1052,9 +996,9 @@ begin
                                                     'Rapor Baþlangýç : ' + datalar.RaporIslemWS.RaporCevap.tedaviRapor.raporDVO.baslangicTarihi + #13 +
                                                     'Rapor Bitiþ     : ' + datalar.RaporIslemWS.RaporCevap.tedaviRapor.raporDVO.bitisTarihi + #13 +
                                                     'Protokol No     : ' + datalar.RaporIslemWS.RaporCevap.tedaviRapor.raporDVO.protokolNo + #13 +
-                                                    'But Kodu        : ' + datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].diyalizRaporBilgisi.butkodu + #13 +
-                                                    'Seans Gün       : ' + inttostr(datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].diyalizRaporBilgisi.seansGun) + #13 +
-                                                    'Seans Sayý      : ' + inttostr(datalar.RaporIslemWS.RaporCevap.tedaviRapor.islemler[0].diyalizRaporBilgisi.seansSayi) + #13 +
+
+                                                     _dtt_ +
+
                                                     'Açýklama        : ' + datalar.RaporIslemWS.RaporCevap.tedaviRapor.raporDVO.aciklama + #13 +
                                                     'Hasta Bilgileri : ' + #13 +
                                                     '------------------' + #13 +
@@ -1107,12 +1051,14 @@ begin
 
                              if datalar.RaporIslemWS.RaporCevap.raporTuru = '10'
                              Then BEgin
-                                if Ts_RaporCvp.ilacRapor.raporDVO.raporBilgisi.no <> null
-                                then
-                                    ShowMessageskin('Rapor Kayýtlý','Rapor No : ' + Ts_RaporCvp.ilacRapor.raporDVO.raporBilgisi.no,
-                                                'Rapor Tarihi : ' + Ts_RaporCvp.ilacRapor.raporDVO.raporBilgisi.tarih,'info')
+                                if Assigned(datalar.RaporIslemWS.RaporCevap.ilacRapor)
+                                then begin
+                                    ShowMessageskin('Rapor Kayýtlý','Rapor No : ' + datalar.RaporIslemWS.RaporCevap.ilacRapor.raporDVO.raporBilgisi.no,
+                                                'Rapor Tarihi : ' + datalar.RaporIslemWS.RaporCevap.ilacRapor.raporDVO.raporBilgisi.tarih,'info')
+
+                                end
                                 else
-                                    ShowMessageskin('Rapor Kayýtlý Deðil',Ts_RaporCvp.ilacRapor.raporDVO.raporBilgisi.no,'','info');
+                                    ShowMessageskin('Rapor Kayýtlý Deðil',datalar.RaporIslemWS.RaporCevap.ilacRapor.raporDVO.raporBilgisi.no,'','info');
                              End;
 
 
@@ -1136,29 +1082,29 @@ begin
             then begin
 
                       try
-                   //      Ts_RaporCvp := (datalar.Rapor_M as RaporIslemleri).raporBilgisiSil(Ts_RaporBul);
-
+                       datalar.RaporIslemWS.RaporSil;
                       except
                            on E: Exception do Showmessage(E.Message,'','','info');
-
                       end;
 
 
-                      if Ts_RaporCvp.sonucKodu = 0
+                      if datalar.RaporIslemWS.RaporCevap.sonucKodu = 0
                       then begin
                                 ShowMessageskin('Rapor Meduladan Silindi','','','info');
 
+                                RaporGrid.Dataset.Edit;
+                                RaporGrid.Dataset.FieldByName('raporTakipNo').AsString := '';
+                                RaporGrid.Dataset.post;
+
                       end else
-                              ShowMessageSkin(Ts_RaporCvp.sonucAciklamasi,'','','info');
+                              ShowMessageSkin(datalar.RaporIslemWS.RaporCevap.sonucAciklamasi,'','','info');
 
 
 
             end;
 
-
-
        end;
-    //  txtinfo.Caption := '';
+
 
 
 end;
@@ -1206,6 +1152,11 @@ begin
                  ',aciklama = ' + QuotedStr(datalar.RaporBilgisi.aciklama) +
                  ',duzenleyenDoktor = ' + QuotedStr(datalar.RaporBilgisi.duzenleyenDoktor) +
                  ',raporTakipNo = ' + QuotedStr(datalar.RaporBilgisi.raporTakipNo) +
+                 ',butKodu = ' + QuotedStr(datalar.RaporBilgisi.butkodu) +
+                 ',seansGun = ' + QuotedStr(datalar.RaporBilgisi.seansGun) +
+                 ',seansSayi = ' + QuotedStr(datalar.RaporBilgisi.seansSayi) +
+                 ',Tanilar = ' +  QuotedStr(datalar.RaporBilgisi.Tanilar) +
+
                  'where sira = ' + datalar.RaporBilgisi.sira;
 
           datalar.QueryExec(sql);
@@ -1558,6 +1509,7 @@ var
    TedaviIslem : TedaviIslemBilgisiDVO;
    tedaviIslemleri : Array_Of_TedaviIslemBilgisiDVO;
    DiyalizRprB : DiyalizRaporBilgisiDVO;
+   EvDiyalizRprB : evHemodiyaliziRaporBilgisiDVO;
    FTRRprB : FTRRaporBilgisiDVO;
    ESWLRprB : ESWLRaporBilgisiDVO;
    dizi , i : integer;
@@ -1568,6 +1520,13 @@ begin
     DiyalizRprB.seansGun := data.fieldbyname('seansGun').AsInteger;
     DiyalizRprB.seansSayi := data.fieldbyname('seansSayi').AsInteger;
     DiyalizRprB.refakatVarMi := 'H';
+end;
+procedure EvDiyalizRaporBilgisi;
+begin
+    EvDiyalizRprB := evHemodiyaliziRaporBilgisiDVO.Create;
+    EvDiyalizRprB.butKodu := data.fieldbyname('butKodu').AsString;
+    EvDiyalizRprB.seansGun := data.fieldbyname('seansGun').AsInteger;
+    EvDiyalizRprB.seansSayi := data.fieldbyname('seansSayi').AsInteger;
 end;
 procedure FTRRaporBilgisi;
 begin
@@ -1614,6 +1573,11 @@ begin
            ESWLRaporBilgisi;
            TedaviIslem.eswlRaporBilgisi := ESWLRprB;
         End;
+        if trim(data.FieldByName('tedaviRaporturu').AsString) = '8'
+        Then Begin
+          EvDiyalizRaporBilgisi;
+          TedaviIslem.evHemodiyaliziRaporBilgisi := EvDiyalizRprB;
+        End;
         tedaviIslemleri[i] := TedaviIslem;
      end;
      TedaviRapor.islemler := tedaviIslemleri;
@@ -1632,6 +1596,12 @@ procedure TfrmRaporDetay.ListeRaporlarFocusedRecordChanged(
   Sender: TcxCustomGridTableView; APrevFocusedRecord,
   AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
 begin
+     if AFocusedRecord = nil then exit;
+
+     raporTakipNo := varTostr(ListeRaporlar.DataController.GetValue(AFocusedRecord.RecordIndex,
+                  ListeRaporlar.DataController.GetItemByFieldName('raporTakipNo').Index));
+
+
      datalar.RaporBilgisi.raporNo := RaporGrid.Dataset.FieldByName('raporNo').AsString;
      datalar.RaporBilgisi.raporTarihi := RaporGrid.Dataset.FieldByName('RaporTarihi').AsString;
      datalar.RaporBilgisi.verenTesisKodu := RaporGrid.Dataset.FieldByName('verenTesisKodu').AsString;
@@ -1662,9 +1632,11 @@ begin
              Doktor := DoktorBilgisiDVO.Create;
              doktor.drAdi := TrtoEng(data.fieldbyname('tanimi').AsString);
             // doktor.drSoyadi := TrtoEng(data.fieldbyname('drSoyadi').AsString);
+
              doktor.tipi := '1';
-             doktor.drBransKodu := data.fieldbyname('drBransKodu').AsString;
-             doktor.drTescilNo := data.fieldbyname('TescilNo').AsString;
+
+             doktor.drBransKodu := data.fieldbyname('bransKodu').AsString;
+             doktor.drTescilNo := data.fieldbyname('tescilNo').AsString;
              doktorlar[i] := doktor;
              data.Next
         end;
@@ -1892,7 +1864,7 @@ begin
       ado := TADOQuery.Create(nil);
       ado.Connection := datalar.ADOConnection2;
       try
-        sql := 'select datavalue from strtotable('+#39 + RTanilar + #39 + ',' + #39 + ',' + #39 + ')';
+        sql := 'select datavalue from strtotable('+#39 + raporID + #39 + ',' + #39 + ',' + #39 + ')';
         datalar.QuerySelect(ado,sql);
         dizi :=  ado.RecordCount;
         SetLength(Tanilar,dizi);
@@ -1972,14 +1944,16 @@ begin
         _rapor.duzenlemeTuru := copy(data.fieldbyname('duzenlemeTuru').AsString,1,1);
         _rapor.protokolNo := data.fieldbyname('protokolNo').AsString;
         _rapor.protokolTarihi := data.fieldbyname('protokolTarihi').AsString;
-        _rapor.turu := '1';
+        _rapor.turu := data.fieldbyname('Turu').AsString;
         _rapor.takipNo := _TakipNo_;
         _rapor.klinikTani := data.fieldbyname('klinikTani').AsString;
 
-        TaniKaydet(data.fieldbyname('sira').AsString,_Rapor);
+        TedaviRapor.tedaviRaporTuru := data.fieldbyname('tedaviRaporTuru').AsInteger;
+
+        TaniKaydet(data.fieldbyname('Tanilar').AsString,_Rapor);
         DoktorKaydet(data.fieldbyname('sira').AsString,_Rapor);
         IslemKaydet(RaporGrid.Dataset,TedaviRapor);
-        TedaviRapor.tedaviRaporTuru := 1;
+
         TedaviRapor.raporDVO := _Rapor;
 
 end;
@@ -2161,11 +2135,11 @@ begin
               ShowMessageSkin('Rapor Baþarý ile Kaydedildi','','','info');
                if Tip = '10'
                then raporTakip := Ts_RaporCvpIlac.eraporDVO.raporTakipNo
-               else raporTakip := inttostr(Ts_RaporCvp.raporTakipNo);
+               else raporTakip := inttostr(datalar.RaporIslemWS.RaporCevap.raporTakipNo);
 
-        //       ADO_RAPORLAR.Edit;
-       //        ADO_RAPORLAR.FieldByName('RaporTakipno').AsString := raporTakip;
-        //       ADO_RAPORLAR.Post;
+                RaporGrid.Dataset.Edit;
+                RaporGrid.Dataset.FieldByName('raporTakipNo').AsString := raporTakip;
+                RaporGrid.Dataset.post;
                (*
                ado := TADOQuery.Create(nil);
                ado.Connection := datalar.ADOConnection2;
@@ -2175,10 +2149,165 @@ begin
                ADO_ILACETKENMADDE.Refresh;  *)
      end else
      begin
-          msj := inttostr(Ts_RaporCvp.sonucKodu) + ' ' + Ts_RaporCvp.sonucAciklamasi;
+          msj := inttostr(datalar.RaporIslemWS.RaporCevap.sonucKodu) + ' ' + datalar.RaporIslemWS.RaporCevap.sonucAciklamasi;
           ShowMessageSkin('Rapor Kaydedilemedi : ' + msj,'','','info');
      end;
 end;
+
+
+    {
+procedure TfrmRaporDetay.TedaviRaporKaydet(dosyaNo , raporNo , turu ,Tip : string);
+var
+   sql : string;
+   i , dizi  : integer;
+   sonuc ,_sonuc_ : string;
+   doktor,doktorUser,doktorSifre : string;
+   Ts_RaporCvp : RaporCevapDVO;
+   Ts_RaporCvpY : EraporGirisCevapDVO;
+   raporTakip , msj : string;
+   Ts_RaporCvpIlac : saglikTesisiRaporIslemleriWSIlac.eraporGirisCevapDVO;
+begin
+
+      RTanilar := ADO_RAPORLAR.fieldbyname('tanilar').AsString;
+      RTeshisler := ADO_RAPORLAR.fieldbyname('teshisler').AsString;
+
+      if datalar.doktorKodu = ''
+      Then datalar.doktorKodu := TescildoktorBul(ADO_DOKTORLAR.FieldByName('drTescilNo').AsString);
+
+      // medula kullanýcý bilgileri alýnýyor
+      datalar.Login;
+      doktorEReceteUser(datalar.doktorKodu,doktorUser,doktorSifre);
+    //  datalar.Rapor_.HTTPWebNode.UserName := datalar._username;
+    //  datalar.Rapor_.HTTPWebNode.Password := datalar._sifre;
+     hastadosyaNo := dosyaNo;
+     if Tip = '10'
+     then begin
+        datalar.Rapor_.URL := raporIlacURL;
+
+        datalar.doktorKodu := TescildoktorBul(ADO_DOKTORLAR.FieldByName('drTescilNo').AsString);
+        Ts_RaporGonIlac := saglikTesisiRaporIslemleriWSIlac.eraporGirisIstekDVO.Create;
+        Ts_RaporCvpIlac := saglikTesisiRaporIslemleriWSIlac.eraporGirisCevapDVO.Create;
+        Ts_RaporGonIlac.tesisKodu := inttostr(datalar._kurumKod);
+        Ts_RaporGonIlac.doktorTcKimlikNo := doktorTescilToTC(ADO_DOKTORLAR.FieldByName('drTescilNo').AsString);
+
+        _don := 1;
+        RAPORBILGISI(ADO_RAPORLAR,Tip);
+        ilacRaporu;
+
+        Ts_RaporGonIlac.eraporDVO := _RaporIlac;
+
+        try
+            Ts_RaporCvpIlac := (datalar.Rapor_ as saglikTesisiRaporIslemleriWSIlac.SaglikTesisiRaporIslemleri).eraporGiris(Ts_RaporGonIlac);
+           // takipNoileRaporBilgisiKaydet(Ts_RaporGon);
+
+            sonuc := Ts_RaporCvpIlac.sonucKodu;
+        //    if (_sonuc_ = '0') or (_sonuc_ = '500') then _don := 1 else _don := _don + 1;     //        Application.ProcessMessages;
+         except
+              on E: Exception do
+              begin
+                 sonuc := '10000';
+                 ShowMessageSkin(E.Message,'','','info');
+                 _don := _don + 1;
+              end;
+         end; // except end
+
+     end
+     else
+     begin
+
+      datalar.Rapor_M.URL := raporURL;
+
+      Ts_RaporGon := RaporGirisDVO.Create;
+      Ts_RaporCvp := RaporCevapDVO.Create;
+      Ts_RaporGonY := EraporGirisIstekDVO.Create;
+      Ts_RaporCvpY := EraporGirisCevapDVO.Create;
+
+
+      (*
+      case strtoint(turu) of
+          1 : TedaviRaporu;
+         10 : begin
+            ilacRaporu;
+         end;
+      end; *)
+
+      RAPORBILGISI(ADO_RAPORLAR,turu);
+      TedaviRaporu;
+    (*
+        if turu = '10' then
+        begin
+           Ts_RaporGonY.tesisKodu := inttostr(datalar._kurumKod);
+           if datalar.doktor = '' then
+           Ts_RaporGonY.doktorTcKimlikNo := doktorTc(ADO_DOKTORLAR.FieldByName('kod').AsString)
+           Else
+           Ts_RaporGonY.doktorTcKimlikNo := doktorTC(datalar.doktor);
+
+           ilacRaporu;
+           try
+              Ts_RaporCvpY := (datalar.IlacRapor_ as SaglikTesisiRaporIslemleri).eraporGiris(Ts_RaporGonY);
+              sonuc := Ts_RaporCvpY.sonucKodu;
+           except
+                on E: Exception do
+                begin
+                   sonuc := '10000';
+                   ShowMessageSkin(E.Message,'','','info');
+                end;
+           end; // except end
+        end;
+      *)
+       // if turu = '1' then
+       // begin
+           Ts_RaporGon.saglikTesisKodu := datalar._kurumKod;
+          // TedaviRaporu;
+          // ilacRaporu;
+           try
+              Ts_RaporCvp := (datalar.Rapor_M as RaporIslemleri).takipNoileRaporBilgisiKaydet(Ts_RaporGon);
+              sonuc := inttostr(Ts_RaporCvp.sonucKodu);
+           except
+                on E: Exception do
+                begin
+                   sonuc := '10000';
+                   ShowMessageSkin(E.Message,'','','info');
+                end;
+           end; // except end
+       // end;
+
+
+     end;
+
+     if (sonuc = '0') or (sonuc = '0000')
+     then begin
+              ShowMessageSkin('Rapor Baþarý ile Kaydedildi','','','info');
+               if Tip = '10'
+               then raporTakip := Ts_RaporCvpIlac.eraporDVO.raporTakipNo
+               else raporTakip := inttostr(Ts_RaporCvp.raporTakipNo);
+
+               ADO_RAPORLAR.Edit;
+               ADO_RAPORLAR.FieldByName('RaporTakipno').AsString := raporTakip;
+               ADO_RAPORLAR.Post;
+               (*
+               ado := TADOQuery.Create(nil);
+               ado.Connection := datalar.ADOConnection2;
+               sql := 'update IlacRaporEtkenMaddeler set onay = 1 where RaporSira = ' + ADO_RAPORLAR.fieldbyname('sira').AsString;
+               datalar.QueryExec(ado,sql);
+               ado.Free;
+               ADO_ILACETKENMADDE.Refresh;  *)
+     end else
+     begin
+        if Tip = '10'
+        Then
+         ShowMessageSkin('Rapor Kaydedilemedi : ' + Ts_RaporCvpIlac.sonucMesaji,Ts_RaporCvpIlac.uyariMesaji,'','info')
+        else begin
+          msj := inttostr(Ts_RaporCvp.sonucKodu) + ' ' + Ts_RaporCvp.sonucAciklamasi;
+          ShowMessageSkin('Rapor Kaydedilemedi : ' + msj,'','','info');
+        end;
+     end;
+
+     txtinfo.Caption := '';
+
+
+end;
+}
 
 
 procedure TfrmRaporDetay.Raporlar(dosyaNo ,gelisNo : string);
@@ -2232,6 +2361,8 @@ begin
 
   TcxImageComboBoxProperties(ListeRaporlarColumn6.Properties).Items := TcxImageComboKadir(FindComponent('turu')).Properties.Items;
   TcxImageComboBoxProperties(ListeRaporlarColumn7.Properties).Items := TcxImageComboKadir(FindComponent('tedaviRaporTuru')).Properties.Items;
+
+  TcxImageComboBoxProperties(ListeRaporlarColumn12.Properties).Items := AnaForm.Doktorlar.Properties.Items;
 
   Kolon2.Visible := false;
   Kolon3.Visible := false;
@@ -2599,15 +2730,18 @@ begin
    datalar.QuerySelect(ADO_ILACETKENMADDE ,'select * from IlacRaporEtkenMaddeler where RaporSira = ' + Sira);
 
 
-   sablon := InputBox('Teþhis , Etken Madde Þablon','Þablon Tanýmý Giriniz','Sablon1');
-   if sablon <> ''
-   then begin
+    datalar.RaporBilgisi.SablonBilgisi := '';
+    if mrYes = ShowPopupForm('Rapor Duzenle',raporSablon)
+    Then Begin
+  // sablon := InputBox('Teþhis , Etken Madde Þablon','Þablon Tanýmý Giriniz','Sablon1');
+   // sablon <> ''
+  // then begin
 
      datalar.ADOConnection2.BeginTrans;
 
      try
        sql := 'insert into IlacRaporSablon(SablonTanimi) ' +
-              'values ( ' + QuotedStr(sablon) + ') select SCOPE_IDENTITY() as id ';
+              'values ( ' + QuotedStr(datalar.RaporBilgisi.SablonBilgisi ) + ') select SCOPE_IDENTITY() as id ';
        datalar.QuerySelect(ado,sql);
        id := ado.fieldbyname('id').AsString;
 

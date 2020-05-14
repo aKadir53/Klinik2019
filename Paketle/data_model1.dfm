@@ -20,7 +20,7 @@ object DATALAR: TDATALAR
     LoginPrompt = False
     Provider = 'SQLOLEDB.1'
     Left = 33
-    Top = 79
+    Top = 63
   end
   object ADO_SQL: TADOQuery
     Connection = Hedef
@@ -68,5 +68,54 @@ object DATALAR: TDATALAR
     Parameters = <>
     Left = 232
     Top = 8
+  end
+  object TempConnection: TADOConnection
+    CommandTimeout = 0
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Password=12345;Persist Security Info=True;Us' +
+      'er ID=mavinokta;Initial Catalog=mavi;Data Source=213.142.141.121'
+    ConnectionTimeout = 5
+    KeepConnection = False
+    LoginPrompt = False
+    Provider = 'SQLOLEDB.1'
+    Left = 377
+    Top = 209
+  end
+  object ADOConnection1: TADOConnection
+    CommandTimeout = 0
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Password=Guneysu53Rize;Persist Security Info' +
+      '=True;User ID=mavinokta;Initial Catalog=mavi;Data Source=37.230.' +
+      '108.244'
+    ConnectionTimeout = 10
+    LoginPrompt = False
+    Provider = 'SQLOLEDB.1'
+    Left = 377
+    Top = 159
+  end
+  object Master: TADOConnection
+    CommandTimeout = 0
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Password=5353;Persist Security Info=True;Use' +
+      'r ID=nokta;Initial Catalog=mavi;Data Source=91.151.85.12'
+    ConnectionTimeout = 10
+    LoginPrompt = False
+    Provider = 'SQLOLEDB.1'
+    Left = 377
+    Top = 55
+  end
+  object ADOConnection2: TADOConnection
+    CommandTimeout = 0
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Password=5353;Persist Security Info=True;Use' +
+      'r ID=Nokta;Initial Catalog=DYLZ_UZMAN;Data Source=213.159.30.6;U' +
+      'se Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;' +
+      'Workstation ID=CMPTR2;Use Encryption for Data=False;Tag with col' +
+      'umn collation when possible=False'
+    ConnectionTimeout = 10
+    LoginPrompt = False
+    Provider = 'SQLOLEDB.1'
+    Left = 377
+    Top = 103
   end
 end

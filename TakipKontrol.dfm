@@ -324,11 +324,17 @@ object frmTakipKontrol: TfrmTakipKontrol
             PopupMenu = PopupMenu1
             OnFocusedRecordChanged = TakiplerFocusedRecordChanged
             DataController.DataSource = DataSource2
+            DataController.Filter.Options = [fcoCaseInsensitive]
+            DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding]
             DataController.Summary.DefaultGroupSummaryItems = <>
             DataController.Summary.FooterSummaryItems = <
               item
                 Kind = skCount
                 Column = TakipNo
+              end
+              item
+                Kind = skSum
+                Column = TakiplerColumn1
               end>
             DataController.Summary.SummaryGroups = <>
             Filtering.MRUItemsList = False
@@ -336,6 +342,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             Filtering.ColumnMRUItemsList = False
             FilterRow.InfoText = 'Arama Sat'#305'r'#305
             FilterRow.Visible = True
+            FilterRow.ApplyChanges = fracImmediately
             OptionsCustomize.ColumnSorting = False
             OptionsSelection.MultiSelect = True
             OptionsView.CellAutoHeight = True
@@ -496,6 +503,19 @@ object frmTakipKontrol: TfrmTakipKontrol
             object BasvuruNo: TcxGridColumn
               Caption = 'BasvuruNo'
               DataBinding.FieldName = 'basvuruNo'
+              Visible = False
+            end
+            object TakiplerColumn7: TcxGridDBColumn
+              DataBinding.FieldName = 'sysTakipNo'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Width = 100
+            end
+            object TakiplerColumnEpikriz: TcxGridDBColumn
+              DataBinding.FieldName = 'aciklama'
               Visible = False
             end
           end
@@ -766,6 +786,17 @@ object frmTakipKontrol: TfrmTakipKontrol
                 HeaderAlignmentVert = vaCenter
                 Width = 34
               end
+              object GridHizmetlerColumn1: TcxGridDBColumn
+                Caption = 'Doktor'
+                DataBinding.FieldName = 'doktorAdi'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 100
+              end
               object GridHizmetlerdrTescilNo: TcxGridDBColumn
                 Caption = 'TescilNo'
                 DataBinding.FieldName = 'drTescilNo'
@@ -774,7 +805,7 @@ object frmTakipKontrol: TfrmTakipKontrol
                 Properties.Alignment.Vert = taVCenter
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
-                Width = 50
+                Width = 59
               end
               object GridHizmetlerraporTakipno: TcxGridDBColumn
                 Caption = 'Rapor Takipno'
@@ -1075,40 +1106,69 @@ object frmTakipKontrol: TfrmTakipKontrol
     object N2: TMenuItem
       Caption = '-'
     end
-    object HizmetleriptalEt1: TMenuItem
-      Tag = -7
-      Caption = 'Seanslar'#305' '#304'ptal Et'
-      Enabled = False
-      ImageIndex = -7
-      Visible = False
-      OnClick = HizmetleriptalEt1Click
-    end
-    object ahlilleriptalEt1: TMenuItem
-      Tag = -8
-      Caption = 'Tahlilleri '#304'ptal Et'
-      ImageIndex = 100
-      Visible = False
-      OnClick = HizmetleriptalEt1Click
-    end
     object MalzemeptalEt1: TMenuItem
       Tag = -9
       Caption = 'Malzeme '#304'ptal Et'
       Visible = False
       OnClick = HizmetleriptalEt1Click
     end
-    object R1: TMenuItem
-      Tag = -10
-      Caption = 'Radyoloji '#304'ptal'
-      Visible = False
-      OnClick = HizmetleriptalEt1Click
-    end
     object mHizmetleriptalEt1: TMenuItem
       Tag = -11
-      Caption = 'T'#252'm Hizmetleri '#304'ptal Et'
-      Enabled = False
-      ImageIndex = 131
-      Visible = False
-      OnClick = HizmetleriptalEt1Click
+      Caption = 'Hizmetleri '#304'ptal Et'
+      ImageIndex = 76
+      object HizmetleriptalEt1: TMenuItem
+        Tag = -7
+        Caption = 'Seanslar'#305' '#304'ptal Et'
+        Hint = 'S'
+        ImageIndex = 80
+        OnClick = HizmetleriptalEt1Click
+      end
+      object ahlilleriptalEt1: TMenuItem
+        Tag = -8
+        Caption = 'Tahlilleri '#304'ptal Et'
+        Hint = 'T'
+        ImageIndex = 47
+        Visible = False
+        OnClick = HizmetleriptalEt1Click
+      end
+      object R1: TMenuItem
+        Tag = -10
+        Caption = 'Radyoloji '#304'ptal'
+        Hint = 'R'
+        ImageIndex = 95
+        Visible = False
+        OnClick = HizmetleriptalEt1Click
+      end
+    end
+    object mHizmetleriKaydet1: TMenuItem
+      Tag = -13
+      Caption = 'Hizmetleri Kaydet'
+      ImageIndex = 76
+      object S5: TMenuItem
+        Caption = 'Seanslar'#305' Kaydet'
+        Hint = 'S'
+        ImageIndex = 80
+        OnClick = mHizmetleriKaydet1Click
+      end
+      object T2: TMenuItem
+        Caption = 'Tahlilleri Kaydet'
+        Hint = 'T'
+        ImageIndex = 47
+        Visible = False
+        OnClick = mHizmetleriKaydet1Click
+      end
+      object R2: TMenuItem
+        Caption = 'Rad Kaydet'
+        Hint = 'R'
+        ImageIndex = 95
+        Visible = False
+        OnClick = mHizmetleriKaydet1Click
+      end
+    end
+    object I1: TMenuItem
+      Tag = -100
+      Caption = 'islemS'#305'raNo lar'#305' Sisteme Al'
+      OnClick = I1Click
     end
     object N3: TMenuItem
       Caption = '-'
@@ -1117,17 +1177,8 @@ object frmTakipKontrol: TfrmTakipKontrol
       Tag = -12
       Caption = 'Okunan Seanslar'#305' Sisteme Yaz'
       ImageIndex = 35
-      OnClick = SeanslarSistemeYaz1Click
-    end
-    object N4: TMenuItem
-      Caption = '-'
-    end
-    object mHizmetleriKaydet1: TMenuItem
-      Tag = -13
-      Caption = 'T'#252'm Hizmetleri Kaydet'
-      ImageIndex = 76
       Visible = False
-      OnClick = mHizmetleriKaydet1Click
+      OnClick = SeanslarSistemeYaz1Click
     end
     object N5: TMenuItem
       Caption = '-'
@@ -1183,8 +1234,8 @@ object frmTakipKontrol: TfrmTakipKontrol
   end
   object DataSource1: TDataSource
     DataSet = ADO_TahlillSQL
-    Left = 420
-    Top = 132
+    Left = 444
+    Top = 140
   end
   object ADO_SQL: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1194,12 +1245,12 @@ object frmTakipKontrol: TfrmTakipKontrol
     SQL.Strings = (
       ''
       'exec sp_TakipKontrolListesi '#39'20191001'#39','#39'20191130'#39','#39'000005'#39)
-    Left = 332
+    Left = 356
     Top = 220
   end
   object DataSource2: TDataSource
     DataSet = ADO_SQL
-    Left = 412
+    Left = 428
     Top = 220
   end
   object cxStyleRepository1: TcxStyleRepository
@@ -1248,8 +1299,8 @@ object frmTakipKontrol: TfrmTakipKontrol
     end
   end
   object dxLayoutHizmetlerLookAndFeelList1: TdxLayoutLookAndFeelList
-    Left = 8
-    Top = 112
+    Left = 128
+    Top = 216
     object dxLayoutHizmetlerSkinLookAndFeel1: TdxLayoutSkinLookAndFeel
     end
   end

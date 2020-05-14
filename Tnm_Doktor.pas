@@ -69,6 +69,7 @@ type
     function CalismaBilgileri(kod , tip : string) : TADOQuery;
     function CalismaBilgileriSQL(kod , tip : string ; opr : string = '=') : String;
     procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
   private
     { Private declarations }
@@ -179,7 +180,7 @@ begin
         OrtakEventAta(medulaGonderimTipi);
         setDataStringKontrol(self,medulaGonderimTipi,'medulaGonderimTipi','Medula Gönderim',kolon1,'',100);
 
-        setDataString(self,'TesisKodu','Tesis Kodu',Kolon1,'',100);
+        setDataString(self,'TesisKodu','Ýþyeri Hek.TesisKodu',Kolon1,'',100);
         setDataString(self,'GSM','GSM',Kolon1,'',100);
         setDataString(self,'EPosta','E-Posta',Kolon1,'',200);
        // setDataString(self,'TDisID','TDis ID',Kolon1,'TDIS',80);
@@ -212,7 +213,7 @@ begin
         Sirketlerx.ValueField := 'SirketKod';
         Sirketlerx.DisplayField := 'Tanimi';
         Sirketlerx.BosOlamaz := False;
-        Sirketlerx.Filter := '';
+        Sirketlerx.Filter := ' FirmaTip = 1';
         Sirketlerx.EditValue := datalar.AktifSirket;
         Sirketlerx.ItemIndex := -1;
         setDataStringKontrol(self,Sirketlerx,'SirketKod','Þirket',kolon1,'',120);
@@ -624,14 +625,28 @@ begin
 
 end;
 
-procedure TfrmDoktorlar.FormCreate(Sender: TObject);
+procedure TfrmDoktorlar.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
+
+  sqlRun.Close;
+  
+
+end;
+
+procedure TfrmDoktorlar.FormCreate(Sender: TObject);
+begin
+   _SaveKontrol := True;
+
 //
 end;
 
 procedure TfrmDoktorlar.cxKaydetClick(Sender: TObject);
 begin
+
+  inherited;
+
+
 
   case TcxButton(sender).Tag  of
     sil : begin
@@ -639,7 +654,9 @@ begin
     Kaydet : begin
                if TcxImageComboKadir(FindComponent('MesulMudur')).EditValue = 1
                then begin
-                // datalar.QueryExec('set nocount on update DoktorlarT set MesulMudur = 0 set nocount off');
+                  datalar.QueryExec(' set nocount on ' +
+                                    ' update DoktorlarT set MesulMudur = 0 where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                                    ' set nocount off');
                end;
 
              end;
@@ -653,7 +670,9 @@ begin
            end;
   end;
 
-  inherited;
+
+
+
 
 
 end;

@@ -2,8 +2,8 @@ object frmFaturaDetay: TfrmFaturaDetay
   Left = 1
   Top = 1
   Caption = 'Faturalar'
-  ClientHeight = 581
-  ClientWidth = 784
+  ClientHeight = 630
+  ClientWidth = 800
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -133,7 +133,7 @@ object frmFaturaDetay: TfrmFaturaDetay
         Properties.DisplayFormat = ',0.00'
         HeaderAlignmentHorz = taCenter
         Options.Editing = False
-        Width = 80
+        Width = 84
         OnCustomDrawFooterCell = FaturaSatirTutarCustomDrawFooterCell
       end
     end

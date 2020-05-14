@@ -85,7 +85,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
               DataController.Filter.Active = True
               DataController.Filter.TranslateBetween = True
               DataController.Filter.TranslateLike = True
-              DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+              DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText, dcoImmediatePost]
               DataController.Summary.DefaultGroupSummaryItems = <>
               DataController.Summary.FooterSummaryItems = <>
               DataController.Summary.SummaryGroups = <>
@@ -157,8 +157,11 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                   item
                     Description = 'Ay'
                     Value = '30'
+                  end
+                  item
+                    Description = '15 G'#252'n'
+                    Value = '15'
                   end>
-                Options.Editing = False
                 Width = 37
               end
               object cxGridIlacTedaviPlanimiktar: TcxGridDBColumn
@@ -166,7 +169,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 DataBinding.FieldName = 'miktar'
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
-                Options.Editing = False
                 Width = 40
               end
               object cxGridIlacTedaviPlanidoz: TcxGridDBColumn
@@ -175,8 +177,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 PropertiesClassName = 'TcxTextEditProperties'
                 Properties.Alignment.Horz = taCenter
                 HeaderAlignmentHorz = taCenter
-                Options.Editing = False
-                Width = 36
+                Width = 55
               end
               object cxGridIlacTedaviPlanidozperyotmiktar: TcxGridDBColumn
                 DataBinding.FieldName = 'dozperyotmiktar'
@@ -227,6 +228,8 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 DataBinding.FieldName = 'donemAdi'
                 Visible = False
                 GroupIndex = 0
+                SortIndex = 0
+                SortOrder = soDescending
                 IsCaptionAssigned = True
               end
               object cxGridIlacTedaviPlaniColumn6: TcxGridDBColumn

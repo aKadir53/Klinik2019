@@ -169,6 +169,7 @@ Kaydet : begin
          FaturaDetay;
         end;
   Yeni : begin
+  (*
            if datalar.IGU <> ''
            then begin
              TcxImageComboKadir(FindComponent('hazirlayan')).EditValue := datalar.IGU;
@@ -176,6 +177,7 @@ Kaydet : begin
            end
            else
              TcxImageComboKadir(FindComponent('hazirlayan')).Enabled := True;
+             *)
            TcxDateEditKadir(FindComponent('date_create')).EditValue := date;
            YillikEgitimPlanGrid.Enabled := False;
          //  FaturaDetay;
@@ -193,32 +195,17 @@ begin
     Enabled;
     FaturaDetay;
 
-    if (vartostr(TcxTextEditKadir(FindComponent('hazirlayan')).EditValue) <>
-       datalar.IGU)
-       //and TcxImageComboKadir(FindComponent('Onay')).EditValue = 1
-    then begin
-       YillikEgitimPlanSatirlar.OptionsData.Editing := False;
-       YillikEgitimPlanSatirlar.OptionsData.Inserting := False;
-       YillikEgitimPlanSatirlar.OptionsData.Deleting := False;
 
-       TcxImageComboKadir(FindComponent('SirketKod')).Enabled := False;
-       TcxTextEditKadir(FindComponent('hazirlayan')).Enabled := False;
-       TcxTextEditKadir(FindComponent('doktor')).Enabled := False;
-       TcxImageComboKadir(FindComponent('date_create')).Enabled := False;
-
-    end
-    else
-    begin
        YillikEgitimPlanSatirlar.OptionsData.Editing := True;
        YillikEgitimPlanSatirlar.OptionsData.Inserting := True;
        YillikEgitimPlanSatirlar.OptionsData.Deleting := True;
 
        TcxImageComboKadir(FindComponent('SirketKod')).Enabled := True;
        TcxTextEditKadir(FindComponent('hazirlayan')).Enabled := True;
-       TcxTextEditKadir(FindComponent('doktor')).Enabled := true;
+     //  TcxTextEditKadir(FindComponent('doktor')).Enabled := true;
        TcxImageComboKadir(FindComponent('date_create')).Enabled := True;
 
-    end;
+
 
 
 end;
@@ -400,7 +387,7 @@ procedure TfrmSirketYillikEgitimPlan.SirketlerPropertiesChange(Sender: TObject);
 var
   sube : string;
 begin
-
+   (*
  sube := ' and IGU = ' + QuotedStr(datalar.IGU);
 
  TcxImageComboKadir(FindComponent('hazirlayan')).TableName := SirketIGUToSQLStr(TcxImageComboKadir(FindComponent('sirketKod')).EditingValue);
@@ -417,7 +404,7 @@ begin
 
  finally
  end;
-
+     *)
 
 (*
  if Assigned(TcxImageComboKadir(FindComponent('subeKod')))
@@ -499,6 +486,9 @@ begin
   TableName := 'firmaYillikEgitimPlani';
  // TopPanel.Visible := true;
 
+
+    where := ' sirketKod = ' + QuotedStr(datalar.AktifSirket);
+ (*
   if datalar.UserGroup = '1'
   then
     where := ''
@@ -509,7 +499,7 @@ begin
   else
     where := ' hazirlayan = ' + QuotedStr(datalar.IGU);
 
-
+   *)
 
   Faturalar := ListeAcCreate('firmaYillikEgitimPlani','id,date_create,hazirlayan',
                        'ID,Tarihi,Ýþ Güvenlik Uzm.',
@@ -532,10 +522,11 @@ begin
   sirketlerx.ValueField := 'SirketKod';
   sirketlerx.DisplayField := 'Tanimi';
   sirketlerx.BosOlamaz := False;
-  sirketlerx.Filter := datalar.sirketlerUserFilter;
+  sirketlerx.Filter := ' FirmaTip = 1';
   setDataStringKontrol(self,sirketlerx,'SirketKod','Þirket',Kolon1,'trh',250,0,alNone,'');
   TcxImageComboKadir(FindComponent('SirketKod')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
 
+  setDataString(self,'hazirlayan','Hazirlayan',Kolon1,'trh',120,false,'');
 (*
   sube := ' and IGU = ' + QuotedStr(datalar.IGU);
 
@@ -548,6 +539,7 @@ begin
   setDataStringKontrol(self,Subeler,'SubeKod','Þube',Kolon1,'trh',100,0,alNone,'');
   *)
 
+  (*
   IGU := TcxImageComboKadir.Create(self);
   IGU.Conn := Datalar.ADOConnection2;
   IGU.TableName := 'IGU';
@@ -565,14 +557,14 @@ begin
   doktor.BosOlamaz := False;
   //doktor.Filter := '';
   setDataStringKontrol(self,doktor,'doktor','Doktor',Kolon1,'trh',120,0,alNone,'');
+    *)
 
-
-
+ (*
   try
      TcxImageComboBoxProperties(YillikEgitimPlanSatirlaregitimVeren.Properties).Items := TcxImageComboBoxProperties(IGU.Properties).Items;
   finally
   end;
-
+   *)
 
 
 

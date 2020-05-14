@@ -972,7 +972,7 @@ begin
   sirketlerx.DisplayField := 'Tanimi';
   sirketlerx.BosOlamaz := False;
 
-  sirketlerx.Filter := '';
+  sirketlerx.Filter := ' FirmaTip = 1';
 
   (*
   if datalar.UserGroup = '1' then

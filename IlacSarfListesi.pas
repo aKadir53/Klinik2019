@@ -278,6 +278,7 @@ try
              End;
 
               frmHastaRecete.ADO_RECETE_DETAY.Append;
+              frmHastaRecete.ADO_RECETE_DETAY.FieldByName('ReceteID').AsInteger := frmHastaRecete.ADO_Recete.FieldByName('id').AsInteger;
               frmHastaRecete.ADO_RECETE_DETAY.FieldByName('ilacKodu').AsString := Eklenenler.fieldbyname('ETKENMADDE').AsString;
               frmHastaRecete.ADO_RECETE_DETAY.FieldByName('ilacAdi').AsString := Eklenenler.fieldbyname('Formu').AsString;
 
@@ -310,7 +311,7 @@ try
               ado := TADOQuery.Create(nil);
               try
 
-                 SIKKullanimaEkle(3);
+                 SIKKullanimaEkle(0);
 
                  ack := IlacReceteAciklama(_dosyaNo_,_gelisNo_,Eklenenler.fieldbyname('ETKENMADDE').AsString,
                                             inttostr(frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimAdet2').AsInteger *
@@ -568,8 +569,8 @@ try
                             + _gelisNo_ + ','
                             + QuotedStr(Eklenenler.fieldbyname('ETKENMADDE').AsString) + ','
                             + QuotedStr(Eklenenler.fieldbyname('Formu').AsString) + ','
-                            + doz1 + ','
                             + doz2 + ','
+                            + doz1 + ','
                             + peryot + ')';
 
          datalar.QueryExec(sql);

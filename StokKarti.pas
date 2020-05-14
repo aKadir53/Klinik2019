@@ -91,9 +91,10 @@ begin
 
    datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridStokKullanim')).Dataset,
 
-   '   select s.tarih,h.dosyaNo,h.HASTAADI,h.hastasoyadI from hareketlerSeans s '+
+   '   select s.tarih,h.dosyaNo,h.HASTAADI,h.hastasoyadI,Adet from hareketlerIS s '+
    '   join hastaKart h on h.dosyaNo = s.dosyaNo ' +
-   '   where DIYALIZOR = ' + QuotedStr(TcxTextEdit(FindComponent('CODE')).EditValue));
+   '   where s.code = ' + QuotedStr(TcxTextEdit(FindComponent('CODE')).EditValue) +
+   ' order by s.Tarih desc');
 
 
    ado := TADOQuery.Create(nil);
@@ -151,7 +152,9 @@ begin
 
   setDataStringB(self,'id','ID',Kolon1,'',70,Stoklar,True,nil,'','',False,True,-100);
 
-  setDataString(self,'CODE','Stok Kodu',Kolon1,'',120,True);
+  setDataString(self,'UBBCODE','Barkod Kodu(UBB)',Kolon1,'',120,True);
+  setDataString(self,'CODE','Sut Kodu',Kolon1,'',120,True);
+
   setDataString(self,'NAME1','Stok Tanimi',Kolon1,'',250,True);
   setDataString(self,'NAME2','Stok Tanimi 2',Kolon1,'',250,True);
 
@@ -166,10 +169,14 @@ begin
   TcxImageComboKadir(FindComponent('Grup')).Properties.OnEditValueChanged := PropertiesEditValueChanged;//SirketlerPropertiesChange;
 
 
+  setDataStringIC(self,'MALTURU','Malzeme Turu',Kolon1,'',120,'Medula_MalzemeTuru','kod','tanimi','',1);
+
   setDataString(self,'firmaTanimliyiciDef','Firma Tanimliyici Kod',Kolon1,'',120,True);
-  Tarih := TcxDateEditKadir.Create(nil);
-  Tarih.ValueTip := tvString;
-  setDataStringKontrol(self,Tarih,'enSonAlisTarihi','En Son Aliþ Tarihi',Kolon1,'',120,0,alNone,'');
+
+
+  Tarih := TcxDateEditKadir.Create(self);
+  Tarih.ValueTip := tvDate;
+  setDataStringKontrol(self,Tarih,'enSonAlisTarihi','En Son Aliþ Tarihi',Kolon1,'',120);
 
   setDataStringCurr(self,'MinMiktar','Min Miktar',Kolon1,'',80,'0',1);
 
@@ -186,12 +193,12 @@ begin
   setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridStokAlis')) ,'cxGridStokAlis','Ürün Alýþlarý',Kolon2,'',450,200);
 
 
-  SetGrid(CreateGrid('cxGridStokKullanim',self,False),'Tarih,HASTAADI,HASTASOYADI',
-               'TcxDateEditProperties,TcxTextEditProperties,TcxTextEditProperties',
-               'SeansTarihi,HastaAdý,HastaSoyadý',
-               '80,100,100',
-               '0,0,0',
-               'True,True,True'
+  SetGrid(CreateGrid('cxGridStokKullanim',self,False),'Tarih,HASTAADI,HASTASOYADI,Adet',
+               'TcxDateEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+               'Tarih,HastaAdý,HastaSoyadý,Adet',
+               '80,100,100,50',
+               '0,0,0,0',
+               'True,True,True,True'
                );
 
   setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridStokKullanim')) ,'cxGridStokKullanim','Ürün Kullanýmlarý',Kolon2,'',450,200);

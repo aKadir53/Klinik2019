@@ -15,7 +15,8 @@ uses
   cxContainer, cxMaskEdit, cxDropDownEdit, Vcl.Menus, dxSkinsdxStatusBarPainter,
   dxStatusBar, cxCalendar, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
   dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
-  dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters;
+  dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters, ekbasereport, ekrtf,
+  ekfunc, Vcl.Imaging.jpeg, cxImage;
 
 type
   TfrmSKS_Dokumanlar = class(TGirisForm)
@@ -80,6 +81,15 @@ type
     L1: TMenuItem;
     cxStyle2: TcxStyle;
     gridDokumanlarColumn3: TcxGridDBColumn;
+    EkRTF1: TEkRTF;
+    EkUDFList1: TEkUDFList;
+    cxImage1: TcxImage;
+    Y1: TMenuItem;
+    B1: TMenuItem;
+    D3: TMenuItem;
+    Y2: TMenuItem;
+    R2: TMenuItem;
+    R3: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnListClick(Sender: TObject);
@@ -99,6 +109,8 @@ type
     procedure gridDokumanlarDblClick(Sender: TObject);
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure TopPanelButonClick(Sender: TObject);
+    procedure EkUDFList1Functions0Calculate(Sender: TObject; Args: TEkUDFArgs;
+      ArgCount: Integer; UDFResult: TObject);
   private
     { Private declarations }
   public
@@ -131,7 +143,7 @@ procedure TfrmSKS_Dokumanlar.TopPanelPropertiesChange(Sender: TObject);
 begin
   inherited;
 
-  if varToStr(chkList.EditValue) = '1' then
+  if copy(varToStr(chkList.EditValue),1,1) = '1' then
   begin
      gridDokumanlarColumn1.GroupIndex := -1;
      KapsamAdi.GroupIndex := -1;
@@ -235,10 +247,17 @@ begin
   TopPanel.Visible := true;
 
 
+
   chkList.Properties.Items.Clear;
   ii := chkList.Properties.Items.Add;
   ii.Caption := 'Liste Görünüm';
 
+  ii := chkList.Properties.Items.Add;
+  ii.Caption := 'Revizyon Sayfasýný Gizle';
+
+  chkList.Width := 400;
+
+  chkList.EditValue := '01';
 
   //gridDokumanlar.DataController.DataSource := DataSource;
   cxGrid2.Dataset.Connection := Datalar.ADOConnection2;
@@ -480,6 +499,11 @@ var
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
  TopluDataset : TDataSetKadir;
+ ado : TADOQuery;
+ Blob : TADOBlobStream;
+ dosya : TOpenDialog;
+ dosyaTip , tableName , where , filename , rev  : string;
+
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -498,26 +522,105 @@ begin
             RevOnay(TMenuItem(sender).name,gridDokumanlar.DataController.DataSource.DataSet);
           end;
 
-   -10 : begin
-           DurumGoster(True,False,'Döküman  Yükleniyor , Lütfen Bekleyiniz');
-           try
-
-             if Ado_Dokumanlar.FieldByName('PDFVar').AsInteger = 1
+   -104 : begin
+             if Ado_Dokumanlar.FieldByName('DosyaTip').AsString <> ''
              then begin
-               sql := 'select isnull(DR.PDF,D.PDF) PDF from SKS_Dokumanlar D ' +
-                                             ' left join (Select top 1 dokumanid,PDF from SKS_DokumanlarRev where dokumanid = ' + Ado_Dokumanlar.FieldByName('id').AsString +
-							                               ' order by rev desc) DR on DR.dokumanid = D.id ' +
-                                             ' where id = ' + Ado_Dokumanlar.FieldByName('id').AsString;
-               DokumanAc(
-                         datalar.QuerySelect(sql),
-                                             'PDF',
-                         Ado_Dokumanlar.FieldByName('dokumanNo').AsString+'_PDF',True,'PDF')
+               DurumGoster(True,False,'Dosya Þablonu Yükleniyor , Lütfen Bekleyiniz');
+               try
+                   sql := 'select isnull(DR.PDF,D.PDF) PDF from SKS_Dokumanlar D ' +
+                                                 ' left join (Select top 1 dokumanid,PDF from SKS_DokumanlarRev where dokumanid = ' + Ado_Dokumanlar.FieldByName('id').AsString +
+                                                 ' order by rev desc) DR on DR.dokumanid = D.id ' +
+                                                 ' where id = ' + Ado_Dokumanlar.FieldByName('id').AsString;
 
-             end
-             else
-             begin
+                   ado := datalar.QuerySelect(sql);
+                   try
+                        DokumanAc(ado,'PDF',
+                                  Ado_Dokumanlar.FieldByName('dokumanNo').AsString+'_S',True,
+                                  Ado_Dokumanlar.FieldByName('DosyaTip').AsString);
+                    finally
+                     ado.free;
+                   end;
 
+               finally
+                 DurumGoster(False);
+               end;
+             end;
+          end;
 
+   -101 : begin
+             if Ado_Dokumanlar.FieldByName('DosyaTip').AsString <> ''
+             then begin
+               DurumGoster(True,False,'Dosya Gösteriliyor , Lütfen Bekleyiniz');
+               try
+                   sql := 'select isnull(DR.PDF,D.PDF) PDF from SKS_Dokumanlar D ' +
+                                                 ' left join (Select top 1 dokumanid,PDF from SKS_DokumanlarRev where dokumanid = ' + Ado_Dokumanlar.FieldByName('id').AsString +
+                                                 ' order by rev desc) DR on DR.dokumanid = D.id ' +
+                                                 ' where id = ' + Ado_Dokumanlar.FieldByName('id').AsString;
+
+                   ado := datalar.QuerySelect(sql);
+                   try
+                       // ifThen(Ado_Dokumanlar.FieldByName('DosyaTip').AsString = 'RTF'
+                        DokumanAc(ado,'PDF',
+                                  Ado_Dokumanlar.FieldByName('dokumanNo').AsString+'_S',
+
+                                  False,
+                                  Ado_Dokumanlar.FieldByName('DosyaTip').AsString);
+
+                        if Ado_Dokumanlar.FieldByName('DosyaTip').AsString = 'RTF'
+                        then begin
+                          //  EkRTFBlobToinFile(ado,'PDF', EkRtf1);
+                           EkRTF1.InFile := Ado_Dokumanlar.FieldByName('dokumanNo').AsString + '_S.RTF';
+                           EkRTF1.OutFile := Ado_Dokumanlar.FieldByName('dokumanNo').AsString + '.RTF';
+                            EkRtf1.VarList.Clear;
+                           EkRTF1.ClearVars;
+                           EkRTF1.CreateVar('dokumanNo', Ado_Dokumanlar.FieldByName('dokumanNo').AsString);
+                           EkRTF1.CreateVar('rev', Ado_Dokumanlar.FieldByName('rev').AsString);
+                           EkRTF1.CreateVar('revTarihi', Ado_Dokumanlar.FieldByName('revTarihi').AsString);
+                           EkRTF1.CreateVar('adi', Ado_Dokumanlar.FieldByName('adi').AsString);
+                           EkRTF1.CreateVar('yayinTarih', Ado_Dokumanlar.FieldByName('yayinTarih').AsString);
+                           Ekrtf1.ExecuteOpen([], SW_SHOW);
+                        end;
+
+                   finally
+                     ado.free;
+                   end;
+
+               finally
+                 DurumGoster(False);
+               end;
+             end;
+          end;
+  -103 : begin
+
+           DurumGoster(True,False,'Döküman  Geçmiþi Gösteriliyor , Lütfen Bekleyiniz');
+           try
+               if copy(chkList.EditValue,2,1) = '0'
+               then begin
+                 TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+                 TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
+                 sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
+                      ' join SKS_DokumanKapsamlari DK on DK.kod = D.Kapsam ' +
+                      ' join SKS_DokumanTurleri DT on DT.kod = D.tur ' +
+                      ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id'+ // and DR.aktif = 1' +
+                      ' where D.id = ' + Ado_Dokumanlar.FieldByName('id').AsString;
+                 TopluDataset.Dataset2 := datalar.QuerySelect(sql);
+
+                 PrintYapDokuman(Ado_Dokumanlar.FieldByName('dokumanNo').AsString +
+                  ifThen(Ado_Dokumanlar.FieldByName('rev').AsString <> '',
+                  '_' + Ado_Dokumanlar.FieldByName('rev').AsString,''),
+                          Ado_Dokumanlar.FieldByName('adi').AsString ,
+                          inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTOnIzle,nil,
+                          'Page1');
+               end;
+           finally
+            DurumGoster(False);
+           end;
+
+         end;
+
+ -102 : begin
+             DurumGoster(True,False,'Döküman Gösteriliyor , Lütfen Bekleyiniz');
+             try
                  TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
                  TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
                  sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
@@ -532,13 +635,15 @@ begin
                   ifThen(gridDokumanlar.DataController.DataSource.dataset.FieldByName('rev').AsString <> '',
                   '_' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('rev').AsString,''),
                           gridDokumanlar.DataController.DataSource.dataset.FieldByName('adi').AsString ,
-                          inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTOnIzle);
+                          inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTOnIzle,nil,
+                          ifThen(copy(chkList.EditValue,2,1) = '1','Page2',''));
 
-
-           end;
            finally
               DurumGoster(False,False,'Döküman  Yükleniyor , Lütfen Bekleyiniz');
            end;
+        end;
+
+   -10 : begin
          end;
 
     -11 : begin
@@ -551,6 +656,40 @@ begin
            finally
               DurumGoster(False,False,'Döküman  Yükleniyor , Lütfen Bekleyiniz');
            end;
+         end;
+
+    -13 : begin
+              DurumGoster(True,False,Ado_Dokumanlar.FieldByName('dokumanNo').AsString + ' , Dosya Yükleniyor , Lütfen Bekleyiniz');
+
+              if Ado_Dokumanlar.FieldByName('rev').AsString = ''
+              then begin
+                 tableName := 'SKS_Dokumanlar';
+                 where := ' id = ' + Ado_Dokumanlar.FieldByName('id').AsString;
+              end
+              else
+              begin
+                 rev := Ado_Dokumanlar.FieldByName('rev').AsString;
+                 tableName := 'SKS_DokumanlarRev';
+                 where := ' dokumanid = ' + Ado_Dokumanlar.FieldByName('id').AsString + ' and rev = ' + rev;
+              end;
+
+              try
+                  filename := ('C:\RTF\' + Ado_Dokumanlar.FieldByName('dokumanNo').AsString + '.RTF');
+
+                  if not FileExists(filename)
+                  then begin
+                   ShowMessageSkin(filename,' Dosya Bulunamadý','','info');
+                   exit;
+                  end;
+
+                  sql := 'select * from ' + tableName +
+                          ' where ' + where;
+
+                  DokumanYuklePDF(datalar.QuerySelect(sql),'PDF',filename);
+                  Ado_Dokumanlar.Requery();
+              finally
+                DurumGoster(False,False);
+              end;
          end;
 
     -12 : begin
@@ -571,6 +710,17 @@ begin
 
 end;
 
+end;
+
+procedure TfrmSKS_Dokumanlar.EkUDFList1Functions0Calculate(Sender: TObject;
+  Args: TEkUDFArgs; ArgCount: Integer; UDFResult: TObject);
+begin
+    With UDFResult as TPicture do
+     begin
+        Bitmap.Width  := cxImage1.Width;
+        Bitmap.Height := cxImage1.Height;
+        Bitmap.Canvas.Draw(0,0,cxImage1.Picture.Graphic);
+     end;
 end;
 
 end.

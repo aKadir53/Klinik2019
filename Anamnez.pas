@@ -154,7 +154,7 @@ begin
 case self.Tag of
  TagfrmAnamnez ,TagfrmIseGiris
   : begin
-        Tag := TagfrmAnamnez;
+       // Tag := TagfrmAnamnez;
         ClientHeight := formYukseklik;
         ClientWidth := formGenislik;
         IseGirisMuayene.Visible := False;
@@ -165,8 +165,8 @@ case self.Tag of
         cxIptal.Visible := False;
         Menu := PopupMenu1;
 
-       if self.Tag = TagfrmAnamnez
-       then begin
+     //  if self.Tag = TagfrmAnamnez
+    //   then begin
         setDataStringBLabel(self,'lblSikayet',Kolon1,'',550,'Hastanýn Þikayeti');
         setDataStringMemo(self,'SIKAYETLERI','',Kolon1,'',550,80);
         addButton(self,nil,'btnSikayet','','Þikayet Seç',Kolon1,'',120,ButtonClick,1);
@@ -198,7 +198,7 @@ case self.Tag of
        // tableColumnDescCreate;
 
         Result := True;
-       end;
+     //  end;
 
        if self.Tag = TagfrmIseGiris
        then begin
@@ -239,11 +239,11 @@ begin
       end;
       -2 : begin
              YeniRecete(ReceteYeni,_dosyaNo_,_gelisNo_,_MuayeneProtokolNo_);
-             F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet,'');
+             F := FormINIT(TagfrmPersonelRecete,GirisFormRecord,ikEvet,'');
              if F <> nil then F.ShowModal;
            end;
       -26 : begin
-             F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet,'');
+             F := FormINIT(TagfrmPersonelRecete,GirisFormRecord,ikEvet,'');
              if F <> nil then F.ShowModal;
             end;
 

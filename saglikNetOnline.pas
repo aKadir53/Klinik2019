@@ -157,14 +157,29 @@ end;
 
 procedure TfrmSaglikNetOnline.KararDestekBrowser;
 var
-  d,u,s : string;
+  d,u,s , url: string;
+  F : TGirisForm;
+  GirisFormRecord : TGirisFormRecord;
 begin
-  u := datalar._userSaglikNet2_;
-  s := datalar._passSaglikNet2_;
-  Application.CreateForm(TfrmMedEczane, frmMedEczane);
-  frmMedEczane.yukle(u,s,'','ENabiz');
-  frmMedEczane.ShowModal;
-  frmMedEczane := nil;
+   u := datalar._userSaglikNet2_;
+   s := datalar._passSaglikNet2_;
+
+   if FindTab(AnaForm.sayfalar,TagfrmENabiz)
+   Then begin
+     (*
+     F := TGirisForm(FormClassType(TagfrmENabiz));
+     TfrmMedEczane(F)._user := u;
+     TfrmMedEczane(F)._pas := s;
+     TGirisForm(FormClassType(TagfrmENabiz)).Init(F);
+     *)
+   end
+   Else begin
+    F := FormINIT(TagfrmENabiz,self,GirisFormRecord,'',NewTab(AnaForm.sayfalar,TagfrmENabiz),ikHayir,'Giriþ');
+    TfrmMedEczane(F)._user := u;
+    TfrmMedEczane(F)._pas := s;
+    if F <> nil then F.show;
+   end;
+
 end;
 
 procedure TfrmSaglikNetOnline.cxListeleClick(Sender : TObject);
@@ -193,6 +208,14 @@ begin
   inherited;
   if datalar.KontrolUserSet = True then exit;
 
+    case TControl(sender).Tag of
+   -20 : begin
+            KararDestekBrowser;
+         end;
+    end;
+
+  if cxGrid1.Dataset.Eof then exit;
+    
   r := gridListe.DataController.DataControllerInfo.FocusedRecordIndex;
   dosyaNo := cxGrid1.Dataset.FieldByName('dosyaNo').AsString; //TCtoDosyaNo(gridListe.DataController.Values[r, 0]);
   sysTakipNo := cxGrid1.Dataset.FieldByName('sysTakipNo').AsString; //TCtoDosyaNo(gridListe.DataController.Values[r, 0]);
@@ -237,10 +260,6 @@ begin
               if Form <> nil then Form.ShowModal;
          end;
 
-
-   -20 : begin
-            KararDestekBrowser;
-         end;
    -21 : begin
              datalar.Login;
              ShowMessageSkin(
@@ -647,8 +666,8 @@ var
 begin
    sql := 'delete from KurumsysTakipNoList ' +
           ' from KurumsysTakipNoList K ' +
-          ' join Hasta_gelisler g on g.sysTakipNo = K.sysTakipNo ' +
-          ' join HastaKart hk on hk.dosyaNO = g.dosyaNo ' +
+          ' left join Hasta_gelisler g on g.sysTakipNo = K.sysTakipNo ' +
+          ' left join HastaKart hk on hk.dosyaNO = g.dosyaNo ' +
           ' where islemTarihi = ' + QuotedStr(tarihal(cxDateEdit3.Date)) + ' and hk.sirketKod = ' + QuotedStr(datalar.AktifSirket);
    datalar.QueryExec(sql);
 

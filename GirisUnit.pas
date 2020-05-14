@@ -4,6 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  System.Diagnostics,
   Dialogs, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,Math,
   cxContainer, cxEdit,cxCalendar,  Menus, dxSkinscxPCPainter, cxPCdxBarPopupMenu,
   Data.Win.ADODB, cxPC, Vcl.StdCtrls, cxButtons, cxGroupBox, cxLabel,kadir,
@@ -24,7 +25,8 @@ uses
   dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver,
   dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008, dxSkinValentine,
   dxSkinXmas2008Blue, cxRadioGroup, cxCheckComboBox, cxCheckGroup, Vcl.ImgList,
-  JvExControls, JvAnimatedImage, JvGIFCtrl,ShellApi;
+  JvExControls, JvAnimatedImage, JvGIFCtrl,ShellApi, cxSpinEdit, cxTimeEdit,
+  RxClock;
 type
   TControlAccess = class(TControl);
   TcxLookAndFeelAccess = class(TcxLookAndFeel);
@@ -122,6 +124,8 @@ type
     _CINSIYET_: TcxImageComboKadir;
     Timer1: TTimer;
     RdGroup: TcxRadioGroup;
+    pGecenSure: TcxTimeEdit;
+    pSaat: TRxClock;
 
     procedure cxKaydetClick(Sender: TObject);virtual;
     procedure cxButtonCClick(Sender: TObject);
@@ -174,6 +178,11 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure Timer1Timer(Sender: TObject);
     procedure Image1Click(Sender: TObject);
+    procedure pSaatGetTime(Sender: TObject; var ATime: TDateTime);
+
+    procedure MaskEditPropertiesValidate(Sender: TObject;
+     var DisplayValue: Variant; var ErrorText: TCaption; var Error: Boolean);virtual;
+
 
   private
     F_dosyaNO_ : string;
@@ -224,6 +233,11 @@ type
     F_kilo_ : double;
     F_yas_ : integer;
     F_value_ : Variant;
+    F_pasifSebeb_ : Variant;
+
+    F_SaveKontrol : Boolean;
+
+    procedure SetSaveKontrol(const value : Boolean);
 
   protected
     F_IDENTITY : Integer;
@@ -357,6 +371,8 @@ type
     property _kilo_ : double read F_kilo_ write F_kilo_;
     property _yas_ : integer read F_yas_ write F_yas_;
     property _value_ : variant read F_value_ write F_value_;
+    property _pasifSebeb_ : variant read F_pasifSebeb_ write F_pasifSebeb_;
+    property _SaveKontrol : Boolean read F_SaveKontrol write SetSaveKontrol Default False ;
   end;
 
 const
@@ -380,6 +396,7 @@ var
   _SQLRUN_ : string;
   Lxxxx : TListeAc;
   oldRenk : TColor;
+  StartTime : TTime;
 implementation
 
 uses AnaUnit,Data_Modul,FormKontrolUserSet;
@@ -624,6 +641,14 @@ begin
    end;
 end;
 
+procedure TGirisForm.pSaatGetTime(Sender: TObject; var ATime: TDateTime);
+var
+  b : TTime;
+begin
+
+   pGecenSure.Time := ATime - StartTime;
+end;
+
 procedure TGirisForm.TopPanelButonClick(Sender: TObject);
 begin
     case TcxButtonKadir(sender).Tag of
@@ -674,12 +699,16 @@ end;
 procedure TGirisForm.DurumGoster(Visible : Boolean = True; pBarVisible : Boolean = False ;
                                  msj : string = 'Ýþleminiz Yapýlýyor , lütfen bekleyiniz...';
                                  imageIndex : integer = 0;PbarMax : integer = 0);
+
 begin
    pnlDurum.Left:=(self.width div 2) - (pnlDurum.Width div 2);
    pnlDurum.Top:=(self.height div 2) - (pnlDurum.height div 2);
    pnlDurum.BringToFront;
    pnlDurum.Visible := Visible;
    pBar.Visible := pBarVisible;
+   pGecenSure.Visible := pBarVisible;
+   pGecenSure.Time := strToTime('00:00:00');
+   StartTime:= Time;
    pBar.Position := 0;
    pBar.Properties.Max := PbarMax;
    pnlDurumDurum.Caption := msj;
@@ -748,6 +777,7 @@ function TGirisForm.IsClearControl(const aComponent: TComponent): Boolean;
 begin
   Result :=
     (SameText (aComponent.ClassName, 'TcxTextEdit')) or
+    (SameText (aComponent.ClassName, 'TcxMaskEdit')) or
     (SameText (aComponent.ClassName, 'TcxTextEditKadir')) or
     (SameText (aComponent.ClassName, 'TcxButtonEdit')) or
     (SameText (aComponent.ClassName, 'TcxButtonEditKadir')) or
@@ -773,6 +803,7 @@ function TGirisForm.IsEnableControl(const aComponent: TComponent): Boolean;
 begin
   Result :=
     (SameText (aComponent.ClassName, 'TcxTextEdit')) or
+    (SameText (aComponent.ClassName, 'TcxMaskEdit')) or
     (SameText (aComponent.ClassName, 'TcxTextEditKadir')) or
     (SameText (aComponent.ClassName, 'TcxButtonEdit')) or
     (SameText (aComponent.ClassName, 'TcxButtonEditKadir')) or
@@ -809,9 +840,13 @@ begin
 end;
 
 function TGirisForm.IsInputZorunluControl(const aComponent: TComponent): Boolean;
+var
+ cl : string;
 begin
+  cl := aComponent.ClassName;
   Result :=
     (SameText (aComponent.ClassName, 'TcxTextEdit')) or
+    (SameText (aComponent.ClassName, 'TcxMaskEdit')) or
     (SameText (aComponent.ClassName, 'TcxTextEditKadir')) or
     (SameText (aComponent.ClassName, 'TcxButtonEdit')) or
     (SameText (aComponent.ClassName, 'TcxButtonEditKadir')) or
@@ -870,7 +905,7 @@ begin
     setDataStringCurr(self,'UF','UF',Grp,'',60,'0',0);
     setDataStringCurr(self,'cikisKilo','Çýkýþ Kilo',Grp,'',60,'#.#0',0);
 
-    TcxTextEdit(FindComponent('kilo')).Properties.ReadOnly := True;
+    TcxTextEdit(FindComponent('kilo')).Properties.ReadOnly := False;
     TcxTextEdit(FindComponent('OncekiCikisKilo')).Properties.ReadOnly := True;
     TcxTextEdit(FindComponent('CEKILECEKSIVI')).Properties.ReadOnly := True;
     TcxTextEdit(FindComponent('UF')).Properties.ReadOnly := True;
@@ -904,7 +939,11 @@ begin
     setDataStringIC(self,'Diyalizor','Diyalizör',Grp,'',120,'Diyalizorler','Code','Name1','',1);
 
     setDataStringIC(self,'D','Diyalizat',Grp,'',120,'Diyaliz_Diyalizat','Kod','Tanimi','',1);
-    setDataStringIC(self,'GIRISYOLU','Damar Giriþ',Grp,'',120,'Diyaliz_DamarGiris','Kod','Tanimi','',1);
+    setDataStringIC(self,'GIRISYOLU','Damar Giriþ',Grp,'GY',120,'Diyaliz_DamarGiris','Kod','Tanimi','',1);
+
+    if self.Tag = TagfrmPopup
+    then
+     setDataStringChk(self,'GIRISYOLU_ENF','',Grp,'GY',150,ctint,'Enfeksiyon');
 
     D.Name := 'txtYA';
     ComboDoldur3('select tanimi from Diyaliz_YA',D,0,-1);
@@ -923,7 +962,7 @@ begin
     setDataStringC(self,'HCOOO','HCO3',Grp,'_isi_',50,'25,26,27,28,29,30,31,32,33,34,35,36');
     setDataStringCurr(self,'ISI','ISI',Grp,'_isi_',50,'0',1);
     setDataStringC(self,'APH','APH',Grp,'aphNa',50,D.Properties.Items);
-    setDataStringC(self,'Na','Na',Grp,'aphNa',50,'136,137,138,139,140,141,142,143,144,145,146,147,148');
+    setDataStringC(self,'Na','Na',Grp,'aphNa',50,'135,136,137,138,139,140,141,142,143,144,145,146,147,148');
 
     D.name := 'txtIgne';
     ComboDoldur3('select tanimi from Diyaliz_Igne',D,0,-1);
@@ -970,6 +1009,11 @@ begin
   end;
 end;
 
+
+procedure TGirisForm.SetSaveKontrol(const value: Boolean);
+begin
+    F_SaveKontrol := value;
+end;
 
 function TGirisForm.GetFormID;
 begin
@@ -1286,6 +1330,24 @@ begin
   end;
 end;
 
+procedure TGirisForm.MaskEditPropertiesValidate(Sender: TObject;
+  var DisplayValue: Variant; var ErrorText: TCaption; var Error: Boolean);
+var
+ Etiket : String;
+begin
+  if Error
+  then begin
+    Etiket := TdxLayoutGroup(FindComponent('dxLa' + TcxMaskEdit(Sender).Name)).Caption;
+    ErrorText := Etiket + ' Hatalý';
+    ShowMessageSkin(DisplayValue,ErrorText,'','info');
+    TcxMaskEdit(Sender).SetFocus;
+    Error := False;
+  end;
+
+
+
+end;
+
 procedure TGirisForm.sqlRunLoad;
 var
  i : integer;
@@ -1302,9 +1364,11 @@ begin
 
   for i := 0 to self.ComponentCount - 1 do
   begin
-    if IsLoadControl(components [i])
+    _obje_ := TcxCustomEdit(self.Components[i]);
+
+    if IsLoadControl(_obje_)//(components [i])
     then begin
-      _obje_ := TcxCustomEdit(self.Components[i]);
+     // _obje_ := TcxCustomEdit(self.Components[i]);
       try
 
        if (self.Components[i].ClassName = 'TcxCheckGroupKadir')
@@ -1686,13 +1750,15 @@ begin
 
   if (Key = 13) //and ((TcxCustomEdit(Sender).ClassName <> 'TcxImageComBoBox') or (TcxCustomEdit(Sender).ClassName <> 'TcxImageComBoKadir'))
   then begin
+      try
         if (TcxButtonEditKadir(sender).indexField = True)
         then begin
           indexKaydiBul(TcxCustomEdit(sender).EditingValue,TcxButtonEditKadir(sender).name);
         end;
          TWinControlAccess(GetParentForm(Self)).SelectNext(GetParentForm(Self).ActiveControl,
            not(ssShift in Shift), True);
-
+      except
+      end;
   end
   else begin
    // if sqlRun.State <> dsNewValue then sqlRun.Edit;
@@ -1834,11 +1900,13 @@ begin
         cxEditMask.Text := DefaultText;
         cxEditMask.Tag := _Tag_;
         cxEditMask.Properties.ReadOnly := ReadOnly;
-        cxEditMask.Properties.ValidateOnEnter := True;
+
+        cxEditMask.Properties.ValidateOnEnter := False;
         cxEditMask.Properties.CharCase := EditCharCase;
       // cxEditMask.BosOlamaz := Zorunlu;//KontrolZorunlumu(TForm(sender).Tag,fieldName); //Zorunlu;
         cxEditMask.Width := uzunluk;
         cxEditMask.Properties.EditMask := EditMask;
+        cxEditMask.Properties.OnValidate := MaskEditPropertiesValidate;
         control := cxEditMask;
    end;
 
@@ -2145,6 +2213,7 @@ begin
   cxEditC.Properties.ImmediatePost := True;
   cxEditC.Properties.ImmediateUpdateText := True;
   cxEditC.Properties.ClearKey := VK_DELETE;
+
 end;
 
 procedure TGirisForm.setDataStringC(sender : Tform ; fieldName,caption : string;
@@ -2842,7 +2911,7 @@ var
   aModalResult : TModalResult;
 begin
   CanClose := True;//þ
-  if sqlRun.State in [dsEdit, dsInsert] then
+  if (sqlRun.State in [dsEdit, dsInsert]) and (_SaveKontrol = True) then
   begin
     aModalResult := dialogs.MessageDlg ('Kaydedilmemiþ Bilgiler var, kaydedilsin mi ?', mtConfirmation, [mbYes, mbNo, mbCancel], 0);
     case aModalResult of
@@ -2884,7 +2953,11 @@ begin
   if (key = vk_f12) and (Shift = [ssCtrl,ssShift])
   then begin
     ShowMessageSkin('Form Tag :' + inttostr(TGirisForm(self).tag), 'Form Name : ' + TGirisForm(self).name + ' - ' + ' Unit Name : ' + TGirisForm(self).UnitName,
-                       'Class Name : ' + TGirisForm(self).ClassName,'info');
+                       'Class Name : ' + TGirisForm(self).ClassName + #13 +
+                       'Form Size : ' + intTostr(TGirisForm(self). ClientHeight) + 'x' +intTostr(TGirisForm(self). ClientWidth)
+                       ,
+
+                       'info');
   end;
 
 
@@ -2900,10 +2973,10 @@ procedure TGirisForm.FormResize(Sender: TObject);
 var
  Fr : Double;
 begin
-//  Fr := min(ClientWidth/Sayfalar.Width,ClientHeight/Sayfalar.Height);
+  Fr := min(ClientWidth/Sayfalar.Width,ClientHeight/Sayfalar.Height);
  // pnlDurum.Left := round((Self.Width/2) - (pnlDurum.Width/2));
  // pnlDurum.Top := round((Self.ClientHeight/2) - (pnlDurum.Height/2));
-//  sayfalar.ScaleBy(Trunc(FR*100),100);
+  sayfalar.ScaleBy(Trunc(FR*100),100);
 end;
 
 procedure TGirisForm.FormShow(Sender: TObject);
@@ -2938,6 +3011,14 @@ begin
           GridToSayfaClient(TcxGrid(TdxLayoutControl(self.Components[i]).Controls[r]).Name,self);
        end;
   end;
+
+(*
+  if _pasifSebeb_ = 5
+  Then begin
+    Disabled(self,True);
+  end;
+  *)
+
 
  // StringReplace(cxTab.Tabs[0].Caption,'Yükleniyor...','',[rfReplaceAll]);
 

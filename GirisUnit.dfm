@@ -672,6 +672,10 @@ object GirisForm: TGirisForm
     object sayfa1: TcxTabSheet
       Caption = 'sayfa1'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Sayfa1_dxLayoutControl1: TdxLayoutControl
         Left = 0
         Top = 0
@@ -1500,11 +1504,41 @@ object GirisForm: TGirisForm
       Width = 436
       object pBar: TcxProgressBar
         Left = 2
-        Top = 46
+        Top = 49
         Align = alBottom
         TabOrder = 0
         Visible = False
+        ExplicitTop = 46
         Width = 432
+      end
+      object pGecenSure: TcxTimeEdit
+        Left = 314
+        Top = 1
+        EditValue = 0d
+        Enabled = False
+        ParentFont = False
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.ReadOnly = False
+        Properties.SpinButtons.Visible = False
+        Style.BorderStyle = ebsNone
+        Style.Font.Charset = DEFAULT_CHARSET
+        Style.Font.Color = clBlack
+        Style.Font.Height = -11
+        Style.Font.Name = 'Tahoma'
+        Style.Font.Style = [fsBold]
+        Style.IsFontAssigned = True
+        TabOrder = 1
+        Visible = False
+        Width = 121
+      end
+      object pSaat: TRxClock
+        Left = 14
+        Top = 3
+        Width = 35
+        Height = 22
+        Visible = False
+        OnGetTime = pSaatGetTime
       end
     end
   end
@@ -1537,6 +1571,7 @@ object GirisForm: TGirisForm
       OnExit = cxEditExit
       BosOlamaz = False
       ValueTip = tvString
+      ExplicitHeight = 21
       Width = 98
     end
     object txtTopPanelTarih2: TcxDateEditKadir
@@ -1559,6 +1594,7 @@ object GirisForm: TGirisForm
       OnExit = cxEditExit
       BosOlamaz = False
       ValueTip = tvString
+      ExplicitHeight = 21
       Width = 98
     end
     object btnListTopPanel: TcxButtonKadir
@@ -1601,6 +1637,7 @@ object GirisForm: TGirisForm
       TabOrder = 3
       OnEnter = cxEditEnter
       OnExit = cxEditExit
+      ExplicitHeight = 21
       Width = 30
     end
     object txtSeansTopPanel: TcxComboBox
@@ -1631,6 +1668,7 @@ object GirisForm: TGirisForm
       TabOrder = 4
       OnEnter = cxEditEnter
       OnExit = cxEditExit
+      ExplicitHeight = 21
       Width = 50
     end
     object SysTakipNoVar: TcxImageComboKadir
@@ -1656,6 +1694,7 @@ object GirisForm: TGirisForm
       OnExit = cxEditExit
       BosOlamaz = False
       FilterSet = fsNone
+      ExplicitHeight = 21
       Width = 45
     end
     object ENabizMesajTipi: TcxImageComboKadir
@@ -1681,6 +1720,7 @@ object GirisForm: TGirisForm
       OnExit = cxEditExit
       BosOlamaz = False
       FilterSet = fsNone
+      ExplicitHeight = 21
       Width = 35
     end
     object AktifPasifTopPanel: TcxImageComboKadir
@@ -1704,6 +1744,10 @@ object GirisForm: TGirisForm
         item
           Description = 'Misafir'
           Value = '2'
+        end
+        item
+          Description = 'T'#252'm'#252
+          Value = ''
         end>
       Properties.OnChange = TopPanelPropertiesChange
       Style.Font.Charset = DEFAULT_CHARSET
@@ -1716,8 +1760,9 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       BosOlamaz = False
-      ItemList = '1;Aktif,0;Pasif,2;Misafir'
+      ItemList = '1;Aktif,0;Pasif,2;Misafir,;T'#252'm'#252
       FilterSet = fsDiyalizAktifPasif
+      ExplicitHeight = 21
       Width = 88
     end
     object DiyalizTipTopPanel: TcxImageComboKadir
@@ -1744,6 +1789,7 @@ object GirisForm: TGirisForm
       OnKeyDown = cxTextEditKeyDown
       BosOlamaz = False
       FilterSet = fsNone
+      ExplicitHeight = 21
       Width = 139
     end
     object txtDonemTopPanel: TcxDonemComboKadir
@@ -1768,6 +1814,7 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       BosOlamaz = False
+      ExplicitHeight = 21
       Width = 109
     end
     object KurumTipTopPanel: TcxImageComboKadir
@@ -1796,6 +1843,7 @@ object GirisForm: TGirisForm
       DisplayField = 'tanimi'
       BosOlamaz = False
       FilterSet = fsNone
+      ExplicitHeight = 21
       Width = 115
     end
     object chkList: TcxCheckGroup
@@ -1854,19 +1902,24 @@ object GirisForm: TGirisForm
       OnEnter = cxEditEnter
       OnExit = cxEditExit
       OnKeyDown = cxTextEditKeyDown
+      ExplicitHeight = 21
       Width = 117
     end
     object RdGroup: TcxRadioGroup
       Tag = -100
       Left = 1073
       Top = 2
-      Align = alLeft
+      Align = alClient
       Alignment = alCenterCenter
-      Properties.Columns = 3
+      Properties.Columns = 4
       Properties.Items = <
         item
           Caption = 'Yeni Kay'#305't'
           Value = 'Yeni Kay'#305't'
+        end
+        item
+          Caption = 'Yeni Kay'#305't(ONAY)'
+          Value = 'ONAY'
         end
         item
           Caption = 'G'#246'nderildi'
@@ -1881,7 +1934,7 @@ object GirisForm: TGirisForm
       TabOrder = 13
       Visible = False
       Height = 29
-      Width = 251
+      Width = 291
     end
   end
   object DataTableSource: TDataSource

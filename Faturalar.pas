@@ -87,6 +87,7 @@ type
     E5: TMenuItem;
     T1: TMenuItem;
     GridFaturalarColumn2: TcxGridDBColumn;
+    P2: TMenuItem;
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -116,39 +117,10 @@ type
     function Init(Sender: TObject) : Boolean; override;
   end;
 
-  TFaturaGonder = procedure(FaturaXML : PWideChar;
-                      kullaniciAdi : PWideChar;
-                      sifre : PWideChar;
-                      var sonuc : PWideChar;
-                      url : PWideChar); stdcall;
-
-  TFaturaIptal = procedure(FaturaGuid : PWideChar;
-                      kullaniciAdi : PWideChar;
-                      sifre : PWideChar;
-                      var sonuc : PWideChar;
-                      url : PWideChar); stdcall;
-  TFaturaPDF = procedure(FaturaGuid : PWideChar;
-                      kullaniciAdi : PWideChar;
-                      sifre : PWideChar;
-                      var sonuc : PWideChar;
-                      url : PWideChar;
-                      smtpClientHost : PWideChar;
-                      Username : PWideChar;
-                      Password : PWideChar;
-                      alici : PWideChar;
-                      konu : PWideChar;
-                      msj : PWideChar
-                      ); stdcall;
-
-  TFaturaDurum = procedure(FaturaGuid : PWideChar;
-                      kullaniciAdi : PWideChar;
-                      sifre : PWideChar;
-                      var sonuc : PWideChar;
-                      url : PWideChar); stdcall;
 
 const
- // LIB_DLL = 'EFaturaDLL.dll';
-  LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
+  LIB_DLL = 'EFaturaDLL.dll';
+  //LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
 
 //  test = 'https://efatura-test.uyumsoft.com.tr/Services/Integration';
 //  gercek = 'https://efatura.uyumsoft.com.tr/Services/Integration';
@@ -158,7 +130,7 @@ var
 
 implementation
 
-uses data_modul, StrUtils, Jpeg;
+uses data_modul, StrUtils, Jpeg, AnaUnit , MedEczane;
 
 {$R *.dfm}
 
@@ -206,6 +178,9 @@ begin
                      ',GIBFaturaNo = ' + QuotedStr(Sonuc[2]) +
                      ' where sira = ' + faturaId;
               datalar.QueryExec(sql);
+
+              EArsivDurumSorgula(Sonuc[1]);
+
             end;
          end;
          ShowMessageSkin('Fatura Gönderim Ýþlemi Tamamlandý','Log Bilgilerini Kontrol Ediniz','','info');
@@ -240,7 +215,7 @@ begin
 
     @fatura := findMethod(dllHandle, 'EArsivFaturaGonder');
     if addr(fatura) <> nil then
-    fatura(PWideChar(faturaXML),PWideChar(datalar.efaturaUsername),PWideChar(datalar.efaturaSifre),ss,PWideChar(datalar.eFaturaUrl));
+    fatura(PWideChar(faturaXML),PWideChar(datalar.efaturaUsername),PWideChar(datalar.efaturaSifre),ss,PWideChar(datalar.eFaturaUrl),PWideChar(datalar.efaturaTaslak));
   //  ShowMessage(ss,'','','info');
     Result := ss;
 
@@ -402,12 +377,15 @@ begin
 
         if sonuc[0] = '0000' then
         begin
+          txtLog.Lines.Add(sonuc[1]);
          if _tag_ = -22 then ShellExecute(0, 'open', PChar(sonuc[1]), nil, nil, SW_SHOWNORMAL);
          //if _tag_ = -23 then ShowMessageSkin('Fatura Gönderildi','','','info');
         end
-        else
+        else begin
+          txtLog.Lines.Add(Sonuc[0] + ' - ' + sonuc[1]);
           ShowMessageSkin(Sonuc[0],Sonuc[1],'','info');
 
+        end;
 
         if not Assigned(fatura) then
           raise Exception.Create(LIB_DLL + ' içersinde EArsivFaturaSavePDF bulunamadý!');
@@ -502,8 +480,8 @@ begin
   -20 : begin
             Gonder;
             guid := GridCellToString(GridFaturalar,'UUID',0);
-            if guid = '' then exit;
-            EArsivDurumSorgula(guid);
+           // if guid = '' then exit;
+           // EArsivDurumSorgula(guid);
         end;
   -21:begin
        guid := GridCellToString(GridFaturalar,'UUID',0);
@@ -523,7 +501,25 @@ begin
             EArsivDurumSorgula(guid);
   end;
   -26 : begin
-           UyumSoftPortalGit(datalar.portalUser,datalar.portalSifre,datalar.portalUrl);
+           //UyumSoftPortalGit(datalar.portalUser,datalar.portalSifre,datalar.portalUrl);
+
+
+           if FindTab(AnaForm.sayfalar,TagfrmUyum)
+           Then begin
+             (*
+             F := TGirisForm(FormClassType(TagfrmUyum));
+             TfrmMedEczane(F)._user := datalar.portalUser;;
+             TfrmMedEczane(F)._pas := datalar.portalSifre;
+             TGirisForm(FormClassType(TagfrmUyum)).Init(F);
+             *)
+           end
+           Else begin
+            F := FormINIT(TagfrmUyum,self,GirisRecord,'',NewTab(AnaForm.sayfalar,TagfrmUyum),ikHayir,'Giriþ');
+            TfrmMedEczane(F)._user := datalar.portalUser;
+            TfrmMedEczane(F)._pas := datalar.portalSifre;
+            if F <> nil then F.show;
+           end;
+
         end;
   -27 : begin
           durum := GridCellToString(GridFaturalar,'eArsivDurum',0);
@@ -550,6 +546,9 @@ begin
             PrintYap('FYZ','Fatura Print Et','',TopluDataset,pTNone)
          end;
 
+  -100 : begin
+            ShowPopupForm('Portalden Fatura Oku',PortaldenFaturaOku,frmFaturalar);
+         end;
 
   end;
 

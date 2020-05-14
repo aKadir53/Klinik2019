@@ -39,7 +39,7 @@ uses
     DyopURL = 'https://wsdis.saglik.gov.tr/KRIZMA.DIS.TREATMENTSERVICE.asmx';
     DonemSonlandir = 'https://medula.sgk.gov.tr/hastane/login.jsf';
     ktsHbysKodu : string = 'C740D0288EFAC45FE0407C0A04162BDD';
-    DBUserName : string = 'LyotVG05cmRHRT0==';
+    DBUserName : string = 'LyotVG05cmRHRT0=';
     DBPasword : string = 'LyotTlRNMU13PT0=';
     AppalicationVer : integer = 2201;
 
@@ -382,6 +382,10 @@ type
     MemDataKullaniciDokumanOkurev: TIntegerField;
     MemDataKullaniciDokumanOkuDokumanNo: TStringField;
     MemDataKullaniciDokumanOkusirketKod: TStringField;
+    SQLMemTable_EtkenMaddeler_DataSource: TDataSource;
+    RxTahlilSonucaciklama: TStringField;
+    MalAlim: THTTPRIO;
+    ITS: THTTPRIO;
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
     procedure TakipHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;
@@ -423,11 +427,12 @@ type
    _medulaOrtam_ , WanIp,WanIpURL ,_firmaKod_ , osgbKodu , programTip : string;
    TakipDevam : boolean;
    AktifSirketAdi,AktifSirket ,AktifSube ,AktifSubeAdi,_donemSonlandir_ ,TenayMNTRequest , TenayBIORequest , DyobRequest , _database , _Tip : string;
+   AktifSirketSayisi : integer;
    CentroResponse ,SMSHesapFrom,SMSHesapUser,SMSHesapSifre , AlpemixRun,AlpemixGrupAdi,AlpemixGrupParola : string;
    SMTPSunucu,SMTPUserName,SMTPPassword,SMTPPort,SMTPSEndTip : string;
    _kurumKod  , _donemgoster,Cinsiyet : integer;
    _YazilimGelistirici : integer;
-   LisansBitis,LisansBasla,LisansTarih : string;
+   LisansBitis,LisansBasla,LisansTarih ,LisansTip,LisansTipDeger: string;
    LisansLimit : integer;
    Bilgi : THastaKabulRecord;
    TarihAralik : TTarihAralik;
@@ -459,7 +464,7 @@ type
    _Program_ : string;
    browserOk : integer;
    LisansAlURL : string;
-   versiyon: string;
+   versiyon : string;
    KontrolUserSet : Boolean;
    ZorunluAlanVar : Boolean;
    SifreDegistir : TSifreDegistir;
@@ -478,6 +483,7 @@ type
    portalUrl : string;
    efaturaUsername : string;
    efaturaSifre : string;
+   efaturaTaslak : string;
    portalUser : string;
    portalSifre : string;
    sirketlerUserFilter : string;
@@ -497,12 +503,18 @@ type
    DefaultTedaviTuru : string;
    DefaultTedaviTipi : string;
    SeansOnayDoktorHemsireYapar : string;
+   KimlikDogrulamaOlmadanSeansOnayla : string;
    KurumBransi : string;
    eNabizKayit : string;
    IlacTedavisi : TIlacTedavi;
    DokumanRev : TDokumanRevDetay;
    HemsireTalimat : THemsireTalimat;
    Konsultasyon : THastaKosultasyon;
+   IndikatorTanim : TIndikatorTanim;
+   Anket : TAnket;
+   UzmanMuayeneUpdate : TUzmanMuayeneForm;
+   MedEczaneIlac : TReceteIlacBilgisi;
+   AppalicationVer ,yvKversiyon : integer;
 
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
     function MasterBaglan : Boolean; overload;
@@ -567,14 +579,16 @@ begin
     ado := TADOQuery.Create(nil);
     try
       ado.Connection := Master;
-      QuerySelect(ado,'select db, Tanimi, YazilimGelistirici from OSGB_TNM where OSGB_KOD = ' + QuotedStr(MasterKod));
+      QuerySelect(ado,'select db, Tanimi, YazilimGelistirici , SirketSayi from OSGB_TNM where OSGB_KOD = ' + QuotedStr(MasterKod));
       if not ado.Eof
       then Begin
         DB := ado.Fields[0].AsString;
         OSGBDesc := ado.Fields[1].AsString;
         YazilimGelistirici := ado.Fields[2].AsInteger;
-      End;
-      Result := True;
+        datalar.AktifSirketSayisi :=  ado.Fields[3].AsInteger;
+        Result := True;
+      End
+      else Result := False;
     finally
       ado.Free;
     end;
@@ -598,7 +612,7 @@ begin
 
     if username = 'demo' then begin
       _db_ := 'OSGB_UZMAN';
-      servername := '213.159.30.6';
+      servername := Decode64(Decode64('TVRnMUxqRTVPQzQzTWk0eE9EVXNNVFl3TURBPQ=='));
       pSQLPassword := 'nokta53Nokta';
       pSQLUserName := 'noktaosgb';
     end;
@@ -759,7 +773,7 @@ begin
         osgbKodu := ado.fieldbyname('merkezKodu').AsString;
 
         if not UpdateThermo (12, iThermo, 'Lisans Bilgileri') then Exit;
-        LisansBilgileri(LisansTarih,LisansBasla,LisansBitis,kurum,LisansLimit);
+        LisansBilgileri(LisansTarih,LisansBasla,LisansBitis,kurum,LisansTip,LisansTipDeger,LisansLimit);
 
         if not UpdateThermo (13, iThermo, 'lisans bilgileri 2') then Exit;
         sql := 'select SLVV from parametreler where slk = ''GA'' and SLB = ''00''';
@@ -833,7 +847,7 @@ var
   Q: TADOQuery;
 begin
   try
-   Q := TADOQuery.Create(nil);
+   Q := TADOQuery.Create(datalar);
    Q.Connection := datalar.ADOConnection2;
    b:= queryExec (Q, sql);
    if not b then ;;;
@@ -851,7 +865,7 @@ begin
   //Result := False;
   if Q = nil then
   begin
-    Q := TADOQuery.Create(nil);
+    Q := TADOQuery.Create(datalar);
     bLocalCreated := True;
   end;
   try
@@ -901,7 +915,7 @@ begin
 //      if  (Pos ('GROUP BY',AnsiUpperCase(sql)) = 0)
 //      and (Pos ('ORDER BY',AnsiUpperCase(sql)) = 0)
 //      Then sql := sql + ' WITH(NOLOCK) ';
-    if Assigned(Q) = false then Q := TADOQuery.Create(nil);
+    if Assigned(Q) = false then Q := TADOQuery.Create(datalar);
     if Q.Connection = nil then Q.Connection := ADOConnection2;
     Q.CommandTimeout := 0;
     Q.Close;
@@ -922,7 +936,7 @@ begin
 //      if  (Pos ('GROUP BY',AnsiUpperCase(sql)) = 0)
 //      and (Pos ('ORDER BY',AnsiUpperCase(sql)) = 0)
 //      Then sql := sql + ' WITH(NOLOCK) ';
-    Result := TADOQuery.Create(nil);
+    Result := TADOQuery.Create(datalar);
     Result.CommandTimeout := 0;
     try
       Result.Connection := ADOConnection2;
@@ -1002,6 +1016,19 @@ begin
       SOAPResponse.Position := 0;
       XMLDoc.LoadFromStream(SOAPResponse);
       XMLTransformProvider1.TransformRead.TransformationFile := 'Referans.xtr';
+      XMLTransformProvider1.TransformRead.SourceXmlDocument := XMLDoc.GetDOMDocument;
+      ClientDataset1.Active := TRUE;
+   end;
+
+   if MethodName = 'getPatientResults'
+   then begin
+      ClientDataset1.Active := FALSE;
+      SOAPResponse.Position := 0;
+      XMLDoc := NewXMLDocument;
+      XMLDoc.Encoding := 'UTF8';
+      SOAPResponse.Position := 0;
+      XMLDoc.LoadFromStream(SOAPResponse);
+      XMLTransformProvider1.TransformRead.TransformationFile := 'Duzen.xtr';
       XMLTransformProvider1.TransformRead.SourceXmlDocument := XMLDoc.GetDOMDocument;
       ClientDataset1.Active := TRUE;
    end;
@@ -1100,6 +1127,7 @@ end;
 
 procedure TDATALAR.DataModuleCreate(Sender: TObject);
 begin
+ AktifSirketSayisi := 1;
  ADOConnection2.Connected := false;
  Master.Connected := false;
  CommandLog := TStringList.Create;

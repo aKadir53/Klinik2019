@@ -31,10 +31,6 @@ object frmFaturalar: TfrmFaturalar
     object cxTabSheet1: TcxTabSheet
       Caption = 'Faturalar'
       ImageIndex = 0
-      ExplicitLeft = 4
-      ExplicitTop = 5
-      ExplicitWidth = 819
-      ExplicitHeight = 567
       object cxGrid1: TcxGridKadir
         Left = 0
         Top = 0
@@ -52,13 +48,9 @@ object frmFaturalar: TfrmFaturalar
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
         LookAndFeel.Kind = lfOffice11
-        LookAndFeel.NativeStyle = False
-        LookAndFeel.SkinName = 'UserSkin'
         ExcelFileName = 'FaturaListesi'
         ExceleGonder = True
         PopupForm = False
-        ExplicitWidth = 819
-        ExplicitHeight = 472
         object GridFaturalar: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -158,7 +150,7 @@ object frmFaturalar: TfrmFaturalar
           end
           object cxGridDBColumn4: TcxGridDBColumn
             Caption = 'FaturaNo'
-            DataBinding.FieldName = 'faturaNo'
+            DataBinding.FieldName = 'GIBFaturaNo'
             PropertiesClassName = 'TcxTextEditProperties'
             Properties.Alignment.Horz = taCenter
             Properties.Alignment.Vert = taVCenter
@@ -322,8 +314,6 @@ object frmFaturalar: TfrmFaturalar
         TabOrder = 1
         ExceleGonder = False
         PopupForm = False
-        ExplicitTop = 472
-        ExplicitWidth = 819
         object FaturaDetaySatirlar: TcxGridDBTableView
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
@@ -407,10 +397,6 @@ object frmFaturalar: TfrmFaturalar
     object cxTabSheet2: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
-      ExplicitLeft = 4
-      ExplicitTop = 5
-      ExplicitWidth = 819
-      ExplicitHeight = 567
       object txtLog: TcxMemo
         Left = 0
         Top = 0
@@ -418,8 +404,6 @@ object frmFaturalar: TfrmFaturalar
         Lines.Strings = (
           'txtLog')
         TabOrder = 0
-        ExplicitWidth = 819
-        ExplicitHeight = 567
         Height = 564
         Width = 817
       end
@@ -610,6 +594,12 @@ object frmFaturalar: TfrmFaturalar
       Tag = -26
       Caption = 'Portal'#39'a Git'
       ImageIndex = 9
+      OnClick = cxButtonCClick
+    end
+    object P2: TMenuItem
+      Tag = -100
+      Caption = 'Portaldan Faturalar'#305' Oku'
+      ImageIndex = 14
       OnClick = cxButtonCClick
     end
   end

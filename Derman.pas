@@ -150,7 +150,7 @@ Begin
        kayitTip := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
 
-        if  (kayitTip = 'Yeni Kayýt')
+        if  (kayitTip = 'ONAY')
         Then Begin
            dosyaNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
@@ -346,29 +346,42 @@ begin
                      Then sonuc := '-1' else sonuc := '1';
                     except end;
 
-                    sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
-                           ' where onay = 1 and code = ' + QuotedStr(testKod) +
-                           ' and tip = ''L'' and tip1 = ' + QuotedStr(Tip) +
-                           ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-                    datalar.QueryExec(ado,sql);
-                 End;
+                    try
+                     sql := 'update hareketler set Gd = ' + sonuc +
+                              ' , islemAciklamasi = ' + QuotedStr(sonucA) +
+                              ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                              ' and tip = ''L'' and tip1 = ' + QuotedStr(Tip) +
+                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+
+                     datalar.QueryExec(sql);
+                    except
+                        sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
+                               ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                               ' and tip = ''L'' and tip1 = ' + QuotedStr(Tip) +
+                               ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                        datalar.QueryExec(ado,sql);
+                    end;
+                 End
+                 else
+                 begin
                  // markers
 
-                try
-                 sql := 'update hareketler set Gd = ' + sonuc +
-                          ' where onay = 1 and code = ' + QuotedStr(testKod) +
-                          ' and tip = ''L'' and tip1 = ' + QuotedStr(Tip) +
-                          ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                      try
+                       sql := 'update hareketler set Gd = ' + QuotedStr(sonuc) +
+                                ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                                ' and tip = ''L'' and tip1 = ' + QuotedStr(Tip) +
+                                ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
-                 datalar.QueryExec(ado,sql);
-                except
-                   sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
-                          ' where onay = 1 and code = ' + QuotedStr(testKod) +
-                          ' and tip = ''L'' and tip1 = ' + QuotedStr(Tip) +
-                          ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-                   datalar.QueryExec(ado,sql);
+                       datalar.QueryExec(ado,sql);
+                      except
+                         sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
+                                ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                                ' and tip = ''L'' and tip1 = ' + QuotedStr(Tip) +
+                                ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                         datalar.QueryExec(ado,sql);
 
-                end;
+                      end;
+                 end;
 
 
               End;

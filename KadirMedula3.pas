@@ -303,7 +303,12 @@ begin
                   datalar.SQLMemTable_EtkenMaddeler.Append;
                   datalar.SQLMemTable_EtkenMaddeler.FieldByName('raporTakipNo').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTakipNo);
                   datalar.SQLMemTable_EtkenMaddeler.FieldByName('etkinMaddeKodu').AsString := etkinMadde.etkinMaddeKodu;
-                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('etkinMaddeAdi').AsString := '';//EtkinMaddeKodToAdi(etkinMadde.etkinMaddeKodu);
+                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('etkinMaddeAdi').AsString := EtkinMaddeKodToAdi(etkinMadde.etkinMaddeKodu);
+                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('kullanimDoz1').AsInteger := etkinMadde.kullanimDoz1;
+                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('kullanimDoz2').AsInteger := etkinMadde.kullanimDoz2;
+                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('kullanimPeriyot').AsInteger := etkinMadde.kullanimPeriyot;
+                  datalar.SQLMemTable_EtkenMaddeler.FieldByName('kullanimPeriyotBirim').AsString := etkinMadde.kullanimPeriyotBirim;
+
                   datalar.SQLMemTable_EtkenMaddeler.Post;
                 end;
 
@@ -313,54 +318,66 @@ begin
 
               if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru = '1'
               Then Begin
-               datalar.memDataRaporlar.Append;
-               datalar.memDataRaporlar.FieldByName('raporTuru').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru;
-               datalar.memDataRaporlar.FieldByName('raporTakipNo').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTakipNo);
-               datalar.memDataRaporlar.FieldByName('raporTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.tarih;
-               datalar.memDataRaporlar.FieldByName('raporNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.no;
-               datalar.memDataRaporlar.FieldByName('verenTesis').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.raporTesisKodu);
-               datalar.memDataRaporlar.FieldByName('baslangicTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.baslangicTarihi;
-               datalar.memDataRaporlar.FieldByName('bitisTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.bitisTarihi;
-               datalar.memDataRaporlar.FieldByName('tedaviRaporTuru').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru);
-               datalar.memDataRaporlar.FieldByName('protokolNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolNo;
-               datalar.memDataRaporlar.FieldByName('protokolTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolTarihi;
-               datalar.memDataRaporlar.FieldByName('Aciklama').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.aciklama;
-  //            memDataRaporlar.FieldByName('tani').AsString :=
-               if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 1
-               then begin
-               datalar.memDataRaporlar.FieldByName('seansGun').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansGun;
-               datalar.memDataRaporlar.FieldByName('seansSayi').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansSayi;
-               datalar.memDataRaporlar.FieldByName('butKodu').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.butKodu;
-               end;
-               _tanilar_ := '';
+                if (datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 1) or
+                   (datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 8)
+                then begin
+                 datalar.memDataRaporlar.Append;
+                 datalar.memDataRaporlar.FieldByName('raporTuru').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTuru;
+                 datalar.memDataRaporlar.FieldByName('raporTakipNo').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].raporTakipNo);
+                 datalar.memDataRaporlar.FieldByName('raporTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.tarih;
+                 datalar.memDataRaporlar.FieldByName('raporNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.no;
+                 datalar.memDataRaporlar.FieldByName('verenTesis').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.raporBilgisi.raporTesisKodu);
+                 datalar.memDataRaporlar.FieldByName('baslangicTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.baslangicTarihi;
+                 datalar.memDataRaporlar.FieldByName('bitisTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.bitisTarihi;
+                 datalar.memDataRaporlar.FieldByName('tedaviRaporTuru').AsString := inttostr(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru);
+                 datalar.memDataRaporlar.FieldByName('protokolNo').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolNo;
+                 datalar.memDataRaporlar.FieldByName('protokolTarihi').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.protokolTarihi;
+                 datalar.memDataRaporlar.FieldByName('Aciklama').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.aciklama;
+    //            memDataRaporlar.FieldByName('tani').AsString :=
+                 if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 1
+                 then begin
+                  datalar.memDataRaporlar.FieldByName('seansGun').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansGun;
+                  datalar.memDataRaporlar.FieldByName('seansSayi').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.seansSayi;
+                  datalar.memDataRaporlar.FieldByName('butKodu').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].diyalizRaporBilgisi.butKodu;
+                 end
+                 else
+                 if datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.tedaviRaporTuru = 8
+                 then begin
+                  datalar.memDataRaporlar.FieldByName('seansGun').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].evHemodiyaliziRaporBilgisi.seansGun;
+                  datalar.memDataRaporlar.FieldByName('seansSayi').AsInteger := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].evHemodiyaliziRaporBilgisi.seansSayi;
+                  datalar.memDataRaporlar.FieldByName('butKodu').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].evHemodiyaliziRaporBilgisi.butKodu;
+                 end;
 
-               if Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) > 0
-               then begin
-                   for y := 0 to Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) - 1 do
-                   begin
-                     _tanilar_ := _tanilar_ + ',' +
-                     datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar[y].taniKodu;
-                   end;
+                 _tanilar_ := '';
 
-                   if _tanilar_[1] = ','
-                   then
-                    _tanilar_ := copy(_tanilar_,2,100);
+                 if Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) > 0
+                 then begin
+                     for y := 0 to Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) - 1 do
+                     begin
+                       _tanilar_ := _tanilar_ + ',' +
+                       datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar[y].taniKodu;
+                     end;
 
-                   if _tanilar_[length(_tanilar_)] = ','
-                   then
-                    _tanilar_ := copy(_tanilar_,1,length(_tanilar_)-1);
+                     if _tanilar_[1] = ','
+                     then
+                      _tanilar_ := copy(_tanilar_,2,100);
 
-                   datalar.memDataRaporlar.FieldByName('tani').AsString := _tanilar_;
+                     if _tanilar_[length(_tanilar_)] = ','
+                     then
+                      _tanilar_ := copy(_tanilar_,1,length(_tanilar_)-1);
 
-                   if pos('N18',UpperCase(_tanilar_)) = 0
-                   Then ShowMessageSkin('Rapor Tanýlarý içinde N18 Tanýsý Yoktur',
-                                        'Lütfen Kontrol Ediniz. !','','info');
+                     datalar.memDataRaporlar.FieldByName('tani').AsString := _tanilar_;
 
-               end;
-               datalar.memDataRaporlar.Post;
+                     if pos('N18',UpperCase(_tanilar_)) = 0
+                     Then ShowMessageSkin('Rapor Tanýlarý içinde N18 Tanýsý Yoktur',
+                                          'Lütfen Kontrol Ediniz. !','','info');
 
-              End;
+                 end;
+                 datalar.memDataRaporlar.Post;
+              end;
+
            End;
+         End;
       End;
 
 end;
@@ -677,6 +694,7 @@ begin
               datalar.memData_DamarIzi.Post;
           end;
         end;
+        msj :=  datalar.YardimciIslemWS.DamarIziDogrulamaSorguCevap.sonucMesaji;
     End
     Else
     if length(datalar.YardimciIslemWS.DamarIziDogrulamaSorguCevap.damarIziSorguDetay) > 0
@@ -690,7 +708,7 @@ begin
     end
   Else
   begin
-     msj := 'TC :' + tc + ' - ' + ad + ' - ' + yas + ' - Tarih :' + tarih + ' - ' + datalar.YardimciIslemWS.DamarIziDogrulamaSorguCevap.sonucMesaji;
+     msj :=  datalar.YardimciIslemWS.DamarIziDogrulamaSorguCevap.sonucMesaji;
    //  ShowMessageSkin(msj,'','','info');
   end;
 end;
@@ -3274,7 +3292,11 @@ begin
              datalar.RxTahlilIslem.FieldByName('sutKodu').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].sutKodu;
              datalar.RxTahlilIslem.FieldByName('bransKodu').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].bransKodu;
              datalar.RxTahlilIslem.FieldByName('islemTarihi').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].islemTarihi;
-             datalar.RxTahlilIslem.FieldByName('drTescilNo').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].drTescilNo;
+             datalar.RxTahlilIslem.FieldByName('drTescilNo').AsString :=
+             ifThen(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].drTescilNo = '',
+                    datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].istemYapanDrTescilNo,
+                    datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].drTescilNo);
+
              datalar.RxTahlilIslem.FieldByName('hizmetSunucuRefNo').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].hizmetSunucuRefNo;
              datalar.RxTahlilIslem.FieldByName('islemSiraNo').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].islemSiraNo;
              datalar.RxTahlilIslem.FieldByName('adet').AsInteger := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].adet;
@@ -3293,6 +3315,8 @@ begin
                 datalar.RxTahlilSonuc.FieldByName('sonuc').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].tahlilSonuclari[r].sonuc;
                 datalar.RxTahlilSonuc.FieldByName('birim').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].tahlilSonuclari[r].birim;
                 datalar.RxTahlilSonuc.FieldByName('tip').AsString := trim(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].tahlilSonuclari[r].tahlilTipi);
+                datalar.RxTahlilSonuc.FieldByName('aciklama').AsString := trim(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].tahlilSonuclari[r].aciklama);
+
                 try
                   datalar.RxTahlilSonuc.FieldByName('Tanim').AsString :=
                   HareketSiraNoHizmetAdi(StringReplace(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].sutKodu,'L','',[rfReplaceAll]),
@@ -4093,7 +4117,7 @@ var
   FtetkikveRadyoloji : Array_Of_TetkikveRadyolojiBilgisiDVO;
   FMalzemeler : HizmetKayitIslemleriWS.Array_Of_malzemeBilgisiDVO;
   HizmetVeriSeti : hizmetKayitGirisDVO;
-
+  HataliKayýt : hizmetKayitIslemleriWS.hataliIslemBilgisiDVO;
   memData : TADOQuery;
 begin
 
@@ -4185,7 +4209,7 @@ begin
                    Then begin
                        sonuc := datalar.HizmetKayitWS.Cevap.sonucKodu + ' - ' + datalar.HizmetKayitWS.Cevap.sonucMesaji;
                    end
-                 else
+                else
                  begin
                    sonuc := '';
                    for r := 0 to hatali.Count - 1 do
@@ -4345,19 +4369,19 @@ var
   MalzemeElemanlar : hizmetKayitIslemleriWS.MalzemeBilgisiDVO;
 begin
         MalzemeElemanlar := hizmetKayitIslemleriWS.MalzemeBilgisiDVO.Create;
-        MalzemeElemanlar.malzemeKodu := DataSet.fieldbyname('malzemeKodu').AsString;
+        MalzemeElemanlar.malzemeKodu := DataSet.fieldbyname('code').AsString;
         MalzemeElemanlar.adet:= DataSet.fieldbyname('adet').AsInteger;
-        MalzemeElemanlar.islemTarihi := FormattedTarih(DataSet.fieldbyname('islemTarihi').AsString);
+        MalzemeElemanlar.islemTarihi := FormatDateTime('DD.MM.YYYY', DataSet.fieldbyname('islemTarihi').AsDateTime);
         MalzemeElemanlar.malzemeTuru := DataSet.fieldbyname('malzemeTuru').AsString;
         MalzemeElemanlar.kodsuzMalzemeFiyati := DataSet.fieldbyname('kodsuzMalzemeFiyati').AsFloat;
         MalzemeElemanlar.kodsuzMalzemeAdi := DataSet.fieldbyname('kodsuzMalzemeAdi').AsString;
         MalzemeElemanlar.hizmetSunucuRefNo := DataSet.fieldbyname('hizmetSunucuRefNo').AsString;
-        MalzemeElemanlar.barkod := DataSet.fieldbyname('UBB').AsString;
+        MalzemeElemanlar.barkod := DataSet.fieldbyname('Barkod').AsString;
         MalzemeElemanlar.paketHaric := DataSet.fieldbyname('PaketHaric').AsString;
         MalzemeElemanlar.katkiPayi := DataSet.fieldbyname('katkiPayi').AsString;
         MalzemeElemanlar.ozelDurum := DataSet.fieldbyname('ozeldurum').AsString;
-        MalzemeElemanlar.bransKodu := DataSet.fieldbyname('Brans').AsString;
-        MalzemeElemanlar.drTescilNo := DataSet.fieldbyname('TescilNo').AsString;
+        MalzemeElemanlar.bransKodu := DataSet.fieldbyname('BransKodu').AsString;
+        MalzemeElemanlar.drTescilNo := DataSet.fieldbyname('drTescilNo').AsString;
         MalzemeElemanlar.kdv := DataSet.fieldbyname('kdv').AsInteger;
         MalzemeElemanlar.firmaTanimlayiciNo := DataSet.fieldbyname('firmaTanimlayiciNo').AsString;
         MalzemeElemanlar.malzemeSatinAlisTarihi  := FormattedTarih(DataSet.fieldbyname('malzemeSatinAlisTarihi').AsString);
@@ -4725,7 +4749,7 @@ begin
        TahlilElemanlar.islemSiraNo := '';
 
 
-       if memData.fieldbyname('code').AsString <> '901620'
+       if memData.fieldbyname('icode').AsString <> '901620'
        Then Begin
               SetLength(Fsonuclar,memData.fieldbyname('Adet').AsInteger);
               Sonuclar := TahlilSonucDVO.Create;
@@ -4733,18 +4757,22 @@ begin
               Sonuclar.sonuc := memData.fieldbyname('gd').AsString;
               Sonuclar.tahlilTipi := memData.fieldbyname('SGKTip').AsString;
               Sonuclar.birim := memData.fieldbyname('birim').AsString;
+              Sonuclar.aciklama := memData.fieldbyname('aciklama').AsString;
               Fsonuclar[0] := Sonuclar;
               TahlilElemanlar.tahlilSonuclari := Fsonuclar;
         End;
 
-       if memData.fieldbyname('code').AsString = '901620'
+       if memData.fieldbyname('icode').AsString = '901620'
        Then Begin
-          sql1 := 'select h.code,cast(h.sirano as varchar) sira ,h.gd,h.cd,t.SGKTip,t.birim ' +
+          sql1 := 'select h.code,cast(h.sirano as varchar) sira ,h.gd,t.SGKTip,t.birim ' +
                   ' from hareketler h ' +
+                  ' join hastaKArt hk on hk.dosyaNo = h.dosyaNo ' +
+                  ' join hasta_Gelisler g on h.dosyano = g.dosyano and h.gelisno = g.gelisno ' +
                   ' join labtestler t on t.butkodu = h.code and t.uygulamaAdet = h.tip1' +
-                  '  where gelisSIRANO = ' + memData.FieldByName('gelisSiraNo').AsString +
+                  '  where isnull(g.eski_SIRANO, g.SIRANO) = ' + memData.FieldByName('gelisSiraNo').AsString +
                   //dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo +
-                   ' and (charindex(''901620.'',h.code)) > 0 and isnull(SGKTip,'''') <> ''''';
+                   ' and (charindex(''901620.'',h.code)) > 0 and isnull(SGKTip,'''') <> '''''  +
+                   ' and hk.sirketKod = ' + QuotedStr(datalar.aktifSirket);
 
           ado := datalar.QuerySelect(sql1);
           try

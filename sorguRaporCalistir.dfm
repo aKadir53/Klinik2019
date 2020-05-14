@@ -3,7 +3,7 @@ object frmRaporCalistir: TfrmRaporCalistir
   Top = 236
   BorderStyle = bsToolWindow
   Caption = 'frmRaporCalistir'
-  ClientHeight = 285
+  ClientHeight = 319
   ClientWidth = 294
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,12 +18,13 @@ object frmRaporCalistir: TfrmRaporCalistir
   TextHeight = 13
   object pnlOnay: TPanel
     Left = 0
-    Top = 230
+    Top = 250
     Width = 294
-    Height = 55
+    Height = 69
     Align = alBottom
     Color = clBackground
     TabOrder = 0
+    ExplicitTop = 216
     object txtinfo: TLabel
       Left = 7
       Top = 11
@@ -39,9 +40,9 @@ object frmRaporCalistir: TfrmRaporCalistir
     end
     object btnCalistirGoruntule: TcxButton
       Left = 1
-      Top = 1
+      Top = 20
       Width = 292
-      Height = 53
+      Height = 48
       Align = alClient
       Caption = 'Sorguyu '#199'al'#305#351't'#305'r G'#246'r'#252'nt'#252'le'
       Glyph.Data = {
@@ -343,6 +344,17 @@ object frmRaporCalistir: TfrmRaporCalistir
       Font.Style = [fsBold]
       ParentFont = False
       OnClick = btnCalistirGoruntuleClick
+      ExplicitTop = 1
+      ExplicitHeight = 67
+    end
+    object chkYeniSekme: TcxCheckBox
+      Left = 1
+      Top = 1
+      Align = alTop
+      Caption = 'Yeni Sekmede A'#231
+      TabOrder = 1
+      Transparent = True
+      Width = 292
     end
   end
   object DataSource1: TDataSource

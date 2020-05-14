@@ -33,6 +33,7 @@ type
     txtYeniBasla: TEdit;
     PnlBottom: TcxGroupBox;
     btnUygula: TcxButton;
+    txtLisansTip: TEdit;
 
   procedure LisansBilgisi;
     procedure btnVazgecClick(Sender: TObject);
@@ -56,10 +57,25 @@ uses data_modul;
 {$R *.dfm}
 
 procedure TfrmLisansBilgisi.LisansBilgisi;
+var
+  Tip : string;
+  LisansTipDeger : integer;
 begin
   //  LisansBilgileri(sistemnow,basla,bitis,kurum,limit);
-    txtBasla.Text := Datalar.LisansBasla;
-    txtLisansCaption.Caption := FormattedTarih(Datalar.LisansBitis);
+
+ try
+  case strToint(Datalar.LisansTipDeger) of
+   1 : Tip := 'Standart';
+   2 : Tip := 'Pro';
+   3 : Tip := 'Pro Plus';
+  end;
+
+  txtBasla.Text := Datalar.LisansBasla;
+  txtLisansTip.Text := Datalar.LisansTip;
+  txtLisansCaption.Caption := FormattedTarih(Datalar.LisansBitis) + ' - ' + Tip;
+ except
+ end;
+
 end;
 
 procedure TfrmLisansBilgisi.btnVazgecClick(Sender: TObject);
@@ -69,14 +85,18 @@ end;
 
 procedure TfrmLisansBilgisi.btnUygulaClick(Sender: TObject);
 var
-  sql : string;
-  key : real;
+  sql , Tip : string;
+  key  : real;
+  tipkey : double;
   ado : TADOQuery;
 begin
 //  datalar.Login;
 
   key := strtofloat(txtBasla.Text) - strtoint(datalar.osgbKodu);
   key := key / strtoint(datalar.osgbKodu);
+
+  tipkey := strtofloat(txtLisansTip.Text) - strtoint(datalar.osgbKodu);
+  tipkey := tipkey / strtoint(datalar.osgbKodu);
 
   ado := TADOQuery.Create(nil);
   try
@@ -92,13 +112,19 @@ begin
     ado.Free;
   end;
 
-  txtLisansCaption.Caption := FormattedTarih(floattostr(key));
+  case Round(tipkey) of
+   1 : Tip := 'Standart';
+   2 : Tip := 'Pro';
+   3 : Tip := 'Pro Plus';
+  end;
+
+  txtLisansCaption.Caption := FormattedTarih(floattostr(key)) + ' - ' + Tip;
 
 
   datalar.ADO_SQL11.Close;
   datalar.ADO_SQL11.SQL.Clear;
-  sql := 'update parametreler set SLXX = '
-         + QuotedStr(txtBasla.Text) +
+  sql := 'update parametreler set SLXX = ' + QuotedStr(txtBasla.Text) +
+         ',SLXXX = ' + QuotedStr(txtLisansTip.Text) +
          ',SLVV = ' + QuotedStr('') +
          ' where SLK = ''GT'' and SLB = ''0004''';
   datalar.QueryExec(datalar.ADO_SQL11,sql);
@@ -124,9 +150,18 @@ var
   FHC : FaturaHastaCount;
   kurum : WideString;
   t : string;
-
+  ado : TADOQuery;
 begin
-
+  ado := TADOQuery.Create(nil);
+  try
+   datalar.QuerySelect(ado,'select * from OSGB_MASTER.dbo.musteri where kod = ' + QuotedStr(datalar.osgbKodu));
+   txtBasla.Text := ado.FieldByName('LisansKey').AsString;
+   txtLisansTip.Text := ado.FieldByName('LisansTipKey').AsString;
+   btnUygula.Click;
+  finally
+    ado.free;
+  end;
+(*
 //  datalar.login;
   datalar.LisansAlURL := 'www.noktayazilim.net';
   LisansAl.URL := 'https://'+datalar.LisansAlURL+'/noktaservice.asmx';
@@ -164,7 +199,7 @@ begin
     kb.Free;
   end;
 
-
+  *)
 end;
 
 end.

@@ -358,17 +358,17 @@ object frmTahliltakip: TfrmTahliltakip
           StyleHot.LookAndFeel.NativeStyle = False
           TabOrder = 2
           Height = 29
-          Width = 330
+          Width = 281
         end
         object chkMisafir: TcxCheckBox
-          Left = 649
+          Left = 920
           Top = 2
           Align = alLeft
           Caption = 'Misafir Hastalar'#305' Listemele'
           Style.TransparentBorder = True
           TabOrder = 3
           Transparent = True
-          Width = 177
+          Width = 144
         end
         object btnList: TcxButton
           Left = 2
@@ -379,6 +379,37 @@ object frmTahliltakip: TfrmTahliltakip
           Caption = 'Listele'
           TabOrder = 4
           OnClick = btnListClick
+        end
+        object chkBand: TcxCheckGroup
+          Left = 600
+          Top = 2
+          Align = alLeft
+          Alignment = alCenterCenter
+          EditValue = '1111'
+          Properties.Columns = 4
+          Properties.EditValueFormat = cvfStatesString
+          Properties.ImmediatePost = True
+          Properties.Items = <
+            item
+              Caption = 'Biyokimya'
+              Tag = 2
+            end
+            item
+              Caption = 'Hemogram'
+              Tag = 3
+            end
+            item
+              Caption = 'Marker'
+              Tag = 3
+            end
+            item
+              Caption = 'Rad'
+              Tag = 4
+            end>
+          Style.BorderStyle = ebsOffice11
+          TabOrder = 5
+          Height = 29
+          Width = 320
         end
       end
       object cxGridKadir1: TcxGridKadir
@@ -395,13 +426,22 @@ object frmTahliltakip: TfrmTahliltakip
           OnDblClick = ListeDblClick
           OnCustomDrawCell = ListeCustomDrawCell
           DataController.DataSource = DataSource1
+          DataController.Filter.Options = [fcoCaseInsensitive]
+          DataController.Options = [dcoAnsiSort, dcoCaseInsensitive, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
           DataController.Summary.DefaultGroupSummaryItems = <>
-          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <
+            item
+              Format = 'Listelenen : ###'
+              Kind = skCount
+              Column = Listetc
+            end>
           DataController.Summary.SummaryGroups = <>
           OptionsData.Deleting = False
           OptionsData.Editing = False
           OptionsData.Inserting = False
           OptionsSelection.MultiSelect = True
+          OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+          OptionsView.Footer = True
           OptionsView.GroupByBox = False
           OptionsView.HeaderHeight = 33
           Bands = <
@@ -470,7 +510,7 @@ object frmTahliltakip: TfrmTahliltakip
             GroupSummaryAlignment = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 86
+            Width = 90
             Position.BandIndex = 0
             Position.ColIndex = 2
             Position.RowIndex = 0
@@ -493,7 +533,7 @@ object frmTahliltakip: TfrmTahliltakip
             Caption = 'Hasta Ad'#305
             DataBinding.FieldName = 'h'
             PropertiesClassName = 'TcxTextEditProperties'
-            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Horz = taLeftJustify
             Properties.Alignment.Vert = taVCenter
             GroupSummaryAlignment = taCenter
             HeaderAlignmentHorz = taCenter
@@ -952,17 +992,17 @@ object frmTahliltakip: TfrmTahliltakip
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn9016201: TcxGridDBBandedColumn
-            Caption = 'WBC'
             DataBinding.FieldName = '901620.1'
             PropertiesClassName = 'TcxCurrencyEditProperties'
             Properties.Alignment.Horz = taRightJustify
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 40
+            Width = 35
             Position.BandIndex = 3
             Position.ColIndex = 0
             Position.RowIndex = 0
+            IsCaptionAssigned = True
           end
           object ListeDBBandedColumn9016202: TcxGridDBBandedColumn
             Caption = 'RBC'
@@ -972,7 +1012,7 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 40
+            Width = 35
             Position.BandIndex = 3
             Position.ColIndex = 1
             Position.RowIndex = 0
@@ -985,7 +1025,8 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 40
+            Styles.Header = cxStyle10
+            Width = 35
             Position.BandIndex = 3
             Position.ColIndex = 2
             Position.RowIndex = 0
@@ -998,7 +1039,7 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 40
+            Width = 35
             Position.BandIndex = 3
             Position.ColIndex = 3
             Position.RowIndex = 0
@@ -1011,7 +1052,7 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 40
+            Width = 35
             Position.BandIndex = 3
             Position.ColIndex = 4
             Position.RowIndex = 0
@@ -1024,7 +1065,7 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 40
+            Width = 35
             Position.BandIndex = 3
             Position.ColIndex = 5
             Position.RowIndex = 0
@@ -1037,7 +1078,7 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 40
+            Width = 35
             Position.BandIndex = 3
             Position.ColIndex = 6
             Position.RowIndex = 0
@@ -1050,7 +1091,7 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 40
+            Width = 35
             Position.BandIndex = 3
             Position.ColIndex = 7
             Position.RowIndex = 0
@@ -1130,6 +1171,36 @@ object frmTahliltakip: TfrmTahliltakip
             Width = 52
             Position.BandIndex = 7
             Position.ColIndex = 22
+            Position.RowIndex = 0
+          end
+          object ListeColumn4: TcxGridDBBandedColumn
+            Caption = 'LYM'
+            DataBinding.FieldName = '901620.9'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.AssignedValues.DisplayFormat = True
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Styles.Header = cxStyle10
+            Width = 35
+            Position.BandIndex = 3
+            Position.ColIndex = 8
+            Position.RowIndex = 0
+          end
+          object ListeColumn5: TcxGridDBBandedColumn
+            Caption = 'LYM%'
+            DataBinding.FieldName = '901620.10'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.AssignedValues.DisplayFormat = True
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Styles.Header = cxStyle10
+            Width = 35
+            Position.BandIndex = 3
+            Position.ColIndex = 9
             Position.RowIndex = 0
           end
         end
@@ -1234,6 +1305,16 @@ object frmTahliltakip: TfrmTahliltakip
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       TextColor = clBlack
+    end
+    object cxStyle10: TcxStyle
+      AssignedValues = [svColor, svFont, svTextColor]
+      Color = clNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      TextColor = clRed
     end
   end
   object cxStyleRepository2: TcxStyleRepository

@@ -795,10 +795,6 @@ object frmLogin: TfrmLogin
           Height = 202
           Align = alClient
           TabOrder = 0
-          ExplicitLeft = 2
-          ExplicitTop = -2
-          ExplicitWidth = 331
-          ExplicitHeight = 227
           object txtServerName: TcxTextEditKadir
             Left = 104
             Top = 10
@@ -956,10 +952,6 @@ object frmLogin: TfrmLogin
       Caption = 'cxTabSheet1'
       ImageIndex = 2
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 154
         Top = 62
@@ -2212,8 +2204,8 @@ object frmLogin: TfrmLogin
     end
   end
   object DataSource1: TDataSource
-    Left = 40
-    Top = 88
+    Left = 72
+    Top = 192
   end
   object login: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -2236,7 +2228,7 @@ object frmLogin: TfrmLogin
     SQL.Strings = (
       'SELECT * FROM MUH_DONEMLER'
       'WHERE DONEM=:D')
-    Left = 112
+    Left = 128
     Top = 40
   end
   object ListeAc1: TListeAc
@@ -2311,7 +2303,7 @@ object frmLogin: TfrmLogin
     SQL.Strings = (
       'SELECT * FROM MUH_DONEMLER'
       'WHERE DONEM=:D')
-    Left = 152
+    Left = 184
     Top = 40
   end
   object aTimer: TTimer

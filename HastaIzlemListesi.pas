@@ -197,6 +197,8 @@ type
     gridHastalarColumn3: TcxGridDBBandedColumn;
     H2: TMenuItem;
     K2: TMenuItem;
+    gridHastalarColumn4: TcxGridDBBandedColumn;
+    U2: TMenuItem;
 
     procedure TopPanelButonClick(Sender: TObject);
     procedure HastalarAfterScroll(DataSet: TDataSet);
@@ -228,7 +230,7 @@ type
     Procedure TDISKaydet(islem : integer);
     procedure FormCreate(Sender: TObject);
     procedure H2Click(Sender: TObject);
-
+    procedure TopluDuzenle(Liste : TcxGridDBBandedTableView ; Doktor , Tarih : string);
   private
     { Private declarations }
   public
@@ -457,6 +459,32 @@ begin
 end;
 
 
+procedure TfrmIzlem.TopluDuzenle(Liste: TcxGridDBBandedTableView ; Doktor , Tarih : string);
+var
+ x , satir : integer;
+ dosyaNo , gelisNo : string;
+begin
+    DurumGoster(True);
+    try
+
+      for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+      begin
+         Application.ProcessMessages;
+         satir := Liste.Controller.SelectedRows[x].RecordIndex;
+         dosyaNo := varToSTr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+         gelisNo := varToSTr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('gelisNo').Index));
+
+         datalar.QueryExec('update UzmanGozlem set doktor = ' + QuotedStr(doktor) +
+                           ',Tarih = ' + QuotedStr(Tarih) +
+                           ' where dosyaNo = ' + QuotedStr(dosyaNo) +
+                           ' and gelisNo = ' + gelisNo);
+
+      end;
+    finally
+      DurumGoster(False);
+    end;
+end;
+
 procedure TfrmIzlem.TopPanelButonClick(Sender: TObject);
 var
   sql,tip,t2,islem : string;
@@ -475,7 +503,8 @@ begin
   DurumGoster(True,False,KayitYukleMesaj);
   try
    sql := 'exec sp_IzlemList @tarih1 = ' + txtTopPanelTarih1.GetSQLValue + ',@tarih2 = ' + txtTopPanelTarih2.GetSQLValue +
-          ',@tip = ' + QuotedStr(tip) + ',@islem = ' + QuotedStr(islem) + ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
+          ',@tip = ' + QuotedStr(tip) + ',@islem = ' + QuotedStr(islem) + ',@sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+          ',@seans = ' + QuotedStr(txtSeansTopPanel.Text);
 
    datalar.QuerySelect(hastalar,sql);
 
@@ -593,7 +622,8 @@ begin
       sql := 'exec sp_DYOBDataset @tip = ' + quotedstr('tedavi') +
              ',@protokolNo = ' + quotedstr('') +
              ',@dosyaNo = ' + quotedstr(dosyaNo) + ',@gelisNo = ' + gelisNo +
-             ',@bunHesapla = 0,@izlemTarih = ' + QuotedStr('UZM');
+             ',@bunHesapla = ' + chkList.EditValue  +
+             ',@izlemTarih = ' + QuotedStr('UZM');
       datalar.QuerySelect(ado,sql);
 
 
@@ -800,8 +830,10 @@ var
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
  x : integer;
- dosyaNo,gelisNo : string;
+ dosyaNo,gelisNo,sql , SIRANOS : string;
+ satir : integer;
  _Tarih_ : TDate;
+ ado : TADOQuery;
 begin
   inherited;
 
@@ -821,8 +853,26 @@ begin
             end;
 
    -20 : begin
-           TopluDataset.Dataset0 := Hastalar;
-           PrintYap('200T','Uzman Muayene Tutanak(Toplu',intToStr(TagfrmHastaDiyalizIzlemListesi), TopluDataset);
+           for x := 0 to gridHastalar.Controller.SelectedRowCount - 1 do
+           begin
+               satir := gridHastalar.Controller.SelectedRows[x].RecordIndex;
+               SIRANOS := ifThen(SIRANOS='',SIRANOS+'',SIRANOS+',') +
+                 varToStr(gridHastalar.DataController.GetValue(satir,gridHastalar.DataController.GetItemByFieldName('gelisSIRANO').Index));
+           end;
+
+           sql := 'exec sp_IzlemList @tarih1 = ' + txtTopPanelTarih1.GetSQLValue + ',@tarih2 = ' + txtTopPanelTarih2.GetSQLValue +
+                  ',@tip = ' + QuotedStr('0') + ',@islem = ' + QuotedStr('1') + ',@sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                  ',@seans = ' + QuotedStr(txtSeansTopPanel.Text) +
+                  ',@gelisSIRANO = ' + QuotedStr(SIRANOS);
+
+           ado := TADOQuery.Create(nil);
+           try
+             datalar.QuerySelect(ado,sql);
+             TopluDataset.Dataset0 := ado;
+             PrintYap('200T','Uzman Muayene Tutanak(Toplu',intToStr(TagfrmHastaDiyalizIzlemListesi), TopluDataset);
+           finally
+              ado.free;
+           end;
          end;
 
    -38 : begin
@@ -854,6 +904,14 @@ begin
                  DurumGoster(false);
                end;
          end;
+
+  -100 : begin
+
+            if mrYes = ShowPopupForm('Uzman Muayene Duzenle',UzmanMuayeneDoktorTarihDuzenle,'')
+            Then Begin
+              TopluDuzenle(gridHastalar,datalar.UzmanMuayeneUpdate.Doktor,datalar.UzmanMuayeneUpdate.MuayeneTarihi);
+            End;
+         end;
     end;
   finally
     DurumGoster(False);
@@ -865,12 +923,13 @@ procedure TfrmIzlem.FormCreate(Sender: TObject);
 var
  IC : TcxImageComboKadir;
  C : TcxComboBox;
+ chk : TcxCheckGroupItem;
 begin
   Menu := PopupMenu1;
  // Olustur(self,_TableName_,'Kimlik Doðrula',71,sqlInsert);
   cxPanel.Visible := false;
   TopPanel.Visible := True;
-  TapPanelElemanVisible(True,True,True,False,False,False,False,False,False,False,False,False,False);
+  TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False,True);
 
 
   IC := TcxImageComboKadir.Create(nil);
@@ -937,6 +996,15 @@ begin
   ComboDoldur3('select tanimi from Diyaliz_Igne',C,0,-1);
   TcxComboBoxProperties(gridHastalarIgne.Properties).Items := C.Properties.Items;
   TcxComboBoxProperties(gridHastalarIgneV.Properties).Items := C.Properties.Items;
+
+
+   chkList.Properties.Items.Clear;
+   Chk := chkList.Properties.Items.Add;
+   Chk.Caption := 'Bun Gönder';
+   Chk.Tag := 0;
+   chkList.EditValue := '0';
+   chkList.Width := 150;
+
 end;
 
 procedure TfrmIzlem.gridHastalarDblClick(Sender: TObject);

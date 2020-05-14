@@ -23,7 +23,7 @@ uses
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
   cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxImage,
-  cxSplitter;
+  cxSplitter, cxImageComboBox;
 
 type
   TfrmSahaSaglikGozetim = class(TGirisForm)
@@ -75,6 +75,17 @@ type
     cxSplitter1: TcxSplitter;
     PopupMenu2: TPopupMenu;
     D1: TMenuItem;
+    N1: TMenuItem;
+    B1: TMenuItem;
+    D2: TMenuItem;
+    gridRaporColumn1: TcxGridDBColumn;
+    D3: TMenuItem;
+    N2: TMenuItem;
+    T1: TMenuItem;
+    gridRaporlarColumn1: TcxGridDBColumn;
+    gridRaporlarColumn2: TcxGridDBColumn;
+    gridRaporlarColumn3: TcxGridDBColumn;
+    cxStyle9: TcxStyle;
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Gozlem(islem: Integer);
@@ -163,15 +174,15 @@ function TfrmSahaSaglikGozetim.Init(Sender : TObject) : Boolean;
 begin
   //þube kodu ekle
   ADO_SahaGozetim.SQL.Text :=
-    'select SR.ID, SR.SubeKod, sst.subeTanim SubeTanimi, DenetimiYapanKullanici, DenetimTarihi, Date_Create, GozetimDefterNo, FirmaKodu, '#13#10+
+    'select SR.ID, DenetimiYapanKullanici, DenetimTarihi, SR.Date_Create, GozetimDefterNo, FirmaKodu, '#13#10+
     '  cast (case when Image Is NULL then 0 else 1 end as bit) ImageVar, '#13#10+
-    '  SR.GozlemGrup, SGR.Tanimi GozlemGrupTanim '#13#10+
+    '  SR.GozlemGrup, SGR.Tanimi GozlemGrupTanim, '#13#10+
+    '  DenetimOnaylamaTarihi,DenetimiPlanlayan,BirSonrakiGozetimTarihi , DosyaTip , Image ' +
     'from SahaGozlemRaporlari SR'#13#10+
     'inner join SahaGozlemSoruGrup SGR on SGR.GozlemGrup = SR.GozlemGrup'#13#10+
-    'left outer join SIRKET_SUBE_TNM sst on sst.SirketKod = SR.FirmaKodu'#13#10+
-    '  and sst.SubeKod = SR.SubeKod'#13#10+
+    'left outer join SIRKETLER_TNM sst on sst.SirketKod = SR.FirmaKodu'#13#10+
     'where FirmaKodu = ' + QuotedStr (DATALAR.AktifSirket) + ''#13#10+
-    'order by SR.ID';
+    'order by DenetimTarihi desc , SR.ID';
   ADO_SahaGozetim .Active := true;
   Result := True;
 end;
@@ -248,8 +259,8 @@ end;
 procedure TfrmSahaSaglikGozetim.AdjustMasterControls;
 begin
   miFotografYukle.Enabled := ADO_SahaGozetim.Active;
-  miFotografGoruntule.Enabled := ADO_SahaGozetim.Active and ADO_SahaGozetim.FieldByName('ImageVar').AsBoolean;
-  miFotografiSil.Enabled := ADO_SahaGozetim.Active and ADO_SahaGozetim.FieldByName('ImageVar').AsBoolean;
+//  miFotografGoruntule.Enabled := ADO_SahaGozetim.Active and ADO_SahaGozetim.FieldByName('DosyaTip').AsString <> '';
+//  miFotografiSil.Enabled := ADO_SahaGozetim.Active and ADO_SahaGozetim.FieldByName('DosyaTip').AsString <> '';
   miGozetimSil.Enabled := ADO_SahaGozetim.Active and (ADO_SahaGozetim.RecordCount > 0);
   miGozetimYazdir.Enabled := ADO_SahaGozetim.Active and (ADO_SahaGozetim.RecordCount > 0);
   miGozetimDuzenle.Enabled := ADO_SahaGozetim.Active and (ADO_SahaGozetim.RecordCount > 0);
@@ -274,6 +285,9 @@ var
   GirisRecord : TGirisFormRecord;
   aModalResult : TModalResult;
   dof : TDOF;
+  dosya : TOpenDialog;
+  dosyaTip , sql : string;
+  F : TGirisForm;
 begin
   inherited;
 
@@ -296,16 +310,31 @@ begin
           end;
         end;
   -21:begin
-    if SahaSaglikGozetimFormFotografYukle (ADO_SahaGozetim.FieldByName('ID').AsInteger) then
-      RefreshSahaGozetimler (True);
+          DurumGoster(True,False,'Dosya Yükleniyor , Lütfen Bekleyiniz');
+          dosya := TOpenDialog.Create(nil);
+          try
+              if not dosya.Execute then Exit;
+              dosyaTip := ExtractFileExt(dosya.FileName);
+              dosyaTip := UPPERCASE(StringReplace(dosyaTip,'.','',[rfReplaceAll]));
+              DokumanYuklePDF(ADO_SahaGozetim,'Image',dosya.FileName);
+          finally
+            dosya.Free;
+            dxStatusBar1.Panels[1].Text := '';
+            DurumGoster(False,False);
+          end;
   end;
   -22:begin
-    SahaSaglikGozetimFormFotografGoruntule (ADO_SahaGozetim.FieldByName('ID').AsInteger);
+            DokumanAc(ADO_SahaGozetim,'Image',
+                      ADO_SahaGozetim.FieldByName('ID').AsString +'_S',True,
+                      ADO_SahaGozetim.FieldByName('DosyaTip').AsString);
   end;
   -23:begin
-    if showmessageskin ('Ýlgili Saha Gözetim Formu''nun EkliFotoðrafýný Veritabanýndan Silmek Ýstiyor Musunuz ?', '', '', 'conf') = mrYes then
-      if SahaSaglikGozetimFormFotografSil (ADO_SahaGozetim.FieldByName('ID').AsInteger) then
-        RefreshSahaGozetimler (True);
+            sql := 'update SahaGozlemRaporlari ' +
+                   ' set Image = NULL ' +
+                   ',DosyaTip = NULL ' +
+                   ' where ID = ' + QuotedStr(ADOQuery1.FieldByName('ID').AsString);
+            datalar.QueryExec(sql);
+            ADOQuery1.Requery();
   end;
   -27 : begin
           if ADO_SahaGozetim.RecordCount > 0 then
@@ -319,6 +348,39 @@ begin
            dof.SSGFaliyetPlan := ADOQuery1.FieldByName('Oneriler').AsString;
            DOFOlustur(ADO_SahaGozetim.FieldByName('ID').AsString,dof);
         end;
+  -60 : begin
+          DurumGoster(True,False,'Dosya Yükleniyor , Lütfen Bekleyiniz');
+          dosya := TOpenDialog.Create(nil);
+          try
+              if not dosya.Execute then Exit;
+              dosyaTip := ExtractFileExt(dosya.FileName);
+              dosyaTip := UPPERCASE(StringReplace(dosyaTip,'.','',[rfReplaceAll]));
+              DokumanYuklePDF(ADOQuery1,'Image',dosya.FileName);
+          finally
+            dosya.Free;
+            dxStatusBar1.Panels[1].Text := '';
+            DurumGoster(False,False);
+          end;
+        end;
+
+   -70 : begin
+            sql := 'update SahaGozlemRaporu ' +
+                   ' set image = NULL ' +
+                   ',DosyaTip = NULL ' +
+                   ' where ID = ' + QuotedStr(ADOQuery1.FieldByName('ID').AsString);
+            datalar.QueryExec(sql);
+            ADOQuery1.Requery();
+        end;
+   -80 : begin
+            DokumanAc(ADOQuery1,'image',
+                      ADOQuery1.FieldByName('ID').AsString +'_S',True,
+                      ADOQuery1.FieldByName('DosyaTip').AsString);
+         end;
+  -90  : begin
+              F := FormINIT(TagfrmSahaSaglikGozetimTanim,GirisRecord,ikHayir,'');
+              if F <> nil then F.ShowModal;
+         end;
+
 
   end;
 end;
@@ -365,16 +427,23 @@ begin
       begin
         aSahaDenetimVeri.KullaniciAdi := DATALAR.username;
         aSahaDenetimVeri.FirmaKod := datalar.AktifSirket;
-        aSahaDenetimVeri.SubeKod := HakikiAktifSube;
+       // aSahaDenetimVeri.SubeKod := HakikiAktifSube;
         aSahaDenetimVeri.DenetimTarihi := DateToStr (date);
         aSahaDenetimVeri.DenetimDefterNo := '';
         aSahaDenetimVeri.GozlemGrubu := '';
+        aSahaDenetimVeri.BirSonrakiDenetimTarihi := '';
+        aSahaDenetimVeri.DenetimiPlanlayan := '';
+        aSahaDenetimVeri.DenetimOnaylamaTarihi := '';
       end
       else begin
         aSahaDenetimVeri.KullaniciAdi := ADO_SahaGozetim.FieldByName('DenetimiYapanKullanici').AsString;
         aSahaDenetimVeri.FirmaKod := ADO_SahaGozetim.FieldByName('FirmaKodu').AsString;
-        aSahaDenetimVeri.SubeKod := ADO_SahaGozetim.FieldByName('SubeKod').AsString;
+      //  aSahaDenetimVeri.SubeKod := ADO_SahaGozetim.FieldByName('SubeKod').AsString;
         aSahaDenetimVeri.DenetimTarihi := ADO_SahaGozetim.FieldByName('DenetimTarihi').AsString;
+        aSahaDenetimVeri.BirSonrakiDenetimTarihi := ADO_SahaGozetim.FieldByName('BirSonrakiGozetimTarihi').AsString;
+        aSahaDenetimVeri.DenetimiPlanlayan := ADO_SahaGozetim.FieldByName('DenetimiPlanlayan').AsString;
+        aSahaDenetimVeri.DenetimOnaylamaTarihi := ADO_SahaGozetim.FieldByName('DenetimOnaylamaTarihi').AsString;
+
         aSahaDenetimVeri.DenetimDefterNo := ADO_SahaGozetim.FieldByName('GozetimDefterNo').AsString;
         aSahaDenetimVeri.GozlemGrubu := ADO_SahaGozetim.FieldByName('GozlemGrup').AsString;
       end;
@@ -391,10 +460,14 @@ begin
           try
             ADO_SahaGozetim.FieldByName('DenetimiYapanKullanici').AsString := _SahaDenetimVeri_.KullaniciAdi;
             ADO_SahaGozetim.FieldByName('FirmaKodu').AsString := _SahaDenetimVeri_.FirmaKod;
-            ADO_SahaGozetim.FieldByName('SubeKod').AsString := _SahaDenetimVeri_.SubeKod;
+          //  ADO_SahaGozetim.FieldByName('SubeKod').AsString := _SahaDenetimVeri_.SubeKod;
             ADO_SahaGozetim.FieldByName('DenetimTarihi').AsString := _SahaDenetimVeri_.DenetimTarihi;
+            ADO_SahaGozetim.FieldByName('BirSonrakiGozetimTarihi').AsString := _SahaDenetimVeri_.BirSonrakiDenetimTarihi;
             ADO_SahaGozetim.FieldByName('GozetimDefterNo').AsString := _SahaDenetimVeri_.DenetimDefterNo;
             ADO_SahaGozetim.FieldByName('GozlemGrup').AsString := _SahaDenetimVeri_.GozlemGrubu;
+            ADO_SahaGozetim.FieldByName('DenetimiPlanlayan').AsString := _SahaDenetimVeri_.DenetimiPlanlayan;
+            ADO_SahaGozetim.FieldByName('DenetimOnaylamaTarihi').AsString := _SahaDenetimVeri_.DenetimOnaylamaTarihi;
+
             ADO_SahaGozetim.Post;
             bBasarili := True;
           finally

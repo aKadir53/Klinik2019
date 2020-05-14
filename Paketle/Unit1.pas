@@ -16,7 +16,8 @@ uses
   dxSkinOffice2010Blue, dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven,
   dxSkinSharp, dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
   dxSkinsDefaultPainters, dxSkinValentine, dxSkinXmas2008Blue,
-  dxSkinscxPCPainter, cxPCdxBarPopupMenu, cxPC, Vcl.Samples.Spin ;
+  dxSkinscxPCPainter, cxPCdxBarPopupMenu, cxPC, Vcl.Samples.Spin, IdHTTP,
+  cxContainer, cxEdit, cxLabel ;
 
 type
   TfrmPaket = class(TForm)
@@ -44,15 +45,35 @@ type
     DBMemo2: TDBMemo;
     DBNavigator2: TDBNavigator;
     DBGrid2: TDBGrid;
-    Versiyon: TMemo;
+    txtVersiyon: TMemo;
     txtRev: TMemo;
     ado_sql: TADOQuery;
-    Kaynak: TADOConnection;
     btPanodanYapistir: TSpeedButton;
     SpinEdit1: TSpinEdit;
     label111: TLabel;
     btnGit: TSpeedButton;
     cbSonBirAy: TCheckBox;
+    Label2: TLabel;
+    Label3: TLabel;
+    cxTabSheet3: TcxTabSheet;
+    Klinik2019Dpr: TMemo;
+    txtDLLVersiyon: TMemo;
+    Label4: TLabel;
+    HTTP1: TIdHTTP;
+    progressFilename: TLabel;
+    Panel2: TPanel;
+    yvK: TMemo;
+    Label5: TLabel;
+    cxTabSheet4: TcxTabSheet;
+    DataSource3: TDataSource;
+    ADO_Databases: TADOQuery;
+    Panel3: TPanel;
+    Button1: TButton;
+    Button2: TButton;
+    Panel4: TPanel;
+    DBGrid3: TDBGrid;
+    txtLog: TMemo;
+    Splitter1: TSplitter;
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     Function  DosyaKopyala(sSrc : string;sDest : string) : integer;
@@ -68,13 +89,13 @@ type
       AWorkCountMax: Int64);
     procedure IdFTP1Work(ASender: TObject; AWorkMode: TWorkMode;
       AWorkCount: Int64);
-    function SQL_Host(var server : string; var user : string ; var password : string ; var DB : string) : boolean;
-    procedure SQL_Host_Baglan;
     procedure table1NewRecord(DataSet: TDataSet);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure btPanodanYapistirClick(Sender: TObject);
     procedure btnGitClick(Sender: TObject);
     procedure cbSonBirAyClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -82,58 +103,18 @@ type
     { Public declarations }
   end;
 
+const
+  VersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019Versiyon.txt';
+  DLLVersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019DLLVersiyon.txt';
+  yvkVersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/yvkVersiyon.txt';
 var
   frmPaket: TfrmPaket;
+  versiyon ,DLLversiyon, yvKversiyon ,yvkNewVersiyon : string;
 
 implementation
  uses DosyadanpaketOlustur, clipbrd, NThermo, TransUtils;
 
 {$R *.dfm}
-
-function TfrmPaket.SQL_Host(var server : string; var user : string ; var password : string ; var DB : string) : boolean;
-//var
-//  sql : string;
-begin
-
-   Kaynak.ConnectionString := serverismi('DIALIZ');
-   Kaynak.Connected := True;
-
-   try
-
-    ado_sql.Open;
-
-    if not ado_sql.Eof
-    then begin
-      server := ado_sql.FieldByName('s').AsString;
-      user := ado_sql.FieldByName('u').AsString;
-      password := ado_sql.FieldByName('p').AsString;
-      db := ado_sql.FieldByName('db').AsString;
-    end;
-    result := True;
-   except
-    result := False;
-   end;
-
-
-end;
-
-procedure TfrmPaket.SQL_Host_Baglan;
-var
-  servername ,s , u , p , db : string;
-begin
-
-   if SQL_Host(s,u,p,db) = True
-   Then Begin
-    // ShowMessageSkin(s+' '+db,u,p ,'info');
-     servername :=
-     'Provider=SQLOLEDB.1;Password=' + p +
-     ';Persist Security Info=False;User ID=' + u +
-     ';Initial Catalog=' + db + ';Data Source=' + s +
-     ';Application Name=Mavi Nokta E-Reçete Veritabaný Günc.Paket Masaüstü Uyg.';
-     datalar.Hedef.ConnectionString := servername;
-     datalar.Hedef.Connected := True;
-   End;
-end;
 
 procedure TfrmPaket.table1NewRecord(DataSet: TDataSet);
 begin
@@ -169,13 +150,13 @@ end;
 
 procedure TfrmPaket.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  if SpeedButton3.Enabled then SpeedButton3Click (SpeedButton3);
+//  if SpeedButton3.Enabled then SpeedButton3Click (SpeedButton3);
 end;
 
 procedure TfrmPaket.FormCreate(Sender: TObject);
 begin
 
- txtRev.Lines.LoadFromFile('D:\Projeler\DELPHI\OSGB\win32\debug\OSGBupdate.txt');
+ txtRev.Lines.LoadFromFile('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019Update.txt');
 end;
 
 procedure TfrmPaket.SpeedButton2Click(Sender: TObject);
@@ -309,6 +290,55 @@ begin
   end;
 end;
 
+procedure TfrmPaket.Button1Click(Sender: TObject);
+begin
+  ADO_Databases.Active := False;
+  ADO_Databases.Active := True;
+
+end;
+
+procedure TfrmPaket.Button2Click(Sender: TObject);
+var
+  sql : string;
+  ado : TADOQuery;
+begin
+  ado := TADOQuery.Create(nil);
+  ado.Connection := datalar.Master;
+  try
+      sql := table1.FieldByName('SQL_CMD').AsString;
+      ADO_Databases.First;
+      while not ADO_Databases.Eof do
+      begin
+        datalar.Master.BeginTrans;
+        try
+          ado.Close;
+          ado.SQL.Clear;
+          ado.SQL.Text := 'USE ' + ADO_Databases.FieldByName('name').AsString;
+          ado.ExecSQL;
+
+          ado.SQL.Clear;
+          ado.SQL.Text :=  sql;
+          ado.ExecSQL;
+
+          datalar.Master.CommitTrans;
+          txtLog.Lines.Add(table1.FieldByName('ID').AsString + ' : ' + ADO_Databases.FieldByName('name').AsString + ' - BAÞARILI');
+        except on e : exception do
+         begin
+           txtLog.Lines.Add(table1.FieldByName('ID').AsString + ' : ' + ADO_Databases.FieldByName('name').AsString + ' - HATA : ' + e.Message);
+           datalar.Master.RollbackTrans;
+         end;
+        end;
+
+        ADO_Databases.Next;
+      end;
+
+  finally
+    ado.Free;
+  end;
+
+
+end;
+
 procedure TfrmPaket.cbSonBirAyClick(Sender: TObject);
 var
   bActive : Boolean;
@@ -317,10 +347,10 @@ begin
   if bActive then table1.Close;
   if not TCheckBox (Sender).Checked then
     table1.SQL.Text :=
-      'select * from UPDATE_CMD_OSGB where Modul = ' +QuotedStr ('O') + 'order by ID'
+      'select * from UPDATE_CMD where Modul = ' +QuotedStr ('K') + 'order by ID'
    else
     table1.SQL.Text :=
-      'select * from UPDATE_CMD_OSGB where Modul = ' +QuotedStr ('O') + ' and TARIH >= ' + QuotedStr (FormatDateTime('yyyymmdd', date - 30)) +' order by ID';
+      'select * from UPDATE_CMD where Modul = ' +QuotedStr ('K') + ' and TARIH >= ' + QuotedStr (FormatDateTime('yyyymmdd', date - 30)) +' order by ID';
   if bActive then table1.Open;
 end;
 
@@ -329,18 +359,109 @@ procedure TfrmPaket.SpeedButton3Click(Sender: TObject);
 //  dosya : TFileStream;
 begin
   try
-    table1.Last;
-    txtRev.Lines.Text := table1.FieldByName('ID').AsString;
-    txtRev.Lines.SaveToFile('D:\Projeler\DELPHI\OSGB\win32\debug\OSGBupdate.txt');
-    IdFTP1.Connect();
-    Application.ProcessMessages;
-    IdFTP1.Put('D:\Projeler\DELPHI\OSGB\win32\debug\OSGBupdate.txt','/httpdocs/OSGBupdate.txt',false);
-  except on e : Exception do
-    begin
-       ShowMessageSkin('Hata : ' + e.Message,'','','info');
-    end;
+    versiyon := (HTTP1.Get(VersiyonURL));
+    DLLversiyon := (HTTP1.Get(DLLVersiyonURL));
+  except
+    versiyon := txtVersiyon.Text;
+    DLLversiyon := txtDLLVersiyon.Text;
   end;
-  IdFTP1.Disconnect;
+
+  if versiyon = '' then versiyon := txtVersiyon.Text;
+  if DLLversiyon = '' then DLLversiyon := txtDLLVersiyon.Text;
+
+
+  if Dialogs.MessageDlg('Dosyalar Sunucuya Gönderilecek',
+    mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes
+  then begin
+         Panel2.Visible := True;
+         try
+          try
+            table1.Last;
+            txtRev.Lines.Text := table1.FieldByName('ID').AsString;
+            txtRev.Lines.SaveToFile('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019Update.txt');
+            txtDLLVersiyon.Lines.SaveToFile('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019DLLVersiyon.txt');
+            txtVersiyon.Lines.SaveToFile('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019Versiyon.txt');
+            yvK.Lines.SaveToFile('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Yv\Win32\Debug\yvkVersiyon.txt');
+
+            IdFTP1.Connect();
+            Application.ProcessMessages;
+
+            if strToint(yvK.Text) > strToint(yvKversiyon)
+            then begin
+                progressFilename.Caption := yvk.Text;
+                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Yv\Win32\Debug\yvK.exe','/httpdocs/Diyaliz_Klinik2019/'+yvK.Text);
+                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Yv\Win32\Debug\yvkVersiyon.txt','/httpdocs/Diyaliz_Klinik2019/yvkVersiyon.txt');
+            end;
+
+
+
+            if (strtoint(txtDLLversiyon.text) > strtoint(DllVersiyon))
+            Then Begin
+
+                progressFilename.Caption := 'NoktaDLL.dll';
+                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\NoktaDLL.dll','/httpdocs/Diyaliz_Klinik2019/NoktaDLL.dll');
+
+                progressFilename.Caption := 'EFaturaDLL.dll';
+                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\EFaturaDLL.dll','/httpdocs/Diyaliz_Klinik2019/EFaturaDLL.dll');
+
+//                progressFilename.Caption := 'BouncyCastle.Crypto17.dll';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\BouncyCastle.Crypto17.dll','/httpdocs/Diyaliz_Klinik2019/BouncyCastle.Crypto17.dll');
+
+//                progressFilename.Caption := 'BouncyCastle.Crypto18.dll';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\BouncyCastle.Crypto18.dll','/httpdocs/Diyaliz_Klinik2019/BouncyCastle.Crypto18.dll');
+
+//                progressFilename.Caption := 'EdocLib.dll';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\EdocLib.dll','/httpdocs/Diyaliz_Klinik2019/EdocLib.dll');
+
+//                progressFilename.Caption := 'Net.Pkcs11.dll';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Net.Pkcs11.dll','/httpdocs/Diyaliz_Klinik2019/Net.Pkcs11.dll');
+
+//                progressFilename.Caption := 'itextsharp.dll';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\itextsharp.dll','/httpdocs/Diyaliz_Klinik2019/itextsharp.dll');
+
+//                progressFilename.Caption := 'Microsoft.VisualBasic.PowerPacks.Vs.dll';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Microsoft.VisualBasic.PowerPacks.Vs.dll','/httpdocs/Diyaliz_Klinik2019/Microsoft.VisualBasic.PowerPacks.Vs.dll');
+
+//                progressFilename.Caption := 'salt.dat';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\salt.dat','/httpdocs/Diyaliz_Klinik2019/salt.dat');
+
+//                progressFilename.Caption := 'RenkliEncryption.dll';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\RenkliEncryption.dll','/httpdocs/Diyaliz_Klinik2019/RenkliEncryption.dll');
+
+//                progressFilename.Caption := 'RenkliRsaPublicKey.pem';
+//                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\RenkliRsaPublicKey.pem','/httpdocs/Diyaliz_Klinik2019/RenkliRsaPublicKey.pem',false);
+
+                progressFilename.Caption := 'Klinik2019Update.txt';
+                IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019DLLVersiyon.txt','/httpdocs/Diyaliz_Klinik2019/Klinik2019DLLVersiyon.txt',false);
+            End;
+
+            if (strtoint(txtversiyon.text) > strtoint(versiyon))
+            Then Begin
+              progressFilename.Caption := 'Klinik2019.exe';
+              IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019.exe','/httpdocs/Diyaliz_Klinik2019/Klinik2019.exe');
+              progressFilename.Caption := 'NoktaDLL.dll';
+              IdFTP1.Put('D:\Projeler\VS\c#\ListeDLL_Cades\ListeDLL\bin\x86\Debug\NoktaDLL.dll','/httpdocs/Diyaliz_Klinik2019/NoktaDLL.dll');
+              progressFilename.Caption := 'EFaturaDLL.dll';
+              IdFTP1.Put('D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll','/httpdocs/Diyaliz_Klinik2019/EFaturaDLL.dll');
+
+              progressFilename.Caption := 'Klinik2019Update.txt';
+              IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019Update.txt','/httpdocs/Diyaliz_Klinik2019/Klinik2019Update.txt',false);
+              progressFilename.Caption := 'Klinik2019Update.txt';
+              IdFTP1.Put('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019Versiyon.txt','/httpdocs/Diyaliz_Klinik2019/Klinik2019Versiyon.txt',false);
+             End;
+
+            progressFilename.Caption := '';
+            Panel2.Visible := False;
+
+          except on e : Exception do
+            begin
+               ShowMessageSkin('Hata : ' + e.Message,'','','info');
+            end;
+          end;
+        finally
+         IdFTP1.Disconnect;
+        end;
+  end;
 end;
 
 procedure TfrmPaket.IdFTP1Status(ASender: TObject; const AStatus: TIdStatus;
@@ -361,14 +482,13 @@ procedure TfrmPaket.IdFTP1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
 begin
   pb.Max := AWorkCountMax;
   Application.ProcessMessages;
+
 end;
 
 procedure TfrmPaket.IdFTP1WorkEnd(Sender: TObject; AWorkMode: TWorkMode);
 begin
-
   pb.Position := 0;
   Label1.Caption := 'Gönderim Tamamlandý';
-
 end;
 
 procedure TfrmPaket.IdFTP1Connected(Sender: TObject);
@@ -379,30 +499,57 @@ begin
 end;
 
 procedure TfrmPaket.SpeedButton4Click(Sender: TObject);
-//var
-  //s,u,p,db : string;
+var
+  bActive : Boolean;
+  p : integer;
+  str : string;
 begin
+    Application.ProcessMessages;
 
-//  winexec('c:\program files\winrar\winrar c -zC:\NoktaDiyaliz\SQLBakim\Update\Paket\Komut.txt C:\NoktaDiyaliz\Update.exe',1);
+     if datalar.MasterBaglan('')
+     Then begin
 
-  Application.ProcessMessages;
+          Klinik2019Dpr.Lines.LoadFromFile('D:\Projeler\DELPHI\Diyaliz\Diyaliz_Klinik2019\Klinik2019.dpr');
 
-  SQL_Host_Baglan;
+          p := pos('const',Klinik2019Dpr.Text);
+          str := copy(Klinik2019Dpr.Text,p+6+length('AppalicationVer : integer = ')+3,4);
+          txtversiyon.Text := str;
 
-  //serverbaglan('213.142.141.121','mavi','');
-  // datalar.hedef.Connected := true;
-  cbSonBirAyClick(cbSonBirAy);
-  table1.Active := true;
-  DBMemo1.DataField := 'SQL_CMD';
+          p := pos('DllVersiyon : integer = ',Klinik2019Dpr.Text);
+          str := copy(Klinik2019Dpr.Text,p+length('DllVersiyon : integer = '),4);
+          txtDLLVersiyon.Text := str;
 
-  ADO_Rapor_Dizayn.Active := true;
-  DBMemo2.DataField := 'rapor';
+          yvKversiyon := (HTTP1.Get(yvkVersiyonURL));
+          yvk.Text := yvKversiyon;
 
 
-  SpeedButton1.Enabled := true;
-  btPanodanYapistir.Enabled := True;
-  btnGit.Enabled := True;
-  cbSonBirAy.Enabled := True;
+          bActive := table1.Active;
+          table1.Close;
+
+          if not cbSonBirAy.Checked then
+            table1.SQL.Text :=
+              'select * from UPDATE_CMD where Modul = ' +QuotedStr ('K') + 'order by ID'
+           else
+            table1.SQL.Text :=
+              'select * from UPDATE_CMD where Modul = ' +QuotedStr ('K') +
+              ' and TARIH >= ' + QuotedStr (FormatDateTime('yyyymmdd', date - 30)) +' order by ID';
+
+          table1.Open;
+
+          DBMemo1.DataField := 'SQL_CMD';
+
+        //  ADO_Rapor_Dizayn.Active := true;
+         // DBMemo2.DataField := 'rapor';
+
+
+          SpeedButton1.Enabled := true;
+          btPanodanYapistir.Enabled := True;
+          btnGit.Enabled := True;
+          cbSonBirAy.Enabled := True;
+          SpeedButton3.Enabled := True;
+     end;
+
+
 end;
 
 procedure TfrmPaket.btnGitClick(Sender: TObject);

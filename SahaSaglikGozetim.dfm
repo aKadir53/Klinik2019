@@ -27,15 +27,12 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
     Properties.TabPosition = tpBottom
     LookAndFeel.NativeStyle = False
     LookAndFeel.SkinName = 'McSkin'
-    ExplicitTop = 121
-    ExplicitHeight = 476
     ClientRectBottom = 443
     ClientRectLeft = 4
     ClientRectRight = 668
     ClientRectTop = 5
     object cxTabSheet1: TcxTabSheet
       ImageIndex = 0
-      ExplicitHeight = 446
       object cxGridKadir1: TcxGridKadir
         Left = 0
         Top = 0
@@ -44,7 +41,7 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
         Align = alClient
         TabOrder = 0
         ExceleGonder = False
-        ExplicitHeight = 446
+        PopupForm = False
         object gridRapor: TcxGridDBTableView
           PopupMenu = PopupMenu2
           DataController.DataSource = DataSource2
@@ -54,6 +51,7 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
           OptionsData.Deleting = False
           OptionsData.Inserting = False
           OptionsView.CellAutoHeight = True
+          OptionsView.DataRowHeight = 50
           OptionsView.GroupByBox = False
           Styles.Group = cxStyle8
           OnCustomDrawGroupCell = gridRaporCustomDrawGroupCell
@@ -75,6 +73,10 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
           object gridRaporKonuRakamli: TcxGridDBColumn
             Caption = 'Konu'
             DataBinding.FieldName = 'KonuRakamli'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
             Options.Editing = False
             Options.Focusing = False
             Width = 232
@@ -85,19 +87,62 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
             PropertiesClassName = 'TcxCheckBoxProperties'
             Properties.ValueChecked = 1
             Properties.ValueUnchecked = 0
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
             Width = 43
           end
           object gridRaporTespitler: TcxGridDBColumn
             DataBinding.FieldName = 'Tespitler'
             PropertiesClassName = 'TcxMemoProperties'
-            Properties.ScrollBars = ssBoth
-            Width = 189
+            Properties.ScrollBars = ssVertical
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 390
           end
           object gridRaporOneriler: TcxGridDBColumn
             DataBinding.FieldName = 'Oneriler'
             PropertiesClassName = 'TcxMemoProperties'
-            Properties.ScrollBars = ssBoth
-            Width = 250
+            Properties.ScrollBars = ssVertical
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 390
+          end
+          object gridRaporColumn1: TcxGridDBColumn
+            Caption = 'Dosya'
+            DataBinding.FieldName = 'DosyaTip'
+            PropertiesClassName = 'TcxImageComboBoxProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.Images = DATALAR.imag24png
+            Properties.Items = <
+              item
+                ImageIndex = 110
+                Value = 'PDF'
+              end
+              item
+                ImageIndex = 75
+                Value = 'XLS'
+              end
+              item
+                ImageIndex = 75
+                Value = 'XLSX'
+              end
+              item
+                ImageIndex = 111
+                Value = 'DOC'
+              end
+              item
+                ImageIndex = 121
+                Value = 'RTF'
+              end
+              item
+                ImageIndex = 124
+                Value = 'JPG'
+              end>
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 40
           end
         end
         object cxGridKadir1Level1: TcxGridLevel
@@ -115,6 +160,7 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
     TabOrder = 0
     ExcelFileName = 'TahlilSonuclar'#305
     ExceleGonder = True
+    PopupForm = False
     object gridRaporlar: TcxGridDBTableView
       OnFocusedRecordChanged = gridRaporlarFocusedRecordChanged
       DataController.DataSource = DataSource1
@@ -127,42 +173,134 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
       OptionsView.GroupByBox = False
       object gridRaporlarID: TcxGridDBColumn
         DataBinding.FieldName = 'ID'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
         Width = 41
       end
       object gridRaporlarSubeTanimi: TcxGridDBColumn
         Caption = #350'ube'
         DataBinding.FieldName = 'SubeTanimi'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Vert = taVCenter
+        Visible = False
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
         Width = 100
       end
       object gridRaporlarGozlemGrupTanim: TcxGridDBColumn
         Caption = 'G'#246'zlem T'#252'r'#252
         DataBinding.FieldName = 'GozlemGrupTanim'
-        Width = 150
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 175
       end
       object gridRaporlarDenetimiYapanKullanici: TcxGridDBColumn
         Caption = 'Denetimi Yapan'
         DataBinding.FieldName = 'DenetimiYapanKullanici'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
         Width = 90
       end
       object gridRaporlarDenetimTarihi: TcxGridDBColumn
         Caption = 'Denetim Tarihi'
         DataBinding.FieldName = 'DenetimTarihi'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 86
+      end
+      object gridRaporlarColumn1: TcxGridDBColumn
+        Caption = 'Sonraki Denetim'
+        DataBinding.FieldName = 'BirSonrakiGozetimTarihi'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Styles.Content = cxStyle9
         Width = 86
       end
       object gridRaporlarDate_Create: TcxGridDBColumn
         Caption = 'Denetim Kay'#305't Zaman'#305
         DataBinding.FieldName = 'Date_Create'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
         Width = 110
+      end
+      object gridRaporlarColumn2: TcxGridDBColumn
+        Caption = 'Planlayan'
+        DataBinding.FieldName = 'DenetimiPlanlayan'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 86
+      end
+      object gridRaporlarColumn3: TcxGridDBColumn
+        Caption = 'OnaylamaTarihi'
+        DataBinding.FieldName = 'DenetimOnaylamaTarihi'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 86
       end
       object gridRaporlarGozetimDefterNo: TcxGridDBColumn
         Caption = 'Defter No.'
         DataBinding.FieldName = 'GozetimDefterNo'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
         Width = 70
       end
       object gridRaporlarImageVar: TcxGridDBColumn
-        Caption = 'Resim Var'
-        DataBinding.FieldName = 'ImageVar'
-        Width = 54
+        Caption = 'D'#246'k'#252'man'
+        DataBinding.FieldName = 'DosyaTip'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Images = DATALAR.imag24png
+        Properties.Items = <
+          item
+            ImageIndex = 110
+            Value = 'PDF'
+          end
+          item
+            ImageIndex = 75
+            Value = 'XLS'
+          end
+          item
+            ImageIndex = 75
+            Value = 'XLSX'
+          end
+          item
+            ImageIndex = 111
+            Value = 'DOC'
+          end
+          item
+            ImageIndex = 121
+            Value = 'RTF'
+          end
+          item
+            ImageIndex = 124
+            Value = 'JPG'
+          end>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 53
       end
     end
     object cxGridLevel1: TcxGridLevel
@@ -175,13 +313,12 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
     Width = 672
     Height = 8
     AlignSplitter = salTop
-    ExplicitLeft = -8
-    ExplicitTop = 120
+    Control = cxGridKadir2
   end
   object DataSource1: TDataSource
     DataSet = ADO_SahaGozetim
-    Left = 104
-    Top = 242
+    Left = 136
+    Top = 226
   end
   object ADO_SahaGozetim: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -204,8 +341,8 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
       '  and sst.SubeKod = SR.SubeKod'
       'where FirmaKodu = '#39'0001'#39
       'order by SR.ID')
-    Left = 64
-    Top = 240
+    Left = 88
+    Top = 232
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 16
@@ -260,6 +397,15 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
       Font.Style = [fsBold]
       TextColor = clMaroon
     end
+    object cxStyle9: TcxStyle
+      AssignedValues = [svFont, svTextColor]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      TextColor = clRed
+    end
   end
   object cxStyleRepository2: TcxStyleRepository
     Left = 16
@@ -277,8 +423,8 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 304
-    Top = 152
+    Left = 256
+    Top = 200
     object miYeniGozetim: TMenuItem
       Tag = -9
       Caption = 'Yeni G'#246'zetim'
@@ -305,26 +451,35 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
     end
     object miFotografYukle: TMenuItem
       Tag = -21
-      Caption = 'Foto'#287'raf Y'#252'kle'
-      ImageIndex = 95
+      Caption = 'Dosya Y'#252'kle'
+      ImageIndex = 9
       OnClick = cxButtonCClick
     end
     object miFotografGoruntule: TMenuItem
       Tag = -22
-      Caption = 'Foto'#287'raf'#305' G'#246'r'#252'nt'#252'le'
+      Caption = 'Dosya G'#246'r'#252'nt'#252'le'
       ImageIndex = 8
       OnClick = cxButtonCClick
     end
     object miFotografiSil: TMenuItem
       Tag = -23
-      Caption = 'Foto'#287'raf'#305' Sil'
-      ImageIndex = 33
+      Caption = 'Dosya Sil'
+      ImageIndex = 43
+      OnClick = cxButtonCClick
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object T1: TMenuItem
+      Tag = -90
+      Caption = 'Tan'#305'mlamalar'
+      ImageIndex = 4
       OnClick = cxButtonCClick
     end
   end
   object DataSource2: TDataSource
     DataSet = ADOQuery1
-    Left = 160
+    Left = 192
     Top = 338
   end
   object ADOQuery1: TADOQuery
@@ -351,6 +506,24 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
     object D1: TMenuItem
       Tag = -50
       Caption = 'DOF Olu'#351'tur'
+      OnClick = cxButtonCClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object B1: TMenuItem
+      Tag = -60
+      Caption = 'Dosya Y'#252'kle'
+      OnClick = cxButtonCClick
+    end
+    object D2: TMenuItem
+      Tag = -70
+      Caption = 'Dosya Sil'
+      OnClick = cxButtonCClick
+    end
+    object D3: TMenuItem
+      Tag = -80
+      Caption = 'Dosya G'#246'ster'
       OnClick = cxButtonCClick
     end
   end

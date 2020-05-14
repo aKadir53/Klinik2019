@@ -119,9 +119,15 @@ var
  Test : LabTest;
  Tests : ArrayOfLabTest;
  sm,ss ,sql : string;
+ butKodu ,yenibutKodu, tanimi ,uygulamaAdet , islemKodu , islemKoduC ,
+ uygulamaSuresi ,tip ,birim ,SonucTip ,SGKTip,Durum,sira : string;
+ ado : TADOQuery;
 begin
   DurumGoster(True,True);
-  datalar.Lab.URL := 'http://213.159.30.6/Service1.asmx';
+  try
+  ado := datalar.QuerySelect('select * from OSGB_MASTER.dbo.LabParametreler where LabId = ' + QuotedStr(datalar._labID));
+(*
+  datalar.Lab.URL := 'http://185.198.72.184/Service1.asmx';
   datalar.HTTP_XMLDosya_Name := Datalar.AktifSirket+ '_LabTestler';
   try
      try
@@ -132,30 +138,83 @@ begin
          ss := 'Hata';
        end;
      end;
-
-     pBar.Properties.Max := length(Tests);
+  *)
+     pBar.Properties.Max := ado.RecordCount;
      pBar.Position := 0;
 
-     for Test in  Tests do
+  //   for Test in  Tests do
+       ado.First;
+       while not ado.Eof do
        begin
+        yenibutKodu := ado.FieldByName('yeniButKodu').AsString;
+        butKodu := ado.FieldByName('butKodu').AsString;
+        tanimi := ado.FieldByName('tanimi').AsString;
+        uygulamaAdet := ado.FieldByName('uygulamaAdet').AsString;
+        islemKodu := ado.FieldByName('islemKodu').AsString;
+        islemKoduC := ado.FieldByName('islemKoduC').AsString;
+        uygulamaSuresi := ado.FieldByName('uygulamaSuresi').AsString;
+        tip := ado.FieldByName('tip').AsString;
+        birim := ado.FieldByName('birim').AsString;
+        SonucTip := ado.FieldByName('SonucTip').AsString;
+        SGKTip := ado.FieldByName('SGKTip').AsString;
+        Durum := ado.FieldByName('Durum').AsString;
+        sira := ado.FieldByName('sira').AsString;
+
           sql := 'if not exists(select * from LabTestler_Firma where LabID = ' + QuotedStr(datalar._labID) +
-                                       ' and butKodu = ' + QuotedStr(Test.butKodu) + ' and Tip = ' + QuotedStr(Test.uygulamaAdet) +')' +
+                                       ' and butKodu = ' + QuotedStr(butKodu) + ' and Tip = ' + QuotedStr(uygulamaAdet) +')' +
                             ' begin ' +
                                'insert into LabTestler_Firma (LabID,butKodu,Tip,islemKodu,islemKoduC)' +
                                ' values(' + QuotedStr(datalar._labID) + ',' +
-                                QuotedStr(Test.butKodu) + ',' +
-                                QuotedStr(Test.uygulamaAdet) + ',' +
-                                QuotedStr(Test.islemKodu) + ',' +
-                                QuotedStr(Test.islemKoduC) +
-                            ') end ' +
+                                QuotedStr(butKodu) + ',' +
+                                QuotedStr(uygulamaAdet) + ',' +
+                                QuotedStr(islemKodu) + ',' +
+                                QuotedStr(islemKoduC) + ') ' +
+
+                             ' if not exists(select * from LabTestler where butKodu = ' + QuotedStr(butKodu) + ')' +
+                               ' begin ' +
+                                'insert into LabTestler (sirketKod,butKodu,yeniButKodu,tanimi,uygulamaSuresi,uygulamaAdet,Tip,birim,SonucTip,SGKTip,Durum,sira)' +
+                                ' values(' + QuotedStr(datalar.AktifSirket) + ',' +
+                                    QuotedStr(butKodu) + ',' +
+                                    QuotedStr(yenibutKodu) + ',' +
+                                    QuotedStr(tanimi) + ',' +
+                                    QuotedStr(uygulamaSuresi) + ',' +
+                                    QuotedStr(uygulamaAdet) + ',' +
+                                    QuotedStr(tip) + ',' +
+                                    QuotedStr(birim) + ',' +
+                                    QuotedStr(SonucTip) + ',' +
+                                    QuotedStr(SGKTip) + ',' +
+                                    QuotedStr(Durum) + ',' +
+                                    QuotedStr(sira) +
+
+                                    ')' +
+                               ' end ' +
+                            ' end ' +
                             'else ' +
                             'begin ' +
-                            'update LabTestler_firma set islemKodu = ' + QuotedStr(Test.islemKodu) +
-                            ',islemKoduC = ' + QuotedStr(Test.islemKoduC) +
-                            ',Tip = ' + QuotedStr(Test.uygulamaAdet) +
-                            ' where LabID = ' + QuotedStr(datalar._labID) +
-                            ' and butKodu = ' + QuotedStr(Test.butKodu) +
-                            ' and Tip = ' + QuotedStr(Test.uygulamaAdet) +
+
+                             ' if not exists(select * from LabTestler where butKodu = ' + QuotedStr(butKodu) + ')' +
+                               ' begin ' +
+                                'insert into LabTestler (sirketKod,butKodu,yeniButKodu,tanimi,uygulamaSuresi,uygulamaAdet,Tip,birim,SonucTip,SGKTip,Durum,sira)' +
+                                ' values(' + QuotedStr(datalar.AktifSirket) + ',' +
+                                    QuotedStr(butKodu) + ',' +
+                                    QuotedStr(yenibutKodu) + ',' +
+                                    QuotedStr(tanimi) + ',' +
+                                    QuotedStr(uygulamaSuresi) + ',' +
+                                    QuotedStr(uygulamaAdet) + ',' +
+                                    QuotedStr(tip) + ',' +
+                                    QuotedStr(birim) + ',' +
+                                    QuotedStr(SonucTip) + ',' +
+                                    QuotedStr(SGKTip) + ',' +
+                                    QuotedStr(Durum) + ',' +
+                                    QuotedStr(sira) + ')' +
+                               ' end ' +
+
+                              'update LabTestler_firma set islemKodu = ' + QuotedStr(islemKodu) +
+                              ',islemKoduC = ' + QuotedStr(islemKoduC) +
+                              ',Tip = ' + QuotedStr(uygulamaAdet) +
+                              ' where LabID = ' + QuotedStr(datalar._labID) +
+                              ' and butKodu = ' + QuotedStr(butKodu) +
+                              ' and Tip = ' + QuotedStr(uygulamaAdet) +
                             ' end ';
 
           try
@@ -166,12 +225,15 @@ begin
               ShowMessage(e.Message);
            end;
           end;
+          ado.Next;
           pBar.Position := pBar.Position + 1;
           Application.ProcessMessages;
+
        end;
        ADOTable1.Requery();
   finally
     DurumGoster(False);
+    ado.Free;
   end;
 
 end;

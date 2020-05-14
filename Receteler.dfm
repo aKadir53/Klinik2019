@@ -43,15 +43,15 @@ object frmReceteler: TfrmReceteler
     Height = 512
     Align = alClient
     TabOrder = 1
-    Properties.ActivePage = cxTabSheet1
+    Properties.ActivePage = sayfa_receteler
     ClientRectBottom = 505
     ClientRectLeft = 3
     ClientRectRight = 905
     ClientRectTop = 26
-    object cxTabSheet1: TcxTabSheet
+    object sayfa_receteler: TcxTabSheet
       Caption = 'Re'#231'eteler'
       ImageIndex = 0
-      object cxGrid2: TcxGrid
+      object cxGrid2: TcxGridKadir
         Left = 0
         Top = 209
         Width = 902
@@ -66,9 +66,10 @@ object frmReceteler: TfrmReceteler
         TabOrder = 0
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
-        ExplicitLeft = 136
-        ExplicitTop = 217
-        ExplicitHeight = 278
+        ExceleGonder = False
+        PopupForm = False
+        ExplicitLeft = 176
+        ExplicitTop = 297
         object ReceteDetay: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -347,7 +348,7 @@ object frmReceteler: TfrmReceteler
           Options.DetailFrameColor = clHighlight
         end
       end
-      object cxGrid1: TcxGrid
+      object cxGrid1: TcxGridKadir
         Left = 0
         Top = 0
         Width = 902
@@ -362,6 +363,11 @@ object frmReceteler: TfrmReceteler
         TabOrder = 1
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
+        ExcelFileName = 'Receteler'
+        ExceleGonder = True
+        PopupForm = False
+        ExplicitLeft = 376
+        ExplicitTop = 32
         object Recete: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -516,10 +522,10 @@ object frmReceteler: TfrmReceteler
         ExplicitWidth = 278
       end
     end
-    object cxTabSheet2: TcxTabSheet
+    object sayfa_ilacsayilari: TcxTabSheet
       Caption = 'Re'#231'ete '#304'la'#231' Say'#305'lar'#305
       ImageIndex = 1
-      object cxGrid3: TcxGrid
+      object cxGrid3: TcxGridKadir
         Left = 0
         Top = 0
         Width = 902
@@ -534,6 +540,11 @@ object frmReceteler: TfrmReceteler
         TabOrder = 0
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
+        ExcelFileName = 'Recete_Ilac_Say'#305'lar'#305
+        ExceleGonder = True
+        PopupForm = False
+        ExplicitLeft = 208
+        ExplicitTop = 40
         object cxGridDBTableView1: TcxGridDBTableView
           OnDblClick = cxGridDBTableView1DblClick
           Navigator.Buttons.First.Visible = True
@@ -562,6 +573,15 @@ object frmReceteler: TfrmReceteler
             item
               Kind = skCount
               Column = cxGridDBTableView1ilacKodu
+            end
+            item
+              Format = '###'
+              Kind = skSum
+              Column = cxGridDBTableView1toplamAdet
+            end
+            item
+              Kind = skSum
+              Column = cxGridDBTableView1toplamDoz
             end>
           DataController.Summary.SummaryGroups = <>
           Filtering.MRUItemsList = False
@@ -581,26 +601,39 @@ object frmReceteler: TfrmReceteler
           OptionsData.Inserting = False
           OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
           OptionsView.CellAutoHeight = True
-          OptionsView.ColumnAutoWidth = True
           OptionsView.Footer = True
           OptionsView.GroupByBox = False
           OptionsView.Indicator = True
           OptionsView.RowSeparatorColor = clBlack
           object cxGridDBTableView1ilacKodu: TcxGridDBColumn
+            Caption = #304'lac Kodu'
             DataBinding.FieldName = 'ilacKodu'
-            Width = 121
+            HeaderAlignmentHorz = taCenter
+            Width = 114
           end
           object cxGridDBTableView1ilacAdi: TcxGridDBColumn
+            Caption = #304'la'#231' Ad'#305
             DataBinding.FieldName = 'ilacAdi'
-            Width = 476
+            HeaderAlignmentHorz = taCenter
+            Width = 290
+          end
+          object cxGridDBTableView1Column1: TcxGridDBColumn
+            Caption = #304'la'#231' Grubu'
+            DataBinding.FieldName = 'tur'
+            HeaderAlignmentHorz = taCenter
+            Width = 185
           end
           object cxGridDBTableView1toplamAdet: TcxGridDBColumn
+            Caption = 'Toplam Adet'
             DataBinding.FieldName = 'toplamAdet'
-            Width = 143
+            HeaderAlignmentHorz = taCenter
+            Width = 81
           end
           object cxGridDBTableView1toplamDoz: TcxGridDBColumn
+            Caption = 'Toplam Doz'
             DataBinding.FieldName = 'toplamDoz'
-            Width = 141
+            HeaderAlignmentHorz = taCenter
+            Width = 85
           end
         end
         object cxGridDBBandedTableView9: TcxGridDBBandedTableView
@@ -795,7 +828,7 @@ object frmReceteler: TfrmReceteler
           Options.DetailFrameColor = clHighlight
         end
       end
-      object cxGrid4: TcxGrid
+      object cxGrid4: TcxGridKadir
         Left = 0
         Top = 241
         Width = 902
@@ -810,9 +843,10 @@ object frmReceteler: TfrmReceteler
         TabOrder = 1
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
-        ExplicitLeft = 184
-        ExplicitTop = 265
-        ExplicitHeight = 246
+        ExceleGonder = False
+        PopupForm = False
+        ExplicitLeft = 152
+        ExplicitTop = 281
         object cxGridDBTableView2: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -1109,13 +1143,13 @@ object frmReceteler: TfrmReceteler
         Width = 902
         Height = 8
         AlignSplitter = salTop
-        ExplicitWidth = 246
+        Control = cxGrid3
       end
     end
-    object cxTabSheet3: TcxTabSheet
+    object sayfa_hastailacsayilari: TcxTabSheet
       Caption = 'Re'#231'eteler (Hasta Gruplu)'
       ImageIndex = 2
-      object cxGrid5: TcxGrid
+      object cxGrid5: TcxGridKadir
         Left = 0
         Top = 32
         Width = 902
@@ -1130,8 +1164,10 @@ object frmReceteler: TfrmReceteler
         TabOrder = 0
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
+        ExcelFileName = 'Recete_HastaGruplu_Liste'
+        ExceleGonder = True
+        PopupForm = False
         object cxGridRecetelerGrup: TcxGridDBTableView
-          PopupMenu = PopupMenu1
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
           Navigator.Buttons.Prior.Visible = True
@@ -1280,17 +1316,22 @@ object frmReceteler: TfrmReceteler
           object cxGridRecetelerGrupColumn1: TcxGridDBColumn
             Caption = #304'la'#231' Kodu'
             DataBinding.FieldName = 'ilacKodu'
-            Width = 89
+            Width = 83
           end
           object cxGridRecetelerGrupColumn2: TcxGridDBColumn
             Caption = #304'la'#231' Ad'#305
             DataBinding.FieldName = 'ilacAdi'
-            Width = 303
+            Width = 287
+          end
+          object cxGridRecetelerGrupColumn9: TcxGridDBColumn
+            Caption = #304'la'#231' Grubu'
+            DataBinding.FieldName = 'Tur'
+            Width = 120
           end
           object cxGridRecetelerGrupColumn3: TcxGridDBColumn
             Caption = 'Kutu Adet'
             DataBinding.FieldName = 'adet'
-            Width = 57
+            Width = 47
           end
           object cxGridRecetelerGrupColumn4: TcxGridDBColumn
             DataBinding.FieldName = 'kullanimAdet'
@@ -1300,7 +1341,7 @@ object frmReceteler: TfrmReceteler
           object cxGridRecetelerGrupColumn5: TcxGridDBColumn
             Caption = 'Doz'
             DataBinding.FieldName = 'doz'
-            Width = 42
+            Width = 34
           end
           object cxGridRecetelerGrupColumn6: TcxGridDBColumn
             DataBinding.FieldName = 'kullanimZaman'
@@ -1321,12 +1362,12 @@ object frmReceteler: TfrmReceteler
                 Description = 'Hafta'
                 Value = '4'
               end>
-            Width = 65
+            Width = 53
           end
           object cxGridRecetelerGrupColumn8: TcxGridDBColumn
             Caption = 'Kullanim Yolu'
             DataBinding.FieldName = 'kullanimYolu'
-            Width = 299
+            Width = 246
           end
         end
         object cxGridDBBandedTableView17: TcxGridDBBandedTableView
@@ -1569,6 +1610,651 @@ object frmReceteler: TfrmReceteler
         end
       end
     end
+    object sayfa_doktorilacsayilari: TcxTabSheet
+      Caption = 'Doktor Re'#231'ete '#304'la'#231' Say'#305'lar'#305
+      ImageIndex = 3
+      object DoktorIlacGrid: TcxGridKadir
+        Left = 0
+        Top = 0
+        Width = 902
+        Height = 233
+        Align = alTop
+        Font.Charset = TURKISH_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        LevelTabs.ImageBorder = 2
+        LevelTabs.Style = 1
+        ExcelFileName = 'Recete_Ilac_Say'#305'lar'#305
+        ExceleGonder = True
+        PopupForm = False
+        ExplicitLeft = 208
+        ExplicitTop = 40
+        object cxGridDBTableView3: TcxGridDBTableView
+          OnDblClick = cxGridDBTableView3DblClick
+          Navigator.Buttons.First.Visible = True
+          Navigator.Buttons.PriorPage.Visible = True
+          Navigator.Buttons.Prior.Visible = True
+          Navigator.Buttons.Next.Visible = True
+          Navigator.Buttons.NextPage.Visible = True
+          Navigator.Buttons.Last.Visible = True
+          Navigator.Buttons.Insert.Visible = True
+          Navigator.Buttons.Append.Visible = False
+          Navigator.Buttons.Delete.Visible = True
+          Navigator.Buttons.Edit.Visible = True
+          Navigator.Buttons.Post.Visible = True
+          Navigator.Buttons.Cancel.Visible = True
+          Navigator.Buttons.Refresh.Visible = True
+          Navigator.Buttons.SaveBookmark.Visible = True
+          Navigator.Buttons.GotoBookmark.Visible = True
+          Navigator.Buttons.Filter.Visible = True
+          FilterBox.CustomizeDialog = False
+          DataController.DataSource = DataSource2
+          DataController.Filter.Active = True
+          DataController.Filter.TranslateBetween = True
+          DataController.Filter.TranslateLike = True
+          DataController.Summary.DefaultGroupSummaryItems = <
+            item
+              Format = '#'
+              Kind = skSum
+              Position = spFooter
+              FieldName = 'toplamAdet'
+              Column = cxGridDBColumn4
+            end
+            item
+              Kind = skSum
+              Position = spFooter
+              FieldName = 'toplamDoz'
+              Column = cxGridDBColumn5
+            end>
+          DataController.Summary.FooterSummaryItems = <
+            item
+              Kind = skCount
+              Column = cxGridDBColumn1
+            end
+            item
+              Format = '###'
+              Kind = skSum
+              Column = cxGridDBColumn4
+            end
+            item
+              Kind = skSum
+              Column = cxGridDBColumn5
+            end>
+          DataController.Summary.SummaryGroups = <>
+          Filtering.MRUItemsList = False
+          Filtering.ColumnMRUItemsList = False
+          FilterRow.InfoText = 'Arama Sat'#305'r'#305
+          FilterRow.SeparatorWidth = 2
+          FilterRow.Visible = True
+          FilterRow.ApplyChanges = fracImmediately
+          OptionsBehavior.AlwaysShowEditor = True
+          OptionsBehavior.FocusCellOnTab = True
+          OptionsCustomize.ColumnGrouping = False
+          OptionsCustomize.ColumnHidingOnGrouping = False
+          OptionsCustomize.ColumnsQuickCustomization = True
+          OptionsData.Deleting = False
+          OptionsData.DeletingConfirmation = False
+          OptionsData.Editing = False
+          OptionsData.Inserting = False
+          OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+          OptionsView.CellAutoHeight = True
+          OptionsView.Footer = True
+          OptionsView.GroupByBox = False
+          OptionsView.GroupFooters = gfVisibleWhenExpanded
+          OptionsView.Indicator = True
+          OptionsView.RowSeparatorColor = clBlack
+          object cxGridDBColumn1: TcxGridDBColumn
+            Caption = #304'lac Kodu'
+            DataBinding.FieldName = 'ilacKodu'
+            HeaderAlignmentHorz = taCenter
+            Width = 114
+          end
+          object cxGridDBColumn2: TcxGridDBColumn
+            Caption = #304'la'#231' Ad'#305
+            DataBinding.FieldName = 'ilacAdi'
+            HeaderAlignmentHorz = taCenter
+            Width = 290
+          end
+          object cxGridDBColumn3: TcxGridDBColumn
+            Caption = #304'la'#231' Grubu'
+            DataBinding.FieldName = 'tur'
+            GroupIndex = 1
+            HeaderAlignmentHorz = taCenter
+            Width = 185
+          end
+          object cxGridDBColumn4: TcxGridDBColumn
+            Caption = 'Toplam Adet'
+            DataBinding.FieldName = 'toplamAdet'
+            HeaderAlignmentHorz = taCenter
+            Width = 81
+          end
+          object cxGridDBColumn5: TcxGridDBColumn
+            Caption = 'Toplam Doz'
+            DataBinding.FieldName = 'toplamDoz'
+            HeaderAlignmentHorz = taCenter
+            Width = 85
+          end
+          object cxGridDBTableView3Column1: TcxGridDBColumn
+            Caption = 'Doktor'
+            DataBinding.FieldName = 'doktor'
+            Visible = False
+            GroupIndex = 0
+          end
+        end
+        object cxGridDBBandedTableView5: TcxGridDBBandedTableView
+          DataController.DataModeController.DetailInSQLMode = True
+          DataController.DataModeController.GridMode = True
+          DataController.DataModeController.SmartRefresh = True
+          DataController.DetailKeyFieldNames = 'Tan'#305'm'
+          DataController.Filter.Active = True
+          DataController.Filter.AutoDataSetFilter = True
+          DataController.Filter.TranslateBetween = True
+          DataController.Filter.TranslateIn = True
+          DataController.Filter.TranslateLike = True
+          DataController.KeyFieldNames = 'Tan'#305'm'
+          DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText, dcoFocusTopRowAfterSorting, dcoImmediatePost]
+          DataController.Summary.DefaultGroupSummaryItems = <
+            item
+              Kind = skSum
+              Position = spFooter
+              Column = cxGridDBBandedColumn18
+            end
+            item
+              Kind = skSum
+              Column = cxGridDBBandedColumn18
+            end>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          Filtering.ColumnFilteredItemsList = True
+          FilterRow.InfoText = 'Arama Sat'#305'r'#305
+          FilterRow.ApplyChanges = fracImmediately
+          OptionsBehavior.AlwaysShowEditor = True
+          OptionsBehavior.DragDropText = True
+          OptionsBehavior.FocusCellOnTab = True
+          OptionsBehavior.FocusFirstCellOnNewRecord = True
+          OptionsBehavior.GoToNextCellOnEnter = True
+          OptionsBehavior.FocusCellOnCycle = True
+          OptionsBehavior.PullFocusing = True
+          OptionsData.Deleting = False
+          OptionsData.Editing = False
+          OptionsData.Inserting = False
+          OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+          OptionsView.Footer = True
+          OptionsView.FooterMultiSummaries = True
+          OptionsView.GroupByBox = False
+          OptionsView.GroupFooterMultiSummaries = True
+          OptionsView.GroupFooters = gfVisibleWhenExpanded
+          OptionsView.BandCaptionsInColumnAlternateCaption = True
+          OptionsView.BandHeaderEndEllipsis = True
+          Bands = <
+            item
+              Caption = 'Geli'#351'ler'
+            end>
+          object cxGridDBBandedColumn14: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Tan'#305'm'
+            Width = 90
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn15: TcxGridDBBandedColumn
+            Caption = 'Tan'#305'm Ad'#305
+            DataBinding.FieldName = 'ad'
+            Width = 150
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn16: TcxGridDBBandedColumn
+            Caption = 'Toplam'
+            DataBinding.FieldName = 'adet'
+            Width = 70
+            Position.BandIndex = 0
+            Position.ColIndex = 2
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn17: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'kurumT'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = '#,###.#0'
+            Width = 80
+            Position.BandIndex = 0
+            Position.ColIndex = 3
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn18: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'hastaT'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = '#,###.#0'
+            Width = 80
+            Position.BandIndex = 0
+            Position.ColIndex = 4
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridDBBandedTableView6: TcxGridDBBandedTableView
+          DataController.DetailKeyFieldNames = 'gelisNo'
+          DataController.KeyFieldNames = 'gelisNo'
+          DataController.MasterKeyFieldNames = 'gelisNo'
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          OptionsBehavior.AlwaysShowEditor = True
+          OptionsView.GroupByBox = False
+          Bands = <
+            item
+              Caption = 'Hareketler'
+            end>
+          object cxGridDBBandedColumn19: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'NAME1'
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn20: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'SATISF'
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridDBBandedTableView7: TcxGridDBBandedTableView
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          Bands = <
+            item
+              Caption = 'i'#351'lemler'
+            end>
+        end
+        object cxGridDBBandedTableView8: TcxGridDBBandedTableView
+          DataController.DataModeController.DetailInSQLMode = True
+          DataController.DataModeController.GridMode = True
+          DataController.Filter.Active = True
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          OptionsData.Deleting = False
+          OptionsData.DeletingConfirmation = False
+          OptionsData.Editing = False
+          OptionsData.Inserting = False
+          OptionsView.GroupByBox = False
+          OptionsView.BandCaptionsInColumnAlternateCaption = True
+          Bands = <
+            item
+            end>
+          object cxGridDBBandedColumn21: TcxGridDBBandedColumn
+            Caption = 'Tanim'
+            DataBinding.FieldName = 'TANIM'
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn22: TcxGridDBBandedColumn
+            Caption = 'Hasta Ad'#305
+            DataBinding.FieldName = 'HASTAADI'
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn23: TcxGridDBBandedColumn
+            Caption = 'Soyad'#305
+            DataBinding.FieldName = 'HASTASOYADI'
+            Position.BandIndex = 0
+            Position.ColIndex = 2
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn24: TcxGridDBBandedColumn
+            Caption = 'Hizmet Ad'#305
+            DataBinding.FieldName = 'NAME1'
+            Width = 80
+            Position.BandIndex = 0
+            Position.ColIndex = 3
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn25: TcxGridDBBandedColumn
+            Caption = 'Kurum F'
+            DataBinding.FieldName = 'KSATISF'
+            Position.BandIndex = 0
+            Position.ColIndex = 4
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn26: TcxGridDBBandedColumn
+            Caption = 'Hasta F'
+            DataBinding.FieldName = 'SATISF'
+            Position.BandIndex = 0
+            Position.ColIndex = 5
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridLevel6: TcxGridLevel
+          Caption = 'Hastalar'
+          GridView = cxGridDBTableView3
+          Options.DetailFrameColor = clHighlight
+        end
+      end
+      object DoktorReceteGrid: TcxGridKadir
+        Left = 0
+        Top = 241
+        Width = 902
+        Height = 238
+        Align = alClient
+        Font.Charset = TURKISH_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        LevelTabs.ImageBorder = 2
+        LevelTabs.Style = 1
+        ExceleGonder = False
+        PopupForm = False
+        ExplicitLeft = 152
+        ExplicitTop = 281
+        object cxGridDBTableView4: TcxGridDBTableView
+          Navigator.Buttons.First.Visible = True
+          Navigator.Buttons.PriorPage.Visible = True
+          Navigator.Buttons.Prior.Visible = True
+          Navigator.Buttons.Next.Visible = True
+          Navigator.Buttons.NextPage.Visible = True
+          Navigator.Buttons.Last.Visible = True
+          Navigator.Buttons.Insert.Visible = True
+          Navigator.Buttons.Append.Visible = False
+          Navigator.Buttons.Delete.Visible = True
+          Navigator.Buttons.Edit.Visible = True
+          Navigator.Buttons.Post.Visible = True
+          Navigator.Buttons.Cancel.Visible = True
+          Navigator.Buttons.Refresh.Visible = True
+          Navigator.Buttons.SaveBookmark.Visible = True
+          Navigator.Buttons.GotoBookmark.Visible = True
+          Navigator.Buttons.Filter.Visible = True
+          FilterBox.CustomizeDialog = False
+          DataController.DataSource = DataSource3
+          DataController.Filter.Active = True
+          DataController.Filter.TranslateBetween = True
+          DataController.Filter.TranslateLike = True
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <
+            item
+              Kind = skCount
+              Column = cxGridDBColumn8
+            end>
+          DataController.Summary.SummaryGroups = <>
+          Filtering.MRUItemsList = False
+          Filtering.ColumnMRUItemsList = False
+          FilterRow.InfoText = 'Arama Sat'#305'r'#305
+          FilterRow.SeparatorWidth = 2
+          FilterRow.Visible = True
+          FilterRow.ApplyChanges = fracImmediately
+          OptionsBehavior.AlwaysShowEditor = True
+          OptionsBehavior.FocusCellOnTab = True
+          OptionsCustomize.ColumnGrouping = False
+          OptionsCustomize.ColumnHidingOnGrouping = False
+          OptionsCustomize.ColumnsQuickCustomization = True
+          OptionsData.Deleting = False
+          OptionsData.DeletingConfirmation = False
+          OptionsData.Editing = False
+          OptionsData.Inserting = False
+          OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+          OptionsView.CellAutoHeight = True
+          OptionsView.ColumnAutoWidth = True
+          OptionsView.Footer = True
+          OptionsView.GroupByBox = False
+          OptionsView.Indicator = True
+          OptionsView.RowSeparatorColor = clBlack
+          object cxGridDBColumn6: TcxGridDBColumn
+            DataBinding.FieldName = 'DosyaNo'
+            Width = 45
+          end
+          object cxGridDBColumn7: TcxGridDBColumn
+            DataBinding.FieldName = 'gelisNo'
+            Width = 40
+          end
+          object cxGridDBColumn8: TcxGridDBColumn
+            Caption = 'Hasta Ad'#305
+            DataBinding.FieldName = 'HASTAADI'
+            Width = 108
+          end
+          object cxGridDBColumn9: TcxGridDBColumn
+            Caption = 'Soyad'#305
+            DataBinding.FieldName = 'HASTASOYADI'
+            Width = 118
+          end
+          object cxGridDBColumn10: TcxGridDBColumn
+            DataBinding.FieldName = 'receteTur'
+            Width = 65
+          end
+          object cxGridDBColumn11: TcxGridDBColumn
+            DataBinding.FieldName = 'protokolNo'
+            Width = 64
+          end
+          object cxGridDBColumn26: TcxGridDBColumn
+            DataBinding.FieldName = 'doktor'
+            Width = 178
+          end
+          object cxGridDBColumn38: TcxGridDBColumn
+            DataBinding.FieldName = 'tarih'
+            Width = 75
+          end
+          object cxGridDBColumn39: TcxGridDBColumn
+            DataBinding.FieldName = 'eReceteNo'
+            Width = 68
+          end
+          object cxGridDBColumn40: TcxGridDBColumn
+            DataBinding.FieldName = 'HastaBildirim'
+            Width = 68
+          end
+          object cxGridDBColumn41: TcxGridDBColumn
+            DataBinding.FieldName = 'EczanedenAlim'
+            Width = 77
+          end
+        end
+        object cxGridDBBandedTableView21: TcxGridDBBandedTableView
+          DataController.DataModeController.DetailInSQLMode = True
+          DataController.DataModeController.GridMode = True
+          DataController.DataModeController.SmartRefresh = True
+          DataController.DetailKeyFieldNames = 'Tan'#305'm'
+          DataController.Filter.Active = True
+          DataController.Filter.AutoDataSetFilter = True
+          DataController.Filter.TranslateBetween = True
+          DataController.Filter.TranslateIn = True
+          DataController.Filter.TranslateLike = True
+          DataController.KeyFieldNames = 'Tan'#305'm'
+          DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText, dcoFocusTopRowAfterSorting, dcoImmediatePost]
+          DataController.Summary.DefaultGroupSummaryItems = <
+            item
+              Kind = skSum
+              Position = spFooter
+              Column = cxGridDBBandedColumn70
+            end
+            item
+              Kind = skSum
+              Column = cxGridDBBandedColumn70
+            end>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          Filtering.ColumnFilteredItemsList = True
+          FilterRow.InfoText = 'Arama Sat'#305'r'#305
+          FilterRow.ApplyChanges = fracImmediately
+          OptionsBehavior.AlwaysShowEditor = True
+          OptionsBehavior.DragDropText = True
+          OptionsBehavior.FocusCellOnTab = True
+          OptionsBehavior.FocusFirstCellOnNewRecord = True
+          OptionsBehavior.GoToNextCellOnEnter = True
+          OptionsBehavior.FocusCellOnCycle = True
+          OptionsBehavior.PullFocusing = True
+          OptionsData.Deleting = False
+          OptionsData.Editing = False
+          OptionsData.Inserting = False
+          OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+          OptionsView.Footer = True
+          OptionsView.FooterMultiSummaries = True
+          OptionsView.GroupByBox = False
+          OptionsView.GroupFooterMultiSummaries = True
+          OptionsView.GroupFooters = gfVisibleWhenExpanded
+          OptionsView.BandCaptionsInColumnAlternateCaption = True
+          OptionsView.BandHeaderEndEllipsis = True
+          Bands = <
+            item
+              Caption = 'Geli'#351'ler'
+            end>
+          object cxGridDBBandedColumn66: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'Tan'#305'm'
+            Width = 90
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn67: TcxGridDBBandedColumn
+            Caption = 'Tan'#305'm Ad'#305
+            DataBinding.FieldName = 'ad'
+            Width = 150
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn68: TcxGridDBBandedColumn
+            Caption = 'Toplam'
+            DataBinding.FieldName = 'adet'
+            Width = 70
+            Position.BandIndex = 0
+            Position.ColIndex = 2
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn69: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'kurumT'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = '#,###.#0'
+            Width = 80
+            Position.BandIndex = 0
+            Position.ColIndex = 3
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn70: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'hastaT'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = '#,###.#0'
+            Width = 80
+            Position.BandIndex = 0
+            Position.ColIndex = 4
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridDBBandedTableView22: TcxGridDBBandedTableView
+          DataController.DetailKeyFieldNames = 'gelisNo'
+          DataController.KeyFieldNames = 'gelisNo'
+          DataController.MasterKeyFieldNames = 'gelisNo'
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          OptionsBehavior.AlwaysShowEditor = True
+          OptionsView.GroupByBox = False
+          Bands = <
+            item
+              Caption = 'Hareketler'
+            end>
+          object cxGridDBBandedColumn71: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'NAME1'
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn72: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'SATISF'
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridDBBandedTableView23: TcxGridDBBandedTableView
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          Bands = <
+            item
+              Caption = 'i'#351'lemler'
+            end>
+        end
+        object cxGridDBBandedTableView24: TcxGridDBBandedTableView
+          DataController.DataModeController.DetailInSQLMode = True
+          DataController.DataModeController.GridMode = True
+          DataController.Filter.Active = True
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          OptionsData.Deleting = False
+          OptionsData.DeletingConfirmation = False
+          OptionsData.Editing = False
+          OptionsData.Inserting = False
+          OptionsView.GroupByBox = False
+          OptionsView.BandCaptionsInColumnAlternateCaption = True
+          Bands = <
+            item
+            end>
+          object cxGridDBBandedColumn73: TcxGridDBBandedColumn
+            Caption = 'Tanim'
+            DataBinding.FieldName = 'TANIM'
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn74: TcxGridDBBandedColumn
+            Caption = 'Hasta Ad'#305
+            DataBinding.FieldName = 'HASTAADI'
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn75: TcxGridDBBandedColumn
+            Caption = 'Soyad'#305
+            DataBinding.FieldName = 'HASTASOYADI'
+            Position.BandIndex = 0
+            Position.ColIndex = 2
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn76: TcxGridDBBandedColumn
+            Caption = 'Hizmet Ad'#305
+            DataBinding.FieldName = 'NAME1'
+            Width = 80
+            Position.BandIndex = 0
+            Position.ColIndex = 3
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn77: TcxGridDBBandedColumn
+            Caption = 'Kurum F'
+            DataBinding.FieldName = 'KSATISF'
+            Position.BandIndex = 0
+            Position.ColIndex = 4
+            Position.RowIndex = 0
+          end
+          object cxGridDBBandedColumn78: TcxGridDBBandedColumn
+            Caption = 'Hasta F'
+            DataBinding.FieldName = 'SATISF'
+            Position.BandIndex = 0
+            Position.ColIndex = 5
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridLevel7: TcxGridLevel
+          Caption = 'Hastalar'
+          GridView = cxGridDBTableView4
+          Options.DetailFrameColor = clHighlight
+        end
+      end
+      object cxSplitter3: TcxSplitter
+        Left = 0
+        Top = 233
+        Width = 902
+        Height = 8
+        AlignSplitter = salTop
+        ExplicitWidth = 246
+      end
+    end
   end
   object ADO_Receteler: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1590,13 +2276,13 @@ object frmReceteler: TfrmReceteler
     Parameters = <>
     SQL.Strings = (
       'select * from receteDetay')
-    Left = 392
-    Top = 98
+    Left = 424
+    Top = 90
   end
   object DataSource1: TDataSource
     DataSet = ADO_ReceteDetay
-    Left = 454
-    Top = 114
+    Left = 470
+    Top = 90
   end
   object ADO_toplam: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1607,18 +2293,18 @@ object frmReceteler: TfrmReceteler
       'sum (kullanimAdet*kullanimadet2) toplamDoz from recete R'
       'join receteDetay RD on R.id = RD.receteId'
       'group by ilacKodu,ilacAdi')
-    Left = 728
-    Top = 114
+    Left = 696
+    Top = 98
   end
   object DataSource2: TDataSource
     DataSet = ADO_toplam
-    Left = 782
-    Top = 114
+    Left = 766
+    Top = 98
   end
   object DataSource3: TDataSource
     DataSet = ADO_Hast
-    Left = 582
-    Top = 362
+    Left = 574
+    Top = 378
   end
   object ADO_Hast: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1629,8 +2315,8 @@ object frmReceteler: TfrmReceteler
       'sum (kullanimAdet*kullanimadet2) toplamDoz from recete R'
       'join receteDetay RD on R.id = RD.receteId'
       'group by ilacKodu,ilacAdi')
-    Left = 624
-    Top = 362
+    Left = 576
+    Top = 330
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 40
@@ -1662,22 +2348,36 @@ object frmReceteler: TfrmReceteler
     Top = 178
   end
   object PopupMenu1: TPopupMenu
-    Left = 512
-    Top = 200
+    Images = DATALAR.imag24png
+    Left = 256
+    Top = 80
     object D1: TMenuItem
       Caption = 'Detaylar'#305' A'#231
+      Visible = False
       OnClick = D1Click
     end
     object D2: TMenuItem
       Caption = 'Detaylar'#305' Kapat'
+      Visible = False
       OnClick = D2Click
     end
     object E1: TMenuItem
-      Tag = 1
+      Tag = 9997
       Caption = 'Excele G'#246'nder'
+      ImageIndex = 75
+      OnClick = cxButtonCClick
     end
     object Y1: TMenuItem
+      Tag = -7
       Caption = 'Yazd'#305'r'
+      ImageIndex = 28
+      OnClick = Y1Click
+    end
+    object R1: TMenuItem
+      Tag = -7
+      Caption = 'Re'#231'ete'
+      ImageIndex = 97
+      OnClick = cxButtonCClick
     end
   end
   object cxStyleRepository2: TcxStyleRepository

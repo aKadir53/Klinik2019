@@ -31,8 +31,6 @@ object frmHastaKonsultasyon: TfrmHastaKonsultasyon
     LevelTabs.Style = 1
     ExceleGonder = False
     PopupForm = False
-    ExplicitLeft = 56
-    ExplicitTop = 8
     object gridKons: TcxGridDBTableView
       PopupMenu = PopupMenu1
       Navigator.Buttons.First.Visible = True

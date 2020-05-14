@@ -4360,6 +4360,7 @@ initialization
   InvRegistry.RegisterDefaultSOAPAction(TypeInfo(TenayWebServiceSoap), 'http://tenay.com.tr/%operationName%');
   InvRegistry.RegisterInvokeOptions(TypeInfo(TenayWebServiceSoap), ioDocument);
   InvRegistry.RegisterInvokeOptions(TypeInfo(TenayWebServiceSoap), ioSOAP12);
+ (*
   { TenayWebServiceSoap.HizmetListesiGetir }
   InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'HizmetListesiGetir', '',
                                  '[ReturnName="HizmetListesi"]', IS_NLBL);
@@ -4407,6 +4408,7 @@ initialization
   { TenayWebServiceSoap.LabBarkodlari }
   InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'LabBarkodlari', '',
                                  '[ReturnName="LabBarkodlariResult"]', IS_OPTN);
+*)
   RemClassRegistry.RegisterXSInfo(TypeInfo(ArrayOfHastaDetay), 'http://tenay.com.tr/', 'ArrayOfHastaDetay');
   RemClassRegistry.RegisterXSInfo(TypeInfo(ArrayOfKurumDetay), 'http://tenay.com.tr/', 'ArrayOfKurumDetay');
   RemClassRegistry.RegisterXSInfo(TypeInfo(ArrayOfOrnekSonuc), 'http://tenay.com.tr/', 'ArrayOfOrnekSonuc');

@@ -16,34 +16,37 @@ object frmSorgulamalar: TfrmSorgulamalar
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object cxPageControl2: TcxPageControl
+  object Sonuclar_Page: TcxPageControl
     Left = 0
     Top = 0
     Width = 1294
     Height = 620
     Align = alClient
     TabOrder = 0
-    Properties.ActivePage = cxTabSheet6
+    Properties.ActivePage = SorgularTab
+    Properties.CloseButtonMode = cbmActiveTab
     LookAndFeel.NativeStyle = False
+    OnCanCloseEx = Sonuclar_PageCanCloseEx
+    OnPageChanging = Sonuclar_PagePageChanging
     ClientRectBottom = 613
     ClientRectLeft = 3
     ClientRectRight = 1287
-    ClientRectTop = 26
-    object cxTabSheet6: TcxTabSheet
+    ClientRectTop = 28
+    object SorgularTab: TcxTabSheet
       Caption = 'Sorgular'
       ImageIndex = 0
       object Panel5: TPanel
         Left = 0
         Top = 0
         Width = 1284
-        Height = 587
+        Height = 585
         Align = alClient
         TabOrder = 0
         object Splitter1: TSplitter
           Left = 664
           Top = 1
           Width = 4
-          Height = 585
+          Height = 583
           ExplicitLeft = 851
           ExplicitHeight = 595
         end
@@ -51,7 +54,7 @@ object frmSorgulamalar: TfrmSorgulamalar
           Left = 668
           Top = 1
           Width = 615
-          Height = 585
+          Height = 583
           Align = alClient
           Font.Charset = TURKISH_CHARSET
           Font.Color = clWindowText
@@ -195,6 +198,7 @@ object frmSorgulamalar: TfrmSorgulamalar
             Visible = False
             Conn = DATALAR.ADOConnection2
             BosOlamaz = False
+            FilterSet = fsNone
             Width = 201
           end
           object txtRaporAdi: TcxTextEdit
@@ -351,7 +355,7 @@ object frmSorgulamalar: TfrmSorgulamalar
           Left = 1
           Top = 1
           Width = 663
-          Height = 585
+          Height = 583
           Align = alLeft
           DataSource = DataSource2
           DynProps = <>
@@ -412,14 +416,14 @@ object frmSorgulamalar: TfrmSorgulamalar
         end
       end
     end
-    object cxTabSheet7: TcxTabSheet
+    object TabSonuc: TcxTabSheet
       Caption = 'Sonu'#231
       ImageIndex = 1
       object cxGrid3: TcxGrid
         Left = 0
         Top = 0
         Width = 1284
-        Height = 587
+        Height = 585
         Align = alClient
         Font.Charset = TURKISH_CHARSET
         Font.Color = clWindowText
@@ -441,14 +445,16 @@ object frmSorgulamalar: TfrmSorgulamalar
           DataController.Summary.SummaryGroups = <>
           FilterRow.InfoText = 'Filtre'
           FilterRow.Visible = True
+          OptionsCustomize.ColumnHiding = True
+          OptionsCustomize.ColumnsQuickCustomization = True
           OptionsData.Deleting = False
           OptionsData.DeletingConfirmation = False
           OptionsData.Editing = False
           OptionsData.Inserting = False
           OptionsSelection.MultiSelect = True
-          OptionsView.ColumnAutoWidth = True
           OptionsView.Footer = True
           OptionsView.FooterMultiSummaries = True
+          OptionsView.Indicator = True
           Bands = <
             item
             end>
@@ -460,7 +466,7 @@ object frmSorgulamalar: TfrmSorgulamalar
         end
       end
     end
-    object cxTabSheet8: TcxTabSheet
+    object SQlTab: TcxTabSheet
       Caption = 'SQL'
       ImageIndex = 2
       object SQL_text: TMemo
@@ -500,7 +506,7 @@ object frmSorgulamalar: TfrmSorgulamalar
         Left = 0
         Top = 201
         Width = 1284
-        Height = 386
+        Height = 384
         Align = alClient
         DynProps = <>
         Flat = True

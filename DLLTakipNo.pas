@@ -221,7 +221,7 @@ begin
               then begin
 
                    sql := 'Update Hasta_Gelisler set TakipNo = ' + #39 + datalar.HastaKabulWS.Cevap.takipNo + #39 + ',BHDAT = ' + #39 + tarih(txtTarih.Text) + #39 +
-                          ',BasvuruNo = ' + QuotedStr(datalar.HastaKabulWS.Cevap.hastaBasvuruNo) + ',ilkTakipNo = ' + QuotedStr(datalar.Bilgi.ilkTakip) +
+                          ',BasvuruNo = ' + QuotedStr(datalar.HastaKabulWS.Cevap.hastaBasvuruNo) + ',ilkTakipNo = ' + QuotedStr(datalar.HastaKabulWS.GirisParametre.takipNo) +
                           ' where DosyaNo = ' + #39 + frmTakipNo._dosyaNO_ + #39 + ' and GelisNo = ' + #39 + frmTakipNo._gelisNO_ +#39;
                    datalar.QueryExec(sql);
 

@@ -61,6 +61,8 @@ type
     T2: TMenuItem;
     T3: TMenuItem;
     NaceKod: TcxButtonEditKadir;
+    FileOpenDialog1: TFileOpenDialog;
+    OpenDialog1: TOpenDialog;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxButtonCClick(Sender: TObject);
@@ -78,7 +80,7 @@ type
     procedure cxGridGelislerDblClick(Sender: TObject);
     procedure txtTipPropertiesChange(Sender: TObject);
     procedure txtAktifPropertiesChange(Sender: TObject);
-    procedure PropertiesEditValueChanged(Sender: TObject);
+    procedure PropertiesEditValueChanged(Sender: TObject);override;
     procedure cxGridGelislerKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DOGUMTARIHIPropertiesValidate(Sender: TObject;
@@ -342,7 +344,7 @@ end;
 
 procedure TfrmFirmaKart.FotoEkle;
 var
- Fo : TFileOpenDialog;
+ Fo : TOpenDialog;
  filename,dosyaNo : string;
  jp : TJPEGImage;
  bBasarili : Boolean;
@@ -358,8 +360,9 @@ begin
   else datalar.ADO_FOTO.Edit;
   bBasarili := False;
   try
-    Fo := TFileOpenDialog.Create(nil);
+    Fo := TOpenDialog.Create(nil);
     try
+      Fo.Filter := 'Jpeg Dosyalarý (*.jpg)|*.jpg';
       if not fo.Execute then Exit;
       filename := fo.FileName;
     finally
@@ -394,14 +397,21 @@ begin
     enabled;
 
 
+    if TComponent(Sender).ClassName = 'TcxImageComboKadir' then
+    Begin
+      case TcxImageComboKadir(Sender).Tag of
+      1 : begin
+              TcxImageComboKadir(FindComponent('EV_ILCE')).Filter := 'ILKODU = ' + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('EV_SEHIR')).EditingValue));
+              TcxImageComboKadir(FindComponent('EV_BUCAK')).Filter := 'ILCEKODU = ' + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('EV_ILCE')).EditingValue));
+              TcxImageComboKadir(FindComponent('EV_KOY')).Filter := 'BUCAKKODU = ' + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('EV_BUCAK')).EditingValue));
+              TcxImageComboKadir(FindComponent('EV_MAHALLE')).Filter := 'KOYKODU = ' + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('EV_KOY')).EditingValue));
+          end;
+      end;
+
+    End;
+
     case TcxButtonEditKadir(sender).tag of
      1 : begin  //dosyaNo buttonedit
-
-             TcxImageComboKadir(FindComponent('ILCE')).Filter := 'ILKODU = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('SEHIR')).EditingValue));
-             TcxImageComboKadir(FindComponent('BUCAK')).Filter := 'ILCEKODU = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('ILCE')).EditingValue));
-             TcxImageComboKadir(FindComponent('KOY')).Filter := 'BUCAKKODU = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('BUCAK')).EditingValue));
-             TcxImageComboKadir(FindComponent('MAHALLE')).Filter := 'KOYKODU = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('KOY')).EditingValue));
-
 
              _dosyaNo_ := TcxButtonEditKadir(sender).Text;
              (*
@@ -621,7 +631,7 @@ begin
 //  SirketKod.Visible := True;
  // SirketKod.Properties.OnButtonClick := cxButtonEditPropertiesButtonClick;
   //
-
+ _SaveKontrol := True;
   Menu := PopupMenu1;
 
 //  Tag := TagfrmHastaKart;
@@ -662,6 +672,7 @@ begin
 
 
   setDataString(self,'tanimi','Firma Adý  ',Kolon1,'',350,True);
+  setDataString(self,'ruhsatNo','Ruhsat No  ',Kolon1,'',100,True);
  // setDataStringKontrol(self,NaceKod, 'NaceKod','Nace Kodu  ',Kolon1,'',130);
  // setDataString(self,'anaFaliyet','Firma Ana Faaliye',Kolon1,'',450,True);
  // setDataString(self,'tehlikeSinifi','Tehlike Sýnýfý',Kolon1,'',100,True);
@@ -682,6 +693,7 @@ begin
   setDataString(self,'VN','Vergi No',Kolon1,'',100,True);
   setDataString(self,'IsyeriSicilNo','Ýþ Yeri Sicil No',Kolon1,'',100,True);
   setDataString(self,'BolgeMudurlukSicilNo','Bölge Müd. Sicil No.',Kolon1,'',100,True);
+
   SEHIR := TcxImageComboKadir.Create(self);
   SEHIR.Conn := Datalar.ADOConnection2;
   SEHIR.TableName := 'SKRS_IL_KODLARI';
@@ -690,7 +702,7 @@ begin
   SEHIR.BosOlamaz := True;
   SEHIR.Filter := '';
   setDataStringKontrol(self,SEHIR,'SEHIR','Ýl',kolon1,'',120);
-  OrtakEventAta(SEHIR);
+//  OrtakEventAta(SEHIR);
 //  setDataStringBLabel(self,'EV_SEHIR',Kolon2,'il',100,' ');
 
  // ILCE_KODLARI := ListeAcCreate('SKRS_ILCE_KODLARI','KODU,ADI','Kod,Adi','50,100','KODU','ÝLÇELER',' ILKODU = %s',2);
@@ -704,7 +716,7 @@ begin
 //  EV_ILCE.Filter := EV_SEHIR.EditValue;
 //  EV_ILCE.Properties.ReadOnly := True;
   setDataStringKontrol(self,ILCE,'ILCE','Ýlçe',kolon1,'',120);
-  OrtakEventAta(ILCE);
+ // OrtakEventAta(ILCE);
   //  setDataStringB(self,'EV_ILCE','Ýlçe',Kolon2,'ilce',60,ILCE_KODLARI,false,EV_ILCE,'ADI','EV_SEHIR',false);
 //  setDataStringBLabel(self,'EV_ILCE',Kolon2,'ilce',100,' ');
 
@@ -717,7 +729,7 @@ begin
   BUCAK.BosOlamaz := True;
 
   setDataStringKontrol(self,BUCAK,'BUCAK','Bucak',kolon1,'',120);
-  OrtakEventAta(BUCAK);
+ // OrtakEventAta(BUCAK);
 
 //  setDataStringB(self,'EV_BUCAK','Bucak',Kolon2,'bucak',60,BUCAK_KODLARI,false,EV_BUCAK,'ADI','EV_ILCE',false);
 //  setDataStringBLabel(self,'EV_BUCAK',Kolon2,'bucak',100,' ');
@@ -731,7 +743,7 @@ begin
   KOY.DisplayField := 'ADI';
   KOY.BosOlamaz := True;
   setDataStringKontrol(self,KOY,'KOY','Köyü',kolon1,'',120);
-  OrtakEventAta(KOY);
+ // OrtakEventAta(KOY);
   //  setDataStringB(self,'EV_KOY','Köyü',Kolon2,'koy',60,KOY_KODLARI,false,EV_KOY,'ADI','EV_BUCAK',false);
 //  setDataStringBLabel(self,'EV_KOY',Kolon2,'koy',100,' ');
 
@@ -744,17 +756,19 @@ begin
   MAHALLE.DisplayField := 'ADI';
   MAHALLE.BosOlamaz := True;
   setDataStringKontrol(self,MAHALLE,'MAHALLE','Mahalle',kolon1,'',120);
-   OrtakEventAta(MAHALLE);
+ //  OrtakEventAta(MAHALLE);
  // setDataStringB(self,'EV_MAHALLE','Mahalle',Kolon2,'mh',60,MAHALLE_KODLARI,false,EV_MAHALLE,'ADI','EV_KOY',false);
  // setDataStringBLabel(self,'EV_MAHALLE',Kolon2,'mh',100,' ');
-  setDataString(self,'SOKAK','Sok./Cad.',Kolon1,'',166,True);
-  setDataString(self,'ADRES','Adres Diðer',Kolon1,'',166);
+  setDataString(self,'SOKAK','Sok./Cad.',Kolon1,'',350,True);
+  setDataString(self,'ADRES','Adres Diðer',Kolon1,'',350);
+  setDataString(self,'postaKodu','Posta Kodu',Kolon1,'',100);
+
   setdatastring (self, 'Tel1', 'Telefon 1', Kolon1, '', 100);
   setdatastring (self, 'Tel2', 'Telefon 2', Kolon1, '', 100);
   setdatastring (self, 'Fax', 'Faks', Kolon1, '', 100);
-  setdatastring (self, 'Yetkili', 'Yetkili Kiþi', Kolon1, '', 100);
+  setdatastring (self, 'Yetkili', 'Yetkili Kiþi', Kolon1, '', 166);
   setdatastring (self, 'yetkiliTel', 'Yetkili Telefon', Kolon1, '', 100);
-  setdatastring (self, 'yetkilimail', 'Yetkili EPosta', Kolon1, '', 100);
+  setdatastring (self, 'yetkilimail', 'Yetkili EPosta', Kolon1, '', 166);
 
   (*
   odeme := TcxImageComboKadir.Create(self);
@@ -779,6 +793,7 @@ begin
   setDataStringKontrol(self,tehlikeSinifi,'FaturaGonderimTipi','Fatura Gönderim Tipi',kolon1,'',100);
   OrtakEventAta(tehlikeSinifi);
 
+  setDataString(self,'IBAN','IBAN',Kolon1,'',166);
 
   setDataStringKontrol(self,cxFotoPanel , 'cxFotoPanel','',Kolon2,'',110);
   setDataStringKontrol(self,txtAktif , 'Aktif','',Kolon2,'',110);
@@ -825,14 +840,28 @@ end;
 procedure TfrmFirmaKart.cxKaydetClick(Sender: TObject);
 var
  B : TcxButtonKadir;
+ AktifSirket : integer;
 begin
   datalar.KontrolUserSet := False;
   BeginTrans (DATALAR.ADOConnection2);
   try
     case TControl(sender).Tag  of
-      1 : begin
-            FotoDeleteRecord;
-          end;
+      sil : begin
+              FotoDeleteRecord;
+            end;
+  kaydet : begin
+              if TcxImageComboKadir(FindComponent('FirmaTip')).EditValue = 1
+              then begin
+                  AktifSirket := datalar.QuerySelect('select count(*) from SIRKETLER_TNM where FirmaTip = 1').Fields[0].AsInteger;
+                  if AktifSirket >= datalar.AktifSirketSayisi
+                  Then begin
+                     ShowMessageSkin('Merkez Sayýnýz Aþýlmýþtýr ',
+                                     'Lisansýnýza Merkez Ekletiniz',
+                                     'Sistem Yöneticiniz Ýle Ýrtibata Geçiniz','info');
+                     exit;
+                  end;
+              end;
+            end;
     end;
 
     inherited;

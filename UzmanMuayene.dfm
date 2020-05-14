@@ -556,6 +556,10 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         Caption = 'Epikriz A'#231#305'klama'
         ImageIndex = 0
         TabVisible = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object cxGroupBoxEpikrizAck: TcxGroupBox
           Left = 0
           Top = 0
@@ -914,7 +918,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
   object GridIlaclar: TcxGridKadir
     Left = 264
     Top = 290
-    Width = 265
+    Width = 593
     Height = 244
     Font.Charset = TURKISH_CHARSET
     Font.Color = clWindowText
@@ -951,7 +955,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
       DataController.Filter.Active = True
       DataController.Filter.TranslateBetween = True
       DataController.Filter.TranslateLike = True
-      DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+      DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText, dcoImmediatePost]
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
@@ -974,6 +978,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
       OptionsView.NavigatorOffset = 20
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
       OptionsView.GroupByBox = False
+      OptionsView.GroupByHeaderLayout = ghlHorizontal
       OptionsView.IndicatorWidth = 0
       OptionsView.RowSeparatorColor = clBlack
       Styles.Group = cxStyle1
@@ -1022,8 +1027,11 @@ object frmUzmanMuayene: TfrmUzmanMuayene
           item
             Description = 'Ay'
             Value = 30
+          end
+          item
+            Description = '15 G'#252'n'
+            Value = 15
           end>
-        Options.Editing = False
         Width = 37
       end
       object cxGridIlacTedaviPlanimiktar: TcxGridDBColumn
@@ -1031,7 +1039,6 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         DataBinding.FieldName = 'miktar'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
-        Options.Editing = False
         Width = 40
       end
       object cxGridIlacTedaviPlanidoz: TcxGridDBColumn
@@ -1040,15 +1047,10 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
         HeaderAlignmentHorz = taCenter
-        Options.Editing = False
         Width = 36
       end
       object cxGridIlacTedaviPlanidozperyotmiktar: TcxGridDBColumn
         DataBinding.FieldName = 'dozperyotmiktar'
-        Visible = False
-      end
-      object cxGridIlacTedaviPlanidonem: TcxGridDBColumn
-        DataBinding.FieldName = 'donem'
         Visible = False
       end
       object cxGridIlacTedaviPlaniid: TcxGridDBColumn
@@ -1092,6 +1094,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         DataBinding.FieldName = 'donemAdi'
         Visible = False
         GroupIndex = 0
+        SortIndex = 0
+        SortOrder = soDescending
         IsCaptionAssigned = True
       end
       object cxGridIlacTedaviPlaniColumn6: TcxGridDBColumn
@@ -1113,6 +1117,14 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Width = 60
+      end
+      object cxGridIlacTedaviPlanidonem: TcxGridDBColumn
+        DataBinding.FieldName = 'donem'
+        Visible = False
+        SortIndex = 1
+        SortOrder = soDescending
+        Width = 20
+        IsCaptionAssigned = True
       end
       object cxGridIlacTedaviPlaniColumn7: TcxGridDBColumn
         Caption = 'Uygulama'
@@ -1198,7 +1210,7 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     LockType = ltBatchOptimistic
     Parameters = <>
     Left = 344
-    Top = 256
+    Top = 224
   end
   object DataSource7: TDataSource
     DataSet = ADO_UzmanMuayene
@@ -1251,8 +1263,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     end
   end
   object PopupIlac: TPopupMenu
-    Left = 696
-    Top = 320
+    Left = 736
+    Top = 248
     object E1: TMenuItem
       Tag = 80
       Caption = 'Ekle'

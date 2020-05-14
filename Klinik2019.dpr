@@ -27,7 +27,6 @@ uses
   GridListe in 'GridListe.pas' {frmGridListeForm},
   HastaRecete in 'HastaRecete.pas' {frmHastaRecete},
   kadir in 'kadir.pas',
-  MedEczane in 'MedEczane.pas' {frmMedEczane},
   Son6AylikTetkikSonuc in 'Son6AylikTetkikSonuc.pas' {frmSon6AylikTetkikSonuc},
   HastaTetkikEkle in 'HastaTetkikEkle.pas' {frmHastaTetkikEkle},
   IlacSarfListesi in 'IlacSarfListesi.pas' {frmIlacSarf},
@@ -48,7 +47,6 @@ uses
   IsKazasi in 'IsKazasi.pas' {frmIsKazasi},
   LisansUzat in 'LisansUzat.pas' {frmLisansBilgisi},
   About_Frm in 'About_Frm.pas' {frmAbout},
-  SahaSaglikGozetim in 'SahaSaglikGozetim.pas' {frmSahaSaglikGozetim},
   CihazKontrol in 'CihazKontrol.pas' {frmCihazKontrol},
   labParametreleri in 'labParametreleri.pas' {frmLabParams},
   labaratuvarKabul in 'labaratuvarKabul.pas' {frmLabaratuvarKabul},
@@ -91,7 +89,7 @@ uses
   yardimciIslemlerWS in 'yardimciIslemlerWS.pas',
   GunSonuOzet in 'GunSonuOzet.pas' {frmGunSonuOzet},
   IlacEtkenMadde in 'IlacEtkenMadde.pas' {frmIlacEtkenMaddeSutKural},
-  Derman in 'Derman.pas',
+  AEN in 'AEN.pas',
   LabTestlerService in 'WebReferans\LabTestlerService.pas',
   klorOlcum in 'klorOlcum.pas' {frmKlorOlcum},
   GemsoftServiceBIYOTIP in 'WebReferans\GemsoftServiceBIYOTIP.pas',
@@ -101,35 +99,56 @@ uses
   hizliKayit in 'hizliKayit.pas' {frmHizliKayit},
   HastaIzlemListesi in 'HastaIzlemListesi.pas' {frmIzlem},
   TakipKontrol in 'TakipKontrol.pas' {frmTakipKontrol},
-  TenaySISTEMTIP in 'WebReferans\TenaySISTEMTIP.pas' {/ TenayAhenk in 'WebReferans\TenayAhenk.pas';};
+  TenaySISTEMTIP in 'WebReferans\TenaySISTEMTIP.pas' {/ TenayAhenk in 'WebReferans\TenayAhenk.pas';},
+  TenayServiceSYNLAB_SYNEVO_CENTRO_v4 in 'TenayServiceSYNLAB_SYNEVO_CENTRO_v4.pas',
+  InterKomService in 'WebReferans\InterKomService.pas',
+  Interkom in 'WebReferans\Interkom.pas',
+  DuzenService in 'WebReferans\DuzenService.pas',
+  Duzen in 'WebReferans\Duzen.pas',
+  PackageReceiverWebService in 'PackageReceiverWebService.pas',
+  PaketAl in 'PaketAl.pas',
+  LiosDEREN in 'WebReferans\LiosDEREN.pas',
+  LiosERBIL in 'WebReferans\LiosERBIL.pas',
+  LiosLabService in 'WebReferans\LiosLabService.pas';
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 4004;   // Versiyon info kontrol etmeyi unutma  OSGBVersiyon.txt içine AppalicationVer deðerini yaz ftp at
-  OSGBDllVersiyon : integer = 6;     //  DLLVersiyon.txt  içine DllVersiyon deðerini yaz ftp at
-                                     // isg.exe yapý deðiþikliðinden sonra buna gerek kalmýyor
-
+  AppalicationVer : integer = 4016;
+  yvKversiyon : integer = 3;
   NoktaURL : string = 'https://www.noktayazilim.net';
-  VersiyonURL : string = 'http://www.noktayazilim.net/Klinik2019Versiyon.txt';
-  DLLVersiyonURL : string = 'http://www.noktayazilim.net/Klinik2019DLLVersiyon.txt';
+  VersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019Versiyon.txt';
+  DLLVersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019DLLVersiyon.txt';
+  yvkVersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/yvkVersiyon.txt';
+
+ // DllVersiyon : integer = 4003;
+// Klinik2019.Dpr dosyasý  paket.exe içinde memo ya yükleniyor. appver ve dllver parse ediliyor.
+// Klinik2019Versiyon.txt ve Klinik2019DLLVersiyon.txt dosya olarak ftp ye Diyaliz_Klinik2019/
+// klasörüne atýlýyor. Uygulama açýlýrken ftp den bu dosyalarý okuyup burdki mevcut deðerleri
+// karþýlaþtýrýyor , exe ve dll yüklemelerini yapýyor.
+
 
 {$R *.res}
 {$WEAKLINKRTTI ON}
   {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
 
  var SiteVersiyon,ExeVersiyon: string; V1, V2, V3, V4: word;
-   versiyon,Dversiyon ,sql,isg,isgOld : string;
+   versiyon,Dversiyon ,sql,yvk,yvkNewVersiyon : string;
   _exe : PAnsiChar;
   dosya : TFileStream;
   _modal_ : integer;
 
 
 begin
+ // bellek sýzmalarý var. onlarý müsait bir zamanda FreeAndNil yap...
+ // ReportMemoryLeaksOnShutdown := True;
+
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDATALAR, DATALAR);
   Application.CreateForm(TAnaForm, AnaForm);
+  datalar.AppalicationVer := AppalicationVer;
+  datalar.yvKversiyon := yvKversiyon;
   // Application.CreateForm(TfrmGunSonuOzet, frmGunSonuOzet);
 
   // form2.show;
@@ -144,56 +163,55 @@ begin
 
   datalar.programTip := copy(ExtractFileName(Application.ExeName),1,1);
 
-  isgOld := 'yv.exe';
-  isg := 'yv1.exe';
-
-//  Download('https://www.noktayazilim.net/' + isg,'mavinokta','nokta53Nokta','C:\OSGB\'+isg);
+  try
+    yvkNewVersiyon := (datalar.HTTP1.Get(yvkVersiyonURL));
+  except
+    yvkNewVersiyon := intTostr(yvkVersiyon);
+  end;
 
   datalar.versiyon := inttostr(AppalicationVer);
   if ForceDirectories ('C:\NoktaV3') then
   begin
-      (*
-      if FileExists('C:\NoktaV3\' + isg) = False
+
+      if (strToint(yvkNewVersiyon) >  yvKversiyon)
       Then begin
-        //dosya := TFileStream.Create('C:\OSGB\' + isg,fmCreate);
         try
-          Download('https://www.noktayazilim.net/isg/'+isg,'mavinokta','nokta53Nokta','C:\NoktaV3\'+isg);
-          DeleteFile('C:\NoktaV3\yv.exe');
-          CopyFile(pChar('C:\NoktaV3\'+isg),pChar('C:\NoktaV3\yv.exe'),true);
-          DeleteFile('C:\NoktaV3\'+isgOld);
+          Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/yvK.exe','mavinokta','nokta53Nokta','C:\NoktaV3\yvK.exe');
         finally
-         //dosya.Free;
         end;
       end;
-        *)
+
 
   try
     versiyon := (datalar.HTTP1.Get(VersiyonURL));
-    Dversiyon := (datalar.HTTP1.Get(DLLVersiyonURL));
+ //   Dversiyon := (datalar.HTTP1.Get(DLLVersiyonURL));
   except
     versiyon := inttostr(AppalicationVer);
-    Dversiyon := inttostr(OSGBDllVersiyon);
+ //   Dversiyon := inttostr(DllVersiyon);
   end;
 
   if versiyon = '' then versiyon := inttostr(AppalicationVer);
-  if Dversiyon = '' then Dversiyon := inttostr(OSGBDllVersiyon);
+ // if Dversiyon = '' then Dversiyon := inttostr(DllVersiyon);
 
+  (*
   try
-    if 1=2//(strtoint(Dversiyon) > OSGBDllVersiyon)
+    if (strtoint(Dversiyon) > DllVersiyon)
     Then Begin
-        Download('https://www.noktayazilim.net/NoktaDLL.dll','mavinokta','nokta53Nokta','C:\NoktaV3\NoktaDLL.dll');
-        Download('https://www.noktayazilim.net/BouncyCastle.Crypto.dll','mavinokta','nokta53Nokta','C:\NoktaV3\BouncyCastle.Crypto.dll');
-        Download('https://www.noktayazilim.net/EdocLib.dll','mavinokta','nokta53Nokta','C:\NoktaV3\EdocLib.dll');
-        Download('https://www.noktayazilim.net/Net.Pkcs11.dll','mavinokta','nokta53Nokta','C:\NoktaV3\Net.Pkcs11.dll');
-        Download('https://www.noktayazilim.net/itextsharp.dll','mavinokta','nokta53Nokta','C:\NoktaV3\itextsharp.dll');
-        Download('https://www.noktayazilim.net/Microsoft.VisualBasic.PowerPacks.Vs.dll','mavinokta','nokta53Nokta','C:\NoktaV3\Microsoft.VisualBasic.PowerPacks.Vs.dll');
-        Download('https://www.noktayazilim.net/ReceteToken2.exe','mavinokta','nokta53Nokta','C:\NoktaV3\ReceteToken2.exe');
-        Download('https://www.noktayazilim.net/salt.dat','mavinokta','nokta53Nokta','C:\NoktaV3\salt.dat');
-        Download('https://www.noktayazilim.net/RenkliEncryption.dll','mavinokta','nokta53Nokta','C:\NoktaV3\RenkliEncryption.dll');
-        Download('https://www.noktayazilim.net/RenkliRsaPublicKey.txt','mavinokta','nokta53Nokta','C:\NoktaV3\RenkliRsaPublicKey.pem');
+
+        try
+         _exe :=  PAnsiChar(AnsiString('C:\NoktaV3\yvK.exe dll'));
+         WinExec(_exe,SW_SHOW);
+        // datalar.KillTask('Diyaliz.exe');
+        except on e : exception do
+          begin
+            ShowMessageSkin(e.Message,'','','info');
+          end;
+        end;
     End;
   except
   end;
+    *)
+
 
   if (strtoint(versiyon) > AppalicationVer)
   Then Begin
@@ -214,19 +232,14 @@ begin
 
   end;
 
- (*
-    if FileExists('C:\OSGB\AlpemixCMX.exe') = False
-    Then begin
-      dosya := TFileStream.Create('C:\OSGB\AlpemixCMX.exe',fmCreate);
-      datalar.HTTP1.Get('http://www.noktayazilim.net/AlpemixCMX.exe' ,TStream(dosya));
-      dosya.Free;
-    end;
-
-    *)
-
 
   GetBuildInfo(Application.ExeName, V1, V2, V3,V4);
   ExeVersiyon:= Format('%d.%d.%d.%d', [V1, V2, V3,V4]);
+
+  DateSeparator := '.';
+  DecimalSeparator := '.';
+  ThousandSeparator := ',';
+  ShortDateFormat := 'DD.MM.YYYY';
 
 
   Application.CreateForm(TfrmLogin, frmLogin);

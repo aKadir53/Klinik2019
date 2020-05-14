@@ -3,7 +3,7 @@
 			<ProjectGuid>{CB1BE216-91C6-4EB2-9506-A9A3A7285C02}</ProjectGuid>
 			<ProjectVersion>18.1</ProjectVersion>
 			<FrameworkType>VCL</FrameworkType>
-			<MainSource>Yv.dpr</MainSource>
+			<MainSource>yvK.dpr</MainSource>
 			<Base>True</Base>
 			<Config Condition="'$(Config)'==''">Debug</Config>
 			<Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -80,6 +80,9 @@
 			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+			<VerInfo_Keys>CompanyName=Mavi Nokta Bilgi Teknolojileri;FileDescription=Dosya Tranfer;FileVersion=4.0.0.0;InternalName=;LegalCopyright=Mavi Nokta Bilgi Teknolojileri LTD.ŞTİ.;LegalTrademarks=;OriginalFilename=;ProductName=MediCraft;ProductVersion=4.0.0.0;Comments=</VerInfo_Keys>
+			<VerInfo_MajorVer>4</VerInfo_MajorVer>
+			<Debugger_RunParams>dll</Debugger_RunParams>
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 			<DCC_DebugInfoInExe>false</DCC_DebugInfoInExe>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -124,7 +127,7 @@
 			<BorlandProject>
 				<Delphi.Personality>
 					<Source>
-						<Source Name="MainSource">Yv.dpr</Source>
+						<Source Name="MainSource">yvK.dpr</Source>
 					</Source>
 					<VersionInfo>
 						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
@@ -154,6 +157,7 @@
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
 					<Excluded_Packages>
+						<Excluded_Packages Name="C:\Users\Cmptr\Documents\DevExpress VCL\Library\Delphi16\dclcxPivotGridOLAPD16.bpl">ExpressPivotGrid 2 OLAP by Developer Express Inc.</Excluded_Packages>
 						<Excluded_Packages Name="C:\Users\Cmptr\Documents\tmssoftware\TMS Component Pack\DelphiXE2\TMSDeDXE2.bpl">TMS Component Pack design time support</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dcloffice2k160.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclofficexp160.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
@@ -211,13 +215,13 @@
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="iPad_Launch2048">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
@@ -263,24 +267,24 @@
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="ProjectiOSResource">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="iPhone_Launch640">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
@@ -303,13 +307,13 @@
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="iPhone_Launch320">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
@@ -377,24 +381,24 @@
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="ProjectiOSInfoPList">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="iPad_Launch1024">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
@@ -425,13 +429,13 @@
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="iPad_Launch768">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
@@ -473,13 +477,13 @@
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="iPhone_Launch640x1136">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
@@ -517,13 +521,13 @@
 						</Platform>
 					</DeployClass>
 					<DeployClass Name="iPad_Launch1536">
-						<Platform Name="iOSDevice32">
-							<Operation>1</Operation>
-						</Platform>
 						<Platform Name="iOSSimulator">
 							<Operation>1</Operation>
 						</Platform>
 						<Platform Name="iOSDevice64">
+							<Operation>1</Operation>
+						</Platform>
+						<Platform Name="iOSDevice32">
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
@@ -544,14 +548,14 @@
 							<Operation>1</Operation>
 						</Platform>
 					</DeployClass>
-					<ProjectRoot Name="$(PROJECTNAME).app" Platform="iOSSimulator"/>
+					<ProjectRoot Name="$(PROJECTNAME).app" Platform="iOSDevice32"/>
 					<ProjectRoot Name="$(PROJECTNAME)" Platform="Android"/>
 					<ProjectRoot Name="$(PROJECTNAME)" Platform="Win32"/>
 					<ProjectRoot Name="$(PROJECTNAME).app" Platform="iOSDevice64"/>
 					<ProjectRoot Name="$(PROJECTNAME)" Platform="Linux64"/>
-					<ProjectRoot Name="$(PROJECTNAME).app" Platform="OSX32"/>
 					<ProjectRoot Name="$(PROJECTNAME)" Platform="Win64"/>
-					<ProjectRoot Name="$(PROJECTNAME).app" Platform="iOSDevice32"/>
+					<ProjectRoot Name="$(PROJECTNAME).app" Platform="OSX32"/>
+					<ProjectRoot Name="$(PROJECTNAME).app" Platform="iOSSimulator"/>
 				</Deployment>
 				<Platforms>
 					<Platform value="Win64">False</Platform>

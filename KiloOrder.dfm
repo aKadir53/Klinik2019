@@ -51,41 +51,59 @@ object frmKiloOrder: TfrmKiloOrder
       Navigator.Buttons.GotoBookmark.Visible = False
       Navigator.Buttons.Filter.Visible = False
       Navigator.Visible = True
+      OnEditKeyDown = GridEkstreEditKeyDown
       DataController.DataSource = DataSource1
+      DataController.Options = [dcoAnsiSort, dcoCaseInsensitive, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoImmediatePost]
       DataController.Summary.DefaultGroupSummaryItems = <>
-      DataController.Summary.FooterSummaryItems = <>
+      DataController.Summary.FooterSummaryItems = <
+        item
+          Format = 'Listelenen:###'
+          Kind = skCount
+          Column = GridEkstreTCKIMLIKNO
+        end>
       DataController.Summary.SummaryGroups = <>
+      FilterRow.InfoText = 'Arama Yap'#305'n'
+      FilterRow.Visible = True
+      FilterRow.ApplyChanges = fracImmediately
+      OptionsBehavior.GoToNextCellOnEnter = True
+      OptionsBehavior.ExpandMasterRowOnDblClick = False
       OptionsData.Deleting = False
       OptionsData.Inserting = False
+      OptionsView.Footer = True
       OptionsView.GroupByBox = False
       Bands = <
         item
           Caption = 'Hasta Bilgisi'
           FixedKind = fkLeft
-          Width = 439
+          Width = 532
         end
         item
           Caption = 'Kilo Bilgileri'
           Width = 160
         end
         item
-          Caption = 'Tansiyon Bilgileri'
-        end
-        item
           Caption = 'Nab'#305'z Bilgileri'
           Width = 115
         end
         item
+          Caption = 'Tansiyon Bilgileri'
+        end
+        item
           Caption = 'B'#252'y'#252'k'
-          Position.BandIndex = 2
+          Position.BandIndex = 3
           Position.ColIndex = 0
           Width = 107
         end
         item
           Caption = 'K'#252#231#252'k'
-          Position.BandIndex = 2
+          Position.BandIndex = 3
           Position.ColIndex = 1
           Width = 95
+        end
+        item
+          Caption = 'Ate'#351
+          Styles.Header = cxStyle1
+          Width = 40
         end>
       object GridEkstredosyaNo: TcxGridDBBandedColumn
         DataBinding.FieldName = 'dosyaNo'
@@ -206,7 +224,6 @@ object frmKiloOrder: TfrmKiloOrder
         Properties.Alignment.Vert = taVCenter
         Properties.DisplayFormat = ',0.00;-,0.00'
         HeaderAlignmentHorz = taCenter
-        Options.Editing = False
         Position.BandIndex = 1
         Position.ColIndex = 0
         Position.RowIndex = 0
@@ -240,7 +257,7 @@ object frmKiloOrder: TfrmKiloOrder
         Properties.Alignment.Vert = taVCenter
         Properties.DisplayFormat = ',0.00;-,0.00'
         HeaderAlignmentHorz = taCenter
-        Position.BandIndex = 3
+        Position.BandIndex = 2
         Position.ColIndex = 0
         Position.RowIndex = 0
       end
@@ -251,7 +268,7 @@ object frmKiloOrder: TfrmKiloOrder
         Properties.Alignment.Vert = taVCenter
         Properties.DisplayFormat = ',0.00;-,0.00'
         HeaderAlignmentHorz = taCenter
-        Position.BandIndex = 3
+        Position.BandIndex = 2
         Position.ColIndex = 1
         Position.RowIndex = 0
       end
@@ -334,6 +351,67 @@ object frmKiloOrder: TfrmKiloOrder
         Position.ColIndex = 10
         Position.RowIndex = 0
       end
+      object GridEkstreColumn2: TcxGridDBBandedColumn
+        Caption = 'Ver.S'#305'v'#305
+        DataBinding.FieldName = 'verilecekSivi'
+        PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.AssignedValues.DisplayFormat = True
+        Position.BandIndex = 1
+        Position.ColIndex = 3
+        Position.RowIndex = 0
+      end
+      object GridEkstreColumn3: TcxGridDBBandedColumn
+        Caption = 'Makina No'
+        DataBinding.FieldName = 'makinaNo'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Position.BandIndex = 0
+        Position.ColIndex = 11
+        Position.RowIndex = 0
+      end
+      object GridEkstreColumn4: TcxGridDBBandedColumn
+        DataBinding.FieldName = 'ates'
+        PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.DisplayFormat = ',0.00;-,0.00'
+        Position.BandIndex = 6
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+        IsCaptionAssigned = True
+      end
+      object GridEkstreDoktor: TcxGridDBBandedColumn
+        DataBinding.FieldName = 'Doktor'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.ImmediatePost = True
+        Properties.Items = <>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 90
+        Position.BandIndex = 0
+        Position.ColIndex = 12
+        Position.RowIndex = 0
+      end
+      object GridEkstreHemsire: TcxGridDBBandedColumn
+        Caption = 'Hem'#351'ire'
+        DataBinding.FieldName = 'hemsire'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.ImmediatePost = True
+        Properties.Items = <>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 90
+        Position.BandIndex = 0
+        Position.ColIndex = 13
+        Position.RowIndex = 0
+      end
     end
     object cxGridLevel1: TcxGridLevel
       Caption = 'Hastalar'
@@ -378,9 +456,9 @@ object frmKiloOrder: TfrmKiloOrder
       OnClick = B1Click
     end
     object Y1: TMenuItem
+      Tag = -5
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
-      Visible = False
       OnClick = Y1Click
     end
     object E1: TMenuItem
@@ -393,6 +471,18 @@ object frmKiloOrder: TfrmKiloOrder
       Caption = 'Hasta Kart'#305
       ImageIndex = 44
       OnClick = H1Click
+    end
+  end
+  object cxStyleRepository1: TcxStyleRepository
+    PixelsPerInch = 96
+    object cxStyle1: TcxStyle
+      AssignedValues = [svFont, svTextColor]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      TextColor = clRed
     end
   end
 end

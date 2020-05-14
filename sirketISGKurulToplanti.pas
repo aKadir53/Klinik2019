@@ -82,6 +82,9 @@ type
     SatirlarColumn1: TcxGridDBBandedColumn;
     SatirlarColumn2: TcxGridDBBandedColumn;
     SatirlarColumn3: TcxGridDBBandedColumn;
+    M2: TMenuItem;
+    T2: TMenuItem;
+    E2: TMenuItem;
     procedure NewRecord(DataSet: TDataSet);
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
@@ -105,6 +108,7 @@ type
     function Maddeler : TDataset;
     procedure SatirlarNavigatorButtonsButtonClick(Sender: TObject;
       AButtonIndex: Integer; var ADone: Boolean);
+    procedure E2Click(Sender: TObject);
  //   function EArsivGonder(FaturaId : string) : string;
  //   function EArsivIptal(FaturaGuid : string) : string;
  //   function EArsivPDF(FaturaGuid : string ; _tag_ : integer) : string;
@@ -124,8 +128,8 @@ type
 
 
 const
-//LIB_DLL = 'NoktaDLL.dll';
-  LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
+  LIB_DLL = 'EFaturaDLL.dll';
+ // LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
   test = 'https://efatura-test.uyumsoft.com.tr/Services/Integration';
   gercek = 'https://efatura.uyumsoft.com.tr/Services/Integration';
 var
@@ -137,6 +141,16 @@ implementation
 uses data_modul, StrUtils, Jpeg;
 
 {$R *.dfm}
+
+procedure TfrmISGKurulToplanti.E2Click(Sender: TObject);
+var
+  GirisRecord : TGirisFormRecord;
+  F : TGirisForm;
+begin
+  inherited;
+  F := FormINIT(TagfrmISGKurulToplantiTanim,GirisRecord,ikHayir,'');
+  if F <> nil then F.ShowModal;
+end;
 
 function TfrmISGKurulToplanti.Ekip(EkipId : string = '') : TDataset;
 begin
@@ -423,6 +437,8 @@ var
   dosya : TOpenDialog;
   TopluDataset : TDataSetKadir;
   FB : TFirmaBilgi;
+  GirisRecord : TGirisFormRecord;
+  F : TGirisForm;
 begin
   inherited;
 
@@ -430,6 +446,7 @@ begin
                                                         varTostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
   TopluDataset.Dataset1 := KurulEkipGrid.Dataset;
   TopluDataset.Dataset2 := KurulMaddeler.Dataset;
+  TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
 
   case Tcontrol(sender).Tag of
   -20 : begin
@@ -448,13 +465,27 @@ begin
           if (mailGonder(FB.isgKurulEkibiMailBilgileri,
                         'Toplantý Çaðrý Formu',
                         'Toplantý Çaðrý Formu , ekteki dosyada bilginize sunulmuþtur',
-                        'Toplantý Çaðrý Formu.PDF',
+                        'C:\NoktaV3\Temp\Toplantý Çaðrý Formu.PDF',
                         'Toplantý Çaðrý')
                = '0000')
              Then ShowMessageSkin('Email Bilgilendirmesi Yapýldý','','','info')
               else ShowMessageSkin('Email Bilgilendirmesi Yapýlamadý','','','info')
 
         end;
+   -40 : begin
+          PrintYap('KTT','Kurul Toplantý Tutanaðý','',TopluDataset,pTPDF,self);
+          FB.isgKurulEkibiMailBilgileri := isgKurulEkibiMailBilgileri(vartostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
+          //:= FirmaBilgileri(vartostr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue),'00');
+          if (mailGonder(FB.isgKurulEkibiMailBilgileri,
+                        'Kurul Toplantý Tutanaðý',
+                        'Kurul Toplantý Tutanaðý , ekteki dosyada bilginize sunulmuþtur',
+                        'C:\NoktaV3\Temp\Kurul Toplantý Tutanaðý.PDF',
+                        'Kurul Toplantý Tutanaðý')
+               = '0000')
+             Then ShowMessageSkin('Email Bilgilendirmesi Yapýldý','','','info')
+              else ShowMessageSkin('Email Bilgilendirmesi Yapýlamadý','','','info')
+        end;
+
 
   end;
 end;
@@ -498,9 +529,12 @@ begin
   FaturaTarihi := TcxDateEditKadir.Create(Self);
   FaturaTarihi.ValueTip := tvDate;
   FaturaTarihi.Properties.Kind := ckDateTime;
+
+  setDataString(self,'ToplantiTanimi','Toplantý Tanimi',Kolon1,'',150,false,'');
   setDataStringKontrol(self,FaturaTarihi,'ToplantiZamani','Toplantý Tarihi',Kolon1,'',150);
   setDataString(self,'ToplantiYeri','Toplantý Yeri',Kolon1,'',150,false,'');
   setDataString(self,'ToplantiBaskani','Toplantý Baþkaný',Kolon1,'',150,false,'');
+  setDataString(self,'Sekreter','Sekreter',Kolon1,'',150,false,'');
 
  // setDataStringBLabel(self,'bosSatir1',kolon1,'',300);
 
@@ -523,7 +557,6 @@ begin
   TcxImageComboKadir(FindComponent('SirketKod')).EditValue := datalar.AktifSirket;
   TcxImageComboKadir(FindComponent('dxLaSirketKod')).Visible := False;
 
-  setDataString(self,'isveren','Ýþveren',Kolon1,'',150,false,'');
 
 
   sirketlerx := TcxImageComboKadir.Create(self);

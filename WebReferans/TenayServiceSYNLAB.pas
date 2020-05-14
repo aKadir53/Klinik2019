@@ -1660,28 +1660,28 @@ type
   // port      : TenayWebServiceSoap12
   // URL       : http://212.156.71.162:8094/TenayService.asmx
   // ************************************************************************ //
-  TenayWebServiceSoap = interface(IInvokable)
+  TenayWebServiceSoapSYNLAB = interface(IInvokable)
   ['{DE0C7615-FFA4-D4A3-EF4F-96183337FC76}']
     function  HizmetListesiGetir(const kurumbilgileri: KurumBilgileri): HizmetListesi; stdcall;
     function  HastaTurListesiGetir(const kurumbilgileri: KurumBilgileri): HastaTurListesi; stdcall;
     function  HastaKaydet(const order: Order): HastakaydetCevap; stdcall;
-    function  HastaSonucSorgula(const order: OrderQuery): HastaSorguCevap; stdcall;
-    function  HastaSonucSorgulaReferans(const order: OrderQuery): HastaSorguCevapReferans; stdcall;
-    function  HastaSonucSorgulaOrnekNo(const order: OrderQuery): HastaSorguCevap; stdcall;
-    function  TCOrnekListesiGetir(const query: OrnekListesiQuery): OrnekListesi; stdcall;
+  //  function  HastaSonucSorgula(const order: OrderQuery): HastaSorguCevap; stdcall;
+   // function  HastaSonucSorgulaReferans(const order: OrderQuery): HastaSorguCevapReferans; stdcall;
+   // function  HastaSonucSorgulaOrnekNo(const order: OrderQuery): HastaSorguCevap; stdcall;
+  //  function  TCOrnekListesiGetir(const query: OrnekListesiQuery): OrnekListesi; stdcall;
     function  TCSonuclariGetir(const query: TCSonuclariQuery): TCSonuclariResult; stdcall;
     function  HastaListesiGetir(const query: HastaListQuery): HastaListesi; stdcall;
     function  KurumListesiGetir(const kurumbilgileri: KurumBilgileri): KurumListesi; stdcall;
     function  SonucKaydet(const sonuc: SonucKaydetGiris): SonucKaydetCevap; stdcall;
   end;
 
-function GetTenayWebServiceSoap(UseWSDL: Boolean=System.False; Addr: string=''; HTTPRIO: THTTPRIO = nil): TenayWebServiceSoap;
+function GetTenayWebServiceSoapSYNLAB(UseWSDL: Boolean=System.False; Addr: string=''; HTTPRIO: THTTPRIO = nil): TenayWebServiceSoapSYNLAB;
 
 
 implementation
   uses SysUtils;
 
-function GetTenayWebServiceSoap(UseWSDL: Boolean; Addr: string; HTTPRIO: THTTPRIO): TenayWebServiceSoap;
+function GetTenayWebServiceSoapSYNLAB(UseWSDL: Boolean; Addr: string; HTTPRIO: THTTPRIO): TenayWebServiceSoapSYNLAB;
 const
   defWSDL = 'http://212.156.71.162:8094/TenayService.asmx?wsdl';
   defURL  = 'http://212.156.71.162:8094/TenayService.asmx';
@@ -1703,7 +1703,7 @@ begin
   else
     RIO := HTTPRIO;
   try
-    Result := (RIO as TenayWebServiceSoap);
+    Result := (RIO as TenayWebServiceSoapSYNLAB);
     if UseWSDL then
     begin
       RIO.WSDLLocation := Addr;
@@ -3969,51 +3969,60 @@ end;
 
 initialization
   { TenayWebServiceSoap }
-  InvRegistry.RegisterInterface(TypeInfo(TenayWebServiceSoap), 'http://tenay.com.tr/', 'utf-8');
-  InvRegistry.RegisterDefaultSOAPAction(TypeInfo(TenayWebServiceSoap), 'http://tenay.com.tr/%operationName%');
-  InvRegistry.RegisterInvokeOptions(TypeInfo(TenayWebServiceSoap), ioDocument);
-  InvRegistry.RegisterInvokeOptions(TypeInfo(TenayWebServiceSoap), ioSOAP12);
+  InvRegistry.RegisterInterface(TypeInfo(TenayWebServiceSoapSYNLAB), 'http://tenay.com.tr/', 'utf-8');
+  InvRegistry.RegisterDefaultSOAPAction(TypeInfo(TenayWebServiceSoapSYNLAB), 'http://tenay.com.tr/%operationName%');
+  InvRegistry.RegisterInvokeOptions(TypeInfo(TenayWebServiceSoapSYNLAB), ioDocument);
+  InvRegistry.RegisterInvokeOptions(TypeInfo(TenayWebServiceSoapSYNLAB), ioSOAP12);
+ (*
   { TenayWebServiceSoap.HizmetListesiGetir }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'HizmetListesiGetir', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HizmetListesiGetir', '',
                                  '[ReturnName="HizmetListesi"]', IS_NLBL);
-  InvRegistry.RegisterParamInfo(TypeInfo(TenayWebServiceSoap), 'HizmetListesiGetir', 'HizmetListesi', '',
+  InvRegistry.RegisterParamInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HizmetListesiGetir', 'HizmetListesi', '',
                                 '', IS_NLBL);
   { TenayWebServiceSoap.HastaTurListesiGetir }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'HastaTurListesiGetir', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HastaTurListesiGetir', '',
                                  '[ReturnName="HastaTurListesi"]', IS_NLBL);
-  InvRegistry.RegisterParamInfo(TypeInfo(TenayWebServiceSoap), 'HastaTurListesiGetir', 'HastaTurListesi', '',
+  InvRegistry.RegisterParamInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HastaTurListesiGetir', 'HastaTurListesi', '',
                                 '', IS_NLBL);
   { TenayWebServiceSoap.HastaKaydet }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'HastaKaydet', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HastaKaydet', '',
                                  '[ReturnName="HastaKaydetResult"]', IS_OPTN);
+
+
   { TenayWebServiceSoap.HastaSonucSorgula }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'HastaSonucSorgula', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HastaSonucSorgula', '',
                                  '[ReturnName="HastaSonucSorgulaResult"]', IS_OPTN);
   { TenayWebServiceSoap.HastaSonucSorgulaReferans }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'HastaSonucSorgulaReferans', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HastaSonucSorgulaReferans', '',
                                  '[ReturnName="HastaSonucSorgulaReferansResult"]', IS_OPTN);
   { TenayWebServiceSoap.HastaSonucSorgulaOrnekNo }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'HastaSonucSorgulaOrnekNo', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HastaSonucSorgulaOrnekNo', '',
+
                                  '[ReturnName="HastaSonucSorgulaOrnekNoResult"]', IS_OPTN);
+
   { TenayWebServiceSoap.TCOrnekListesiGetir }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'TCOrnekListesiGetir', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'TCOrnekListesiGetir', '',
                                  '[ReturnName="TCOrnekListesiGetirResult"]', IS_OPTN);
+
+
   { TenayWebServiceSoap.TCSonuclariGetir }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'TCSonuclariGetir', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'TCSonuclariGetir', '',
                                  '[ReturnName="TCSonuclariGetirResult"]', IS_OPTN);
   { TenayWebServiceSoap.HastaListesiGetir }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'HastaListesiGetir', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HastaListesiGetir', '',
                                  '[ReturnName="HastaListesi"]', IS_NLBL);
-  InvRegistry.RegisterParamInfo(TypeInfo(TenayWebServiceSoap), 'HastaListesiGetir', 'HastaListesi', '',
+  InvRegistry.RegisterParamInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'HastaListesiGetir', 'HastaListesi', '',
                                 '', IS_NLBL);
   { TenayWebServiceSoap.KurumListesiGetir }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'KurumListesiGetir', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'KurumListesiGetir', '',
                                  '[ReturnName="KurumListesi"]', IS_NLBL);
-  InvRegistry.RegisterParamInfo(TypeInfo(TenayWebServiceSoap), 'KurumListesiGetir', 'KurumListesi', '',
+  InvRegistry.RegisterParamInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'KurumListesiGetir', 'KurumListesi', '',
                                 '', IS_NLBL);
   { TenayWebServiceSoap.SonucKaydet }
-  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoap), 'SonucKaydet', '',
+  InvRegistry.RegisterMethodInfo(TypeInfo(TenayWebServiceSoapSYNLAB), 'SonucKaydet', '',
                                  '[ReturnName="SonucKaydetResult"]', IS_OPTN);
+
+*)
   RemClassRegistry.RegisterXSInfo(TypeInfo(KayitDurumu), 'http://tenay.com.tr/', 'KayitDurumu');
   RemClassRegistry.RegisterXSInfo(TypeInfo(ArrayOfHastaDetay), 'http://tenay.com.tr/', 'ArrayOfHastaDetay');
   RemClassRegistry.RegisterXSInfo(TypeInfo(ArrayOfOrnekDetay), 'http://tenay.com.tr/', 'ArrayOfOrnekDetay');

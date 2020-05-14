@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://88.248.110.96/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://88.248.110.96/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://88.248.110.96/">
+      <s:element name="TestListesi">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FirmaKodu" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TestListesiResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TestListesiResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GrupListesi">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FirmaKodu" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GrupListesiResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GrupListesiResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TetkikIstek">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FirmaKodu" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Istek" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TetkikIstekResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TetkikIstekResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TetkikSil">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FirmaKodu" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="BarkodNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Testler" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TetkikSilResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TetkikSilResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TetkikSorgula">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FirmaKodu" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="BarkodNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TetkikSorgulaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TetkikSorgulaResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="HastaListesi">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FirmaKodu" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Tarih" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="HastaListesiResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="HastaListesiResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UzmanListesi">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FirmaKodu" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UzmanListesiResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UzmanListesiResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GelisTarihiDuzenle">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FirmaKodu" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Sifre" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TcKimlik" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Barkod" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Tarih" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GelisTarihiDuzenleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GelisTarihiDuzenleResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="TestListesiSoapIn">
+    <wsdl:part name="parameters" element="tns:TestListesi" />
+  </wsdl:message>
+  <wsdl:message name="TestListesiSoapOut">
+    <wsdl:part name="parameters" element="tns:TestListesiResponse" />
+  </wsdl:message>
+  <wsdl:message name="GrupListesiSoapIn">
+    <wsdl:part name="parameters" element="tns:GrupListesi" />
+  </wsdl:message>
+  <wsdl:message name="GrupListesiSoapOut">
+    <wsdl:part name="parameters" element="tns:GrupListesiResponse" />
+  </wsdl:message>
+  <wsdl:message name="TetkikIstekSoapIn">
+    <wsdl:part name="parameters" element="tns:TetkikIstek" />
+  </wsdl:message>
+  <wsdl:message name="TetkikIstekSoapOut">
+    <wsdl:part name="parameters" element="tns:TetkikIstekResponse" />
+  </wsdl:message>
+  <wsdl:message name="TetkikSilSoapIn">
+    <wsdl:part name="parameters" element="tns:TetkikSil" />
+  </wsdl:message>
+  <wsdl:message name="TetkikSilSoapOut">
+    <wsdl:part name="parameters" element="tns:TetkikSilResponse" />
+  </wsdl:message>
+  <wsdl:message name="TetkikSorgulaSoapIn">
+    <wsdl:part name="parameters" element="tns:TetkikSorgula" />
+  </wsdl:message>
+  <wsdl:message name="TetkikSorgulaSoapOut">
+    <wsdl:part name="parameters" element="tns:TetkikSorgulaResponse" />
+  </wsdl:message>
+  <wsdl:message name="HastaListesiSoapIn">
+    <wsdl:part name="parameters" element="tns:HastaListesi" />
+  </wsdl:message>
+  <wsdl:message name="HastaListesiSoapOut">
+    <wsdl:part name="parameters" element="tns:HastaListesiResponse" />
+  </wsdl:message>
+  <wsdl:message name="UzmanListesiSoapIn">
+    <wsdl:part name="parameters" element="tns:UzmanListesi" />
+  </wsdl:message>
+  <wsdl:message name="UzmanListesiSoapOut">
+    <wsdl:part name="parameters" element="tns:UzmanListesiResponse" />
+  </wsdl:message>
+  <wsdl:message name="GelisTarihiDuzenleSoapIn">
+    <wsdl:part name="parameters" element="tns:GelisTarihiDuzenle" />
+  </wsdl:message>
+  <wsdl:message name="GelisTarihiDuzenleSoapOut">
+    <wsdl:part name="parameters" element="tns:GelisTarihiDuzenleResponse" />
+  </wsdl:message>
+  <wsdl:portType name="Service1Soap">
+    <wsdl:operation name="TestListesi">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Laboratuvarımızda kullanılan test bilgilerini almak için kullanılır.</wsdl:documentation>
+      <wsdl:input message="tns:TestListesiSoapIn" />
+      <wsdl:output message="tns:TestListesiSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GrupListesi">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Laboratuvarımızda kullanılan grup (panel) test bilgilerini almak için kullanılır.</wsdl:documentation>
+      <wsdl:input message="tns:GrupListesiSoapIn" />
+      <wsdl:output message="tns:GrupListesiSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TetkikIstek">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Laboratuarımızdan istenecek tetkikleri bildirmenizi sağlar.</wsdl:documentation>
+      <wsdl:input message="tns:TetkikIstekSoapIn" />
+      <wsdl:output message="tns:TetkikIstekSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TetkikSil">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Henüz işleme alınmamış hastanın tüm laboratuvar istekleri silinir.</wsdl:documentation>
+      <wsdl:input message="tns:TetkikSilSoapIn" />
+      <wsdl:output message="tns:TetkikSilSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TetkikSorgula">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Onaylanmış sonuçları almanızı sağlar.</wsdl:documentation>
+      <wsdl:input message="tns:TetkikSorgulaSoapIn" />
+      <wsdl:output message="tns:TetkikSorgulaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="HastaListesi">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Belirtilen tarihten başlayarak ay sonuna kadar olan hastaların listesini verir.</wsdl:documentation>
+      <wsdl:input message="tns:HastaListesiSoapIn" />
+      <wsdl:output message="tns:HastaListesiSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UzmanListesi">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Laboratuvarımızdaki Uzman Doktorların listesini verir.</wsdl:documentation>
+      <wsdl:input message="tns:UzmanListesiSoapIn" />
+      <wsdl:output message="tns:UzmanListesiSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GelisTarihiDuzenle">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">İşleme alınmış hastanın kimlik ve geliş tarihi bilgilerini düzenler.</wsdl:documentation>
+      <wsdl:input message="tns:GelisTarihiDuzenleSoapIn" />
+      <wsdl:output message="tns:GelisTarihiDuzenleSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Service1Soap" type="tns:Service1Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="TestListesi">
+      <soap:operation soapAction="http://88.248.110.96/TestListesi" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GrupListesi">
+      <soap:operation soapAction="http://88.248.110.96/GrupListesi" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TetkikIstek">
+      <soap:operation soapAction="http://88.248.110.96/TetkikIstek" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TetkikSil">
+      <soap:operation soapAction="http://88.248.110.96/TetkikSil" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TetkikSorgula">
+      <soap:operation soapAction="http://88.248.110.96/TetkikSorgula" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HastaListesi">
+      <soap:operation soapAction="http://88.248.110.96/HastaListesi" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UzmanListesi">
+      <soap:operation soapAction="http://88.248.110.96/UzmanListesi" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GelisTarihiDuzenle">
+      <soap:operation soapAction="http://88.248.110.96/GelisTarihiDuzenle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="Service1Soap12" type="tns:Service1Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="TestListesi">
+      <soap12:operation soapAction="http://88.248.110.96/TestListesi" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GrupListesi">
+      <soap12:operation soapAction="http://88.248.110.96/GrupListesi" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TetkikIstek">
+      <soap12:operation soapAction="http://88.248.110.96/TetkikIstek" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TetkikSil">
+      <soap12:operation soapAction="http://88.248.110.96/TetkikSil" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TetkikSorgula">
+      <soap12:operation soapAction="http://88.248.110.96/TetkikSorgula" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HastaListesi">
+      <soap12:operation soapAction="http://88.248.110.96/HastaListesi" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UzmanListesi">
+      <soap12:operation soapAction="http://88.248.110.96/UzmanListesi" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GelisTarihiDuzenle">
+      <soap12:operation soapAction="http://88.248.110.96/GelisTarihiDuzenle" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service1">
+    <wsdl:port name="Service1Soap" binding="tns:Service1Soap">
+      <soap:address location="http://85.105.200.79/IntertipServis/TestIstek.asmx" />
+    </wsdl:port>
+    <wsdl:port name="Service1Soap12" binding="tns:Service1Soap12">
+      <soap12:address location="http://85.105.200.79/IntertipServis/TestIstek.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

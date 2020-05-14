@@ -671,25 +671,26 @@ begin
   then begin
 
       if MrYes = MessageDlg(
-          'PDF Eklenecek , Emin misiniz?',
+          'Dosya Eklenecek , Emin misiniz?',
         mtConfirmation, [mbYes, mbNo], 0, mbYes)
       then begin
           dxStatusBar1.Panels[1].Text := 'Dosya Yükleniyor , Lütfen Bekleyiniz...';
 
-          DurumGoster(True,False,'PDF Yükleniyor , Lütfen Bekleyiniz');
+          DurumGoster(True,False,'Dosya Yükleniyor , Lütfen Bekleyiniz');
 
           try
-               dosya := TOpenDialog.Create(nil);
-               if not dosya.Execute then Exit;
-               dosyaTip := ExtractFileExt(dosya.FileName);
-               dosyaTip := StringReplace(dosyaTip,'.','',[rfReplaceAll]);
+              dosya := TOpenDialog.Create(nil);
+              if not dosya.Execute then Exit;
+              dosyaTip := ExtractFileExt(dosya.FileName);
+              dosyaTip := UPPERCASE(StringReplace(dosyaTip,'.','',[rfReplaceAll]));
 
 
 
 
-               sql := 'select * from ' + tableName +
+              sql := 'select * from ' + tableName +
                       ' where ' + where;
              //  datalar.QuerySelect(sql);
+
               DokumanYuklePDF(datalar.QuerySelect(sql),'PDF',dosya.FileName);
 
           finally
@@ -704,6 +705,7 @@ begin
     begin
       sql := 'update ' + tableName +
              ' set PDF = NULL ' +
+             ',DosyaTip = NULL ' +
              ' where ' + where;
       datalar.QueryExec(sql);
   end;

@@ -305,4 +305,15 @@ object frmFirmaKart: TfrmFirmaKart
     Left = 384
     Top = 13
   end
+  object FileOpenDialog1: TFileOpenDialog
+    FavoriteLinks = <>
+    FileTypes = <>
+    Options = []
+    Left = 360
+    Top = 176
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 368
+    Top = 264
+  end
 end

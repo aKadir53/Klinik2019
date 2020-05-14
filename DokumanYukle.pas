@@ -92,7 +92,7 @@ begin
   txtSirket.TableName := 'SIRKETLER_TNM';
   txtSirket.DisplayField := 'tanimi';
   txtSirket.ValueField := 'SirketKod';
-  txtSirket.Filter := '';
+  txtSirket.Filter := ' FirmaTip = 1';
 
 
 

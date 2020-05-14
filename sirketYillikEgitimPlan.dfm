@@ -18,12 +18,13 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
   TextHeight = 13
   object YillikEgitimPlanGrid: TcxGridKadir
     Left = 8
-    Top = 32
+    Top = 40
     Width = 1161
     Height = 297
     TabOrder = 0
     LookAndFeel.NativeStyle = False
     ExceleGonder = False
+    PopupForm = False
     object cxGridDBBandedTableView1: TcxGridDBBandedTableView
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>

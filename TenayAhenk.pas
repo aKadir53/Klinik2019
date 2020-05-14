@@ -94,7 +94,7 @@ Begin
        kayitTip := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
 
-        if  (kayitTip = 'Yeni Kayýt')
+        if  (kayitTip = 'ONAY')
         Then Begin
            dosyaNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
@@ -557,18 +557,31 @@ begin
                                       (testKod = '906630') or
                                       (testKod = '906660')
                                    Then Begin
-                                       sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + sonuc + ')' +
+                                     try
+                                       sql := 'update hareketler set Gd = ' + QuotedStr(sonuc)  +
                                              // ',islemAciklamasi = ' + _TetkikSonuclar_.Aciklama +
                                               ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                               ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
                                        datalar.QueryExec(sql);
 
+                                       sql := 'update hareketler ' +
+                                              'set islemAciklamasi = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_TetkikSonuclar_.Sonuc) + ')' +
+                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                                       datalar.QueryExec(sql);
+                                     except
+                                           sql := 'update hareketler ' +
+                                              'set islemAciklamasi = ' + QuotedStr(_TetkikSonuclar_.Sonuc) +
+                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                                            datalar.QueryExec(sql);
+                                     end;
                                    End
                                    else
                                    begin
                                       try
-                                          sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
+                                          sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_TetkikSonuclar_.Sonuc) + ')' +
                                             //  ',islemAciklamasi = ' + _TetkikSonuclar_.Sonuc +
                                               ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                               ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;

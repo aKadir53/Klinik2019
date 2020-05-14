@@ -77,8 +77,8 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
     Width = 121
   end
   object yayinTarihi: TcxDateEditKadir
-    Left = 17
-    Top = 48
+    Left = 161
+    Top = 8
     TabOrder = 1
     BosOlamaz = True
     ValueTip = tvString
@@ -1205,16 +1205,18 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       Caption = '-'
     end
     object P1: TMenuItem
-      Caption = 'PDF Y'#252'kle'
+      Caption = 'Dosya Y'#252'kle (PDF,XLS,DOC,RTF)'
       ImageIndex = 110
       object Y1: TMenuItem
         Tag = -20
         Caption = 'Y'#252'kle'
+        ImageIndex = 9
         OnClick = cxButtonCClick
       end
       object S1: TMenuItem
         Tag = -21
         Caption = 'Sil'
+        ImageIndex = 43
         OnClick = cxButtonCClick
       end
     end

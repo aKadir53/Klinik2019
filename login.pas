@@ -187,13 +187,13 @@ begin
    FormatSettings.DecimalSeparator := '.';
    FormatSettings.ThousandSeparator := ',';
 
-
+(*
    datalar.ServisErisimBilgileriOrtak.LoadFromDataSet(
    datalar.QuerySelect(
    'select id,Value,Erisim_Tanimi,SLK,SLB,Sira,SLB_Tanimi,ValueTip,ValueObje,ValueObjeValues ' +
    ' from WebServisErisimBilgileri ' +
    ' where Ozel = ''O'''));
-
+  *)
 
 end;
 
@@ -317,9 +317,20 @@ begin
       datalar.usernameAdi := login.FieldByName('ADISOYADI').AsString;
       datalar.doktorKodu := login.FieldByName('doktor').AsString;
       if datalar.doktorKodu <> ''
-      then
-       datalar.doktorTC := doktorTC(datalar.doktorKodu);
-      datalar.doktorAdi := doktorAdi(datalar.doktorKodu);
+      then begin
+        doktorKodToReceteUser(datalar.doktorKodu,datalar.doktorTC,datalar.doktorAdi,datalar._doktorReceteUser,datalar._doktorRecetePas);
+//        datalar.doktorTC := doktorTC(datalar.doktorKodu);
+  //      datalar.doktorAdi := doktorAdi(datalar.doktorKodu);
+    //    datalar._doktorReceteUser :=
+      end;
+
+      datalar.ServisErisimBilgileriOrtak.LoadFromDataSet(
+        datalar.QuerySelect(
+         'select id,Value,Erisim_Tanimi,SLK,SLB,Sira,SLB_Tanimi,ValueTip,ValueObje,ValueObjeValues ' +
+         ' from WebServisErisimBilgileri ' +
+         ' where Ozel = ''O'''));
+
+
       datalar.sirketKodu := login.FieldByName('SirketKodu').AsString;
       datalar.IGU := login.FieldByName('IGU').AsString;
       datalar.DSPers := login.FieldByName('DigerSaglikPers').AsString;
@@ -334,8 +345,6 @@ begin
 
 
       SetAnaFormFoto;
-
-
 
 
       AnaForm.dxSkinController1.SkinName := login.FieldByName('userSkin').AsString;
@@ -359,6 +368,27 @@ begin
   //      datalar.ADO_TehlikeSiniflari.Active := True;
         if not UpdateThermo (6, iThermo, 'Giriþi Zorunlu alan tanýmlarý yükleniyor') then Exit;
         datalar.KontrolZorunlu.Active := True;
+
+        (*
+         AnaForm.ilacList.Conn := datalar.ADOConnection2;
+         AnaForm.ilacList.TableName :=
+                         '(select I.barkod,I.ilacAdi ' +
+                         //I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,D.Doz SIKDoz,D.peryot SIKPeryot,' +
+                        // 'case when ITU.dosyaNO is null then 0 else 1 end AlerjiVar' +
+                         ' from OSGB_MASTER.DBO.ilacListesi I ' +
+                         //' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
+                        // ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                       //  ' left join Hasta_Ilac_Uyari ITU on ITU.atc_kodu = I.EtkenMAdde and ITU.dosyano = ' + QuotedStr('') +
+                         ') tt';
+                       //  ' where
+                         //drTC = ' + QuotedStr(datalar.doktorTC) +
+                       //  ' D.tip = ''ILAC'') tt';
+
+         AnaForm.ilacList.DisplayField := 'ilacAdi';
+         AnaForm.ilacList.ValueField := 'barkod';
+         AnaForm.ilacList.Filter := '';
+          *)
+
 
         WanIp(datalar.WanIPURL);
         datalar.LoginInOut.Kullanici := datalar.username;
@@ -477,15 +507,17 @@ end;
 
 procedure TfrmLogin.btnBaglanClick(Sender: TObject);
 var
- db, OSGBDesc : string;
+ db, OSGBDesc , osgbKodu : string;
  iYazilimGelistirici : Integer;
 begin
  if txtOsgbKodu.EditingText <> ''
  Then begin
-     if txtServerName.Text = '' then txtServerName.Text := 'TWpFekxqRTFPUzR6TUM0Mg==';
-
+     if txtServerName.Text = '' then txtServerName.Text := 'TVRnMUxqRTVPQzQzTWk0eE9EVXNNVFl3TURBPQ==';
+    //  'TWpFekxqRTFPUzR6TUM0Mg==' eski;
+     osgbKodu := txtOsgbKodu.EditingValue;
+     osgbKodu := firmaKodDecode(osgbKodu);
    try
-     if datalar.MasterBaglan(txtOsgbKodu.EditingValue,db, OSGBDesc, iYazilimGelistirici, txtServerName.Text, txtServerUserName.Text, txtServerPassword.Text)
+     if datalar.MasterBaglan(osgbKodu,db, OSGBDesc, iYazilimGelistirici, txtServerName.Text, txtServerUserName.Text, txtServerPassword.Text)
      Then begin
          Regyaz('OSGB_servername',txtServerName.Text);
          //Regyaz('OSGB_serverUserName',Encode64(txtServerUserName.Text));
@@ -514,7 +546,9 @@ begin
            btnBaglan.Caption := 'Baðlandý';
         //   DATALAR._YazilimGelistirici := iYazilimGelistirici;
          end;
-     end;
+     end
+     Else
+      ShowMessageSkin('Baðlantý Saðlanamadý','','','info');
    except
      dxLayoutControl2Group2.Visible := True;
      raise;
@@ -620,6 +654,9 @@ var
   iYazGel : Integer;
 begin
  //  Height := dxLayoutControl1Group2. btnGiris.Top + btnGiris.Height + 10;
+
+
+
 
    txtServerName.EditValue := regOku('OSGB_servername');
    txtServerUserName.EditValue :=  Decode64(copy(Decode64(DBUserName),4,100));   //Decode64(regOku('OSGB_serverUserName'));

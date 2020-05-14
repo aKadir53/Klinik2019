@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, Buttons, sBitBtn, ExtCtrls, cxControls, cxPC,adodb,db,
   cxGraphics, cxDropDownEdit, cxMaskEdit, cxCalendar, cxLabel, cxContainer,
   cxEdit, cxTextEdit, cxLookupEdit, cxDBLookupEdit, cxDBLookupComboBox,kadir,data_modul,
-  cxDBEdit, dxmdaset, InvokeRegistry, Rio, SOAPHTTPClient,strUtils,
+  cxDBEdit, dxmdaset, InvokeRegistry, Rio, SOAPHTTPClient,strUtils,kadirType,GetFormClass,
   cxMemo, cxLookAndFeels, cxLookAndFeelPainters, dxSkinsCore,
   dxSkinsDefaultPainters, dxSkinscxPCPainter, cxPCdxBarPopupMenu,
   cxGroupBox, dxSkinBlack, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
@@ -136,14 +136,14 @@ type
     cxLabel13: TcxLabel;
     txtilkTakip: TcxTextEdit;
     txtSigortaliTuru: TcxImageComboKadir;
-    txtDevredilenKurum: TcxTextEdit;
     btnAra: TcxButton;
     Panel1: TPanel;
     txtdogumTarihi: TcxDateEditKadir;
-    txtTel: TcxTextEdit;
     cxLabel14: TcxLabel;
     txtAdres: TcxTextEdit;
     cxLabel15: TcxLabel;
+    txtDevredilenKurum: TcxImageComboKadir;
+    txtTel: TcxMaskEdit;
     procedure txtBranslarPropertiesChange(Sender: TObject);
     procedure btnKabulClick(Sender: TObject);
     procedure btnAraClick(Sender: TObject);
@@ -406,12 +406,17 @@ end;
 
 function TfrmHizliKayit.Init(Sender: TObject): Boolean;
 begin
-  Result := True;
+   if not inherited Init(Sender) then exit;
+   txtSigortaliTuru.Filter := '';
+   txtDevredilenKurum.Filter := '';
+   Result := True;
 end;
 
 procedure TfrmHizliKayit.FormCreate(Sender: TObject);
 begin
+     ClientHeight := 600;
      cxPanel.Visible := false;
+
 end;
 
 procedure TfrmHizliKayit.txtBranslarPropertiesChange(Sender: TObject);
@@ -433,6 +438,7 @@ var
    ado : TADOQuery;
    FTR : Boolean;
    _tutar_ : double;
+   Form : TGirisForm;
 begin
 
   ado := TADOQuery.Create(nil);
@@ -465,12 +471,12 @@ begin
            ',@TCKIMLIKNO = ' + #39 + txtTcKimlikNo.Text + #39 +
            ',@HUVIYETTIPI = ' + #39 + '1' + #39 +
            ',@HUVIYETNO = ' + #39 + '' + #39 +
-           ',@KURUMTIPI = ' + #39 + trim(copy(txtDevredilenKurum.Text,1,2)) + #39 +
+           ',@KURUMTIPI = ' + #39 + varToStr(txtDevredilenKurum.EditValue) + #39 +
            ',@SICILNO = ' + #39 + '' + #39 +
            ',@KARNENO = ' + #39 + '' + #39 +
            ',@seans = ' + #39 + '1' + #39 +
            ',@seansSaat = ' + '4' +
-           ',@SigortaliTur = ' + #39 + copy(vartoStr(txtSigortaliTuru.EditValue),1,1) + #39 +
+           ',@SigortaliTur = ' + #39 + vartoStr(txtSigortaliTuru.EditValue)+ #39 +
            ',@seansTip = ' + #39 + '0' + #39 +
           (*
            ',@RaporTarih = ' + #39 + tarih(txtRaporTarihi.Text) + #39 +
@@ -571,6 +577,24 @@ begin
        Else
          ShowMessageSkin('Rapor Sistemde Kayýtlý','','','info');
    end;
+
+
+   // datalar.Bilgi.dosyaNo := ado_BransKodlari.FieldByName('dosyaNo').AsString;
+  //  FormINIT(TagfrmHastaKart,AnaForm,ado_BransKodlari.FieldByName('dosyaNo').AsString);
+   if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
+   Then begin
+     Form := TGirisForm(FormClassType(TagfrmHastaKart));
+     TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := _dosyaNo;
+     TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
+     TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
+   end
+   Else begin
+    Form := FormINIT(TagfrmHastaKart,self,_dosyaNo,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
+    if Form <> nil then Form.show;
+   end;
+
+
+
    datalar.ADOConnection2.CommitTrans;
    close;
   except on e : Exception do
@@ -592,17 +616,18 @@ procedure TfrmHizliKayit.btnAraClick(Sender: TObject);
 var
   cvp : string;
   _s_ : integer;
-  _msg : string;
+  _msg , tel : string;
+
  // RaporCvp1 :  RaporIslemleriWS.RaporCevapTCKimlikNodanDVO;
  // RaporCvpR : RaporIslemleriWS.RaporCevapDVO;
 begin
-
-   if (txtTel.Text = '') or
+   tel := trim(StringReplace(StringReplace(StringReplace(txtTel.Text,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+   if (Length(tel) <> 10) or
       (txtAdres.Text = '') or
       (txtTcKimlikNoAra.Text = '') or
       (txtTakipTarihi.Text = '')
    then begin
-     ShowMessageSkin('Sorgulama Bilgileri Eksik','','','info');
+     ShowMessageSkin('Sorgulama Bilgileri Eksik , yada Hatalý','','','info');
      exit;
    end;
 
@@ -624,8 +649,8 @@ begin
           datalar.HastaKabulWS.GirisParametre.bransKodu := datalar.KurumBransi;
           datalar.HastaKabulWS.GirisParametre.provizyonTarihi := txtTakipTarihi.Text;
           datalar.HastaKabulWS.GirisParametre.takipNo := txtilkTakip.Text;
-          datalar.HastaKabulWS.GirisParametre.hastaTelefon :=  txtTel.Text;
-          datalar.HastaKabulWS.GirisParametre.hastaAdres :=   txtAdres.Text;
+          datalar.HastaKabulWS.GirisParametre.hastaTelefon :=  tel;
+          datalar.HastaKabulWS.GirisParametre.hastaAdres :=   TrtoEng(txtAdres.Text);
 
           //HastaKabul.GirisParametre.yeniDoganBilgisi := nil;
 

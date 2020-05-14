@@ -4,22 +4,22 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,kadir,
-  adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,AdvGrid,DateUtils,
-  Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,sGauge,TenayServiceSYNLAB_SYNEVO_CENTRO,
-  data_modul;
+  adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio,cxGridDBTableView,DateUtils,
+  Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,cxProgressBar,TenayServiceSYNLAB_SYNEVO_CENTRO,
+  data_modul,cxMemo;
 
 
-  procedure TenaySonucAlCENTRO(_dosyaNo,_gelisNo,_RefId : string ;
-                            gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
+ // procedure TenaySonucAlCENTRO(_dosyaNo,_gelisNo,_RefId : string ;
+ //                           gridAktif : TcxGridDBTableView ; TcxProgressBar ; Ref : boolean);
 
   procedure TenaySonucAlTCdenCENTRO(_dosyaNo,_gelisNo,Trh1,Trh2 : string ;
-                            gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
+                            gridAktif : TcxGridDBTableView ; txtLog : TcxMemo ; progres : TcxProgressBar ; Ref : boolean);
 
   function OrderCENTRO(dosyaNo : string ; gelis : string ; Field : string = '') : TenayServiceSYNLAB_SYNEVO_CENTRO.Order;
 
-  procedure TenayOrderKaydetCENTRO(gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge);
+  procedure TenayOrderKaydetCENTRO(gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres : TcxProgressBar);
   procedure ornekdurumyaz(durum,id,refId : string);
-  function ReferansKontrolToField(Referans : String; gridAktif : TAdvStringGrid ; Row : integer) : String;
+ // function ReferansKontrolToField(Referans : String; gridAktif : TcxGridDBTableView ; Row : integer) : String;
 
 implementation
 
@@ -40,20 +40,23 @@ var
 begin
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
+   try
+     sql := 'update gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
+            ',LabRefId = ' + QuotedStr(refId) +
+            ' where SIRANO = ' + id;
+     datalar.QueryExec(ado,sql);
 
-   sql := 'update gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
-          ',LabRefId = ' + QuotedStr(refId) +
-          ' where SIRANO = ' + id;
-   datalar.QueryExec(ado,sql);
+   finally
+     ado.Free;
 
-   ado.Free;
+   end;
 end;
 
-procedure TenayOrderKaydetCENTRO(gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge);
+procedure TenayOrderKaydetCENTRO(gridAktif : TcxGridDBTableView ;txtLog : Tcxmemo ; progres :TcxProgressBar);
 var
  I : integer;
  t : boolean;
- sm,ss , dosyaNo,gelisNo,id , Field : string;
+ sm,ss , dosyaNo,gelisNo,id , Field ,kayitTip : string;
   x , r : Integer;
 Begin
       datalar.Login;
@@ -64,26 +67,31 @@ Begin
       KurumMNT := TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri.Create;
 
       txtLog.Lines.Clear;
-      progres.MaxValue := gridAktif.RowCount - 2;
-      progres.Progress := 0;
-      Progres.Visible := true;
-  //    txtinfo.Caption := 'Gönderiliyor...';
+      progres.Properties.Max := gridAktif.Controller.SelectedRowCount ;
+      progres.Position := 0;
 
      if not DirectoryExists('C:\NoktaV3\Centro')
      then
       MkDir('C:\NoktaV3\Centro');
 
       datalar.HTTP_XMLDosya_Name := '';
-      For I := 1 to gridAktif.RowCount - 2 do
-      Begin
-        Application.ProcessMessages;
-        gridAktif.GetCheckBoxState(1,I,t);
 
-        if  (t = True) and (gridAktif.Cells[8,I] = 'Yeni Kayýt')
+   for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
+   begin
+       sleep(1000);
+       Application.ProcessMessages;
+       kayitTip := varToStr(gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
+
+        if  (kayitTip = 'ONAY')
         Then Begin
-           dosyaNo := gridAktif.Cells[1,I];
-           gelisNo := gridAktif.Cells[2,I];
-           id := gridAktif.Cells[6,I];
+           dosyaNo := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
+           gelisNo := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
+           id := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
+
 
                  Field := 'OrnekNo';
                  HTIMNT := OrderCENTRO(dosyaNo,gelisNo,Field);
@@ -130,24 +138,24 @@ Begin
 
                  end;
 
-           Progres.Progress := Progres.Progress + 1;
+           Progres.Position := Progres.Position + 1;
         End;
       End; // for end
       datalar.HTTP_XMLDosya_Name := '';
-      Progres.Visible := false;
+
   //    txtinfo.Caption := '.';
 
 End;
-
+  (*
 procedure TenaySonucAlCENTRO(_dosyaNo,_gelisNo,_RefId : string ;
-                            gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
+                            gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar ; Ref : boolean);
 var
  // Service : tenayserviceCENTRO.TenayWebServiceSoapMNT;
   HTSO : TenayServiceSYNLAB_SYNEVO_CENTRO.OrderQuery;
   HTSOCvp : TenayServiceSYNLAB_SYNEVO_CENTRO.HastaSorguCevap;
   KurumMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri;
   I,s , testAdet , j , x : integer;
-  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max : string;
+  kayitTip,dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max : string;
   ado : TADOQuery;
   t : boolean;
   Http : THTTPRIO;
@@ -168,25 +176,33 @@ begin
        ado.Connection := datalar.ADOConnection2;
        txtLog.Lines.Clear;
 
-       progres.MaxValue := gridAktif.RowCount - 2;
-       progres.Progress := 0;
-       Progres.Visible := true;
-    //   txtinfo.Caption := 'Alýnýyor...';
+      txtLog.Lines.Clear;
+      progres.Properties.Max := gridAktif.Controller.SelectedRowCount ;
+      progres.Position := 0;
 
 
-       for I := 1 to gridAktif.RowCount - 2 do
-       begin
-         Application.ProcessMessages;
-         ss := '';
-         gridAktif.GetCheckBoxState(1,I,t);
 
-         if  (t = True) and (gridAktif.Cells[8,I] = 'Gönderildi')
-         Then Begin
-             dosyaNo := gridAktif.Cells[1,I];
-             gelisNo := gridAktif.Cells[2,I];
-             id := gridAktif.Cells[6,I];
+   for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
+   begin
+       sleep(1000);
+       Application.ProcessMessages;
+       kayitTip := varToStr(gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
 
-             if  length(gridAktif.Cells[9,I]) > 0
+        if  (kayitTip = 'Gönderildi')
+        Then Begin
+           dosyaNo := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
+           gelisNo := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
+           id := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
+
+           _Tc_ := varToStr(gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('TCKIMLIKNO').Index));
+
+
+             if  length(id) > 0
              then ref := True
              else ref := False;
 
@@ -317,35 +333,13 @@ begin
     //   txtinfo.Caption := '.';
 
 end;
+    *)
 
 
 
-function ReferansKontrolToField(Referans : String; gridAktif : TAdvStringGrid ; Row : integer) : String;
-begin
-  if gridAktif.Cells[4,Row] = Referans
-  Then
-   ReferansKontrolToField := 'OrnekNo'
-  Else
-  if gridAktif.Cells[5,Row] = Referans
-  Then
-   ReferansKontrolToField := 'CikisOrnekNo'
-  Else
-  if gridAktif.Cells[10,Row] = Referans
-  Then
-   ReferansKontrolToField := 'OrnekNo_Plazma'
-  Else
-  if gridAktif.Cells[11,Row] = Referans
-  Then
-   ReferansKontrolToField := 'OrnekNo_Serum'
-  Else
-  if gridAktif.Cells[12,Row] = Referans
-  Then
-   ReferansKontrolToField := 'OrnekNo_TamKan'
-
-end;
 
 procedure TenaySonucAlTCdenCENTRO(_dosyaNo,_gelisNo,Trh1,Trh2 : string ;
-                            gridAktif : TAdvStringGrid ; txtLog : Tmemo ; progres :TsGauge ; Ref : boolean);
+                            gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar ; Ref : boolean);
 var
  // Service : tenayserviceCENTRO.TenayWebServiceSoapMNT;
   HTSO : TenayServiceSYNLAB_SYNEVO_CENTRO.TCSonuclariQuery;
@@ -354,7 +348,7 @@ var
   _tetkikSonuc_ : TenayServiceSYNLAB_SYNEVO_CENTRO.TetkikSonuc;
   KurumMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri;
   I,s , testAdet , sonucAdet , j , x , Tc : integer;
-  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,_tc_ : string;
+  kayitTip,dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,_tc_ : string;
   ado : TADOQuery;
   t : boolean;
   Http : THTTPRIO;
@@ -376,22 +370,30 @@ begin
  //      ado.Connection := datalar.ADOConnection2;
        txtLog.Lines.Clear;
 
-       progres.MaxValue := gridAktif.RowCount - 2;
-       progres.Progress := 0;
-       Progres.Visible := true;
+   txtLog.Lines.Clear;
 
-       for I := 1 to gridAktif.RowCount - 2 do
-       begin
-         Application.ProcessMessages;
-         ss := '';
-         gridAktif.GetCheckBoxState(1,I,t);
+   progres.Properties.Max := gridAktif.Controller.SelectedRowCount;
+   progres.Position := 0;
 
-         if  (t = True) and (gridAktif.Cells[8,I] = 'Gönderildi')
-         Then Begin
-             dosyaNo := gridAktif.Cells[1,I];
-             gelisNo := gridAktif.Cells[2,I];
-             id := gridAktif.Cells[6,I];
-             _Tc_ := gridAktif.cells[7,I];
+   for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
+   begin
+       sleep(1000);
+       Application.ProcessMessages;
+       kayitTip := varToStr(gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
+
+        if  (kayitTip = 'Gönderildi')
+        Then Begin
+           dosyaNo := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
+           gelisNo := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
+           id := gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
+
+           _Tc_ := varToStr(gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('TCKIMLIKNO').Index));
+
 
              HTSO.TC := StrToInt64(_Tc_);
 
@@ -423,7 +425,7 @@ begin
 
 
 
-            Progres.Progress := Progres.Progress + 1;
+            Progres.Position := Progres.Position + 1;
 
             if (HTSOCvp.Sonuclar[0] = nil) and (length(HTSOCvp.Sonuclar) = 1)
             then  begin
@@ -438,7 +440,7 @@ begin
                 begin
                  // txtLog.Lines.Add('Barkod : ' + _Sonuc_.OrnekNo);
                  // txtLog.Lines.Add('-----------------------------------------');
-                  Field := ReferansKontrolToField(_Sonuc_.Referans,gridAktif,I);
+                //  Field := ReferansKontrolToField(_Sonuc_.Referans,gridAktif,I);
 
                   for _tetkikSonuc_ in _Sonuc_.Tetkikler do
                   begin
@@ -528,7 +530,7 @@ begin
 
          End; //* chk end Göndrildi
        end;  // for end Satýrlar
-       Progres.Visible := false;
+
 end;
 
 
@@ -582,7 +584,7 @@ begin
       HastaTenay.DogumTarihi := DTarih;
 
 
-      sql := 'select BHDAT,ornekNo,KanAlimZamani from gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
+      sql := 'select BHDAT,ornekNo,KanAlimZamani from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
       datalar.QuerySelect(ado,sql);
 
       KanAlimZamani := ado.fieldbyname('KanAlimZamani').AsDateTime;

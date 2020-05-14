@@ -22,6 +22,7 @@ object frmDokumanYonetim: TfrmDokumanYonetim
     Align = alClient
     TabOrder = 0
     ExceleGonder = False
+    PopupForm = False
     object gridDokuman: TcxGridDBTableView
       PopupMenu = PopupMenu1
       DataController.Summary.DefaultGroupSummaryItems = <>
@@ -119,6 +120,8 @@ object frmDokumanYonetim: TfrmDokumanYonetim
       Properties.OnChange = txtSirketPropertiesChange
       TabOrder = 0
       BosOlamaz = False
+      FilterSet = fsNone
+      ExplicitHeight = 21
       Width = 243
     end
     object cxLabel1: TcxLabel
@@ -129,6 +132,8 @@ object frmDokumanYonetim: TfrmDokumanYonetim
       Properties.Alignment.Horz = taCenter
       Properties.Alignment.Vert = taVCenter
       Transparent = True
+      ExplicitTop = 2
+      ExplicitHeight = 49
       AnchorX = 25
       AnchorY = 27
     end
@@ -152,6 +157,8 @@ object frmDokumanYonetim: TfrmDokumanYonetim
       Properties.OnChange = txtSirketPropertiesChange
       TabOrder = 3
       BosOlamaz = False
+      FilterSet = fsNone
+      ExplicitHeight = 21
       Width = 166
     end
     object txtDosyaTip: TcxImageComboKadir
@@ -168,6 +175,8 @@ object frmDokumanYonetim: TfrmDokumanYonetim
       ValueField = 'DokumanTipID'
       DisplayField = 'tanimi'
       BosOlamaz = False
+      FilterSet = fsNone
+      ExplicitHeight = 21
       Width = 166
     end
   end

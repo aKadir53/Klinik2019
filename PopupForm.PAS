@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, ComCtrls, jpeg, kadir,kadirType,kadirLabel,
   dxGDIPlusClasses, cxGraphics, cxControls,GirisUnit,KadirMedula3,
-  GetFormClass,StrUtils, Adodb, DateUtils ,
+  GetFormClass,StrUtils, Adodb, DateUtils ,EncdDecd,ShellApi,
   cxLookAndFeels, cxLookAndFeelPainters, cxContainer, cxEdit, dxSkinsCore,
   Menus, cxButtons, cxGroupBox, dxSkinBlack, dxSkinBlue, dxSkinCaramel,
   dxSkinCoffee, dxSkinDarkRoom, dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans,
@@ -92,6 +92,9 @@ type
     procedure cxButtonEditPropertiesButtonClick(Sender: TObject;
        AButtonIndex: Integer);override;
     procedure BeforePost(DataSet: TDataSet);
+    procedure AfterScroll(DataSet: TDataSet);
+    procedure AfterScrollHastaRaporlari(DataSet: TDataSet);
+
     procedure NavigatorButtonsButtonClick(Sender: TObject;
       AButtonIndex: Integer; var ADone: Boolean);
     procedure cxButtonCClick(Sender: TObject);
@@ -136,7 +139,7 @@ var
 
 implementation
 
-uses message, data_modul;
+uses message, data_modul,ClipBrd;
 
 {$R *.DFM}
 var
@@ -306,6 +309,18 @@ begin
 end;
 
 
+procedure TfrmPopup.AfterScroll(DataSet: TDataSet);
+begin
+  datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridStokFaturalariDetay')).Dataset,
+                      'select * from XML_to_FATURADETAY where FaturaNo = ' +
+                      QuotedStr(Dataset.FieldByName('faturaNo').AsString));
+end;
+
+procedure TfrmPopup.AfterScrollHastaRaporlari(DataSet: TDataSet);
+begin
+   datalar.SQLMemTable_EtkenMaddeler.Filter := ' raporTakipNo = ' + Dataset.FieldByName('raporTakipNo').AsString;
+end;
+
 procedure TfrmPopup.BeforePost(DataSet: TDataSet);
 begin
 
@@ -337,13 +352,60 @@ end;
 procedure TfrmPopup.ButtonClick(Sender: TObject);
 var
   open : TOpenDialog;
-  filename : string;
+  filename , sonucStr : string;
   Jpeg1 : TJPEGImage;
   Image : TcxImage;
   GirisFormRecord : TGirisFormRecord;
-  _Sonuc_ : string;
+  _Sonuc_ , FaturaXML : string;
+  Sonuc : TStringList;
 begin
-  case TcxButton(Sender).tag of
+  case TcxButtonKadir(Sender).tag of
+
+  MobilUygulamaLinki
+       : begin
+           if TcxButtonKadir(sender).ButtonName = 'btnLinkKopyala'
+           then begin
+             ClipBoard.AsText := TcxTextEdit(FindComponent('Link')).EditValue;
+           end
+           else
+           begin
+              ShellExecute(0, 'open', PChar('Chrome.exe'), PChar(TcxTextEdit(FindComponent('Link')).Text),
+               nil, SW_SHOWNORMAL);
+
+           end;
+         end;
+
+  201  : begin
+             datalar.QuerySelect(
+             TcxGridKadir(FindComponent('cxGridStokFaturalari')).Dataset ,
+                                 'select * from xml_to_faturalar where FaturaTarihi between ' +
+                                 QuotedStr(FormatDateTime('YYYYMMDD',TcxDateEdit(FindComponent('IlkTarih')).Date)) +
+                                 ' and ' +
+                                 QuotedStr(FormatDateTime('YYYYMMDD',TcxDateEdit(FindComponent('SonTarih')).Date)));
+
+         end;
+
+  PortaldenFaturaOku
+       : begin
+              Sonuc := TStringList.Create;
+              try
+                sonucStr := EArsivFaturalarOku(FormatDateTime('DD.MM.YYYY',TcxDateEdit(FindComponent('IlkTarih')).Date),
+                                               FormatDateTime('DD.MM.YYYY',TcxDateEdit(FindComponent('SonTarih')).Date)
+                                               );
+                Sonuc.Text := '';
+                ExtractStrings(['|'],[],PWideChar(sonucStr),Sonuc);
+                if Sonuc[0]= '0000' then
+                begin
+                   FaturaXML := Sonuc[1];
+                   datalar.QueryExec('exec sp_XMLFatura_ToDataset ' + QuotedStr(FaturaXML));
+
+                end;
+
+              finally
+                 sonuc.Free;
+              end;
+
+         end;
 
   SKSdokumanOku
        : begin
@@ -452,18 +514,81 @@ begin
           end;
          end;
 
+
    raporAra
         : begin
+           DurumGoster(True);
            try
+
             if TcxImageComboKadir(FindComponent('RaporTuru')).EditValue = 1
-            then
-              DataSource1.DataSet := datalar.memDataRaporlar
+            then begin
+                  if Assigned(TcxGrid(FindComponent('cxGridHastaIlacRaporlari')))
+                  then begin
+                     TdxLayoutItem(FindComponent('dxLacxGridHastaIlacRaporlari')).Visible := False;
+                  end;
+
+                  if not Assigned(TcxGrid(FindComponent('cxGridHastaRaporlari')))
+                  then begin
+                    SetGrid(CreateGrid('cxGridHastaRaporlari',frmPopup,False,DataSource1,False),'RaporNo,RaporTarihi,baslangicTarihi,bitisTarihi,VerenTesis,raporTakipNo,SeansGun,SeansSayi',
+                                 'TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+                                 'RaporNo,RaporTarihi,BaþlangýçTarihi,BitiþTarihi,VerenTesis,raporTakipNo,SeansGun,SeansSayi',
+                                 '50,100,100,100,80,100,50,50',
+                                 '0,0,0,0,0,0,0,0',
+                                 'False,False,False,False,False,False,False,False'
+                                 );
+
+                    setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHastaRaporlari')) ,'cxGridHastaRaporlari','Hasta Raporlarý',Kolon1,'',750,400);
+                  //  TcxGridKadir(FindComponent('cxGridHastaRaporlari')).Dataset.DataSource := DS;
+
+                    DataSource1.DataSet := datalar.memDataRaporlar;
+                  end;
+            end
             else
-              DataSource1.DataSet := datalar.memDataRaporlarI;
+            begin
+                  if not Assigned(TcxGrid(FindComponent('cxGridHastaRaporlari')))
+                  then begin
+                    DataSource1.DataSet := datalar.memDataRaporlarI;
+                    SetGrid(CreateGrid('cxGridHastaRaporlari',frmPopup,False,DataSource1,False),'RaporNo,RaporTarihi,baslangicTarihi,bitisTarihi,VerenTesis,raporTakipNo,aciklama',
+                                 'TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+                                 'RaporNo,RaporTarihi,BaþlangýçTarihi,BitiþTarihi,VerenTesis,raporTakipNo,Aciklama',
+                                 '50,100,100,100,80,100,250',
+                                 '0,0,0,0,0,0,0',
+                                 'False,False,False,False,False,False,False'
+                                 );
+
+                    setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHastaRaporlari')) ,'cxGridHastaRaporlari','Hasta Raporlarý',Kolon1,'',850,200);
+                 //   TcxGridKadir(FindComponent('cxGridHastaRaporlari')).Dataset.DataSource := DS;
+                    TcxGridKadir(FindComponent('cxGridHastaRaporlari')).Dataset.AfterScroll := AfterScrollHastaRaporlari;
+
+                  end;
+
+                  if not Assigned(TcxGrid(FindComponent('cxGridHastaIlacRaporlari')))
+                  then begin
+                    SetGrid(CreateGrid('cxGridHastaIlacRaporlari',frmPopup,False,datalar.SQLMemTable_EtkenMaddeler_DataSource,False),'raporTakipNo,etkinMaddeKodu,etkinMaddeAdi,kullanimDoz1,kullanimDoz2,kullanimPeriyot,kullanimPeriyotBirim',
+                                 'TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+                                 'raporTakipNo,MaddeKodu,MaddeAdi,kullanimDoz1,kullanimDoz2,kullanimPeriyot,kullanimPeriyotBirim',
+                                 '100,100,200,100,100,100,100',
+                                 '0,0,0,0,0,0,0',
+                                 'False,False,False,False,False,False,False'
+                                 );
+
+                    setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHastaIlacRaporlari')) ,'cxGridHastaIlacRaporlari','Etken Maddeler',Kolon1,'',850,200);
+                  //  TcxGridKadir(FindComponent('cxGridHastaIlacRaporlari')).Dataset.DataSource := DS;
+
+
+                  end
+                  else
+                     TdxLayoutItem(FindComponent('dxLacxGridHastaIlacRaporlari')).Visible := True;
+
+
+            end;
+
+
 
             _value_ := TcxTextEdit(FindComponent('KisiBilgisi')).EditValue;
             HastaRaporlariBul(_value_,TcxImageComboKadir(FindComponent('RaporTuru')).EditValue);
            finally
+            DurumGoster(False);
            end;
           end;
 
@@ -646,6 +771,9 @@ begin
 
    L := ListeAc2.ListeGetir;
 
+   if Length(L) = 0  then exit;
+
+
    if L[0].kolon1 <> ''
    Then Begin
      ado := TADOQuery.Create(nil);
@@ -795,6 +923,7 @@ var
   TopluDataset : TDataSetKadir;
   sql : String;
   _record_ : Pointer;
+  MaxGozetimTarihi : TDateTime;
   Label Don;
 begin
 
@@ -827,6 +956,13 @@ begin
              //DS.Free;
            end;
 
+
+UzmanMuayeneDoktorTarihDuzenle
+        : begin
+             datalar.UzmanMuayeneUpdate.Doktor := TcxImageComboKadir(FindComponent('Doktor')).EditingValue;
+             datalar.UzmanMuayeneUpdate.MuayeneTarihi := TcxDateEditKadir(FindComponent('MuayeneTarihi')).GetValue;
+          end;
+
    SKSindikatorSorgu :
             begin
                 DurumGoster(True,False,'Ýndikatörler Sorgulanýyor , Lütfen Bekleyiniz');
@@ -841,6 +977,8 @@ begin
                                                             QuotedStr(datalar.AktifSirket);
                   TopluDataset.Dataset1 := datalar.QuerySelect(sql);
 
+                  TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+                  TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
 
                   PrintYap('900','Sks Ýndikatör Sorgula','',TopluDataset,pTNone);
 
@@ -866,6 +1004,20 @@ begin
           datalar.HemsireTalimat.durum := TcxCheckBox(FindComponent('durum')).EditValue;
         end;
 
+   indikatorKart :
+        begin
+          Datalar.IndikatorTanim.gostergeKodu := TcxTextEdit(FindComponent('gostergeKodu')).EditValue;
+          Datalar.IndikatorTanim.tanimi := TcxTextEdit(FindComponent('tanimi')).EditValue;
+          Datalar.IndikatorTanim.amac := TcxTextEdit(FindComponent('amac')).EditValue;
+          Datalar.IndikatorTanim.formul := TcxTextEdit(FindComponent('formul')).EditValue;
+          Datalar.IndikatorTanim.altGosterge := TcxTextEdit(FindComponent('altGosterge')).EditValue;
+          Datalar.IndikatorTanim.HedefTanimi := TcxTextEdit(FindComponent('HedefTanimi')).EditValue;
+          Datalar.IndikatorTanim.peryot := TcxTextEdit(FindComponent('peryot')).EditValue;
+          Datalar.IndikatorTanim.sorumlular := TcxTextEdit(FindComponent('sorumlular')).EditValue;
+          Datalar.IndikatorTanim.paylasilacakKisiler := TcxTextEdit(FindComponent('paylasilacakKisiler')).EditValue;
+          Datalar.IndikatorTanim.dikkatedilecekhususlar := TcxTextEdit(FindComponent('dikkatedilecekhususlar')).EditValue;
+        end;
+
       SeansTarihiUpdate   :
             begin
               if TfrmPopup(self).ModalResult = mrYes
@@ -881,6 +1033,7 @@ begin
                datalar.SeansBilgi.Diyalizor := TcxImageComboKadir(FindComponent('Diyalizor')).EditValue;
                datalar.SeansBilgi.Diyalizat := TcxImageComboKadir(FindComponent('D')).EditValue;
                datalar.SeansBilgi.GirisYolu := TcxImageComboKadir(FindComponent('GIRISYOLU')).EditValue;
+               datalar.SeansBilgi.Enfeksiyon := TcxCheckBox(FindComponent('GIRISYOLU_ENF')).EditValue;
                datalar.SeansBilgi.YA := TcxComboBox(FindComponent('YA')).EditValue;
                datalar.SeansBilgi.HeparinTip := TcxComboBox(FindComponent('HEPARINTIP')).EditValue;
                datalar.SeansBilgi.Heparin := TcxComboBox(FindComponent('HEPARIN')).EditValue;
@@ -917,6 +1070,11 @@ konsultasyonDuzenle :
 
            end;
 
+      raporSablon :
+          begin
+            datalar.RaporBilgisi.SablonBilgisi := TcxTextEdit(FindComponent('SablonAdi')).EditValue;
+          end;
+
       raporUpdate,raporInsert :
            begin
                datalar.RaporBilgisi.raporNo := TcxTextEdit(FindComponent('raporNo')).EditValue;
@@ -931,6 +1089,16 @@ konsultasyonDuzenle :
                datalar.RaporBilgisi.aciklama :=  varToStr(TcxTextEdit(FindComponent('aciklama')).EditValue);
                datalar.RaporBilgisi.duzenleyenDoktor :=  TcxImageComboKadir(FindComponent('duzenleyenDoktor')).EditValue;
                datalar.RaporBilgisi.raporTakipNo := TcxTextEdit(FindComponent('raporTakipNo')).EditValue;
+
+               if (TfrmPopup(self).islem_ = raporUpdate)  and
+                  ((datalar.RaporBilgisi.tedaviRaporTuru = '1') or (datalar.RaporBilgisi.tedaviRaporTuru = '8'))
+               then  begin
+                   datalar.RaporBilgisi.butkodu :=  varToStr(TcxTextEdit(FindComponent('butkodu')).EditValue);
+                   datalar.RaporBilgisi.seansGun :=  TcxTextEdit(FindComponent('seansGun')).EditValue;
+                   datalar.RaporBilgisi.seansSayi := TcxTextEdit(FindComponent('seansSayi')).EditValue;
+                   datalar.RaporBilgisi.Tanilar := TcxTextEdit(FindComponent('tanilar')).EditValue;
+               end;
+
            end;
 
       SeansDoktorUpdate :
@@ -1096,15 +1264,50 @@ konsultasyonDuzenle :
 
        yeniGozlem, GozlemDuzenle :
            begin
+              if TfrmPopup(self).islem_ = yeniGozlem
+              then begin
+                  sql :=
+                     'select max(BirSonrakiGozetimTarihi) MaxG from SahaGozlemRaporlari where GozlemGrup = ' +
+                                       QuotedStr(varToStr(TcxTextEdit(FindComponent('GozlemGrup')).EditValue)) +
+                                       ' and FirmaKodu = ' + QuotedStr(datalar.AktifSirket);
+                  MaxGozetimTarihi := datalar.QuerySelect(sql).FieldByName('MaxG').AsDateTime;
+
+                  if MaxGozetimTarihi > TcxDateEdit(FindComponent('DenetimTarihi')).Date
+                  then begin
+                    ShowMessageSkin('Merkezin Geçerli Bir ' + TcxTextEdit(FindComponent('GozlemGrup')).Text + ' Var ',
+                                    'Denetim Tarihi : ' + DateToStr(MaxGozetimTarihi),'','info');
+                    ModalResult := mrCancel;
+                    exit;
+                  end;
+              end;
+
              xSahaDenetimVeri.DenetimTarihi := TcxTextEdit(FindComponent('DenetimTarihi')).EditValue;
              xSahaDenetimVeri.FirmaKod := TcxTextEdit(FindComponent('FirmaKodu')).EditValue;
-             xSahaDenetimVeri.SubeKod := TcxTextEdit(FindComponent('SubeKod')).EditValue;
+           //  xSahaDenetimVeri.SubeKod := TcxTextEdit(FindComponent('SubeKod')).EditValue;
              xSahaDenetimVeri.KullaniciAdi := TcxTextEdit(FindComponent('Kullanici')).EditValue;
              xSahaDenetimVeri.DenetimDefterNo := TcxTextEdit(FindComponent('DenetimDefterNo')).EditValue;
              xSahaDenetimVeri.GozlemGrubu := TcxTextEdit(FindComponent('GozlemGrup')).EditValue;
+             xSahaDenetimVeri.BirSonrakiDenetimTarihi := TcxTextEdit(FindComponent('BirSonrakiGozetimTarihi')).EditValue;
+             xSahaDenetimVeri.DenetimiPlanlayan := TcxTextEdit(FindComponent('DenetimiPlanlayan')).EditValue;
+             xSahaDenetimVeri.DenetimOnaylamaTarihi := TcxTextEdit(FindComponent('DenetimOnaylamaTarihi')).EditValue;
+
              TGirisForm(FGirisForm)._SahaDenetimVeri_ := xSahaDenetimVeri;
            //  (Application.FindComponent(FGirisForm.name) as TGirisForm)._SahaDenetimVeri_ := xSahaDenetimVeri;
+
+
+
            end;
+
+       yeniAnket, AnketDuzenle :
+           begin
+             datalar.Anket.tarih := TcxDateEditKadir(FindComponent('Tarih')).EditValue;
+             datalar.Anket.sirketKod:= datalar.AktifSirket;
+             datalar.Anket.anketSayi := TcxCurrencyEdit(FindComponent('anketSayisi')).EditValue;
+             datalar.Anket.anketTip := TcxImageComboKadir(FindComponent('anketTip')).EditValue;
+
+           //  (Application.FindComponent(FGirisForm.name) as TGirisForm)._SahaDenetimVeri_ := xSahaDenetimVeri;
+           end;
+
 ptPersonelTetkikleri :
            begin
              datalar.TarihAralik.ilkTarih := TcxTextEdit(FindComponent('ilkTarih')).EditValue;
@@ -1469,6 +1672,7 @@ end;
 
 procedure TfrmPopup.FormCreate(Sender: TObject);
 begin
+  Tag := TagfrmPopup;
   Image2.Visible := false;
   cxPanel.Visible := false;
 
@@ -1545,12 +1749,93 @@ inherited;
 
   case TfrmPopup(self).islem_ of
 
+
+ITSAlimBildir          :
+           begin
+
+           end;
+
+
+  PortaldenFaturaOku :
+           begin
+                ClientHeight := 600;
+                ClientWidth := 700;
+                SayfaCaption('Portal Fatura Oku','','','','');
+                ReceteTarih := TcxDateEditKadir.Create(self);
+                setDataStringKontrol(self,ReceteTarih, 'IlkTarih','Ýlk Tarih',Kolon1,'tt',120);
+                ReceteTarih := TcxDateEditKadir.Create(self);
+                setDataStringKontrol(self,ReceteTarih, 'SonTarih','Son Tarih',Kolon1,'tt',120);
+                addButton(self,nil,'btnPortaldanOku','','Ara',Kolon1,'tt',80,ButtonClick,PortaldenFaturaOku);
+                addButton(self,nil,'btnPortaldanOkuListele','','Listele',Kolon1,'tt',80,ButtonClick,201);
+
+
+                SetGrid(CreateGrid('cxGridStokFaturalari',frmPopup,False,DataSource1,False),'FaturaNo,FaturaTarihi,vergiNo,faturaTutar,kdvTutar',
+                             'TcxTextEditProperties,TcxDateEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+                             'FaturaNo,FaturaTarihi,VergiNo,FaturaTutar,KdvTutar',
+                             '100,100,80,80,80',
+                             '0,0,0,0,0',
+                             'False,False,False,False,False'
+                             );
+
+                setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridStokFaturalari')) ,'cxGridStokFaturalari','Alýþ Faturalarý',Kolon1,'',500,200);
+                TcxGridKadir(FindComponent('cxGridStokFaturalari')).Dataset.DataSource := DS;
+                TcxGridKadir(FindComponent('cxGridStokFaturalari')).Dataset.AfterScroll := AfterScroll;
+
+                SetGrid(CreateGrid('cxGridStokFaturalariDetay',frmPopup,False,DataSource1,False),'FaturaNo,Kod,Tanim,adet,fiyat',
+                             'TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+                             'FaturaNo,Kod,Tanim,Adet,Fiyat',
+                             '100,80,250,80,80',
+                             '0,0,0,0,0',
+                             'False,False,False,False,False'
+                             );
+
+                setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridStokFaturalariDetay')) ,'cxGridStokFaturalariDetay','Fatura Detay',Kolon1,'',500,200);
+                TcxGridKadir(FindComponent('cxGridStokFaturalariDetay')).Dataset.DataSource := DS;
+
+           end;
+
+   MobilUygulamaLinki
+       :   begin
+                  ClientHeight := 250;
+                  ClientWidth := 800;
+                  SayfaCaption('Mobil Uygulama Bilgisi','','','','');
+                  setDataString(Self,'Link','Link:',Kolon1,'',700);
+                  TcxTextEdit(FindComponent('Link')).Properties.ReadOnly := True;
+                  TcxTextEdit(FindComponent('Link')).EditValue :=
+                  'http://185.198.72.184:8080/m?token='+
+                  EncodeString(EncodeString(EncodeString('mvnkt'))+#29+EncodeString(EncodeString(datalar.osgbKodu))+#29+EncodeString(EncodeString('YeM')));
+
+                  addButton(self,nil,'btnLinkKopyala','','Kopyala',Kolon1,'btn',40,ButtonClick,MobilUygulamaLinki);
+                  addButton(self,nil,'btnLinkTest','','Test Et',Kolon1,'btn',100,ButtonClick,MobilUygulamaLinki);
+
+
+           end;
+
+UzmanMuayeneDoktorTarihDuzenle
+                     :
+           begin
+                  ClientHeight := 250;
+                  ClientWidth := 250;
+                  SayfaCaption('Uzman Form','','','','');
+                  setDataStringIC(Self,'doktor','Doktor',Kolon1,'',120,'DoktorlarT','kod','tanimi',' Uzman = ''Evet'' and durum = ''Aktif'' and sirketKod = ' + QuotedStr(datalar.AktifSirket));
+                  ReceteTarih := TcxDateEditKadir.Create(self);
+                  setDataStringKontrol(self,ReceteTarih, 'MuayeneTarihi','Muayene Tarihi',Kolon1,'',120);
+
+                  kolon2.Visible := False;
+                  kolon3.Visible := False;
+                  kolon4.Visible := False;
+
+
+           end;
+
    raporAra          :
            begin
-                  ClientHeight := 400;
+                  ClientHeight := 600;
+
                   SayfaCaption('Hastanýn Raporlarýný Bul','','','','');
 
                   setDataStringIC(Self,'RaporTuru','Aranacak Rapor Türü',Kolon1,'btn',100,'Medula_RaporTurleri','kod','tanimi');
+                  TcxImageComboKadir(FindComponent('RaporTuru')).EditValue := 1;
                   setDataString(Self,'KisiBilgisi','Tc/Yupass',Kolon1,'btn',100);
                   TcxTextEdit(FindComponent('KisiBilgisi')).EditValue := _value_;
 
@@ -1558,6 +1843,7 @@ inherited;
                   addButton(self,nil,'btnRaporSistemAktar','','Sisteme Aktar',Kolon1,'btn',100,ButtonClick,raporSistemeAktar);
 
 
+                  (*
                   SetGrid(CreateGrid('cxGridHastaRaporlari',frmPopup,False,DataSource1,False),'RaporNo,RaporTarihi,baslangicTarihi,bitisTarihi,VerenTesis,raporTakipNo,SeansGun,SeansSayi',
                                'TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
                                'RaporNo,RaporTarihi,BaþlangýçTarihi,BitiþTarihi,VerenTesis,raporTakipNo,SeansGun,SeansSayi',
@@ -1568,6 +1854,19 @@ inherited;
 
                   setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHastaRaporlari')) ,'cxGridHastaRaporlari','Hasta Raporlarý',Kolon1,'',750,200);
                   TcxGridKadir(FindComponent('cxGridHastaRaporlari')).Dataset.DataSource := DS;
+
+                  SetGrid(CreateGrid('cxGridHastaIlacRaporlari',frmPopup,False,DataSource1,False),'etkinMaddeKodu,etkinMaddeAdi',
+                               'TcxTextEditProperties,TcxTextEditProperties',
+                               'MaddeKodu,MaddeAdi',
+                               '100,200',
+                               '0,0',
+                               'False,False'
+                               );
+
+                  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHastaIlacRaporlari')) ,'cxGridHastaIlacRaporlari','Etken Maddeler',Kolon1,'',750,200);
+                  TcxGridKadir(FindComponent('cxGridHastaIlacRaporlari')).Dataset.DataSource := DS;
+                   *)
+
                   kolon2.Visible := False;
                   kolon3.Visible := False;
                   kolon4.Visible := False;
@@ -1664,7 +1963,7 @@ inherited;
           setDataStringC(self,'AckKodu','Açýklama Kodu',Kolon1,'',200,'1-Teþhiþ/Taný,2-TedaviSüresi,'+
                                                         '3-HastaGüvenlikveÝzlemeFormu,4-TetkikSonucu,'+
                                                         '5-EndikasyonDýþýKullanýmizni,99-Diðer');
-          setDataStringMemo(self,'Ack','Açýklama',kolon1,'',200,50);
+          setDataStringMemo(self,'Ack','Açýklama',kolon1,'',320,90);
 
           if TfrmPopup(self).islem_ in [ReceteAckDuzenle,ReceteIlacAckDuzenle]
           then begin
@@ -1793,7 +2092,7 @@ inherited;
           Doktorlar.TableName := 'SIRKETLER_TNM';
           Doktorlar.ValueField := 'sirketKod';
           Doktorlar.DisplayField := 'Tanimi';
-          Doktorlar.Filter := ' aKtif = 1';
+          Doktorlar.Filter := ' FirmaTip = 1 and aKtif = 1';
           TcxImageComboKadir(FindComponent('sirketKod')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
           setDataStringKontrol(self,Doktorlar, 'sirketKod','Firma',Kolon1,'',250);
 
@@ -1896,7 +2195,7 @@ inherited;
           Doktorlar.TableName := 'DoktorlarT';
           Doktorlar.ValueField := 'Kod';
           Doktorlar.DisplayField := 'Tanimi';
-          Doktorlar.Filter := ' sirketKod = ' + QuotedStr(datalar.AktifSirket);
+          Doktorlar.Filter := ' durum = ''Aktif'' and sirketKod = ' + QuotedStr(datalar.AktifSirket);
           Doktorlar.ItemIndex := 0;
           setDataStringKontrol(self,Doktorlar, 'doktor','Doktor',Kolon1,'',120);
 
@@ -1978,7 +2277,7 @@ inherited;
           Doktorlar.TableName := 'DoktorlarT';
           Doktorlar.ValueField := 'kod';
           Doktorlar.DisplayField := 'tanimi';
-          Doktorlar.Filter := ' sirketKod = ' + QuotedStr(datalar.AktifSirket) ;
+          Doktorlar.Filter := ' durum = ''Aktif'' and  sirketKod = ' + QuotedStr(datalar.AktifSirket) ;
           setDataStringKontrol(self,Doktorlar,'Doktor','Doktor',kolon1,'',150);
           TcxImageComboKadir(FindComponent('Doktor')).EditValue := datalar.GelisDuzenleRecordK.doktor;
 
@@ -2020,7 +2319,7 @@ inherited;
             Doktorlar.TableName := 'DoktorlarT';
             Doktorlar.ValueField := 'kod';
             Doktorlar.DisplayField := 'tanimi';
-            Doktorlar.Filter := ' durum = ''Aktif''';
+            Doktorlar.Filter := ' isnull(TesisKodu,'''') <> '''' and durum = ''Aktif''';
             setDataStringKontrol(self,Doktorlar,'Doktor','Doktor',kolon1,'',120);
           end;
 
@@ -2097,10 +2396,25 @@ inherited;
 
        end;
 
+   yeniAnket, AnketDuzenle :
+       begin
+          ClientHeight := 280;
+          ClientWidth := 450;
+          _Tarih_ := TcxDateEditKadir.Create(self);
+          _Tarih_.Name := 'DenetimTarihi';
+          setDataStringKontrol(self,_Tarih_, 'Tarih','Tarih',Kolon1,'',100);
+          TcxDateEdit(FindComponent('Tarih')).EditValue := datalar.Anket.tarih;
+          setDataStringCurr(self,'anketSayisi','Anket Sayisi',Kolon1,'',50,'0');
+          TcxCurrencyEdit(FindComponent('anketSayisi')).EditValue := datalar.Anket.anketSayi;
+          setDataStringIC(self,'anketTip','Anket Tipi',Kolon1,'',120,'','','','',-1,'1;Çalýþan,2;Hasta');
+          TcxImageComboKadir(FindComponent('anketTip')).EditValue := datalar.Anket.anketTip;
+
+       end;
+
 
    yeniGozlem, GozlemDuzenle :
        begin
-         ClientHeight := 310;
+         ClientHeight := 350;
          ClientWidth := 442;
          textEdit := TcxTextEdit.Create(self);
          textEdit.Name := 'FirmaKodu';
@@ -2114,6 +2428,7 @@ inherited;
          setDataStringKontrol(self,textEdit, 'FirmaAdi','Firma Ünvaný',Kolon1,'',250);
          TcxTextEdit(FindComponent('FirmaAdi')).EditValue := DATALAR.AktifSirketAdi;
 
+         (*
          Doktorlar := TcxImageComboKadir.Create(self);
          Doktorlar.Conn := Datalar.ADOConnection2;
          Doktorlar.TableName := 'SIRKET_SUBE_TNM';
@@ -2123,7 +2438,7 @@ inherited;
          setDataStringKontrol(self,Doktorlar,'SubeKod','Þube',Kolon1,'',150);
          Doktorlar.EditValue := _SahaDenetimVeri_.SubeKod;
          Doktorlar.Filter := ' SirketKod = ' + QuotedStr(_SahaDenetimVeri_.FirmaKod) + ' and (Pasif = 0 or Pasif is Null)';
-
+         *)
 
          doktorlar := TcxImageComboKadir.Create(self);
          doktorlar.Conn := Datalar.ADOConnection2;
@@ -2140,14 +2455,36 @@ inherited;
 
          textEdit := TcxTextEdit.Create(self);
          textEdit.Name := 'Kullanici';
-         textEdit.Properties.ReadOnly := True;
-         setDataStringKontrol(self,textEdit, 'Kullanici','Denetimi Yapan Kullanici',Kolon1,'',80);
+        // textEdit.Properties.ReadOnly := True;
+         setDataStringKontrol(self,textEdit, 'Kullanici','Denetimi Yapan',Kolon1,'',80);
          TcxTextEdit(FindComponent('Kullanici')).EditValue := _SahaDenetimVeri_.KullaniciAdi;
+
+         textEdit := TcxTextEdit.Create(self);
+         textEdit.Name := 'DenetimiPlanlayan';
+        // textEdit.Properties.ReadOnly := True;
+         setDataStringKontrol(self,textEdit, 'DenetimiPlanlayan','Denetimi Planlayan',Kolon1,'',80);
+         TcxTextEdit(FindComponent('DenetimiPlanlayan')).EditValue := _SahaDenetimVeri_.DenetimiPlanlayan;
+
 
          _Tarih_ := TcxDateEditKadir.Create(self);
          _Tarih_.Name := 'DenetimTarihi';
          setDataStringKontrol(self,_Tarih_, 'DenetimTarihi','Tarih',Kolon1,'',100);
+
+         _Tarih_ := TcxDateEditKadir.Create(self);
+         _Tarih_.Name := 'BirSonrakiGozetimTarihi';
+         setDataStringKontrol(self,_Tarih_, 'BirSonrakiGozetimTarihi','Sonraki Denetim',Kolon1,'',100);
+         TcxTextEdit(FindComponent('BirSonrakiGozetimTarihi')).EditValue := _SahaDenetimVeri_.BirSonrakiDenetimTarihi;
+
          TcxTextEdit(FindComponent('DenetimTarihi')).EditValue := _SahaDenetimVeri_.DenetimTarihi;
+
+         _Tarih_ := TcxDateEditKadir.Create(self);
+         _Tarih_.Name := 'DenetimOnaylamaTarihi';
+         setDataStringKontrol(self,_Tarih_, 'DenetimOnaylamaTarihi','Denetim Onay',Kolon1,'',100);
+         TcxTextEdit(FindComponent('DenetimOnaylamaTarihi')).EditValue := _SahaDenetimVeri_.DenetimOnaylamaTarihi;
+
+
+
+   //      TcxTextEdit(FindComponent('DenetimTarihi')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
 
          textEdit := TcxTextEdit.Create(self);
          textEdit.Name := 'DenetimDefterNo';
@@ -3204,7 +3541,7 @@ ptPersonelTetkikleri :
 
           ilacList := ListeAcCreate('Raporlar','raporTakipNo,baslangicTarihi,BitisTarihi,SeansGun,SeansSayi',
                                     'TakipNo,Baþlangýç,Bitiþ,SeansGun,SeansSayý',
-                                    '90,100,100,30,30','raporTakipNo','Hasta Raporlarý',' dosyaNo = ' + QuotedStr(_value_),6,True);
+                                    '90,100,100,30,30','raporTakipNo','Hasta Raporlarý',' dosyaNo = ' + QuotedStr(_value_) + ' and turu = 1',6,True);
 
           setDataStringB(self,'raporTakipNo','Rapor TakipNo',Kolon1,'rr',100,ilacList,False,nil,'','',False,True,-100);
           TcxButtonEditKadir(FindComponent('raporTakipNo')).EditValue := datalar.SeansBilgi.raporTakipNo;
@@ -3242,6 +3579,8 @@ ptPersonelTetkikleri :
           TcxImageComboKadir(FindComponent('Diyalizor')).EditValue := datalar.SeansBilgi.Diyalizor;
           TcxImageComboKadir(FindComponent('D')).EditValue := datalar.SeansBilgi.Diyalizat;
           TcxImageComboKadir(FindComponent('GIRISYOLU')).EditValue := datalar.SeansBilgi.GirisYolu;
+          TcxCheckBox(FindComponent('GIRISYOLU_ENF')).EditValue := datalar.SeansBilgi.Enfeksiyon;
+
           TcxComboBox(FindComponent('YA')).EditValue := datalar.SeansBilgi.YA;
           TcxComboBox(FindComponent('HEPARINTIP')).EditValue := datalar.SeansBilgi.HeparinTip;
           TcxComboBox(FindComponent('HEPARIN')).EditValue := datalar.SeansBilgi.Heparin;
@@ -3504,9 +3843,51 @@ konsultasyonDuzenle : begin
 
                        end;
 
+
+   indikatorKart :
+        begin
+          ClientHeight := 500;
+          ClientWidth :=  580;
+          cxTab.Width := 350;
+      //    cxTab.Tabs[0].Caption :=
+          setDataString(self,'gostergeKodu','Gösterge Kodu',Kolon1,'',100);
+          TcxTextEdit(FindComponent('gostergeKodu')).EditValue := Datalar.IndikatorTanim.gostergeKodu;
+          setDataStringMemo(self,'tanimi','Gösterge Tanimi',Kolon1,'',400,50);
+          TcxTextEdit(FindComponent('tanimi')).EditValue := Datalar.IndikatorTanim.tanimi;
+          setDataStringMemo(self,'amac','Amaç',Kolon1,'',400,50);
+          TcxTextEdit(FindComponent('amac')).EditValue := Datalar.IndikatorTanim.amac;
+          setDataStringMemo(self,'formul','Hesaplama Yöntemi',Kolon1,'',400,50);
+          TcxTextEdit(FindComponent('formul')).EditValue := Datalar.IndikatorTanim.formul;
+          setDataStringMemo(self,'altGosterge','Alt Göstergeler',Kolon1,'',400,50);
+          TcxTextEdit(FindComponent('altGosterge')).EditValue := Datalar.IndikatorTanim.altGosterge;
+          setDataStringMemo(self,'HedefTanimi','Hedef Tanimi',Kolon1,'',400,50);
+          TcxTextEdit(FindComponent('HedefTanimi')).EditValue := Datalar.IndikatorTanim.HedefTanimi;
+          setDataString(self,'peryot','Veri Analiz Peryodu',Kolon1,'',100);
+          TcxTextEdit(FindComponent('peryot')).EditValue := Datalar.IndikatorTanim.peryot;
+          setDataStringMemo(self,'sorumlular','Sorumlular',Kolon1,'',400,50);
+          TcxTextEdit(FindComponent('sorumlular')).EditValue := Datalar.IndikatorTanim.sorumlular;
+          setDataStringMemo(self,'paylasilacakKisiler','Paylaþýlacak Kiþiler',Kolon1,'',400,50);
+          TcxTextEdit(FindComponent('paylasilacakKisiler')).EditValue := Datalar.IndikatorTanim.paylasilacakKisiler;
+          setDataStringMemo(self,'dikkatedilecekhususlar','Dikkat Ed.Husus',Kolon1,'',400,50);
+          TcxTextEdit(FindComponent('dikkatedilecekhususlar')).EditValue := Datalar.IndikatorTanim.dikkatedilecekhususlar;
+
+        end;
+  raporSablon :
+        begin
+          ClientHeight := 250;
+          ClientWidth :=  250;
+          cxTab.Width := 150;
+          cxTab.Tabs[0].Caption := 'Rapor Þablon';
+          Kolon2.Visible := False;
+          Kolon3.Visible := False;
+          Kolon4.Visible := False;
+          setDataString(self,'SablonAdi','Þablon Tanýmý',Kolon1,'rno',150);
+          TcxTextEdit(FindComponent('SablonAdi')).EditValue := datalar.RaporBilgisi.SablonBilgisi;
+        end;
+
   raporUpdate ,raporInsert :
         begin
-          ClientHeight := 420;
+          ClientHeight := 430;
           ClientWidth :=  620;
           cxTab.Width := 150;
           cxTab.Tabs[0].Caption := datalar.RaporBilgisi.raporCaption;
@@ -3543,7 +3924,6 @@ konsultasyonDuzenle : begin
 
           setDataStringIC(self,'turu','Rapor Türü',Kolon1,'rt',100,'Medula_RaporTurleri','Kod','Tanimi');
           TcxImageComboKadir(FindComponent('turu')).Filter := ' Aktif = 1';
-          TcxImageComboKadir(FindComponent('turu')).EditValue := datalar.RaporBilgisi.Turu;
 
           setDataStringIC(self,'tedaviRaporTuru','Tedavi Rapor Türü',Kolon1,'rt',100,'Medula_TedaviRaporTurleri','Kod','Tanimi');
           TcxImageComboKadir(FindComponent('tedaviRaporTuru')).Filter := ' Aktif = 1';
@@ -3555,7 +3935,12 @@ konsultasyonDuzenle : begin
           setDataStringIC(self,'duzenlemeTuru','Düzenleme Türü',Kolon1,'rno',100,'','','','',1,'2;Tek Hekim,1;Heyet');
           TcxImageComboKadir(FindComponent('duzenlemeTuru')).EditValue := datalar.RaporBilgisi.duzenlemeTuru;
 
-          setDataStringIC(self,'duzenleyenDoktor','Düzenleyen Doktor',Kolon1,'rt',100,'DoktorlarT','kod','tanimi',' sirketKod = ' + QuotedStr(datalar.AktifSirket),1,'');
+          if TfrmPopup(self).islem_ = raporInsert
+          Then
+            setDataStringIC(self,'duzenleyenDoktor','Düzenleyen Doktor',Kolon1,'rt',100,'DoktorlarT','kod','tanimi',' durum = ''Aktif'' and sirketKod = ' + QuotedStr(datalar.AktifSirket),1,'')
+          Else
+            setDataStringIC(self,'duzenleyenDoktor','Düzenleyen Doktor',Kolon1,'rt',100,'DoktorlarT','kod','tanimi',' durum = ''Aktif'' and sirketKod = ' + QuotedStr(datalar.AktifSirket),1,'');
+
           TcxImageComboKadir(FindComponent('duzenleyenDoktor')).EditValue := datalar.RaporBilgisi.duzenleyenDoktor;
 
 
@@ -3582,10 +3967,12 @@ konsultasyonDuzenle : begin
           else
            TcxTextEdit(FindComponent('raporTakipNo')).Properties.ReadOnly := True;
             *)
-          setDataStringMemo(self,'aciklama','Açýklama',Kolon1,'ack',503,50);
+          setDataStringMemo(self,'aciklama','Açýklama',Kolon1,'ack',503,100);
           TcxTextEdit(FindComponent('aciklama')).EditValue := datalar.RaporBilgisi.aciklama;
 
 
+        //  setDataString(self,'tanilar','Tanilar(Virgulle Girin)',Kolon1,'',250);
+         // TcxTextEdit(FindComponent('tanilar')).EditValue := datalar.RaporBilgisi.Tanilar;
 
 
           if TfrmPopup(self).islem_ = raporUpdate
@@ -3601,6 +3988,8 @@ konsultasyonDuzenle : begin
                 else ToolBar1.Visible := false;
                 ToolBar1.Width := (Menu.Items.Count * 32) + 50;
                   *)
+
+                TdxLayoutItem(FindComponent('dxLatedaviRaporTuru')).Visible := False;
 
                 SetGrid(CreateGrid('cxGridTeshis',frmPopup),'baslangicTarihi,bitisTarihi,teshisKodu,ICD10Kodu',
                              'TcxDateEditProperties,TcxDateEditProperties,TcxTextEditProperties,TcxTextEditProperties',
@@ -3623,12 +4012,13 @@ konsultasyonDuzenle : begin
                              'True,True,False,False,False,False,False'
                              );
 
-                setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridEtkenMadde')) ,'cxGridEtkenMadde','Ýlaç Etken Maddeler',Kolon1,'',580,210);
+                setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridEtkenMadde')) ,'cxGridEtkenMadde','Ýlaç Etken Maddeler',Kolon1,'',580,175);
                 datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Dataset,'select * from IlacRaporEtkenMaddeler where RaporSira = ' + QuotedStr(datalar.RaporBilgisi.sira));
                 TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Levels[0].GridView).NavigatorButtons.OnButtonClick := NavigatorButtonsButtonClick;
          //       TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridEtkenMadde')).Levels[0].GridView).PopupMenu := PopupMenu1;
 
              end;
+
 
              if datalar.RaporBilgisi.Turu = '1'
              then begin
@@ -3639,10 +4029,20 @@ konsultasyonDuzenle : begin
                  setDataStringIC(self,'butKodu','Sut Kodu',kolon1,'',100,'Diyaliz_Tipleri','butKodu','Tanimi');
                  TcxImageComboBox(FindComponent('butKodu')).EditValue := datalar.RaporBilgisi.butkodu;
 
+                 setDataString(self,'tanilar','Tanilar(Virgulle Girin)',Kolon1,'',250);
+                 TcxTextEdit(FindComponent('tanilar')).EditValue := datalar.RaporBilgisi.Tanilar;
+
+
                  SayfaCaption('Tedavi Rapor','','','','');
              end;
 
           end;
+
+          if TfrmPopup(self).islem_ = raporInsert
+          Then
+           TcxImageComboKadir(FindComponent('turu')).Clear
+          Else
+           TcxImageComboKadir(FindComponent('turu')).EditValue := datalar.RaporBilgisi.Turu;
 
         end;
   end;
@@ -3787,7 +4187,7 @@ begin
     List.KolonBasliklari.Add('Taný.Kodu');
     List.KolonBasliklari.Add('Tani Adi');
     List.TColcount := 4;
-    List.TColsW := '60,200,60,200';
+    List.TColsW := '60,300,60,300';
     List.ListeBaslik := 'Teþhis Kodlarý';
     List.Grup := True;
     List.GrupCol := 1;
@@ -3941,9 +4341,9 @@ begin
                                             'imzaliEraporAciklamaBilgisi','','',ack);
                   if Copy(Sonuc,1,4) = '0000'
                   then begin
-
                     ShowMessageSkin('Açýklama Eklendi','','','info');
                   end;
+
                 finally
                   DurumGoster(False,False,'');
                   if Copy(Sonuc,1,4) <> '0000' then
@@ -3986,8 +4386,66 @@ begin
 end;
 
 procedure TfrmPopup.PropertiesEditValueChanged(Sender: TObject);
+var
+  sql : string;
+  DenetimTarihi ,MaxGozetimTarihi : TDateTime;
+
 begin
   inherited;
+  (*
+  if (TcxCustomEdit(sender).Name = 'GozlemGrup')
+  then begin
+      sql :=
+         'select max(BirSonrakiGozetimTarihi) MaxG from SahaGozlemRaporlari where GozlemGrup = ' +
+                           QuotedStr(varToStr(TcxTextEdit(FindComponent('GozlemGrup')).EditValue)) +
+                           ' and FirmaKodu = ' + QuotedStr(datalar.AktifSirket);
+      MaxGozetimTarihi := datalar.QuerySelect(sql).FieldByName('MaxG').AsDateTime;
+
+      if MaxGozetimTarihi > TcxDateEdit(FindComponent('DenetimTarihi')).Date
+      then begin
+        ShowMessageSkin('Merkezin Geçerli Bir ' + TcxTextEdit(FindComponent('GozlemGrup')).Text + ' Var ',
+                        'Denetim Tarihi : ' + DateToStr(MaxGozetimTarihi),'','info');
+        btnYes.Enabled := False;
+      end;
+
+
+  end;
+  *)
+
+  if (TcxCustomEdit(sender).Name = 'turu')
+  then begin
+       if TcxCustomEdit(sender).EditValue = 1
+       then begin
+            if Assigned(FindComponent('dxLatedaviRaporTuru')) then TdxLayoutItem(FindComponent('dxLatedaviRaporTuru')).Visible := True;
+            if Assigned(FindComponent('dxLaseansGun')) then TdxLayoutItem(FindComponent('dxLaseansGun')).Visible := True;
+            if Assigned(FindComponent('dxLaseansSayi')) then TdxLayoutItem(FindComponent('dxLaseansSayi')).Visible := True;
+            if Assigned(FindComponent('dxLabutKodu')) then TdxLayoutItem(FindComponent('dxLabutKodu')).Visible := True;
+            if Assigned(FindComponent('dxLatanilar')) then TdxLayoutItem(FindComponent('dxLatanilar')).Visible := True;
+       end
+       else
+       begin
+            if Assigned(FindComponent('dxLatedaviRaporTuru')) then TdxLayoutItem(FindComponent('dxLatedaviRaporTuru')).Visible := False;
+            if Assigned(FindComponent('dxLaseansGun')) then TdxLayoutItem(FindComponent('dxLaseansGun')).Visible := False;
+            if Assigned(FindComponent('dxLaseansSayi')) then TdxLayoutItem(FindComponent('dxLaseansSayi')).Visible := False;
+            if Assigned(FindComponent('dxLabutKodu')) then TdxLayoutItem(FindComponent('dxLabutKodu')).Visible := False;
+            if Assigned(FindComponent('dxLatanilar')) then TdxLayoutItem(FindComponent('dxLatanilar')).Visible := False;
+       end;
+  end;
+
+  if (TcxCustomEdit(sender).Name = 'DenetimTarihi')
+  then begin
+    if _SahaDenetimVeri_.BirSonrakiDenetimTarihi = ''
+    then begin
+        DenetimTarihi := TcxDateEdit(FindComponent('DenetimTarihi')).Date;
+        sql :=
+         'select isnull(peryot,0) peryot from SahaGozlemSoruGrup where SahaGozlemSoruGrup.GozlemGrup = ' +
+                           QuotedStr(varToStr(TcxTextEdit(FindComponent('GozlemGrup')).EditValue));
+        TcxDateEdit(FindComponent('BirSonrakiGozetimTarihi')).EditValue :=
+        IncMonth(DenetimTarihi ,
+                  datalar.QuerySelect(sql).FieldByName('peryot').AsInteger);
+    end;
+  end;
+
 
 
   if (TcxCustomEdit(sender).Name = 'girisKilo')

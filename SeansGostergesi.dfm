@@ -380,7 +380,6 @@ object frmSeansDagilimi: TfrmSeansDagilimi
       Tag = -1
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
-      Visible = False
       OnClick = cxKaydetClick
     end
     object ExceleGnder1: TMenuItem

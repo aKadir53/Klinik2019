@@ -13,6 +13,7 @@ object frmTopluEpikriz: TfrmTopluEpikriz
   OldCreateOrder = False
   Position = poDesktopCenter
   WindowState = wsMaximized
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -182,6 +183,7 @@ object frmTopluEpikriz: TfrmTopluEpikriz
         PropertiesClassName = 'TcxMemoProperties'
         Properties.ScrollBars = ssBoth
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 405
       end
       object DetayColumn4: TcxGridDBColumn
@@ -212,5 +214,15 @@ object frmTopluEpikriz: TfrmTopluEpikriz
   object SaveDialog1: TSaveDialog
     Left = 432
     Top = 160
+  end
+  object PopupMenu1: TPopupMenu
+    Images = DATALAR.imag24png
+    Left = 160
+    Top = 104
+    object T1: TMenuItem
+      Caption = 'Tan'#305'mlamalar'
+      ImageIndex = 4
+      OnClick = T1Click
+    end
   end
 end

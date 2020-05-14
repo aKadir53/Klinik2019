@@ -250,7 +250,8 @@ begin
     UserSettings.Filter := 'kullanici = ' + QuotedStr(TcxButtonEditKadir(sender).Text);
 
     User_Menu_Settings.Active := true;
-    User_Menu_Settings .Filter := 'kullanici = ' + QuotedStr(TcxButtonEditKadir(sender).Text);
+    User_Menu_Settings .Filter := 'kullanici = ' + QuotedStr(TcxButtonEditKadir(sender).Text) +
+                                  ' and LisansTip <= ' + datalar.LisansTipDeger;
 
 
      datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridUserFirma')).Dataset,
@@ -290,6 +291,7 @@ begin
             List.TColcount := 2;
             List.TColsW := '60,200';
             List.ListeBaslik := 'Þirketler';
+            List.Where := ' FirmaTip = 1';
             _List_ := List.ListeGetir;
             if length(_List_) > 0
             Then BEgin
@@ -449,7 +451,7 @@ begin
   sirketler.ValueField := 'SirketKod';
   sirketler.DisplayField := 'Tanimi';
   sirketler.BosOlamaz := False;
-  sirketler.Filter := '';
+  sirketler.Filter := ' FirmaTip = 1';
   setDataStringKontrol(self,sirketler,'SirketKodu','Þirket',kolon1,'',120);
   OrtakEventAta(sirketler);
   sirketler.Properties.OnChange := PropertiesEditValueChanged;

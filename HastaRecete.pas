@@ -50,9 +50,9 @@ type
     DataSource11: TDataSource;
     ADO_receteAcikla: TADOTable;
     DataSource5: TDataSource;
-    ADO_RECETE_DETAY: TADOTable;
+    ADO_RECETE_DETAY_: TADOTable;
     DataSource10: TDataSource;
-    ADO_receteTani: TADOTable;
+    ADO_receteTani_: TADOTable;
     DataSource4: TDataSource;
     ADO_Recete: TADOQuery;
     cxGrid4: TcxGrid;
@@ -141,6 +141,15 @@ type
     cxGridLevel10: TcxGridLevel;
     cxSplitter1: TcxSplitter;
     cxGridReceteColumn4: TcxGridDBColumn;
+    R2: TMenuItem;
+    M1: TMenuItem;
+    ADO_RECETE_DETAY: TADOQuery;
+    ilacList: TcxImageComboKadir;
+    chkSIK: TcxCheckBox;
+    atc_kod_Tur: TcxImageComboKadir;
+    btnEkle: TcxButtonKadir;
+    ADO_receteTani: TADOQuery;
+    chkEnson: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure Yukle;override;
     procedure ReceteGetir(_dosyaNo , gelisNo : string);
@@ -179,6 +188,22 @@ type
     procedure btnIlacSilClick(Sender: TObject);
     procedure Duzenle;
     procedure chkTumPropertiesEditValueChanged(Sender: TObject);
+    procedure ADO_ReceteAfterScroll(DataSet: TDataSet);
+    procedure SIKKullanimaEkle(count : integer = 0);
+    procedure chkSIKClick(Sender: TObject);
+    procedure atc_kod_TurPropertiesEditValueChanged(Sender: TObject);
+    procedure ADO_RECETE_DETAYAfterPost(DataSet: TDataSet);
+    procedure gridIlaclarEditValueChanged(Sender: TcxCustomGridTableView;
+      AItem: TcxCustomGridTableItem);
+    procedure cxGridReceteFocusedRecordChanged(Sender: TcxCustomGridTableView;
+      APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
+      ANewItemRecordFocusingChanged: Boolean);
+    procedure ilacListPropertiesEditValueChanged(Sender: TObject);
+    procedure Ekle;
+    procedure btnEkleClick(Sender: TObject);
+    procedure ADO_RECETE_DETAYBeforePost(DataSet: TDataSet);
+    procedure ADO_receteTaniBeforePost(DataSet: TDataSet);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     FReg : TRegistry;
@@ -213,10 +238,12 @@ var
   _TableName_ : string = 'Recete';
   _TableNameDetay_ : string = 'ReceteDetay';
   _p_ : string;
+  barkod , ilacAdi: string;
+  _tani_, keys , doz1,doz2 , peryot,peryotAdet , kulYol : string;
 
 implementation
 
-uses Data_Modul,AnaUnit,Rapor,receteSablonlari,IlacSarfListesi, TransUtils;
+uses Data_Modul,AnaUnit,Rapor,receteSablonlari,IlacSarfListesi, TransUtils , MedEczane;
 {$R *.dfm}
 
 function TfrmHastaRecete.findMethod(dllHandle: Cardinal;  methodName: string): FARPROC;
@@ -227,13 +254,16 @@ end;
 function TfrmHastaRecete.ReceteImzalaGonder : string;
 var
   imzala : TReceteImzala;
-  dllHandle: Cardinal;
+  dllHandle  : Cardinal;
   receteId,TesisKodu: integer;
   recete,doktorKullanici,doktorsifre,pin,url,cardType : string;
   doktorTc : string;
   ss : PWideChar;
-  sql : string;
+  sql , yol , yol1: string;
 begin
+
+
+
   url := (datalar.receteURL);
   if not CheckReceteStatus (True, False, True, True, True) then Exit;
 
@@ -255,6 +285,7 @@ begin
   doktorTc :=  (SelectAdo.FieldByName('doktorTc').AsString);
   TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsInteger);
   cardType :=  SelectAdo.FieldByName('cardType').AsString;
+
 
   dllHandle := LoadLibrary(LIB_DLL);
   try
@@ -284,7 +315,7 @@ var
   recete,doktorKullanici,doktorsifre,pin,url,cardType ,TesisKodu: string;
   doktorTc : string;
   ss : PWideChar;
-  sql : string;
+  sql ,yol , yol1: string;
 begin
   url := (datalar.receteURL);
 //  if not CheckReceteStatus (True, False, True, True, True) then Exit;
@@ -330,8 +361,9 @@ var
   recete,doktorKullanici,doktorsifre,pin,url,cardType,TesisKodu : string;
   doktorTc : string;
   ss : PWideChar;
-  sql : string;
+  sql ,yol , yol1: string;
 begin
+
   url := (datalar.receteURL);
 //  if not CheckReceteStatus (True, False, True, True, True) then Exit;
   sql := 'sp_HastaReceteAckEkleToXML ' + ADO_RECETE.FieldByName('id').AsString;
@@ -376,8 +408,9 @@ var
   recete,doktorKullanici,doktorsifre,pin,url,cardType ,TesisKodu: string;
   doktorTc : string;
   ss : PWideChar;
-  sql : string;
+  sql ,yol , yol1: string;
 begin
+
   url := (datalar.receteURL);
  // if not CheckReceteStatus (True, False, True, True, True) then Exit;
   sql := 'sp_HastaReceteTaniEkleToXML ' + ADO_RECETE.FieldByName('id').AsString + ',' +
@@ -463,8 +496,9 @@ var
   dllHandle: Cardinal;
   recete,doktorKullanici,doktorsifre,pin,doktorTc,TesisKodu,receteId,url,cardType: WideString;
   ss : PWideChar;
-  sql : string;
+  sql ,yol , yol1: string;
 begin
+
   url := datalar.receteURL;
   if not CheckReceteStatus (True, True, False, True, True) then Exit;
 
@@ -553,10 +587,44 @@ end;
 
 procedure TfrmHastaRecete.MedEczane;
 var
-  d : string;
+  d , tc : string;
+  F : TGirisForm;
+  GirisFormRecord : TGirisFormRecord;
 begin
   d := copy(ADO_Recete.FieldByName('doktor').asstring,1,4);
-  MedEczaneGit(datalar._doktorReceteUser,datalar._doktorRecetePas,_TC_);
+
+//  MedEczaneGit(datalar._doktorReceteUser,datalar._doktorRecetePas,_TC_);
+
+         GirisFormRecord.F_TC_ := _TC_;
+         GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
+         try
+          F := FormINIT(TagfrmMedEczane,GirisFormRecord,ikHayir,'');
+          TfrmMedEczane(F).receteForm := self;
+          TfrmMedEczane(F)._user := datalar._doktorReceteUser;
+          TfrmMedEczane(F)._pas := datalar._doktorRecetePas;
+          if F <> nil then F.ShowModal;
+
+         finally
+           F.Free;
+         end;
+
+         (*
+         if FindTab(AnaForm.sayfalar,TagfrmMedEczane)
+         Then begin
+           F := TGirisForm(FormClassType(TagfrmMedEczane));
+           TGirisForm(FormClassType(TagfrmMedEczane))._dosyaNO_ := '';
+           TGirisForm(FormClassType(TagfrmMedEczane))._value_ := 'MedEczane';
+           TGirisForm(FormClassType(TagfrmMedEczane))._TC_ := _TC_;
+           TGirisForm(FormClassType(TagfrmMedEczane))._HastaAdSoyad_ := _HastaAdSoyad_;
+
+           TGirisForm(FormClassType(TagfrmMedEczane)).Init(F);
+         end
+         Else begin
+          F := FormINIT(TagfrmMedEczane,self,GirisFormRecord,'',NewTab(AnaForm.sayfalar,TagfrmMedEczane),ikEvet,'Giriþ');
+          if F <> nil then F.show;
+         end;
+         *)
+
 end;
 
 procedure TfrmHastaRecete.ReceteyiSablonOlarakKaydet;
@@ -755,13 +823,23 @@ begin
   then begin
       //datalar.Login;
       tel := dosyaNoHastaTel(_dosyaNO_,_mobilTel_);
+      tel := trim(StringReplace(StringReplace(StringReplace(tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
       msj := 'E-Reçete Numaranýz : ' + ADO_Recete.FieldByName('EreceteNo').AsString + #13 +
              ' Saðlýklý Günler Dileriz';
+
       if tel = ''
       then begin
         ShowMessageSkin('Mobil Telefon boþ olmamalýdýr','','','info');
         exit;
       end;
+
+      if (Length(tel) > 0) and (Length(tel) < 10)
+      then begin
+       ShowMessageSkin(tel,'Mobil Tel Hatalý','10 Haneli Geçerli Bir Numara Deðildir','info');
+       exit;
+      end;
+
+
       SMSSend(tel,msj,_HastaAdSoyad_,_dosyaNO_);
 
   end;
@@ -818,6 +896,7 @@ var
   _dn_ ,_gn_ , _id_ , _d_ , _erNo_  : string;
   _exe : PAnsiChar;
   fark : double;
+    yol , yol1: string;
 begin
   FReg := Tregistry.Create;
   FReg.RootKey := HKEY_CURRENT_USER;
@@ -830,6 +909,8 @@ begin
   _id_ := ADO_Recete.FieldByName('id').AsString;
   _d_ := copy(ADO_Recete.FieldByName('doktor').AsString,1,4);
   _erNo_ := ADO_Recete.FieldByName('eReceteNo').AsString;
+
+
 
   case islem of
    ReceteMedulaKaydet :  begin
@@ -848,6 +929,7 @@ begin
                                 end;
 
                                 if Copy(Sonuc,1,4) = '0000'
+
                                 then begin
                                   ADO_Recete.edit;
                                   ADO_Recete.FieldByName('eReceteNo').AsString := Copy(Sonuc,6,10);
@@ -968,54 +1050,72 @@ end;
 
 procedure TfrmHastaRecete.ReceteIptal;
 var
-  sql : string;
+  sql , Sil : string;
   ado : TADOQuery;
   b: Boolean;
 begin
-  if not CheckReceteStatus (True, False, True, True, True) then Exit;
-   if (ADO_Recete.FieldByName('ereceteNo').AsString = '') or
-      (ADO_Recete.FieldByName('ereceteNo').AsString = '0000') Then
+   if not CheckReceteStatus (True, False, True, True, True) then Exit;
+
+   sil := ADO_Recete.FieldByName('ereceteNo').AsString;
+
+   if sil = 'Recetem'
+   then begin
+      if mrYes = ShowMessageSkin('Reçetem Üzerinde Ýþlem Görmüþ Reçeteyi Ýptal Ediyorsunuz?',
+                                 '','','msg')
+      then
+        sil := ''
+      else
+        sil := 'RecetemIptalVazgec';
+   end;
+
+
+   if (sil = '') or
+      (sil= '0000') Then
    Begin
-     if MrYes = ShowMessageSkin('Reçete Ýptal Ediliyor Emin misiniz ?','','','msg') Then
-     Begin
-       ado := TADOQuery.Create(nil);
-       try
-         ado.Connection := DATALAR.ADOConnection2;
+       if MrYes = ShowMessageSkin('Reçete Ýptal Ediliyor Emin misiniz ?','','','msg') Then
+       Begin
+         ado := TADOQuery.Create(nil);
          try
-           b := False;
-           BeginTrans (ado.Connection);
+           ado.Connection := DATALAR.ADOConnection2;
            try
-             sql := 'delete ria from ReceteIlacAciklama' + _p_ + ' ria inner join ReceteDetay rd on rd.id = ria.ReceteDetayID where rd.ReceteId = ' + ADO_Recete.fieldbyname('Id').AsString;
-             datalar.QueryExec(ado,sql);
-             sql := 'delete from ReceteTani' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
-             datalar.QueryExec(ado,sql);
-             sql := 'delete from ReceteDetay' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
-             datalar.QueryExec(ado,sql);
-             sql := 'delete from ReceteAciklama' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
-             datalar.QueryExec(ado,sql);
-             sql := 'delete from recete' + _p_ + ' where id = ' + ADO_Recete.fieldbyname('Id').AsString;
-             datalar.QueryExec(ado,sql);
-             b := True;
-           finally
-             if b then CommitTrans (ado.Connection)
-                  else RollbackTrans (ado.Connection);
+             b := False;
+             BeginTrans (ado.Connection);
+             try
+               sql := 'delete ria from ReceteIlacAciklama' + _p_ + ' ria inner join ReceteDetay' + _p_ + '  rd on rd.id = ria.ReceteDetayID where rd.ReceteId = ' + ADO_Recete.fieldbyname('Id').AsString;
+               datalar.QueryExec(ado,sql);
+               sql := 'delete from ReceteTani' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
+               datalar.QueryExec(ado,sql);
+               sql := 'delete from ReceteDetay' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
+               datalar.QueryExec(ado,sql);
+               sql := 'delete from ReceteAciklama' + _p_ + ' where ReceteID = ' + ADO_Recete.fieldbyname('Id').AsString;
+               datalar.QueryExec(ado,sql);
+               sql := 'delete from recete' + _p_ + ' where id = ' + ADO_Recete.fieldbyname('Id').AsString;
+               datalar.QueryExec(ado,sql);
+               b := True;
+             finally
+               if b then CommitTrans (ado.Connection)
+                    else RollbackTrans (ado.Connection);
+             end;
+             ShowMessageSkin('Reçete Ýptal Edildi','','','info');
+             ADO_Recete.Active := false;
+             ado_recete.Active := true;
+           except on e : Exception do
+           begin
+              ShowMessageSkin(e.Message,'','','info');
            end;
-           ShowMessageSkin('Reçete Ýptal Edildi','','','info');
-           ADO_Recete.Active := false;
-           ado_recete.Active := true;
-         except on e : Exception do
-         begin
-            ShowMessageSkin(e.Message,'','','info');
+           end;
+         finally
+           ado.Free;
          end;
-         end;
-       finally
-         ado.Free;
-       end;
-     End;
+       End;
 
    End
    Else
-    ShowMessageSkin('E-Reçete Kayýt No silmeden Reçete Silinemez','','','info');
+    if sil = 'RecetemIptalVazgec'
+      Then
+        ShowMessageSkin('Reçetem Sistemine Yönlendirdiðiniz Reçeteyi Silme Ýþlemi Ýptal Edildi','','','info')
+      Else
+      ShowMessageSkin('E-Reçete Kayýt No silmeden Reçete Silinemez','','','info');
 end;
 
 procedure TfrmHastaRecete.YeniRecete(islem: Integer);
@@ -1106,7 +1206,7 @@ begin
                   ADO_Recete.FieldByName('WanIP').AsString := datalar.WanIp;
                   ADO_Recete.Post;
 
-                  sql := 'select * from ReceteDetay where ReceteId = ' + receteNo;
+                  sql := 'select * from ReceteDetay' + _p_ + ' where ReceteId = ' + receteNo;
                   datalar.QuerySelect(adoD,sql);
                   while not adoD.Eof do
                   begin
@@ -1360,6 +1460,15 @@ begin
 
        if islem in [ReceteIlacAckEkle,ReceteIlacAckDuzenle]
        then begin
+         if islem = ReceteIlacAckEkle
+         then begin
+           if ADO_receteIlacAciklama.Locate('aciklamaTip',datalar.ReceteAciklama.ackKod,[]) = True
+           then begin
+             ShowMessageSkin('Eklemek Ýstediðiniz Tipte Bir Açýklama Var','','','info');
+             exit;
+           end;
+         end;
+
          if datalar.ReceteAciklama.ackKod <> ''
          then begin
            if islem = ReceteIlacAckEkle then ADO_ReceteIlacAciklama.Append else ADO_ReceteIlacAciklama.Edit;
@@ -1376,7 +1485,8 @@ begin
   if not CheckReceteStatus (True, False, True, True, True) then Exit;
    if islem = ReceteIlacEkle
    then
-   if ADO_Recete.FieldByName('ereceteNo').AsString = '0000'
+   if (ADO_Recete.FieldByName('ereceteNo').AsString = '0000') or
+      (ADO_Recete.FieldByName('ereceteNo').AsString = 'Recetem')
    Then Begin
      try
       Application.CreateForm(TfrmIlacSarf, frmIlacSarf);
@@ -1432,6 +1542,64 @@ begin
 end;
 
 
+procedure TfrmHastaRecete.ilacListPropertiesEditValueChanged(Sender: TObject);
+var
+   i,x,j: integer;
+   ado : TADOQuery;
+   unite : real;
+   ack : TStringList;
+   sql , SIKPeryot: string;
+begin
+   if chkSIK.Checked
+   then
+     Ekle
+   else
+    if btnEkle.Enabled
+    then
+     btnEkle.SetFocus;
+
+end;
+
+procedure TfrmHastaRecete.SIKKullanimaEkle(count : integer = 0);
+var
+  sql , barkod , doz ,kulYol , peryot : string;
+begin
+       barkod := ADO_RECETE_DETAY.FieldByName('ilacKodu').AsString;
+       doz := ADO_RECETE_DETAY.FieldByName('kullanimAdet2').AsString + 'x'+
+              ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString;
+       kulYol := ADO_RECETE_DETAY.FieldByName('kullanimYolu').AsString;
+       peryot := ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString;
+
+       sql := 'if not Exists(select * from OSGB_MASTER.dbo.doktorSIKKullanim where drTC = ' + QuotedStr(datalar.doktorTC) +
+            ' and  ' +
+            ' barkod = ' + QuotedStr(barkod)+ ')' +
+            ' and  '  +
+            ' (select count(*) from receteDetay where ilacKodu = ' + QuotedStr(barkod)+ ')> ' + intToStr(count) +
+            ' begin ' +
+              'insert into OSGB_MASTER.dbo.doktorSIKKullanim (drTC,barkod,drKod,tip,doz,kulYol,peryot) ' +
+              'values(' + QuotedStr(datalar.doktorTC) + ',' +
+                          QuotedStr(barkod) + ',' +
+                          QuotedStr(datalar.doktorKodu) + ',' +
+                          QuotedStr('ILAC') + ',' +
+                          QuotedStr(doz) + ',' +
+                          QuotedStr(kulYol) + ',' +
+                          QuotedStr(peryot) +
+                     ')' +
+            ' end ' +
+            ' else ' +
+            ' begin ' +
+             ' update OSGB_MASTER.dbo.doktorSIKKullanim ' +
+             ' set ' +
+             ' kulYol = ' + QuotedStr(kulYol) + ',' +
+             ' doz = ' +  QuotedStr(doz) + ',' +
+             ' peryot = ' +  QuotedStr(peryot) +
+             ' where drTC = ' + QuotedStr(datalar.doktorTC) +
+             ' and barkod = ' + QuotedStr(barkod) +
+            ' end';
+   datalar.QueryExec(sql);
+end;
+
+
 procedure TfrmHastaRecete.Yukle;
 begin
  _fields_ := '* ';
@@ -1463,10 +1631,12 @@ begin
       ADO_Recete.Locate('id',_ResourceID,[]);
     end;
 
-    ADO_RECETE_DETAY.Open;
+ //  ADO_RECETE_DETAY.Open;
     ADO_receteTani.Open;
     ADO_receteAcikla.Open;
     ADO_ReceteIlacAciklama.Open;
+
+    ilacList.EditValue := Null;
 
  end;
 
@@ -1510,6 +1680,107 @@ begin
 end;
 
 
+procedure TfrmHastaRecete.ADO_ReceteAfterScroll(DataSet: TDataSet);
+var
+  sql : string;
+begin
+  inherited;
+
+  sql := 'select * from ReceteDetay' + _p_ +
+         ' where receteId =:@id ';
+
+  ADO_RECETE_DETAY.Close;
+  ADO_RECETE_DETAY.SQL.Text := sql;
+  ADO_RECETE_DETAY.Parameters[0].Value := ADO_Recete.FieldByName('id').AsInteger;
+  ADO_RECETE_DETAY.Open;
+
+
+  sql := 'select * from ReceteTani' + _p_ +
+         ' where receteId =:@id ';
+  ADO_RECETETani.Close;
+  ADO_RECETETani.SQL.Text := sql;
+  ADO_RECETETani.Parameters[0].Value := ADO_Recete.FieldByName('id').AsInteger;
+  ADO_RECETETani.Open;
+
+
+end;
+
+procedure TfrmHastaRecete.ADO_receteTaniBeforePost(DataSet: TDataSet);
+begin
+  inherited;
+
+      ADO_RECETETani.FieldByName('ReceteID').AsInteger := ADO_Recete.FieldByName('id').AsInteger;
+
+
+
+end;
+
+procedure TfrmHastaRecete.ADO_RECETE_DETAYAfterPost(DataSet: TDataSet);
+begin
+  inherited;
+  SIKKullanimaEkle(0);
+end;
+
+procedure TfrmHastaRecete.ADO_RECETE_DETAYBeforePost(DataSet: TDataSet);
+begin
+  inherited;
+      ADO_RECETE_DETAY.FieldByName('ReceteID').AsInteger := ADO_Recete.FieldByName('id').AsInteger;
+
+end;
+
+procedure TfrmHastaRecete.atc_kod_TurPropertiesEditValueChanged(
+  Sender: TObject);
+var
+  turKod : string;
+begin
+  inherited;
+   if varToStr(atc_kod_Tur.EditValue) = '' then exit;
+
+   if varToStr(atc_kod_Tur.EditValue) <> '0'
+   then begin
+       turKod := atc_kod_Tur.EditValue;
+
+       ilacList.TableName :=
+                       '(select I.barkod,I.ilacAdi ' +
+                       //I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,D.Doz SIKDoz,D.peryot SIKPeryot,' +
+                      // 'case when ITU.dosyaNO is null then 0 else 1 end AlerjiVar' +
+                       ' from OSGB_MASTER.DBO.ilacListesi I ' +
+                     //  ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
+                       ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                       ' where ATC.TurKodu = ' + QuotedStr(turKod) +
+                       ') tt';
+
+       ilacList.DisplayField := 'ilacAdi';
+       ilacList.ValueField := 'barkod';
+       ilacList.Filter := '';
+   end
+   else
+   begin
+       ilacList.TableName :=
+                       '(select I.barkod,I.ilacAdi ' +
+                       //I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,D.Doz SIKDoz,D.peryot SIKPeryot,' +
+                      // 'case when ITU.dosyaNO is null then 0 else 1 end AlerjiVar' +
+                       ' from OSGB_MASTER.DBO.ilacListesi I ' +
+                       ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
+                       ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                       ' left join Hasta_Ilac_Uyari ITU on ITU.atc_kodu = I.EtkenMAdde and ITU.dosyano = ' + QuotedStr(_dosyaNO_) +
+                       ' where drTC = ' + QuotedStr(datalar.doktorTC) +
+                       ' and D.tip = ''ILAC'') tt';
+       ilacList.DisplayField := 'ilacAdi';
+       ilacList.ValueField := 'barkod';
+       ilacList.Filter := '';
+
+   end;
+end;
+
+procedure TfrmHastaRecete.btnEkleClick(Sender: TObject);
+begin
+  inherited;
+  Ekle;
+  ilacList.SetFocus;
+
+end;
+
 procedure TfrmHastaRecete.btnIlacEkleClick(Sender: TObject);
 begin
   inherited;
@@ -1526,7 +1797,8 @@ begin
   inherited;
   if not CheckReceteStatus (True, False, True, True, True) then Exit;
    if (ADO_Recete.FieldByName('ereceteNo').AsString = '0000') or
-      (ADO_Recete.FieldByName('ereceteNo').AsString = '')
+      (ADO_Recete.FieldByName('ereceteNo').AsString = '') or
+      (ADO_Recete.FieldByName('ereceteNo').AsString = 'Recetem')
    Then
      if MrYes = ShowMessageSkin('Ýlaç Reçeteden Çýkartýlýyor Emin misiniz ?','','','msg')
      Then Begin
@@ -1562,7 +1834,8 @@ begin
   if pCheckSent then
     Result := Result
       and (ADO_Recete.FieldByName('eReceteNo').AsString <> '0000')
-      and (Trim (ADO_Recete.FieldByName('eReceteNo').AsString) <> '');
+      and (Trim (ADO_Recete.FieldByName('eReceteNo').AsString) <> '')
+      and (Trim (ADO_Recete.FieldByName('eReceteNo').AsString) <> 'Recetem');
   if not result then
   begin
     if pMsg then ShowMessageSkin ('Bu Reçete Medula Sistemine Gönderilmemiþ.', '', '', 'info');
@@ -1570,16 +1843,20 @@ begin
   end;
   if pCheckUnSent then
     Result := Result
-      and (ADO_Recete.FieldByName('eReceteNo').AsString = '0000');
+      and (ADO_Recete.FieldByName('eReceteNo').AsString = '0000')
+      or (ADO_Recete.FieldByName('eReceteNo').AsString = 'Recetem')
+      ;
   if not result then
   begin
     if pMsg then ShowMessageSkin ('Bu Reçete Medula Sistemine Gönderilmiþ.', '', '', 'info');
     Exit;
   end;
-  if IsNull (DATALAR.SonReceteDoktorKodu) then bazDoktor := DATALAR.doktorKodu else bazDoktor := DATALAR.SonReceteDoktorKodu;
+ // if IsNull (DATALAR.SonReceteDoktorKodu) then bazDoktor := DATALAR.doktorKodu else bazDoktor := DATALAR.SonReceteDoktorKodu;
+
+
   if pCheckDr then
     Result := Result
-      and SameText (ADO_Recete.FieldByName('doktor').AsString, bazDoktor);
+      and SameText (ADO_Recete.FieldByName('doktor').AsString, DATALAR.doktorKodu);
   if not result then
   begin
     if not pAllowDiffDr then
@@ -1590,9 +1867,59 @@ begin
     else begin
       Result := ShowMessageSkin ('Ýþlem yapmak istediðiniz reçete baþka doktora ait, devam etmek istiyor musunuz ?', '', '', 'conf') = mrYes;
       if not Result then Exit;
-      DATALAR.SonReceteDoktorKodu := ADO_Recete.FieldByName('doktor').AsString;
+      //DATALAR.doktorKodu := ADO_Recete.FieldByName('doktor').AsString;
     end;
   end;
+end;
+
+procedure TfrmHastaRecete.chkSIKClick(Sender: TObject);
+begin
+  inherited;
+(*
+  if chkSIK.Checked
+  then begin
+     ilacList.TableName :=
+                     '(select I.barkod,I.ilacAdi ' +
+                     //I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,D.Doz SIKDoz,D.peryot SIKPeryot,' +
+                    // 'case when ITU.dosyaNO is null then 0 else 1 end AlerjiVar' +
+                     ' from OSGB_MASTER.DBO.ilacListesi I ' +
+                     ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
+                     ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                     ' left join Hasta_Ilac_Uyari ITU on ITU.atc_kodu = I.EtkenMAdde and ITU.dosyano = ' + QuotedStr(_dosyaNO_) +
+                     ' where drTC = ' + QuotedStr(datalar.doktorTC) +
+                     ' and D.tip = ''ILAC'') tt';
+
+     ilacList.DisplayField := 'ilacAdi';
+     ilacList.ValueField := 'barkod';
+     ilacList.Filter := '';
+  end
+  else
+  begin
+      ilacList.Properties.Items :=  AnaForm.ilacList.Properties.Items;
+
+  (*
+     ilacList.TableName :=
+                     '(select I.barkod,I.ilacAdi ' +
+                     //I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,D.Doz SIKDoz,D.peryot SIKPeryot,' +
+                    // 'case when ITU.dosyaNO is null then 0 else 1 end AlerjiVar' +
+                     ' from OSGB_MASTER.DBO.ilacListesi I ' +
+                     //' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
+                     ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                     ' left join Hasta_Ilac_Uyari ITU on ITU.atc_kodu = I.EtkenMAdde and ITU.dosyano = ' + QuotedStr(_dosyaNO_) +
+                     ') tt';
+                   //  ' where
+                     //drTC = ' + QuotedStr(datalar.doktorTC) +
+                   //  ' D.tip = ''ILAC'') tt';
+
+     ilacList.DisplayField := 'ilacAdi';
+     ilacList.ValueField := 'barkod';
+     ilacList.Filter := '';
+
+    *)
+ // end;
+
+
+
 end;
 
 procedure TfrmHastaRecete.chkTumPropertiesEditValueChanged(Sender: TObject);
@@ -1604,7 +1931,12 @@ begin
   else
     ReceteWhereGelis := ' and r.gelisNo = ' + _gelisNo_;
 
-  yukle;
+  DurumGoster(True,False,'Reçeteler Yükleniyor , Bekleyiniz');
+  try
+    yukle;
+  finally
+    DurumGoster(False);
+  end;
 
 end;
 
@@ -1612,7 +1944,7 @@ procedure TfrmHastaRecete.cxButtonCClick(Sender: TObject);
 var
  Form : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
-  msj , tokenParams ,path : string;
+  msj , tokenParams ,path , jsonText : string;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -1690,8 +2022,10 @@ begin
          SifreDegistir('',ReceteSifre);
        end;
  -16 : begin
-            Form := FormINIT(TagfrmRaporDetay,GirisFormRecord,ikHayir,'');
-            if Form <> nil then Form.ShowModal;
+
+             RaporAra(_TC_,'',_dosyaNO_);
+           // Form := FormINIT(TagfrmRaporDetay,GirisFormRecord,ikHayir,'');
+           // if Form <> nil then Form.ShowModal;
        end;
  -30 : begin
           Form := FormINIT(TagfrmReceteSablon,GirisFormRecord);
@@ -1716,6 +2050,18 @@ begin
                               QuotedStr(ADO_RECETE_DETAY.FieldByName('kullanimAdet2').AsString +'x'+ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString),
                               ADO_RECETE_DETAY.FieldByName('adet').AsString,
                               ADO_RECETE_DETAY.FieldByName('ilacKodu').AsString);
+       end;
+
+-100 : begin
+          jsonText := datalar.QuerySelect('RenkliReceteJson ' + ADO_Recete.FieldByName('id').AsString + ',1').Fields[0].AsString;
+          if Recetem(jsonText) = 'Recetem'
+          Then begin
+            datalar.QueryExec('Update recete set ereceteNo = ' + QuotedStr('Recetem') +
+                              ' where id = ' + QuotedStr(ADO_Recete.FieldByName('id').AsString));
+
+             //  if sqlRun.State in [dsEdit, dsInsert] then sqlRun.Post;
+
+          End;
        end;
 
   end;
@@ -1799,6 +2145,55 @@ begin
   Duzenle;
 end;
 
+procedure TfrmHastaRecete.cxGridReceteFocusedRecordChanged(
+  Sender: TcxCustomGridTableView; APrevFocusedRecord,
+  AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
+begin
+  inherited;
+
+  if not ADO_Recete.Eof
+  then
+   if ADO_Recete.FieldByName('ereceteNo').AsString = '0000'
+   then begin
+      atc_kod_Tur.Enabled := True;
+      ilacList.Enabled := True;
+//      cxGrid4.Enabled := True;
+      gridIlaclar.OptionsData.Editing := True;
+      btnIlacEkle.Enabled := True;
+      btnIlacSil.Enabled := True;
+      btnEkle.Enabled := True;
+      cxButtonKadirIlacAckSil.Enabled := True;
+      cxButtonKadirIlacAckEkle.Enabled := True;
+      cxButtonKadirAckEkle.Enabled := True;
+      cxButtonKadirAckSil.Enabled := True;
+      cxButtonKadirTaniEkle.Enabled := True;
+      cxButtonKadirTaniSil.Enabled := True;
+      chkSIK.Enabled := True;
+      chkEnson.Enabled := True;
+   end
+   else
+   begin
+      atc_kod_Tur.Enabled := False;
+      ilacList.Enabled := False;
+//      cxGrid4.Enabled := False;
+      gridIlaclar.OptionsData.Editing := False;
+      btnIlacEkle.Enabled := False;
+      btnIlacSil.Enabled := False;
+      btnEkle.Enabled := False;
+      cxButtonKadirIlacAckSil.Enabled := False;
+     // cxButtonKadirIlacAckEkle.Enabled := False;
+    //  cxButtonKadirAckEkle.Enabled := False;
+      cxButtonKadirAckSil.Enabled := False;
+     // cxButtonKadirTaniEkle.Enabled := False;
+      cxButtonKadirTaniSil.Enabled := False;
+      chkSIK.Enabled := False;
+      chkEnson.Enabled := False;
+
+   end;
+
+
+end;
+
 procedure TfrmHastaRecete.cxGridReceteIlacAciklamaDblClick(Sender: TObject);
 begin
   inherited;
@@ -1879,7 +2274,7 @@ begin
              Then Begin
                 ado := TADOQuery.Create(nil);
                 try
-                  sql := 'delete from ReceteDetay where id = ' + ADO_RECETE_DETAY.fieldbyname('id').AsString;
+                  sql := 'delete from ReceteDetay' + _p_ + ' where id = ' + ADO_RECETE_DETAY.fieldbyname('id').AsString;
                   datalar.QueryExec(ado,sql);
                   ADO_RECETE_DETAY.Active := false;
                   ADO_RECETE_DETAY.Active := True;
@@ -1890,6 +2285,145 @@ begin
            Else ShowMessageSkin('E-ReçeteNo su olan Reçeteden Ýlaç Çýkartýlamaz','','','info');
          end;
    end;
+end;
+
+procedure TfrmHastaRecete.Ekle;
+var
+   i,x,j: integer;
+   ado : TADOQuery;
+   unite : real;
+   ack : TStringList;
+   sql , SIKPeryot: string;
+begin
+     if not CheckReceteStatus (True, False, True, True, True) then Exit;
+     if varToStr(ilacList.EditingValue) = '' then exit;
+
+     barkod := ilacList.EditingValue;
+     ilacAdi := ilacList.Text;
+
+     ado := TADOQuery.Create(nil);
+
+     try
+
+       sql := 'select * from OSGB_MASTER.DBO.doktorSIKKullanim '  +
+       ' where barkod = ' + QuotedStr(barkod) + ' and drTC = ' + QuotedStr(datalar.doktorTC);
+       datalar.QuerySelect(ado,sql);
+
+       if chkEnson.Checked
+       then begin
+           doz1 := copy(ado.fieldbyname('doz').AsString,1,pos('x',ado.fieldbyname('doz').AsString)-1);
+           doz2 := copy(ado.fieldbyname('doz').AsString,pos('x',ado.fieldbyname('doz').AsString)+1,5);
+           SIKPeryot :=  ado.fieldbyname('peryot').AsString;
+           kulYol :=  ado.fieldbyname('kulYol').AsString;
+       end
+       else
+       begin
+         doz1 := '';
+         doz2 := '';
+         SIKPeryot := '';
+         kulYol :=  ado.fieldbyname('kulYol').AsString;
+       end;
+
+
+     finally
+       ado.free;
+     end;
+
+
+     if ADO_RECETE_DETAY.Locate('ilacKodu;receteId',VarArrayOf([barkod,ADO_Recete.fieldbyname('id').AsString]),[]) = True
+     Then begin
+      // ShowMessageSkin(barkod + ' ilaç reçeteye eklenmiþ','','','info');
+       exit;
+     End;
+
+      ADO_RECETE_DETAY.Append;
+      ADO_RECETE_DETAY.FieldByName('ReceteID').AsInteger := ADO_Recete.FieldByName('id').AsInteger;
+      ADO_RECETE_DETAY.FieldByName('ilacKodu').AsString := barkod;
+      ADO_RECETE_DETAY.FieldByName('ilacAdi').AsString := ilacAdi;
+
+      ADO_RECETE_DETAY.FieldByName('adet').AsString := '1';
+      ADO_RECETE_DETAY.FieldByName('kullanimYolu').AsString := kulYol;
+     // ifThen(Eklenenler.fieldbyname('Kyolu').AsString = '' ,'1',Eklenenler.fieldbyname('Kyolu').AsString);
+   //   ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := SIKPeryot;
+
+    //  doz1 := '1';//copy(Eklenenler.fieldbyname('doz').AsString,1,pos('x',Eklenenler.fieldbyname('doz').AsString)-1);
+   //   doz2 := '1';//copy(Eklenenler.fieldbyname('doz').AsString,pos('x',Eklenenler.fieldbyname('doz').AsString)+1,5);
+
+      ADO_RECETE_DETAY.FieldByName('kullanimAdet2').AsString := doz1;
+
+
+      unite :=  strtofloat(ifThen(doz2='','1',doz2)) *
+              IlacKoduToUnite(barkod,_dosyaNo_,_gelisNo_,peryot,peryotAdet);
+
+      try
+       // peryot := '3';
+        ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString := SIKPeryot;
+        ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := peryotAdet;
+      except
+      end;
+
+      ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString := floattostr(unite);
+      //Eklenenler.fieldbyname('doz').AsString[3];
+
+      ADO_RECETE_DETAY.Post;
+
+      ado := TADOQuery.Create(nil);
+      try
+
+       //  SIKKullanimaEkle(3);
+
+         ack := IlacReceteAciklama(_dosyaNo_,_gelisNo_,barkod,
+                                    inttostr(ADO_RECETE_DETAY.FieldByName('kullanimAdet2').AsInteger *
+                                             ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsInteger)
+                                    );
+         sql := 'delete from ReceteIlacAciklama where receteDetayId = ' + ADO_RECETE_DETAY.fieldbyname('id').AsString;
+         datalar.QueryExec(ado,sql);
+      finally
+         ado.Free;
+      end;
+      ADO_ReceteIlacAciklama.Active := false;
+      ADO_ReceteIlacAciklama.Active := true;
+
+
+      for j := 0 to ack.Count-1 do
+      begin
+          ADO_ReceteIlacAciklama.Append;
+          ADO_ReceteIlacAciklama.FieldByName('aciklama').AsString := copy(ack[j],3,500);
+          ADO_ReceteIlacAciklama.FieldByName('aciklamaTip').AsString := trim(copy(ack[j],1,2));
+          ADO_ReceteIlacAciklama.Post;
+          if copy(ADO_ReceteIlacAciklama.FieldByName('aciklama').AsString,1,4) = 'Hata'
+          Then ShowMessageSkin('Dikkat , Doz Bilgisini Kontrol Ediniz','','','info');
+      end;
+
+
+      ADO_receteTani.Active := false;
+      ADO_receteTani.Active := True;
+
+      _tani_ := IlacReceteTaniEkle(barkod);
+      x := pos(';',_tani_)-1;
+      keys := copy(_tani_,1,x);
+      if copy(_tani_,1,x) <> ''
+      Then Begin
+       if frmHastaRecete.ADO_receteTani.Locate('taniKodu;receteId',VarArrayOf([keys,frmHastaRecete.ADO_Recete.fieldbyname('id').AsString]) ,[]) = False
+       Then Begin
+         ADO_receteTani.Append;
+         ADO_receteTani.fieldbyname('taniKodu').AsString := copy(_tani_,1,pos(';',_tani_)-1);
+         ADO_receteTani.fieldbyname('tani').AsString := copy(_tani_,pos(';',_tani_)+1,100);
+         ADO_receteTani.Post;
+       End;
+      End;
+      if '' <> ''
+      Then Begin
+      keys := '';
+       if ADO_receteTani.Locate('taniKodu;receteId',VarArrayOf([keys,ADO_Recete.fieldbyname('id').AsString]) ,[]) = False
+       Then Begin
+         ADO_receteTani.Append;
+         ADO_receteTani.fieldbyname('taniKodu').AsString := keys;
+         ADO_receteTani.fieldbyname('tani').AsString := TaniKodToTaniAd(keys);
+         ADO_receteTani.Post;
+       End;
+      End;
+
 end;
 
 function TfrmHastaRecete.Init(Sender : TObject) : Boolean;
@@ -1903,9 +2437,9 @@ begin
     _p_ := ifThen(pos('Personel',_TableName_)>0,'_Personel','');
 
     _TableNameDetay_ := 'ReceteDetay' + _p_;
-    ADO_RECETE_DETAY.TableName := 'ReceteDetay' + _p_;
+ //   ADO_RECETE_DETAY.TableName := 'ReceteDetay' + _p_;
   //  ADO_RECETE_DETAY.Open;
-    ADO_receteTani.TableName := 'ReceteTani' + _p_;
+  //  ADO_receteTani.TableName := 'ReceteTani' + _p_;
   //  ADO_receteTani.Open;
     ADO_receteAcikla.TableName := 'ReceteAciklama' + _p_;
  //   ADO_receteAcikla.Open;
@@ -1920,6 +2454,13 @@ begin
     Result := True;
 end;
 
+
+procedure TfrmHastaRecete.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+ // sqlRun.Cancel;
+  inherited;
+
+end;
 
 procedure TfrmHastaRecete.FormCreate(Sender: TObject);
 begin
@@ -1938,6 +2479,31 @@ begin
 
    TcxImageComboBoxProperties(cxGridReceteColumn3.Properties).Items :=
    AnaForm.Doktorlar.Properties.Items;
+
+   ilacList.Conn := datalar.ADOConnection2;
+   ilacList.TableName :=
+                   '(select I.barkod,I.ilacAdi ' +
+                   //I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,D.Doz SIKDoz,D.peryot SIKPeryot,' +
+                  // 'case when ITU.dosyaNO is null then 0 else 1 end AlerjiVar' +
+                   ' from OSGB_MASTER.DBO.ilacListesi I ' +
+                   ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
+                   ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
+                   ' left join Hasta_Ilac_Uyari ITU on ITU.atc_kodu = I.EtkenMAdde and ITU.dosyano = ' + QuotedStr(_dosyaNO_) +
+                   ' where drTC = ' + QuotedStr(datalar.doktorTC) +
+                   ' and D.tip = ''ILAC'') tt';
+
+   ilacList.DisplayField := 'ilacAdi';
+   ilacList.ValueField := 'barkod';
+   ilacList.Filter := '';
+
+   atc_kod_Tur.Conn := datalar.ADOConnection2;
+   atc_kod_Tur.TableName := 'OSGB_MASTER.dbo.ATC_Kodlari_Tur';
+   atc_kod_Tur.DisplayField := 'tanimi';
+   atc_kod_Tur.ValueField := 'kod';
+   atc_kod_Tur.Filter := '';
+
+
+
 
   _HastaBilgileriniCaptionGoster_ := True;
  // cxGridReceteTani.PopupMenu := PopupMenuEkleSil;
@@ -1967,6 +2533,13 @@ begin
     end;
   end;
 
+end;
+
+procedure TfrmHastaRecete.gridIlaclarEditValueChanged(
+  Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem);
+begin
+  inherited;
+  Sender.Controller.EditingController.Edit.PostEditValue;
 end;
 
 end.
