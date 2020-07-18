@@ -99,7 +99,7 @@ end;
 
 function TfrmYv.Download(URL, User, Pass, FileName :  string ; FullURL : string = '443'): Boolean;
 const
-  BufferSize = 2048*2;
+  BufferSize = 1024;
 var
   hSession, hURL: HInternet;
   Buffer: array[1..BufferSize] of Byte;
@@ -130,7 +130,9 @@ begin
       try
         repeat
           InternetReadFile(hURL, @Buffer, SizeOf(Buffer), BufferLen) ;
-          BlockWrite(f, Buffer, BufferLen);
+          BlockWrite(f, Buffer,BufferLen);
+
+
 
           Progress.Position := Progress.Position + BufferSize;
           Application.ProcessMessages;

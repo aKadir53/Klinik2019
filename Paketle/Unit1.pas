@@ -17,7 +17,7 @@ uses
   dxSkinSharp, dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
   dxSkinsDefaultPainters, dxSkinValentine, dxSkinXmas2008Blue,
   dxSkinscxPCPainter, cxPCdxBarPopupMenu, cxPC, Vcl.Samples.Spin, IdHTTP,
-  cxContainer, cxEdit, cxLabel ;
+  cxContainer, cxEdit, cxLabel, cxSplitter, cxTextEdit, cxMemo, cxDBEdit ;
 
 type
   TfrmPaket = class(TForm)
@@ -74,6 +74,13 @@ type
     DBGrid3: TDBGrid;
     txtLog: TMemo;
     Splitter1: TSplitter;
+    cxTabSheet5: TcxTabSheet;
+    ado_nelerYeni: TADOQuery;
+    DataSource_nelerYeni: TDataSource;
+    cxDBMemo1: TcxDBMemo;
+    DBGrid4: TDBGrid;
+    cxSplitter1: TcxSplitter;
+    DBNavigator3: TDBNavigator;
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     Function  DosyaKopyala(sSrc : string;sDest : string) : integer;
@@ -96,6 +103,7 @@ type
     procedure cbSonBirAyClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure ado_nelerYeniNewRecord(DataSet: TDataSet);
 
   private
     { Private declarations }
@@ -303,6 +311,7 @@ var
   ado : TADOQuery;
 begin
   ado := TADOQuery.Create(nil);
+  ado.ParamCheck := False;
   ado.Connection := datalar.Master;
   try
       sql := table1.FieldByName('SQL_CMD').AsString;
@@ -538,6 +547,10 @@ begin
 
           DBMemo1.DataField := 'SQL_CMD';
 
+
+          ado_nelerYeni.SQL.Text := 'select * from NelerYeni ';
+          ado_nelerYeni.Open;
+
         //  ADO_Rapor_Dizayn.Active := true;
          // DBMemo2.DataField := 'rapor';
 
@@ -550,6 +563,12 @@ begin
      end;
 
 
+end;
+
+procedure TfrmPaket.ado_nelerYeniNewRecord(DataSet: TDataSet);
+begin
+   ado_nelerYeni.FieldByName('versiyonId').AsString := txtVersiyon.Text;
+   ado_nelerYeni.FieldByName('tarih').AsDateTime := date;
 end;
 
 procedure TfrmPaket.btnGitClick(Sender: TObject);

@@ -46,7 +46,7 @@ object frmPaket: TfrmPaket
     Height = 500
     Align = alClient
     TabOrder = 1
-    Properties.ActivePage = cxTabSheet4
+    Properties.ActivePage = cxTabSheet1
     LookAndFeel.NativeStyle = False
     LookAndFeel.SkinName = 'Lilian'
     ClientRectBottom = 493
@@ -231,6 +231,55 @@ object frmPaket: TfrmPaket
         Lines.Strings = (
           '')
         TabOrder = 2
+      end
+    end
+    object cxTabSheet5: TcxTabSheet
+      Caption = 'Neler Yeni'
+      ImageIndex = 4
+      object cxDBMemo1: TcxDBMemo
+        Left = 0
+        Top = 274
+        Align = alClient
+        DataBinding.DataField = 'aciklama'
+        DataBinding.DataSource = DataSource_nelerYeni
+        TabOrder = 0
+        ExplicitTop = 288
+        ExplicitHeight = 179
+        Height = 193
+        Width = 654
+      end
+      object DBGrid4: TDBGrid
+        Left = 0
+        Top = 0
+        Width = 654
+        Height = 241
+        Align = alTop
+        DataSource = DataSource_nelerYeni
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'MS Sans Serif'
+        TitleFont.Style = []
+      end
+      object cxSplitter1: TcxSplitter
+        Left = 0
+        Top = 241
+        Width = 654
+        Height = 8
+        AlignSplitter = salTop
+        ExplicitTop = 233
+      end
+      object DBNavigator3: TDBNavigator
+        Left = 0
+        Top = 249
+        Width = 654
+        Height = 25
+        DataSource = DataSource_nelerYeni
+        Align = alTop
+        Kind = dbnHorizontal
+        TabOrder = 3
+        ExplicitTop = 241
       end
     end
   end
@@ -438,8 +487,8 @@ object frmPaket: TfrmPaket
   object OpenDialog1: TOpenDialog
     Filter = '*.sql'
     InitialDir = 'C:\NoktaDiyaliz\SQLBAKIM\UPDATE'
-    Left = 66
-    Top = 292
+    Left = 58
+    Top = 228
   end
   object IdFTP1: TIdFTP
     OnStatus = IdFTP1Status
@@ -488,13 +537,14 @@ object frmPaket: TfrmPaket
   object ado_sql: TADOQuery
     Connection = DATALAR.Master
     CursorType = ctStatic
+    ParamCheck = False
     Parameters = <>
     SQL.Strings = (
       
         'select SLVV s,SLXX u ,SLYY p , SLZZ db from parametreler where S' +
         'LK = '#39'GA'#39' and SLB = '#39'00'#39)
     Left = 64
-    Top = 232
+    Top = 184
   end
   object HTTP1: TIdHTTP
     AllowCookies = True
@@ -528,5 +578,21 @@ object frmPaket: TfrmPaket
       'where sid = 0xDDA391E50F3F8A43AC54F20D2480ADCC')
     Left = 320
     Top = 272
+  end
+  object ado_nelerYeni: TADOQuery
+    Connection = DATALAR.Master
+    CursorType = ctStatic
+    OnNewRecord = ado_nelerYeniNewRecord
+    ParamCheck = False
+    Parameters = <>
+    SQL.Strings = (
+      'select * from NelerYeni')
+    Left = 176
+    Top = 176
+  end
+  object DataSource_nelerYeni: TDataSource
+    DataSet = ado_nelerYeni
+    Left = 176
+    Top = 128
   end
 end
