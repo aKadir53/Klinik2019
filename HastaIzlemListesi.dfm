@@ -856,7 +856,7 @@ object frmIzlem: TfrmIzlem
             Position.RowIndex = 0
           end
           object gridHastalardoktor: TcxGridDBBandedColumn
-            Caption = 'Uzman'
+            Caption = 'Doktor'
             DataBinding.FieldName = 'doktor'
             PropertiesClassName = 'TcxImageComboBoxProperties'
             Properties.Alignment.Horz = taCenter
@@ -986,7 +986,7 @@ object frmIzlem: TfrmIzlem
             Position.RowIndex = 0
           end
           object gridHastalardigerNot: TcxGridDBBandedColumn
-            Caption = 'Uzman Not'
+            Caption = 'Doktor Not'
             DataBinding.FieldName = 'digerNot'
             PropertiesClassName = 'TcxMemoProperties'
             Properties.Alignment = taCenter

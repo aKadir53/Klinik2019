@@ -223,19 +223,19 @@ Begin
 
    for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
    begin
-       sleep(1000);
-       Application.ProcessMessages;
-       kayitTip := varToStr(gridAktif.DataController.GetValue(
+        sleep(1000);
+        Application.ProcessMessages;
+        kayitTip := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
 
         if  (kayitTip = 'ONAY')
         Then Begin
-           dosyaNo := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
-           gelisNo := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
-           id := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
+                 dosyaNo := gridAktif.DataController.GetValue(
+                                            gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
+                 gelisNo := gridAktif.DataController.GetValue(
+                                            gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
+                 id := gridAktif.DataController.GetValue(
+                                            gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
 
 
                  Field := 'OrnekNo';
@@ -247,14 +247,48 @@ Begin
                      KurumMNT.KullaniciAdi := datalar._labusername;
                      KurumMNT.Sifre := datalar._labsifre;
                      KurumMNT.Kodu := datalar._labkurumkod;
-
                      HTIMNT.KurumBilgileri := KurumMNT;
-
                      datalar.Lab.URL := datalar._laburl;
-
-                   //  if HTIMNT.Gelis.ReferansNo = '' then
-
                      datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\BIOLAB\BIOLAB_HastaKaydet_' + dosyaNo + '_' + gelisNo;
+
+                     try
+                      HTICvpMNT := (datalar.Lab as TenayENA.TenayWebServiceSoapV4).HastaKaydet(HTIMNT);
+                     except on e : Exception do
+                       begin
+                         sm := e.Message;
+                         ss := 'Hata';
+                       end;
+                     end;
+
+                     if (HTICvpMNT.Kod = '1') and (HTICvpMNT.Mesaj = '')
+                     then begin
+                      // ornekdurumyaz('Gönderildi',id,inttostr(HTICvpMNT.ReferansId));
+                       txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' +
+                       HTIMNT.Gelis.ReferansNo + ' - ' + HTICvpMNT.Mesaj + ' ' + 'Ýþlem Baþarýlý');
+                     end
+                     else
+                     begin
+                       txtLog.Lines.Add(HTIMNT.Gelis.ReferansNo + ' : ' + HTICvpMNT.Mesaj);
+                     end;
+
+                     if ss = 'Hata'
+                     Then
+                      txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' +
+                      HTIMNT.Gelis.ReferansNo + ' - ' + sm );
+                 end;
+
+                 Field := 'CikisOrnekNo';
+                 HTIMNT := OrderBIOLAB(dosyaNo,gelisNo,Field);
+
+                 if HTIMNT <> nil
+                 Then begin
+                     KurumMNT := TenayENA.KurumBilgileri.Create;
+                     KurumMNT.KullaniciAdi := datalar._labusername;
+                     KurumMNT.Sifre := datalar._labsifre;
+                     KurumMNT.Kodu := datalar._labkurumkod;
+                     HTIMNT.KurumBilgileri := KurumMNT;
+                     datalar.Lab.URL := datalar._laburl;
+                     datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\BIOLAB\BIOLAB_HastaKaydetCikis_' + dosyaNo + '_' + gelisNo;
 
                      try
                       HTICvpMNT := (datalar.Lab as TenayENA.TenayWebServiceSoapV4).HastaKaydet(HTIMNT);
@@ -280,8 +314,6 @@ Begin
                      Then
                       txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' +
                       HTIMNT.Gelis.ReferansNo + ' - ' + sm );
-
-
                  end;
 
            Progres.Position := Progres.Position + 1;
@@ -675,7 +707,7 @@ end;
 
 function OrderBIOLAB(dosyaNo : string ; gelis : string ; Field : string = '') : TenayENA.Order;
 var
-  sql : string;
+  sql ,tip1 : string;
   HastaTenay : TenayENA.Order;
   GelisMNT : TenayENA.Gelis;
   istekler : TenayENA.Array_Of_Tetkik;
@@ -718,9 +750,7 @@ begin
       HastaTenay.DogumTarihi := DTarih;
 
 
-      sql := 'select BHDAT,ornekNo,SIRANO ,' +
-             ' (select Tarih from hareketlerSeans ' +
-                ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis + ' and KanAlindimi = 1) KanAlimZamani ' +
+      sql := 'select BHDAT,' + Field + ',SIRANO , KanAlimZamani ' +
              ' from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
       datalar.QuerySelect(ado,sql);
 
@@ -731,42 +761,27 @@ begin
       if 1 = 1
       then  begin
           GelisMNT := TenayENA.Gelis.Create;
-          GelisMNT.ReferansNo := ado.fieldbyname('SIRANO').AsString;
+          GelisMNT.ReferansNo := ado.fieldbyname(Field).AsString;
           GelisMNT.OrnekNo := 0;
 
-
           TTarih := TXSDateTime.Create;
-          DateToXsdate(TTarih,KanAlimZamani);
-         // TTarih.Year := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,1,4));
-         // TTarih.Month := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,5,2));
-         // TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
+          DateToXsdateTime(TTarih,KanAlimZamani);
 
           GelisMNT.Tarih := TTarih;
 
-
           if Field = '' then Field := 'OrnekNo';
 
+          if Field = 'OrnekNo'
+          then
+           tip1 := 'G'
+          else
+           tip1 := 'C';
 
           sql := 'select h.name1,h.Tarih,l.islemKodu from hareketlerLab h ' +
                  ' join labtestler_firma l on l.butKodu = h.code and h.tip1 = l.tip and l.LabID = ' + QuotedStr(datalar._labID) +
                  ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis +
-                 ' and charindex(''.'',h.code) = 0 and h.tip1 = l.tip and h.onay = 1';
-
-                (*
-                 ' union all ' +
-                 'select l.tanimi,'''',l.islemKodu from labtestler l ' +
-                 ' where isnull(l.islemKodu,'''') <> '''' and l.grupKodu = 5';
-
-                (*
-                 ' union all ' +
-                 'select h.name1,h.TarIh,l.islemKoduC from hareketler h ' +
-                 ' join labtestler l on l.butKodu = h.code ' +
-                 ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis +
-                 ' and l.tip = 2 and onay = 1 and l.uygulamaAdet = 2' +
-                 ' union all ' +
-                 'select l.tanimi,'''',l.islemKodu from labtestler l ' +
-                 ' where isnull(l.islemKodu,'''') <> '''' and  l.tip is NULL and l.grupKodu = 5';
-                  *)
+                 ' and charindex(''.'',h.code) = 0 and h.tip1 = l.tip and h.onay = 1 ' +
+                 ' and h.tip1 = ' + QuotedStr(tip1);
 
           datalar.QuerySelect(ado,sql);
           j := ado.RecordCount;

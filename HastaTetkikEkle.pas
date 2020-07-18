@@ -12,9 +12,9 @@ uses
   cxPCdxBarPopupMenu, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   DB, cxDBData, cxGridLevel, cxClasses, cxGridCustomView, cxGridCustomTableView,
   cxGridTableView, cxGridDBTableView, cxGrid, cxTextEdit, cxMaskEdit,
-  cxDropDownEdit, cxPC, cxGroupBox, cxImageComboBox,GetFormClass,
+  cxDropDownEdit, cxPC, cxGroupBox, cxImageComboBox,GetFormClass,cxDataUtils,
   cxDBLookupComboBox, cxLabel, cxMemo, cxLookupEdit, cxDBLookupEdit,
-  cxCurrencyEdit, Vcl.StdCtrls, Vcl.Buttons, cxCheckBox,
+  cxCurrencyEdit, Vcl.StdCtrls, Vcl.Buttons, cxCheckBox, dxLayoutContainer,
   Vcl.ExtCtrls,  cxButtons, cxDBEdit, Menus, cxCalendar;
 
 type
@@ -115,7 +115,10 @@ type
     Y1: TMenuItem;
     O1: TMenuItem;
     O2: TMenuItem;
+    T8: TMenuItem;
+    D1: TMenuItem;
     procedure FormCreate(Sender: TObject);
+    procedure DoktorBilgisiDegis;
     procedure ItemClick(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);
     procedure cxGridIlacTedaviPlaniStylesGetContentStyle(
@@ -345,7 +348,7 @@ var
   GirisRecord : TGirisFormRecord;
   F : TGirisForm;
   TopluDataset : TDataSetKadir;
-  Tarih1,Tarih2 : Tdate;
+  Tarih1,Tarih2,BHDAT : Tdate;
 begin
     case TMenuItem(sender).Tag of
    -1,-3,-6,-12,-5 : begin
@@ -400,6 +403,47 @@ begin
             ADO_Tetkikler.Requery;
           end;
 
+    -25 : begin
+               if mrYes = ShowPopupForm('Tarihi Deðiþtir',TetkikTarihDuzenle,self)
+               Then Begin
+
+                  BHDAT := datalar.QuerySelect('select BHDAT from Hasta_gelisler ' +
+                                    ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_).FieldByName('BHDAT').AsDateTime;
+
+
+                  if copy(datalar.TetkikTarihi,5,2) <> copy(FormatDateTime('YYYYMMDD',BHDAT),5,2)
+                  then begin
+                     ShowMessageSkin('Tetkik Tarihleri Dönem Dýþý Olamaz','','','info');
+                     exit;
+                  end;
+
+                  if FormatDateTime('YYYYMMDD',BHDAT) > datalar.TetkikTarihi
+                  then begin
+                     ShowMessageSkin('Tetkik Tarihleri Gelis Tarihinden Önce Olamaz','','','info');
+                  end
+                  else
+                  begin
+                    datalar.QueryExec('update hareketler set Tarih = ' + QuotedStr(datalar.TetkikTarihi) +
+                                      ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L'''
+
+                    );
+                    ADO_Tetkikler.Requery;
+                  end;
+          end;
+               End;
+         (*
+            datalar.QueryExec('update hareketler set Tarih = ' +
+                  '(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
+                              ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L'''
+
+            );
+            ADO_Tetkikler.Requery;
+          end;
+           *)
+
+    -26 : begin
+            DoktorBilgisiDegis;
+          end;
     -24 : begin
                Tarih1 := tarihyap(datalar.HastaBil.Tarih);
                Tarih2 := ayliktarih(Tarih1);
@@ -643,11 +687,43 @@ begin
 
 end;
 
+
+procedure TfrmHastaTetkikEkle.DoktorBilgisiDegis;
+var
+   x ,sirano , satir , durum : integer;
+   secim : boolean;
+   _secim ,sql , kod , talepSira: string;
+begin
+  inherited;
+
+    if mrYes = ShowPopupForm('Tetkik Doktor Bilgisi Deðiþtir',SeansDoktorUpdate)
+    Then Begin
+        for x := 0 to cxGridTetkikler.Controller.SelectedRowCount - 1 do
+        begin
+           Application.ProcessMessages;
+           satir := cxGridTetkikler.Controller.SelectedRows[x].RecordIndex;
+           cxGridTetkikler.DataController.FocusedRecordIndex := satir;
+         //  sirano := cxGridTetkikler.DataController.GetValue(satir,cxGridTetkikler.DataController.GetItemByFieldName('islemRefNo').Index);
+           talepSira := cxGridTetkikler.DataController.GetValue(satir,cxGridTetkikler.DataController.GetItemByFieldName('islemSiraNo').Index);
+
+           if  talepSira = ''
+           then begin
+             cxGridTetkikler.DataController.SetEditValue(cxGridTetkikler.DataController.GetItemByFieldName('Doktor').Index,datalar.SeansBilgi.doktor,evsValue);
+             cxGridTetkikler.DataController.post;
+           end;
+
+        end; // for end
+    End;
+
+end;
+
+
 procedure TfrmHastaTetkikEkle.FormCreate(Sender: TObject);
 var
   index,i : integer;
   Ts,Ts1 : TStringList;
   List,List1 : TListeAc;
+  DoktorCombo : TcxImageComboKadir;
 begin
  //cxYeni.Visible := false;
   inherited;
@@ -659,6 +735,13 @@ begin
   SayfaCaption('Tetkikler','','','','');
   Olustur(self,_TableName_,'Hasta Tetkikleri',23);
   Menu := PopupMenu1;
+
+
+  setDataStringIC(self,'DoktorCombo','DoktorCombo',Kolon1,'BB',150,'DoktorlarT','Kod','Tanimi','');
+  TdxLayoutGroup(FindComponent('dxLaDoktorCombo')).Visible := false;
+
+  TcxImageComboBoxProperties(cxGridTetkikleryapanDoktor.Properties).Items :=
+  TcxImageComboKadir(FindComponent('DoktorCombo')).Properties.Items;
 
   cxTabTetkik.Tabs[0].ImageIndex := 47;
   cxTabTetkik.Tabs[1].ImageIndex := 95;

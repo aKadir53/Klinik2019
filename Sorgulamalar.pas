@@ -86,6 +86,8 @@ type
       var ACanClose: Boolean);
     procedure Sonuclar_PagePageChanging(Sender: TObject; NewPage: TcxTabSheet;
       var AllowChange: Boolean);
+    procedure gridRaporlarKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
 
   private
     { Private declarations }
@@ -247,6 +249,23 @@ begin
   cxPanel.Visible := False;
   Image2.Visible := False;
   Sonuclar_Page.Properties.CloseButtonMode := cbmNone;
+
+   if UserRight('Sorgulamalar', 'Raporlama Ekleme/Silme') = False
+   Then Begin
+       Y1.Visible := False;
+       R1.Visible := False;
+       R2.Visible := False;
+
+   End;
+
+end;
+
+procedure TfrmSorgulamalar.gridRaporlarKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if (Shift = [ssCtrl]) and (Key = VK_DELETE) then
+  Key := 0; {ignore}
 end;
 
 procedure TfrmSorgulamalar.O1Click(Sender: TObject);
@@ -372,14 +391,14 @@ begin
           SatirYukle;
         end;
    -3 : begin
-   (*
+
           if MrYes = ShowMessageSkin('Rapor Bilgisi Silinecek','Emin misiniz?','','msg')
           Then Begin
-               sql := 'delete from Raporlar1 where raporKodu = ' + QuotedStr(ADO_SQL1.fieldbyname('raporKodu').AsString);
+               sql := 'delete from OSGB_MASTER.DBO.raporlar1 where raporKodu = ' + QuotedStr(ADO_SQL1.fieldbyname('raporKodu').AsString);
                datalar.QueryExec(sql);
           End;
-     *)
-          Raporlar;
+
+          ADO_SQL1.Requery;
         end;
    -4 : begin
             //cxTab.Tabs[0].Caption := '';

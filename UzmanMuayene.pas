@@ -479,7 +479,7 @@ begin
                        'left join Diyalizor_Tipleri DT on DT.kod = ug.DiyalizorTipi ' +
                        'left join Diyaliz_Diyalizat D on D.kod = ug.D ' +
                        'left join Diyaliz_DamarGiris DG on DG.kod = ug.GIRISYOLU ' +
-                       ' WHERE ug.dosyaNo = ' + QuotedStr(_dosyaNo_) + // + ' AND gelisNo = ' + _gelisNo_;
+                       ' WHERE ug.dosyaNo = ' + QuotedStr(_dosyaNo_) + ' AND gelisNo = ' + _gelisNo_ +
                        ' order by Tarih desc ';
                 Datasets.Dataset0 := datalar.QuerySelect(sql);
 
@@ -708,10 +708,11 @@ begin
 
   _Tarih_ := TcxDateEditKadir.Create(self);
   Tarih.Name := '_Tarih_';
-  setDataStringKontrol(self,_Tarih_, 'Tarih','Uzman Muayene Tarih',Kolon1,'bb',125);
+  setDataStringKontrol(self,_Tarih_, 'Tarih','Muayene Tarih',Kolon1,'bb',125);
  // TcxTextEdit(FindComponent('Tarih')).EditValue := date;
 
   setDataStringIC(self,'doktor','Doktor',Kolon1,'bb1',125,'DoktorlarT','kod','tanimi',' Durum = ''Aktif'' and sirketKod = ' + QuotedStr(datalar.AktifSirket));
+  TcxImageComboKadir(FindComponent('doktor')).Filter := DoktorlarFilter('E');
   setDataString(self,'id','',Kolon1,'',40,False,'',True,-100);
   TdxLayoutGroup(FindComponent('dxLaid')).Visible := False;
 

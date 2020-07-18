@@ -68,8 +68,6 @@ object frmReceteler: TfrmReceteler
         LevelTabs.Style = 1
         ExceleGonder = False
         PopupForm = False
-        ExplicitLeft = 176
-        ExplicitTop = 297
         object ReceteDetay: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -366,8 +364,6 @@ object frmReceteler: TfrmReceteler
         ExcelFileName = 'Receteler'
         ExceleGonder = True
         PopupForm = False
-        ExplicitLeft = 376
-        ExplicitTop = 32
         object Recete: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -519,7 +515,7 @@ object frmReceteler: TfrmReceteler
         Width = 902
         Height = 8
         AlignSplitter = salTop
-        ExplicitWidth = 278
+        Control = cxGrid1
       end
     end
     object sayfa_ilacsayilari: TcxTabSheet
@@ -543,8 +539,6 @@ object frmReceteler: TfrmReceteler
         ExcelFileName = 'Recete_Ilac_Say'#305'lar'#305
         ExceleGonder = True
         PopupForm = False
-        ExplicitLeft = 208
-        ExplicitTop = 40
         object cxGridDBTableView1: TcxGridDBTableView
           OnDblClick = cxGridDBTableView1DblClick
           Navigator.Buttons.First.Visible = True
@@ -845,8 +839,6 @@ object frmReceteler: TfrmReceteler
         LevelTabs.Style = 1
         ExceleGonder = False
         PopupForm = False
-        ExplicitLeft = 152
-        ExplicitTop = 281
         object cxGridDBTableView2: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -1631,8 +1623,6 @@ object frmReceteler: TfrmReceteler
         ExcelFileName = 'Recete_Ilac_Say'#305'lar'#305
         ExceleGonder = True
         PopupForm = False
-        ExplicitLeft = 208
-        ExplicitTop = 40
         object cxGridDBTableView3: TcxGridDBTableView
           OnDblClick = cxGridDBTableView3DblClick
           Navigator.Buttons.First.Visible = True
@@ -1954,8 +1944,6 @@ object frmReceteler: TfrmReceteler
         LevelTabs.Style = 1
         ExceleGonder = False
         PopupForm = False
-        ExplicitLeft = 152
-        ExplicitTop = 281
         object cxGridDBTableView4: TcxGridDBTableView
           Navigator.Buttons.First.Visible = True
           Navigator.Buttons.PriorPage.Visible = True
@@ -2252,7 +2240,7 @@ object frmReceteler: TfrmReceteler
         Width = 902
         Height = 8
         AlignSplitter = salTop
-        ExplicitWidth = 246
+        Control = DoktorIlacGrid
       end
     end
   end
@@ -2367,11 +2355,21 @@ object frmReceteler: TfrmReceteler
       ImageIndex = 75
       OnClick = cxButtonCClick
     end
-    object Y1: TMenuItem
-      Tag = -7
+    object Y2: TMenuItem
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
-      OnClick = Y1Click
+      object Y1: TMenuItem
+        Tag = -7
+        Caption = 'Yazd'#305'r'
+        ImageIndex = 28
+        OnClick = Y1Click
+      end
+      object R2: TMenuItem
+        Tag = -8
+        Caption = 'Re'#231'ete Barkod Yazd'#305'r'
+        ImageIndex = 119
+        OnClick = Y1Click
+      end
     end
     object R1: TMenuItem
       Tag = -7

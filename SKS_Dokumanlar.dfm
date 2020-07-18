@@ -50,8 +50,6 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     LevelTabs.ImageBorder = 2
     LevelTabs.Style = 1
     LookAndFeel.Kind = lfOffice11
-    LookAndFeel.NativeStyle = False
-    LookAndFeel.SkinName = 'McSkin'
     ExcelFileName = 'SKS_DokumanListesi'
     ExceleGonder = True
     PopupForm = False
@@ -647,8 +645,8 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       end
       object B1: TMenuItem
         Tag = -102
-        Caption = 'Benim Dokuman'#305'm'
-        ImageIndex = 101
+        Caption = 'Dokuman'
+        ImageIndex = 134
         OnClick = cxButtonCClick
       end
       object D3: TMenuItem
@@ -663,8 +661,8 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     end
     object N5: TMenuItem
       Tag = -12
-      Caption = 'RPT '#350'ablonu'
-      ImageIndex = 121
+      Caption = 'D'#246'k'#252'man '#350'ablonu'
+      ImageIndex = 135
       OnClick = cxButtonCClick
     end
     object R2: TMenuItem

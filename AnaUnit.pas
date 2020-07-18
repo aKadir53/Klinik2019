@@ -140,6 +140,8 @@ type
     cxStyle2: TcxStyle;
     ilacList: TcxImageComboKadir;
     Hemsireler: TcxImageComboKadir;
+    Doktors: TcxImageComboKadir;
+    Noktaesaj: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -184,6 +186,8 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SirketlerEnabled;
     procedure ToolButton16Click(Sender: TObject);
+    procedure ToolButton15Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
     procedure WMSettingChange(var Message: TMessage); message WM_SETTINGCHANGE;
@@ -214,7 +218,8 @@ implementation
       EventCompletDurumBildir,
       Tnm_UserSettings,
       sifreDegis,
-      Update_G;
+      Update_G,
+      MedEczane;
 
 {$R *.dfm}
 {$R xx.res}
@@ -376,21 +381,35 @@ begin
         if WebErisimBilgi('EF','00') = 'Gerçek'
         Then begin
           datalar.efaturaURL := WebErisimBilgi('EF','02');
-          datalar.efaturaUsername := WebErisimBilgi('EF','03');
-          datalar.efaturaSifre := WebErisimBilgi('EF','04');
+          datalar.efaturaUsername := WebErisimBilgiFirma('EF','03');
+          datalar.efaturaSifre := WebErisimBilgiFirma('EF','04');
+         // datalar.efaturaUsername := WebErisimBilgi('EF','03');
+         // datalar.efaturaSifre := WebErisimBilgi('EF','04');
+          datalar.portalURL := WebErisimBilgiFirma('EF','08');
+          datalar.portalUSer := WebErisimBilgiFirma('EF','09');
+          datalar.portalSifre := WebErisimBilgiFirma('EF','10');
         end
         Else
         begin
-          datalar.efaturaURL := WebErisimBilgi('EF','05');
-          datalar.efaturaUsername := WebErisimBilgi('EF','06');
-          datalar.efaturaSifre := WebErisimBilgi('EF','07');
+          datalar.efaturaURL := WebErisimBilgiOrtak('EF','05');
+          datalar.efaturaUsername := WebErisimBilgiOrtak('EF','06');
+          datalar.efaturaSifre := WebErisimBilgiOrtak('EF','07');
+          datalar.portalURL := WebErisimBilgiOrtak('EF','08');
+          datalar.portalUSer := WebErisimBilgiOrtak('EF','09');
+          datalar.portalSifre := WebErisimBilgiOrtak('EF','10');
         end;
+
+
+
 
         datalar.efaturaTaslak := WebErisimBilgi('EF','11');
 
 
       datalar._donemuser := WebErisimBilgiFirma('98','09');
       datalar._donemsifre := WebErisimBilgiFirma('98','10');
+
+      datalar.MedulayaGidenKaydiKitle := WebErisimBilgi('98','15');
+
 
       datalar._userSaglikNet2_ := WebErisimBilgiFirma('SNT','02');//datalar.ADO_AktifSirket.FieldByName('SaglikNetKullaniciAdi').AsString;
       datalar._passSaglikNet2_ := WebErisimBilgiFirma('SNT','03');//datalar.ADO_AktifSirket.FieldByName('SaglikNetSifre').AsString;
@@ -456,6 +475,9 @@ begin
   datalar.HizmetKayitWS.Password := datalar._sifre;
   datalar.HastaKabulWS.UserName := datalar._username;
   datalar.HastaKabulWS.Password := datalar._sifre;
+  datalar.HastaKabulWS.saglikNetUsername := datalar._userSaglikNet2_;
+  datalar.HastaKabulWS.salikNetPassword := datalar._passSaglikNet2_;
+
   datalar.YardimciIslemWS.UserName := datalar._username;
   datalar.YardimciIslemWS.Password := datalar._sifre;
   datalar.FaturaKayitWS.UserName := datalar._username;
@@ -735,7 +757,14 @@ end;
 
 procedure TAnaForm.SirketlerEnabled;
 begin
- if sayfalar.PageCount = 2 then Sirketler.Enabled := True else Sirketler.Enabled := False;
+ if sayfalar.PageCount = 2
+ then begin
+   Sirketler.Enabled := True;
+ end
+ else begin
+  // btRefresh.SetFocus;
+   Sirketler.Enabled := False;
+ end;
 end;
 
 procedure TAnaForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -776,8 +805,11 @@ begin
   *)
 
   Sayfalar.Properties.CloseButtonMode := cbmNone;
-  WebBrowser1.Navigate('https://www.noktayazilim.net/destek/GenelMesajlar2.aspx?Tip=D');
+  try
+    WebBrowser1.Navigate('https://www.noktayazilim.net/destek/GenelMesajlar2.aspx?Tip=D');
+  except
 
+  end;
 
 
 //  cxSetResourceString(@scxEvent,'Olay');
@@ -814,7 +846,7 @@ end;
 procedure TAnaForm.FormShow(Sender: TObject);
 var
  i,j : integer;
- sube , Where : string;
+ sube , Where , _msg: string;
  _List_ : TStringList;
 begin
 
@@ -826,6 +858,16 @@ begin
     ShowMessageSkin('Lisans Hatasý','Lütfen Lisans ALýnýz','','info');
   end;
 
+
+   try
+     Application.ProcessMessages;
+     _msg := ProgramStartMesaj;
+   except
+   End;
+
+   if  _msg <> ''
+   Then
+   ShowMessageSkin(_msg,'','','info');
 
   if pos('UYUM',paramStr(0)) > 0
   then begin
@@ -891,6 +933,9 @@ begin
     end;
 
 
+
+
+
   UserTable.Active := True;
   if UserRight('Kullanýcý Ýþlemleri', 'Herkesin Ýþ Planýný Görsün') = True
   then begin
@@ -909,10 +954,10 @@ begin
   if OkunmayanDokumanVar(datalar.username)
   Then Begin
      ShowmessageSkin('Okumanýzý Bekleyen Dokumanlar Var',
-                                'Okumak Ýçin F12 tuþuna Basarak Dökümanlarý Açýn',
+                                'Okumak Ýçin Dokuman Butonunu Basarak Dökümanlarý Açýn',
                                 '',
-                                'info')
-
+                                'info');
+     ToolButton15.Visible := True;
 
   End;
 
@@ -998,7 +1043,7 @@ begin
     if Assigned(_targetGroup_) = True
     then begin
       // ShowMessage(_pressItem_.Caption,'','','info');
-       sql := ' if not exists (select * from MenuIslem_SK where KAYITID = ' + inttostr(_pressItem_.Tag)+ ') ' +
+       sql := ' if not exists (select * from MenuIslem_SK where Kullanici = ' + QuotedStr(datalar.username)  + ' and KAYITID = ' + inttostr(_pressItem_.Tag)+ ') ' +
               'insert into MenuIslem_SK ' +
               '(Menu, KAYITID, MainMenu, Kapsam, imageIndex, ShowTip, FormTag,Kullanici) ' +
               ' values (' +
@@ -1029,6 +1074,49 @@ begin
  //  MainMenuKadir1.Groups[AGroup.Index].Expanded := true;
 
 
+end;
+
+procedure TAnaForm.Timer1Timer(Sender: TObject);
+var
+  sql : string;
+  ado : TADOQuery;
+begin
+   ado := TADOQuery.Create(nil);
+   ado.Connection := datalar.ADOConnection1;
+   try
+     sql := 'select * from sorunCozumSureci ss ' +
+            'join sorunlar s on s.sorunId = ss.sorunId ' +
+            'where kurumKodu = ' + QuotedStr(datalar._tesisKodu) +
+            'and taraf = ''Nokta'' and ss.durum in (1,2,3) ' ;
+     ado.SQL.Text := sql;
+     ado.Open;
+
+     if datalar.messaboxAcik = False
+     then
+       if not ado.Eof
+       then begin
+         datalar.messaboxAcik := True;
+         ShowMessageSkin('Noktadan Mesaj Var','Destek Talep Ekranýndan Okuyabilirsiniz','','info');
+       end;
+
+
+   finally
+     ado.free;
+   end;
+end;
+
+procedure TAnaForm.ToolButton15Click(Sender: TObject);
+begin
+    if not datalar.MemDataKullaniciDokumanOku.Eof
+    then begin
+      ShowPopupForm('Dokuman Oku',SKSdokumanOku);
+      datalar.QueryExec('Update SKS_DokumanlarRevStatuDurum ' +
+                        ' set Okundu = 1 ' +
+                        ' where kullanici = ' + QuotedStr(datalar.username) +
+                        ' and dokumanid = ' + datalar.MemDataKullaniciDokumanOku.FieldByName('id').AsString +
+                        ' and rev = ' + datalar.MemDataKullaniciDokumanOku.FieldByName('rev').AsString);
+
+    end;
 end;
 
 procedure TAnaForm.ToolButton16Click(Sender: TObject);
@@ -1089,13 +1177,29 @@ begin
 end;
 
 procedure TAnaForm.ToolButtonClick(Sender: TObject);
+var
+  u,s : string;
+  F : TGirisForm;
+  GirisFormRecord : TGirisFormRecord;
 begin
 
  case TToolButton(sender).Tag of
    101 : begin
            menuclik(TToolButton(sender).Tag,TagfrmDoktorlar,1);
+         end;
+   400 : begin
+               u := datalar._donemuser;
+               s := datalar._donemsifre;
+               if FindTab(AnaForm.sayfalar,TagfrmMedula)
+               Then begin
+               end
+               Else begin
+                F := FormINIT(TagfrmMedula,self,GirisFormRecord,'',NewTab(AnaForm.sayfalar,TagfrmMedula),ikEvet,'Mesul Müdür Giriþ');
+                TfrmMedEczane(F)._user := u;
+                TfrmMedEczane(F)._pas := s;
+                if F <> nil then F.show;
+               end;
          end
-
          else
            menuclik(TToolButton(sender).Tag);
 
@@ -1171,12 +1275,19 @@ begin
         135 : begin
                PersonelTetkikIstemleri('','');
               end;
-        148 : begin
+   148 : begin
                     if mrYes = ShowPopupForm('SKS Ýndikatör Sorgula',SKSindikatorSorgu)
                     Then Begin
 
                     End;
               end;
+   6003 : begin
+                    if mrYes = ShowPopupForm('Týbbý Denetim',TibbiDenetimSorgu)
+                    Then Begin
+
+                    End;
+              end;
+
         5006 : begin
                 Try
                  GunlereGoreHastaDagilimCizelgesi;
@@ -1312,6 +1423,8 @@ begin
 
   doktorlar.Clear;
   doktorlar.Filter := ' sirketKod = ' + QuotedStr(datalar.AktifSirket);
+
+  doktors.Filter := '';
 
   Hemsireler.Clear;
   Hemsireler.Filter := ' sirketKod = ' + QuotedStr(datalar.AktifSirket);

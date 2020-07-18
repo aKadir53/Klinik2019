@@ -210,43 +210,93 @@ var
 begin
   inherited;
 
-  if (AButtonIndex = 6)
-  then begin
+  if TcxGridDBTableView(TcxGridViewNavigatorButtons(Sender).GridView).Name = 'cxGridHastaYatiscxGridHastaYatisView'
+  Then Begin
+      if (AButtonIndex = 6)
+      then begin
+            Datalar.HastaYatis.Baslangic := '';
+            Datalar.HastaYatis.Bitis := '';
 
-    sql := 'select I.*,ATC.tanimi' +
-           ' from OSGB_MASTER.DBO.ilacListesi I ' +
-           ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ';
+            if mrYes = ShowPopupForm('Hasta Yatýþ',hastaYatisAc)
+            Then Begin
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.Append;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('dosyaNo').AsString := dosyaNo.Text;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('gelisNo').AsString := cxGridGelis.Dataset.FieldByName('gelisNo').AsString;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Baslangic').AsString := datalar.HastaYatis.Baslangic;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Bitis').AsString := datalar.HastaYatis.Bitis;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('aciklama').AsString := datalar.HastaYatis.Aciklama;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('TaniKodu').AsString := datalar.HastaYatis.TaniKodu;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tani').AsString := datalar.HastaYatis.Tani;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.Post;
+              ADone := True;
+            End;
 
-    List.Kolonlar.Clear;
-    List.KolonBasliklari.Clear;
-    List.Table := '(' + sql + ') ATC_Kodlari order by ilacAdi ';
-    List.Kolonlar.Add('ilacAdi');
-    List.Kolonlar.Add('EtkenMadde');
-    List.Kolonlar.Add('tanimi');
-    List.KolonBasliklari.Add('Ýlaç Adý');
-    List.KolonBasliklari.Add('Etken M.Kodu');
-    List.KolonBasliklari.Add('Etken M.Adý');
-    List.TColcount := 3;
-    List.TColsW := '220,80,120';
-    List.ListeBaslik := 'Ýlaç ve Etken Maddeler';
-    List.Grup := False;
-    List.GrupCol := -1;
-    _List_ := List.ListeGetir;
-    if length(_List_) > 0
-    Then BEgin
+      end;
+      if (AButtonIndex = 9)
+      then begin
+              datalar.HastaYatis.Baslangic := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Baslangic').AsString;
+              datalar.HastaYatis.Bitis := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Bitis').AsString;
+              datalar.HastaYatis.Aciklama := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('aciklama').AsString;
+              datalar.HastaYatis.TaniKodu := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('TaniKodu').AsString;
+              datalar.HastaYatis.Tani := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tani').AsString;
 
-       sql := 'insert into Hasta_Ilac_Uyari(dosyaNo,atc_kodu,atc_tanimi) ' +
-                         'values( ' + QuotedStr(dosyaNo.Text) + ',' +
-                                      QuotedStr(_List_[0].kolon2) + ',' +
-                                      QuotedStr(_List_[0].kolon3)  + ')';
-       datalar.QueryExec(sql);
-       ADone := True;
-       TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Dataset.Requery();
-       TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Dataset.Next;
-     End;
+            if mrYes = ShowPopupForm('Hasta Yatýþ',hastaYatisDuzenle)
+            Then Begin
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.Edit;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('dosyaNo').AsString := dosyaNo.Text;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('gelisNo').AsString := cxGridGelis.Dataset.FieldByName('gelisNo').AsString;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Baslangic').AsString := datalar.HastaYatis.Baslangic;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Bitis').AsString := datalar.HastaYatis.Bitis;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('aciklama').AsString := datalar.HastaYatis.Aciklama;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('TaniKodu').AsString := datalar.HastaYatis.TaniKodu;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tani').AsString := datalar.HastaYatis.Tani;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.Post;
+              ADone := True;
+            End;
+      end;
+
+  End
+  else
+  begin
+
+      if (AButtonIndex = 6)
+      then begin
+
+        sql := 'select I.*,ATC.tanimi' +
+               ' from OSGB_MASTER.DBO.ilacListesi I ' +
+               ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ';
+
+        List.Kolonlar.Clear;
+        List.KolonBasliklari.Clear;
+        List.Table := '(' + sql + ') ATC_Kodlari order by ilacAdi ';
+        List.Kolonlar.Add('ilacAdi');
+        List.Kolonlar.Add('EtkenMadde');
+        List.Kolonlar.Add('tanimi');
+        List.KolonBasliklari.Add('Ýlaç Adý');
+        List.KolonBasliklari.Add('Etken M.Kodu');
+        List.KolonBasliklari.Add('Etken M.Adý');
+        List.TColcount := 3;
+        List.TColsW := '220,80,120';
+        List.ListeBaslik := 'Ýlaç ve Etken Maddeler';
+        List.Grup := False;
+        List.GrupCol := -1;
+        _List_ := List.ListeGetir;
+        if length(_List_) > 0
+        Then BEgin
+
+           sql := 'insert into Hasta_Ilac_Uyari(dosyaNo,atc_kodu,atc_tanimi) ' +
+                             'values( ' + QuotedStr(dosyaNo.Text) + ',' +
+                                          QuotedStr(_List_[0].kolon2) + ',' +
+                                          QuotedStr(_List_[0].kolon3)  + ')';
+           datalar.QueryExec(sql);
+           ADone := True;
+           TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Dataset.Requery();
+           TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Dataset.Next;
+         End;
+
+      end;
 
   end;
-
 
 
 end;
@@ -411,7 +461,9 @@ end;
 procedure TfrmHastaKart.gelisDuzenle;
 var
  hata : string;
+ Tarih : TDateTime;
 begin
+    datalar.GelisDuzenleRecordK.DiyalizTedaviYonetimiDegisti := False;
     datalar.GelisDuzenleRecordK.TedaviYontemi := cxGridGelis.Dataset.FieldByName('diyalizTedaviYontemi').AsString;
     datalar.GelisDuzenleRecordK.TedaviTuru := cxGridGelis.Dataset.FieldByName('TEDAVITURU').AsString;
     datalar.GelisDuzenleRecordK.dosyaNo := dosyaNO.Text;
@@ -430,13 +482,26 @@ begin
 
     if mrYes = ShowPopupForm('Hasta Geliþ Düzenle',hastaGelisDuzenle)
     Then Begin
-       if kadir.gelisDuzenle(datalar.GelisDuzenleRecordK,Hata)
-       Then begin
-        cxGridGelis.Dataset.Requery();
-        cxGridGelis.Dataset.Next;
-        ShowMessageSkin('Geliþ Bilgisi Düzenlendi','','','info');
+
+       Tarih := datalar.QuerySelect('select min(Tarih) Tarih from HareketlerSeans ' +
+                                    ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_).FieldByName('Tarih').AsDateTime;
+
+
+       if Tarih > datalar.GelisDuzenleRecordK.GirisTarihi
+       then begin
+         ShowMessageSkin('Geliþ Tarihi Ýlk Seans Tarihinden Küçük Olamaz','','','info');
+         exit;
        end
-       else ShowMessageSkin(Hata,'','','info')
+       else
+       begin
+           if kadir.gelisDuzenle(datalar.GelisDuzenleRecordK,Hata)
+           Then begin
+            cxGridGelis.Dataset.Requery();
+            cxGridGelis.Dataset.Next;
+            ShowMessageSkin('Geliþ Bilgisi Düzenlendi','','','info');
+           end
+           else ShowMessageSkin(Hata,'','','info')
+       end;
     End;
 
 end;
@@ -532,8 +597,10 @@ begin
    end;
 
    if TcxCustomEdit(FindComponent('Aktif')).EditValue = '0'
-   then exit;
-
+   then begin
+       ShowMessageSkin('Hasta Pasif!','Ýþlem Yapýlamaz','','info');
+       exit;
+   end;
 
    if UserRight('GELÝÞ ÝÞLEMLERÝ', 'Aç') = False
    then begin
@@ -581,6 +648,13 @@ begin
      gelis := ado.fieldbyname('Gelis').AsString;
      error := ado.fieldbyname('error').AsString;
 
+
+     if error <> ''
+     then begin
+        ShowMessageSkin(error,'','','info');
+        exit;
+     end;
+
      if gelis = '-1'
      then begin
         ShowMessageSkin(error,'','','info');
@@ -615,7 +689,8 @@ procedure TfrmHastaKart.Gelisler(kartNo : string);
 var
   sql : string;
 begin
-   txtDoktor.Filter := '  sirketKod = ' + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue));
+   txtDoktor.Filter := '';
+  // '  sirketKod = ' + QuotedStr(varToStr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue));
    txtBransKodu.Filter := '';
    TcxImageComboBoxProperties(GridGelislerSERVIS.Properties).Items := txtBransKodu.Properties.Items;
    TcxImageComboBoxProperties(GridGelislerdoktor.Properties).Items := txtDoktor.Properties.Items;
@@ -717,6 +792,18 @@ begin
   end;
 
 
+
+  if TcxImageComboBox(Sender).name = 'KurumTip'
+  then begin
+    if TcxImageComboBox(FindComponent('KurumTip')).EditValue = 99
+      then begin
+         TdxLayoutGroup(FindComponent('dxLayupass')).Visible := True;
+      end
+      else begin
+        TcxCustomEdit(FindComponent('yupass')).EditValue := '';
+        TdxLayoutGroup(FindComponent('dxLayupass')).Visible := False;
+      end;
+  end;
 
   if TcxImageComboBox(Sender).name = 'Aktif'
   then begin
@@ -951,6 +1038,7 @@ procedure TfrmHastaKart.cxButtonEditPropertiesButtonClick(Sender: TObject;
 var
   g : TGraphic;
   List : ArrayListeSecimler;
+  i : integer;
 begin
 
   if TcxButtonEditKadir(sender).name = 'MESLEK'
@@ -963,6 +1051,9 @@ begin
 
   TListeAc(FindComponent('ListdosyaNo')).Where := ' SirketKod = ' + QuotedStr(datalar.AktifSirket);
                                                  //  ' and Sube in (select datavalue from dbo.strtotable(' + QuotedStr(datalar.AktifSube) + ','',''))';
+
+ _pasifSebeb_ := varToStr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue);
+
   inherited;
 
   if length(datalar.ButtonEditSecimlist) > 0 then
@@ -1016,6 +1107,8 @@ begin
            end;
            Gelisler(TcxButtonEditKadir(sender).Text);
            datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Dataset,'select * from Hasta_Ilac_Uyari where dosyaNo = ' + QuotedStr(dosyaNo.Text));
+           datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset,'select * from HastaYatis where dosyaNo = ' + QuotedStr(dosyaNo.Text));
+
 
         except
         end;
@@ -1023,11 +1116,40 @@ begin
   end;
 
 
-  if TcxImageComboBox(FindComponent('PasifSebeb')).EditValue = 5
+
+
+  if varTostr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue) = '5'
   Then begin
     Disabled(self,True);
-    _pasifSebeb_ := 5;
-    PopupMenuEnabled(Self,PopupMenu1,False);
+
+    _pasifSebeb_ := '5';
+    d1.Enabled := True;
+    K1.Enabled := True;
+    AKart1.Enabled := True;
+    T2.Enabled := True;
+    YatBilgileri1.Enabled := True;
+    Epikriz1.Enabled := True;
+    R1.Enabled := True;
+    N3.Enabled := True;
+    HastaRaporlar1.Enabled := True;
+    H1.Enabled := True;
+    U1.Enabled := True;
+    SeansKart1.Enabled := True;
+    T1.Enabled := True;
+    T3.Enabled := True;
+    MenucxYeni.Enabled := True;
+    H2.Enabled := True;
+    akipBul1.Enabled := True;
+    akipBilgisiOku1.Enabled := True;
+    SysTakipNoSGKHizmetSorgula1.Enabled := True;
+    H3.Enabled := True;
+   // PopupMenuEnabled(Self,PopupMenu1,False);
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+  end
+  else
+  begin
+    _pasifSebeb_ := varTostr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue);
+    PopupMenuEnabled(Self,PopupMenu1,True);
     PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
   end;
 
@@ -1198,7 +1320,7 @@ begin
     then
      dosyaNo.OnKeyDown(frmHastaKart.dosyaNo,key,[]);
 
-    enabled;
+    if _pasifSebeb_ = '5' then Disabled(self,True) else enabled;
     FormInputZorunluKontrolPaint(self,$00FCDDD1);
     TcxImageComboKadir(FindComponent('sirketKod')).Enabled := cxGridGelis.Dataset.Eof;
     Result := True;
@@ -1245,12 +1367,12 @@ begin
   Sayfa3_Kolon3.Width := 0;
   Sayfa3_Kolon2.Width := 0;
 
-  List := ListeAcCreate('HastaKart','dosyaNo,HASTAADI,HASTASOYADI,TCKIMLIKNO,Aktif',
-                       'DosyaNo,HastaAdý,HastaSoyadý,TCKimlikNo,Durum',
-                       '50,100,100,80,50','ListdosyaNo','Hastalar',
+  List := ListeAcCreate('HastaKart','dosyaNo,HUVIYETNO,HASTAADI,HASTASOYADI,TCKIMLIKNO,Aktif',
+                       'DosyaNo,ArþivNo,HastaAdý,HastaSoyadý,TCKimlikNo,Durum',
+                       '50,50,100,100,80,50','ListdosyaNo','Hastalar',
                        ' SirketKod = ' + QuotedStr(datalar.AktifSirket), //+
                       // ' and Sube in (select datavalue from dbo.strtotable(' + QuotedStr(datalar.AktifSube) + ','',''))',
-                        5,True,Self);
+                        6,True,Self);
 
 
   //List.Where := ' SirketKod = ' + QuotedStr(datalar.AktifSirket);
@@ -1274,6 +1396,9 @@ begin
 
   setDataString(self,'HUVIYETNO','',Kolon1,'dn',45);
   setDataString(self,'TCKIMLIKNO','TC Kimlik No  ',Kolon1,'',130,True);
+  setDataString(self,'yupass','Yupas No  ',Kolon1,'',130,True);
+  TdxLayoutGroup(FindComponent('dxLayupass')).Visible := False;
+
   setDataString(self,'HUVIYETTIPI','PasaportNo',Kolon1,'',130);
   setDataString(self,'HASTAADI','Hasta Adý  ',Kolon1,'',130,True);
   setDataString(self,'HASTASOYADI','Soyadý  ',Kolon1,'',130,True);
@@ -1467,6 +1592,7 @@ begin
 
   setDataStringKontrol(self,txtSeansSikayet , 'GELHAST','Kronik Hast/Baðým',sayfa3_Kolon1,'',630);
   TcxCheckGroup(FindComponent('GELHAST')).Properties.ItemAlignment := taLeftJustify;
+  setDataStringMemo(self,'GELHAST_ACK','Baðýmlýlýk Açýklama',sayfa3_Kolon1,'',630,40);
 
   setDataStringKontrol(self,txtBobrekHastaligi , 'PBH','Primer Böbrek Hast.',Sayfa2_Kolon1,'',200);
   ilkTaniTarihi := TcxDateEditKadir.Create(self);
@@ -1494,7 +1620,7 @@ begin
 
   setDataStringC(self,'seans','Seans',Sayfa2_Kolon2,'_s_',50,'1,2,3,4,5');
   setDataString(self,'seansSuresi','Seans Süre',Sayfa2_Kolon2,'_s_',30);
-  setDataString(self,'makinaNo','Makina',Sayfa2_Kolon2,'_s_',40);
+  setDataStringCurr(self,'makinaNo','Makina',Sayfa2_Kolon2,'_s_',40,'0',0);
   setDataStringKontrol(self,seansGunleri , 'seansGunleri','Seans Günleri',Sayfa2_Kolon2,'',230);
 
  // setDataStringBLabel(self,'bosSatir4',Kolon3,'',1);
@@ -1517,13 +1643,32 @@ begin
                '0,0,0'
                );
                //  '!999-00#;1; ';
-  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')) ,'cxGridHastaIlacAlerji','Alerjisi Olan Ýlaçlar',sayfa3_Kolon1,'',630,150,alNone,'',clLeft);
+  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')) ,'cxGridHastaIlacAlerji','Alerjisi Olan Ýlaçlar',sayfa3_Kolon1,'',630,120,alNone,'',clLeft);
   datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Dataset,'select * from Hasta_Ilac_Uyari where dosyaNo = ' + QuotedStr(dosyaNo.Text));
   TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Levels[0].GridView).NavigatorButtons.OnButtonClick := NavigatorButtonsButtonClick;
   TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Dataset.Name := 'cxGridHastaIlacAlerjiDS';
   TcxGridKadir(FindComponent('cxGridHastaIlacAlerji')).Dataset.BeforePost := BeforePost;
 
   setDataStringMemo(self,'Alerji','Alerji Diðer',sayfa3_Kolon1,'',630,40);
+
+
+
+  setDataStringBLabel(self,'BosSatir2',sayfa3_Kolon1,'',700,'');
+
+  SetGrid(CreateGrid('cxGridHastaYatis',self),'Baslangic,Bitis,TaniKodu,Tani,Aciklama',
+               'TcxDateEditProperties,TcxDateEditProperties,TcxTextEditProperties,TcxTextEditProperties,TcxTextEditProperties',
+               'Y.Baþlangýç,Y.Bitiþ,TaniKodu,Tani,Açýklama',
+               '80,80,50,150,300',
+               '0,0,0,0,0',
+               'True,True,True,True,True',
+               '0,0,0,0,0'
+               );
+               //  '!999-00#;1; ';
+  setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridHastaYatis')) ,'cxGridHastaYatis','Yatýþ Bilgileri',sayfa3_Kolon1,'',630,150,alNone,'',clLeft);
+  datalar.QuerySelect(TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset,'select * from HastaYatis where dosyaNo = ' + QuotedStr(dosyaNo.Text));
+  TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridHastaYatis')).Levels[0].GridView).NavigatorButtons.OnButtonClick := NavigatorButtonsButtonClick;
+  TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.Name := 'cxGridHastaYatisDS';
+ // TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.BeforePost := BeforePost;
 
 
   tableColumnDescCreate;
@@ -1556,7 +1701,41 @@ begin
 procedure TfrmHastaKart.FormShow(Sender: TObject);
 begin
   inherited;
-//
+  if varTostr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue) = '5'
+  Then begin
+    Disabled(self,True);
+    _pasifSebeb_ := '5';
+    (*
+    d1.Enabled := True;
+    K1.Enabled := True;
+    AKart1.Enabled := True;
+    T2.Enabled := True;
+    YatBilgileri1.Enabled := True;
+    Epikriz1.Enabled := True;
+    R1.Enabled := True;
+    N3.Enabled := True;
+    HastaRaporlar1.Enabled := True;
+    H1.Enabled := True;
+    U1.Enabled := True;
+    SeansKart1.Enabled := True;
+    T1.Enabled := True;
+    T3.Enabled := True;
+    MenucxYeni.Enabled := True;
+    H2.Enabled := True;
+    akipBul1.Enabled := True;
+    akipBilgisiOku1.Enabled := True;
+    SysTakipNoSGKHizmetSorgula1.Enabled := True;
+    H3.Enabled := True;   *)
+   // PopupMenuEnabled(Self,PopupMenu1,False);
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+  end
+  else
+  begin
+    _pasifSebeb_ := varToStr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue);
+    PopupMenuEnabled(Self,PopupMenu1,True);
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+  end;
+
 end;
 
 procedure TfrmHastaKart.seansGunleriPropertiesEditValueChanged(Sender: TObject);
@@ -1570,16 +1749,48 @@ end;
 
 procedure TfrmHastaKart.cxKaydetClick(Sender: TObject);
 var
- Ceptel,Evtel : string;
+ Ceptel,Evtel , ms , dogumTarihi,VatandasTip : string;
 begin
   case TControl(sender).Tag  of
 Kaydet :begin
          if TcxTextEdit(FindComponent('dosyaNo')).Text = '' then exit;
 
+         if Kart = sql_new
+         then begin
+             ms := HastaKayitUniqKontrol(TcxTextEdit(FindComponent('dosyaNo')).Text,
+                                   TcxTextEdit(FindComponent('TCKIMLIKNO')).Text,
+                                   varToStr(TcxCustomEdit(FindComponent('sirketKod')).EditValue));
+             if ms <> '0'
+             Then begin
+               ShowMessageSkin(ms,'','','info');
+               exit;
+             end;
+         end;
+
+
+
          Ceptel := varToStr(TcxCustomEdit(FindComponent('EV_TEL1')).EditValue);
          Ceptel := trim(StringReplace(StringReplace(StringReplace(Ceptel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
          Evtel := varToStr(TcxCustomEdit(FindComponent('EV_TEL2')).EditValue);
          Evtel := trim(StringReplace(StringReplace(StringReplace(Evtel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+         dogumTarihi := varToStr(TcxCustomEdit(FindComponent('DOGUMTARIHI')).EditValue);
+         VatandasTip := varToStr(TcxImageComboKadir(FindComponent('VatandasTip')).EditValue);
+
+
+
+         if (VatandasTip =  '')
+         then begin
+           ShowMessageSkin('Vatandas Tip Boþ Olmaz','','','info');
+           TcxCustomEdit(FindComponent('VatandasTip')).SetFocus;
+           exit;
+         end;
+
+         if (dogumTarihi =  '')
+         then begin
+           ShowMessageSkin('Doðum Tarihi Boþ Olmaz','','','info');
+           TcxCustomEdit(FindComponent('DOGUMTARIHI')).SetFocus;
+           exit;
+         end;
 
          if (Length(Ceptel) > 0) and (Length(Ceptel) < 10)
          then begin
@@ -1595,6 +1806,38 @@ Kaydet :begin
            exit;
          end;
 
+         if varToStr(TcxImageComboKadir(FindComponent('VatandasTip')).EditValue) = '2'
+         then begin
+            if varToStr(TcxTextEdit(FindComponent('HUVIYETTIPI')).EditValue) = ''
+            then begin
+               ShowMessageSkin('Yabancý Kayýt Hastalarýnda PasaportNo Zorunludur','','','info');
+               TcxCustomEdit(FindComponent('HUVIYETTIPI')).SetFocus;
+               exit;
+            end;
+         end;
+
+         if varToStr(TcxImageComboKadir(FindComponent('KurumTip')).EditValue) = '99'
+         then begin
+            if not (varToStr(TcxTextEdit(FindComponent('VatandasTip')).EditValue) = '1')
+            then begin
+               if ShowMessageSkin('Yurt Dýþý Sigortalý Hastalarda,','Vatandaþ Tipi [VATANDAÞ KAYIT] olmadýðýndan Emin misiniz','','msg') <> MRYes
+               then begin
+                 TcxCustomEdit(FindComponent('VatandasTip')).SetFocus;
+                 exit;
+               end;
+            end;
+         end;
+
+         if varToStr(TcxImageComboKadir(FindComponent('KurumTip')).EditValue) = '99'
+         then begin
+            if (varToStr(TcxTextEdit(FindComponent('Yupass')).Text) = '')
+            then begin
+               ShowMessageSkin('Yurt Dýþý Sigortalý Hastalarda','Yupass No Giriniz','','info');
+               TcxCustomEdit(FindComponent('Yupass')).SetFocus;
+               exit;
+            end;
+
+         end;
 
     (*
         if StrToint(VarToStr(TcxImageComboKadir(FindComponent('VatandasTip')).EditValue)) in [0,1]
@@ -1655,7 +1898,7 @@ Kaydet :begin
                                             'msg') Then exit;
 
                SeansTedaviUpdate;
-
+               _SaveKontrol := False;
           end;
     Sil : begin
             Kart := sql_delete;
@@ -1692,6 +1935,9 @@ Kaydet :begin
 
               TcxImageComboKadir(FindComponent ('VatandasTip')).EditValue := 0;
               TcxButtonEditKadir(FindComponent('UYRUGU')).EditValue := 'TR';
+
+              TcxImageComboKadir(FindComponent ('KANGRUBU')).EditValue := 8;
+
 
 
           end;
@@ -1751,7 +1997,7 @@ begin
        trim(StringReplace(StringReplace(StringReplace(vartoStr(TcxTextEdit(FindComponent('EV_TEL1')).Text),'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
 
     GirisFormRecord.F_firmaKod_ := TcxImageComboKadir(FindComponent('SirketKod')).EditValue;
-    GirisFormRecord.F_Yupass_ := cxGridGelis.Dataset.FieldByName('Yupass').AsString;
+    GirisFormRecord.F_Yupass_ := varToStr(TcxCustomEdit(FindComponent('yupass')).EditValue);//cxGridGelis.Dataset.FieldByName('Yupass').AsString;
     GirisFormRecord.F_DevKurum_ := varToStr(TcxImageComboKadir(FindComponent('kurumTip')).EditValue);
     GirisFormRecord.F_BransKodu_ := cxGridGelis.Dataset.FieldByName('SERVIS').AsString;
     GirisFormRecord.F_Adres_ := varToStr(TcxTextEdit(FindComponent('EV_ADRES')).EditValue);

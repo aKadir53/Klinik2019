@@ -109,12 +109,18 @@ uses
   PaketAl in 'PaketAl.pas',
   LiosDEREN in 'WebReferans\LiosDEREN.pas',
   LiosERBIL in 'WebReferans\LiosERBIL.pas',
-  LiosLabService in 'WebReferans\LiosLabService.pas';
+  LiosLabService in 'WebReferans\LiosLabService.pas',
+  BirlabService in 'WebReferans\BirlabService.pas',
+  Birlab in 'WebReferans\Birlab.pas',
+  AlisWS in 'AlisWS.pas',
+  EGALAB in 'EGALAB.pas',
+  elabUNYE in 'elabUNYE.pas',
+  TenayGama in 'WebReferans\TenayGama.pas';
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 4016;
+  AppalicationVer : integer = 4038;
   yvKversiyon : integer = 3;
   NoktaURL : string = 'https://www.noktayazilim.net';
   VersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019Versiyon.txt';
@@ -133,7 +139,7 @@ const
   {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
 
  var SiteVersiyon,ExeVersiyon: string; V1, V2, V3, V4: word;
-   versiyon,Dversiyon ,sql,yvk,yvkNewVersiyon : string;
+   versiyon,Dversiyon ,sql,yvk,yvkNewVersiyon, hata : string;
   _exe : PAnsiChar;
   dosya : TFileStream;
   _modal_ : integer;
@@ -153,6 +159,8 @@ begin
 
   // form2.show;
 
+  Hata := '0';
+
   if not DirectoryExists('C:\NoktaV3\Http')
   then
     MkDir('C:\NoktaV3\Http');
@@ -165,81 +173,87 @@ begin
 
   try
     yvkNewVersiyon := (datalar.HTTP1.Get(yvkVersiyonURL));
+    if pos('Error',yvkNewVersiyon) > 0
+    then Hata := '1';
+
   except
     yvkNewVersiyon := intTostr(yvkVersiyon);
+    Hata := '1';
   end;
 
   datalar.versiyon := inttostr(AppalicationVer);
-  if ForceDirectories ('C:\NoktaV3') then
-  begin
 
-      if (strToint(yvkNewVersiyon) >  yvKversiyon)
-      Then begin
-        try
-          Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/yvK.exe','mavinokta','nokta53Nokta','C:\NoktaV3\yvK.exe');
-        finally
-        end;
-      end;
+  if Hata = '0'
+  then
+    if ForceDirectories ('C:\NoktaV3') then
+    begin
 
-
-  try
-    versiyon := (datalar.HTTP1.Get(VersiyonURL));
- //   Dversiyon := (datalar.HTTP1.Get(DLLVersiyonURL));
-  except
-    versiyon := inttostr(AppalicationVer);
- //   Dversiyon := inttostr(DllVersiyon);
-  end;
-
-  if versiyon = '' then versiyon := inttostr(AppalicationVer);
- // if Dversiyon = '' then Dversiyon := inttostr(DllVersiyon);
-
-  (*
-  try
-    if (strtoint(Dversiyon) > DllVersiyon)
-    Then Begin
-
-        try
-         _exe :=  PAnsiChar(AnsiString('C:\NoktaV3\yvK.exe dll'));
-         WinExec(_exe,SW_SHOW);
-        // datalar.KillTask('Diyaliz.exe');
-        except on e : exception do
-          begin
-            ShowMessageSkin(e.Message,'','','info');
+        if (strToint(yvkNewVersiyon) >  yvKversiyon)
+        Then begin
+          try
+            Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/yvK.exe','mavinokta','nokta53Nokta','C:\NoktaV3\yvK.exe');
+          except
           end;
         end;
-    End;
-  except
-  end;
-    *)
 
 
-  if (strtoint(versiyon) > AppalicationVer)
-  Then Begin
     try
-     _exe :=  PAnsiChar(AnsiString('C:\NoktaV3\yvK.exe'));
-     WinExec(_exe,SW_SHOW);
-    // datalar.KillTask('Diyaliz.exe');
-    except on e : exception do
-      begin
-        ShowMessageSkin(e.Message,'','','info');
-      end;
+      versiyon := (datalar.HTTP1.Get(VersiyonURL));
+   //   Dversiyon := (datalar.HTTP1.Get(DLLVersiyonURL));
+    except
+      versiyon := inttostr(AppalicationVer);
+   //   Dversiyon := inttostr(DllVersiyon);
     end;
-  End;
+
+    if versiyon = '' then versiyon := inttostr(AppalicationVer);
+   // if Dversiyon = '' then Dversiyon := inttostr(DllVersiyon);
+
+    (*
+    try
+      if (strtoint(Dversiyon) > DllVersiyon)
+      Then Begin
+
+          try
+           _exe :=  PAnsiChar(AnsiString('C:\NoktaV3\yvK.exe dll'));
+           WinExec(_exe,SW_SHOW);
+          // datalar.KillTask('Diyaliz.exe');
+          except on e : exception do
+            begin
+              ShowMessageSkin(e.Message,'','','info');
+            end;
+          end;
+      End;
+    except
+    end;
+      *)
+
+
+    if (strtoint(versiyon) > AppalicationVer)
+    Then Begin
+      try
+       _exe :=  PAnsiChar(AnsiString('C:\NoktaV3\yvK.exe'));
+       WinExec(_exe,SW_SHOW);
+      // datalar.KillTask('Diyaliz.exe');
+      except on e : exception do
+        begin
+          ShowMessageSkin(e.Message,'','','info');
+        end;
+      end;
+    End;
 
 
 
 
 
-  end;
+    end;
+
+
 
 
   GetBuildInfo(Application.ExeName, V1, V2, V3,V4);
   ExeVersiyon:= Format('%d.%d.%d.%d', [V1, V2, V3,V4]);
 
-  DateSeparator := '.';
-  DecimalSeparator := '.';
-  ThousandSeparator := ',';
-  ShortDateFormat := 'DD.MM.YYYY';
+   SistemAyarlariniDuzenle;
 
 
   Application.CreateForm(TfrmLogin, frmLogin);

@@ -421,8 +421,8 @@ begin
   yol := ExtractFilePath(Application.ExeName) + 'BouncyCastle.Crypto17.dll';
   yol1 := ExtractFilePath(Application.ExeName) + 'BouncyCastle.Crypto.dll';
 
-  DeleteFile(yol1);
-  CopyFile(PWideChar(yol),PWideChar(yol1),False);
+//  DeleteFile(yol1);
+ // CopyFile(PWideChar(yol),PWideChar(yol1),False);
 
   dllHandle := LoadLibrary(LIB_DLL);
   try

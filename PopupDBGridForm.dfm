@@ -81,8 +81,6 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
       LevelTabs.Style = 1
       ExceleGonder = False
       PopupForm = False
-      ExplicitTop = 36
-      ExplicitHeight = 379
       object DBGrid: TcxGridDBTableView
         OnDblClick = DBGridDblClick
         Navigator.Buttons.OnButtonClick = DBGridNavigatorButtonsButtonClick
@@ -376,8 +374,6 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
       Style.IsFontAssigned = True
       TabOrder = 3
       Visible = False
-      ExplicitTop = 36
-      ExplicitHeight = 379
       Height = 358
       Width = 763
       object txtSeansSikayet: TcxCheckListBox
@@ -429,6 +425,10 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
           item
             Tag = 10
             Text = 'Soy-TedaviGe'#231'mi'#351
+          end
+          item
+            Tag = 11
+            Text = 'Makina No'
           end>
         ParentFont = False
         Style.Font.Charset = TURKISH_CHARSET
@@ -438,7 +438,6 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
         Style.Font.Style = [fsBold]
         Style.IsFontAssigned = True
         TabOrder = 0
-        ExplicitHeight = 329
       end
       object btnMedulaEpikrizAyarKaydet: TcxButton
         Left = 3
@@ -449,7 +448,6 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
         Caption = 'Kaydet'
         TabOrder = 1
         OnClick = btnMedulaEpikrizAyarKaydetClick
-        ExplicitTop = 344
       end
     end
     object txtAltTable: TcxImageComboKadir
@@ -464,7 +462,6 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
       Visible = False
       BosOlamaz = False
       FilterSet = fsNone
-      ExplicitTop = 15
       Width = 763
     end
   end

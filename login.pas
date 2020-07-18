@@ -214,6 +214,7 @@ var
   g : TBitmap;
   Dataset : TDataset;
   imzaTc : string;
+
 begin
   bloginLog := False;
   bOtomatikGiris := False;
@@ -250,7 +251,8 @@ begin
         Datalar.ADOConnection2.Connected := false;
         Datalar.Baglan(txtDataBase.EditingText, txtServerName.Text, '', txtServerUserName.Text, txtServerPassword.Text);
 
-        datalar.ProgTarih := FormattedTarih(tarihal(date()));
+      //  datalar.ProgTarih :=  FormatDateTime('DD.MM.YYYY', datalar.QuerySelect('select getdate() Tarih').FieldByName('Tarih').AsDateTime);
+     //   datalar.ProgTarih := FormattedTarih(tarihal(date()));
         datalar.AktifSirket := txtDonemler.Text;
 
       except on e : Exception do
@@ -303,12 +305,14 @@ begin
           datalar.username := edit1.Text;
           DATALAR.usersifre := edit2.Text;
 
+          (*
           //þifre deðiþtirme gerekliyse...
           if not bOtomatikGiris and Login.FieldByName ('SifreDegismeli').AsBoolean then
           begin
             ShowMessageSkin('Þifrenizi Deðiþtirmeniz Gerekmektedir...', '', '', 'info');
             if not SifreDegistir (True) then Exit;
           end;
+          *)
 
      end;
 

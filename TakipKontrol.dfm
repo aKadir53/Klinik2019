@@ -1087,8 +1087,8 @@ object frmTakipKontrol: TfrmTakipKontrol
     end
     object T1: TMenuItem
       Tag = -4
-      Caption = 'Tedavi Kart'#305
-      Visible = False
+      Caption = 'Tetkik Tedavi Kart'#305
+      ImageIndex = 45
       OnClick = T1Click
     end
     object S1: TMenuItem

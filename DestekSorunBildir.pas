@@ -182,8 +182,8 @@ begin
     ado.Connection := datalar.ADOConnection1;
     try
       sql := 'update sorunCozumSureci ' +
-             ' set durum = 0 ' +
-             ' where sorunId = ' + ado_CVP.FieldByName('sorunId').AsString;
+             ' set durum = 9 ' +
+             ' where id = ' + ado_CVP.FieldByName('id').AsString;
       datalar.QueryExec(ado,sql);
     except on e : Exception do
      begin
@@ -223,8 +223,10 @@ begin
   try
     sql := 'select *,d.TalepOnayDurumu,d.YazilimGereksinimleri from sorunlar s '+
            ' left join SorunTalepTalepDegerlendirme d on s.sorunId = d.TalepId '  +
-           ' where s.kurumKodu = ' +
-           QuotedStr(datalar.osgbKodu) + ' and convert(varchar,sorunbildirimTarihSaat,112) ' +
+           ' where (s.kurumKodu = ' +
+           QuotedStr(datalar._tesisKodu) +
+           ' or s.kurumKodu = ' + QuotedStr(datalar.osgbKodu) +
+           ') and convert(varchar,sorunbildirimTarihSaat,112) ' +
            ' between ' + QuotedStr(d1) + ' and ' + QuotedStr(d2);
     datalar.QuerySelect(Ado_Sql,sql);
   except
@@ -257,8 +259,8 @@ begin
     try
       sql := 'insert into sorunlar (kurumkodu,sorunsahibi,sorunAciliyeti,sorunAciklamasi,' +
              'ilgilenenPersonel,fonksiyonelEtki,sorunIhtiyac,Konu,secreen,kullanici,Tip)' +
-             ' values(' + QuotedStr(DATALAR.osgbKodu) + ','
-                        + QuotedStr(datalar._merkezAdi) + ','
+             ' values(' + QuotedStr(datalar._tesisKodu) + ','
+                        + QuotedStr(datalar.AktifSirketAdi) + ','
                         + inttostr(txtAciliyet.ItemIndex) + ','
                         + QuotedStr(txtMesaj.Text) + ','
                         + QuotedStr(txtPersonel.Text) + ','
@@ -288,6 +290,22 @@ begin
       end;
 
       ShowMessage('Bildiriminiz ' + sorunId + ' Nolu referans ile Yapýldý','','','info');
+
+      sql := 'insert into sorunCozumSureci (sorunId,Durum,Aciklama,Taraf)' +
+             ' values(' + QuotedStr(sorunId) + ','
+                        + QuotedStr('0') + ','
+                        + QuotedStr(
+                        'Deðerli Müþterimiz, Destek talebiniz, iþleme alýnmýþtýr. ' + #13 +
+                        'Teknik Destek ekibimiz talebiniz ile ilgilenecek ve size geri dönüþ yapacaktýr.(Telefon & Online Destek) ' + #13 +
+                        'Size daha hýzlý ulaþabilmek için iletiþim bilgisini belirtmeyi unutmayýnýz..' + #13 +
+                        'BU BÝLGÝLENDÝRME MESAJI OTOMATÝK OLARAK GÖNDERÝLMÝÞTÝR.' + #13 +
+                        'Saygýlarýmýzla,') + ',' +
+                        QuotedStr('Nokta') +
+                        ') select SCOPE_IDENTITY() ';
+
+      datalar.QuerySelect(ado,sql);
+
+
       try
        deletefile('C:\OSGB\' + dosya);
       except
@@ -346,8 +364,8 @@ begin
              'values( ' + ado_sql.FieldByName('sorunId').AsString + ',' +
              '1,' +
              QuotedStr(txtCvp.Text) + ',' +
-             inttostr(txtCvpPersonel.ItemIndex) + ',' +
-             QuotedStr(datalar.osgbKodu) + ')';
+             QuotedStr(datalar.username) + ',' +
+             QuotedStr(datalar._tesisKodu) + ')';
 
       datalar.QueryExec(ado,sql);
       pnlCvp.Visible := false;

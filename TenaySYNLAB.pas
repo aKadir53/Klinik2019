@@ -267,7 +267,7 @@ begin
                                    Else
                                    if (pos('POZ',_TetkikSonuclar_.Aciklama) > 0)
                                    Then sonuc := '1'
-                                   Else sonuc := _TetkikSonuclar_.Sonuc;
+                                   Else sonuc := trim(StringReplace(StringReplace(_TetkikSonuclar_.Sonuc,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
 
                                    if (testKod = '907440') or
                                       (testKod = '906610') or
@@ -282,7 +282,8 @@ begin
                                       sonucA := trim(StringReplace(SonucA,'(','',[rfReplaceAll]));
                                       sonucA := trim(StringReplace(SonucA,')','',[rfReplaceAll]));
 
-                                      sql := 'update hareketler set Gd = ' + QuotedStr(sonuc) + //dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
+
+                                      sql := 'update hareketler set Gd =  ' +QuotedStr(sonuc) + //dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 

@@ -247,24 +247,25 @@ begin
 
                                    sonuc := _TetkikSonuclar_.Sonuc;
 
-                                   if (pos('NEG',_TetkikSonuclar_.Sonuc) > 0)
-                                   Then sonuc := '-1'
-                                   Else
-                                   if (pos('POZ',_TetkikSonuclar_.Sonuc) > 0)
-                                   Then sonuc := '1'
-                                   Else
-                                   if (pos('NEG',_TetkikSonuclar_.Aciklama) > 0)
-                                   Then sonuc := '-1'
-                                   Else
-                                   if (pos('POZ',_TetkikSonuclar_.Aciklama) > 0)
-                                   Then sonuc := '1'
-                                   Else sonuc := _TetkikSonuclar_.Sonuc;
 
                                    if (testKod = '907440') or
                                       (testKod = '906610') or
                                       (testKod = '906630') or
                                       (testKod = '906660')
                                    Then Begin
+                                      if (pos('NEG',_TetkikSonuclar_.Sonuc) > 0)
+                                      Then sonuc := '-1'
+                                      Else
+                                      if (pos('POZ',_TetkikSonuclar_.Sonuc) > 0)
+                                      Then sonuc := '1'
+                                      Else
+                                      if (pos('NEG',_TetkikSonuclar_.Aciklama) > 0)
+                                      Then sonuc := '-1'
+                                      Else
+                                      if (pos('POZ',_TetkikSonuclar_.Aciklama) > 0)
+                                      Then sonuc := '1'
+                                      Else sonuc := _TetkikSonuclar_.Sonuc;
+
                                       sonucA := trim(StringReplace(StringReplace(_TetkikSonuclar_.Sonuc,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
                                       sonucA := trim(StringReplace(StringReplace(SonucA,'NEGatif','',[rfReplaceAll]),'POZitif','',[rfReplaceAll]));
                                       sonucA := trim(StringReplace(StringReplace(SonucA,'NEGATÝF','',[rfReplaceAll]),'POZÝTÝF','',[rfReplaceAll]));
@@ -273,7 +274,7 @@ begin
                                       sonucA := trim(StringReplace(SonucA,'(','',[rfReplaceAll]));
                                       sonucA := trim(StringReplace(SonucA,')','',[rfReplaceAll]));
 
-                                      sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + _TetkikSonuclar_.Sonuc + ')' +
+                                      sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + sonuc + ')' +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 

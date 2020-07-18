@@ -237,16 +237,18 @@ begin
            Gonder;
          end;
     -3 : begin
-             if FindTab(AnaForm.sayfalar,'TabfrmHastaKart')
+             if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
              Then begin
                Form := TGirisForm(FormClassType(TagfrmHastaKart));
-               TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := dosyaNo;
+               TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := GirisFormRecord.F_dosyaNo_;
+               TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
                TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
              end
              Else begin
-              Form := FormINIT(TagfrmHastaKart,self,dosyaNo,NewTab(AnaForm.sayfalar,'TabfrmHastaKart'),ikEvet,'Giriþ');
+              Form := FormINIT(TagfrmHastaKart,self,GirisFormRecord.F_dosyaNo_,NewTab(AnaForm.sayfalar,TagfrmHastaKart),ikEvet,'Giriþ');
               if Form <> nil then Form.show;
            end;
+
          end;
 
      -4 : begin

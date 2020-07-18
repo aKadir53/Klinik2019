@@ -164,6 +164,12 @@ var
 begin
 
   if Dataset = nil then dataset := datalar.ADO_RAPORLAR;
+
+  if not FileExists('C:\RTF\' +dokumanNo + '.rtf')
+  then begin
+   ShowMessageSkin('C:\RTF\' +dokumanNo + '.rtf','Dosya Bulunamadý','','info');
+   exit;
+  end;
   
   try
     template.Position := 0;

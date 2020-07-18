@@ -54,8 +54,8 @@ begin
       txtTarih:= TXSDateTime.Create;
       txtTarih1:= TXSDateTime.Create;
 
-      DatetoxsDate(d1,t1);
-      DatetoxsDate(d2,t2);
+      DatetoxsDateTime(d1,t1);
+      DatetoxsDateTime(d2,t2);
       Gon.kurumKodu := datalar._labusername;
       Gon.kurumSifre := datalar._labsifre;
       Gon.tarih1 := d1;

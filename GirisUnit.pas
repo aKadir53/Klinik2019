@@ -233,7 +233,7 @@ type
     F_kilo_ : double;
     F_yas_ : integer;
     F_value_ : Variant;
-    F_pasifSebeb_ : Variant;
+    F_pasifSebeb_ : string;
 
     F_SaveKontrol : Boolean;
 
@@ -371,7 +371,7 @@ type
     property _kilo_ : double read F_kilo_ write F_kilo_;
     property _yas_ : integer read F_yas_ write F_yas_;
     property _value_ : variant read F_value_ write F_value_;
-    property _pasifSebeb_ : variant read F_pasifSebeb_ write F_pasifSebeb_;
+    property _pasifSebeb_ : string read F_pasifSebeb_ write F_pasifSebeb_;
     property _SaveKontrol : Boolean read F_SaveKontrol write SetSaveKontrol Default False ;
   end;
 
@@ -585,7 +585,9 @@ begin
            begin
              sql := 'exec sp_Faturalar '+ txtTopPanelTarih1.GetSQLValue + ',' +
                                           txtTopPanelTarih2.GetSQLValue + ',' +
-                                          QuotedStr(datalar.AktifSirket);
+                                          QuotedStr(datalar.AktifSirket) + ',' +
+                                          copy(chkList.EditValue,2,1)
+                                          ;
 
            end;
 
@@ -818,8 +820,10 @@ begin
     (SameText (aComponent.ClassName, 'TcxCheckGroup')) or
     (SameText (aComponent.ClassName, 'TcxButton')) or
     (SameText (aComponent.ClassName, 'TcxGrid')) or
+    (SameText (aComponent.ClassName, 'TcxGridKadir')) or
     (SameText (aComponent.ClassName, 'TcxButton')) or
     (SameText (aComponent.ClassName, 'TcxButtonKadir')) or
+    (SameText (aComponent.ClassName, 'TcxImage')) or
     (SameText (aComponent.ClassName, 'TcxCheckGroupKadir'));
 end;
 
@@ -959,7 +963,7 @@ begin
     D.name := 'txtAPH';
     ComboDoldur3('select tanimi from Diyaliz_APH',D,0,-1);
 
-    setDataStringC(self,'HCOOO','HCO3',Grp,'_isi_',50,'25,26,27,28,29,30,31,32,33,34,35,36');
+    setDataStringC(self,'HCOOO','HCO3',Grp,'_isi_',50,'20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40');
     setDataStringCurr(self,'ISI','ISI',Grp,'_isi_',50,'0',1);
     setDataStringC(self,'APH','APH',Grp,'aphNa',50,D.Properties.Items);
     setDataStringC(self,'Na','Na',Grp,'aphNa',50,'135,136,137,138,139,140,141,142,143,144,145,146,147,148');
@@ -1214,7 +1218,7 @@ end;
 
 procedure TGirisForm.Enabled;
 var
-  _say, x: integer;
+  _say, x , i : integer;
   _Obje_ : TcxCustomEdit;
 begin
   _say := self.ComponentCount - 1;
@@ -1222,10 +1226,26 @@ begin
    _FormDiseabled := True;
   for x := 0 to _say do
   begin
-       _obje_ := TcxCustomEdit(self.Components[x]);
-       if IsEnableControl(_obje_)
-      Then
-        TControl(_obje_).Enabled := True;
+      _obje_ := TcxCustomEdit(self.Components[x]);
+      if IsEnableControl(_obje_)
+      Then begin
+
+            if (SameText (_obje_.ClassName, 'TcxGrid')) or
+               (SameText (_obje_.ClassName, 'TcxGridKadir'))
+            then begin
+              // TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).OptionsData.Editing := True;
+               TControl(_obje_).Enabled := True;
+               //for i := 0 to TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).ColumnCount - 1 do
+               // begin
+                // TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).Columns[i].Options.Editing := True;
+                // TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).Navigator.Visible := False;
+              //  end;
+            end
+            else
+
+              TControl(_obje_).Enabled := True;
+      end;
+
 
   end;
 end;
@@ -1233,7 +1253,7 @@ end;
 
 procedure TGirisForm.Disabled(_form: TForm ; indexField : Boolean);
 var
-  _say, x: integer;
+  _say, x , i : integer;
   _Obje_ : TcxCustomEdit;
 begin
   _say := _form.ComponentCount - 1;
@@ -1251,8 +1271,24 @@ begin
     end
     else begin
       if IsDisableControl (_obje_)
-      Then
-        TControl(_obje_).Enabled := False;
+      Then begin
+
+        if (SameText (_obje_.ClassName, 'TcxGrid')) or
+           (SameText (_obje_.ClassName, 'TcxGridKadir'))
+           and (_pasifSebeb_ = '5')
+        then begin
+        //   TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).Navigator.Visible := False;
+        //   TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).OptionsData.Editing := False;
+//           for i := 0 to TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).ColumnCount - 1 do
+  //          begin
+             //TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).Columns[i].Options.Editing := False;
+             //TcxGridDBTableView(TcxGridKadir(_obje_).Levels[0].GridView).Navigator.Visible := False;
+    //        end;
+        end
+        else
+           TControl(_obje_).Enabled := False;
+
+      end;
     end;
 
    if (_obje_.ClassName = 'TcxButtonEditKadir') then TcxButtonEditKadir(_obje_).Enabled := indexField;
@@ -1496,6 +1532,7 @@ procedure TGirisForm.cxButtonEditPropertiesButtonClick(Sender: TObject;
 var
   list : ArrayListeSecimler;
   where,prm : string;
+  i : integer;
 begin
 // buttonedit buton cliklendiðinde tabloda konumlanýlacak kayýt için list açýyor.Bu listen kayýt
 //seçiliyor kod butonedite taným label kontrole yerleþiyor.
@@ -1546,6 +1583,21 @@ begin
   end
   else
      indexKaydiBul(varTostr(TcxCustomEdit(sender).EditingValue),TcxButtonEditKadir(sender).name);
+
+
+  if _pasifSebeb_ = '5'
+  Then begin
+    Disabled(self,True);
+    for i := 0 to self.ComponentCount - 1 do
+     begin
+       if (self.Components[i] is TPopupMenu)
+       then begin
+         PopupMenuEnabled(Self,TPopupMenu(self.Components[i]),False);
+         PopupMenuToToolBarEnabled(self,ToolBar1,TPopupMenu(self.Components[i]));
+       end;
+     end;
+
+  end;
 
 end;
 
@@ -2972,8 +3024,15 @@ end;
 procedure TGirisForm.FormResize(Sender: TObject);
 var
  Fr : Double;
+ W,H : Double;
 begin
-  Fr := min(ClientWidth/Sayfalar.Width,ClientHeight/Sayfalar.Height);
+ // W := ScreenWidth;
+ // H := ScreenWidth;
+
+  W := ClientWidth;
+ H := ClientHeight;
+
+  Fr := min(W/Sayfalar.Width,H/Sayfalar.Height);
  // pnlDurum.Left := round((Self.Width/2) - (pnlDurum.Width/2));
  // pnlDurum.Top := round((Self.ClientHeight/2) - (pnlDurum.Height/2));
   sayfalar.ScaleBy(Trunc(FR*100),100);
@@ -3012,12 +3071,21 @@ begin
        end;
   end;
 
-(*
-  if _pasifSebeb_ = 5
+
+  if _pasifSebeb_ = '5'
   Then begin
     Disabled(self,True);
+    for i := 0 to self.ComponentCount - 1 do
+     begin
+       if (self.Components[i] is TPopupMenu)
+       then begin
+         PopupMenuEnabled(Self,TPopupMenu(self.Components[i]),False);
+         PopupMenuToToolBarEnabled(self,ToolBar1,TPopupMenu(self.Components[i]));
+       end;
+     end;
+
   end;
-  *)
+
 
 
  // StringReplace(cxTab.Tabs[0].Caption,'Yükleniyor...','',[rfReplaceAll]);

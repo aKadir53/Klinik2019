@@ -52,6 +52,7 @@ object frmKiloOrder: TfrmKiloOrder
       Navigator.Buttons.Filter.Visible = False
       Navigator.Visible = True
       OnEditKeyDown = GridEkstreEditKeyDown
+      OnEditValueChanged = GridEkstreEditValueChanged
       DataController.DataSource = DataSource1
       DataController.Options = [dcoAnsiSort, dcoCaseInsensitive, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoImmediatePost]
       DataController.Summary.DefaultGroupSummaryItems = <>
@@ -372,7 +373,7 @@ object frmKiloOrder: TfrmKiloOrder
         Position.ColIndex = 11
         Position.RowIndex = 0
       end
-      object GridEkstreColumn4: TcxGridDBBandedColumn
+      object GridEkstreAtes: TcxGridDBBandedColumn
         DataBinding.FieldName = 'ates'
         PropertiesClassName = 'TcxCurrencyEditProperties'
         Properties.Alignment.Horz = taCenter

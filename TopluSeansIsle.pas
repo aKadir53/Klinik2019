@@ -19,7 +19,7 @@ uses
   cxGrid, cxLabel, cxMaskEdit, Vcl.ExtCtrls,dateUtils,kadir,GirisUnit,
   kadirType,  StrUtils ,ComObj,cxGridExportlink,pngimage,
   ComCtrls, (*OdemeBilgisiIslemleriTEST*)
-  kadirmedula3,
+  kadirmedula3, dxLayoutContainer,
   HizmetKayitIslemleriws,SOAPHTTPTrans,WinInet, GetFormClass,
   rxAnimate, rxGIFCtrl, datelbl, cxDataUtils, cxLookupEdit, cxDBLookupEdit,
   dxSkinBlack, dxSkinDarkRoom, dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans,
@@ -310,6 +310,8 @@ type
     GridListColumn11: TcxGridDBBandedColumn;
     cxGridLevel4: TcxGridLevel;
     ListeColumn9: TcxGridDBBandedColumn;
+    GridListColumn12: TcxGridDBBandedColumn;
+    P3: TMenuItem;
     procedure hastalar(durum : string);
     procedure btnListClick(Sender: TObject);
     procedure btnYazdirClick(Sender: TObject);
@@ -399,6 +401,8 @@ type
     procedure SeansOnay(sec : integer);
     procedure TopPanelButonClick(Sender: TObject);
     procedure T2Click(Sender: TObject);
+
+    procedure protokolDefteri;
 
     procedure MalzemeMedulaKaydetSil(_tag_ : integer);
     procedure TetkikleriMedulaKaydetSil(_tag_ : integer);
@@ -568,8 +572,8 @@ var
 begin
  //inherited;
 
-   TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
-   AnaForm.Doktorlar.Properties.Items;
+ //  TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
+  // AnaForm.Doktors.Properties.Items;
 
  if HizmetPage.ActivePage = SeanslarPage
  then begin
@@ -729,6 +733,12 @@ begin
          SeansKapat(yeniSiraNo,'hemsireImza');
        end;
 
+ 100 : begin
+        protokolDefteri;
+
+
+       end;
+
  -704234,-704230 : begin
              P704230_to_704230(inttostr(TMenuItem(sender).Tag));
            end;
@@ -766,6 +776,19 @@ begin
     SeansDetayToplamlarnGster1.Caption := 'Seans Detay Toplamlarýný Gizle'
  else
     SeansDetayToplamlarnGster1.Caption := 'Seans Detay Toplamlarýný Göster';
+
+end;
+
+procedure TfrmTopluSeans.protokolDefteri;
+var
+  sql : string;
+  TopluDataset : TDataSetKadir;
+begin
+
+          TopluDataset.Dataset0 := datalar.ADO_AktifSirket;
+          TopluDataset.Dataset1 := datalar.ADO_aktifSirketLogo;
+          TopluDataset.Dataset2 := cxGrid_Seans.Dataset;
+          PrintYap('PRD','Protokol Defteri','',TopluDataset,KAdirType.pTNone, frmTopluSeans);
 
 end;
 
@@ -1087,7 +1110,7 @@ begin
 //  ActiveControl := txtDonem;
 
    TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
-   AnaForm.Doktorlar.Properties.Items;
+   AnaForm.Doktors.Properties.Items;
 
 
    DevKurum := TcxImageComboKadir.Create(nil);
@@ -1098,6 +1121,12 @@ begin
    DevKurum.Filter := '';
    TcxImageComboBoxProperties(ListeDevKurum.Properties).Items :=
    DevKurum.Properties.Items;
+
+
+   setDataStringIC(self,'DoktorCombo','DoktorCombo',Kolon1,'BB',150,'DoktorlarT','Kod','Tanimi',DoktorlarFilter);
+   TdxLayoutGroup(FindComponent('dxLaDoktorCombo')).Visible := false;
+   TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
+   TcxImageComboKadir(FindComponent('DoktorCombo')).Properties.Items;
 
 
    TopPanel.Visible := True;
@@ -1829,6 +1858,9 @@ begin
 
 
  try
+   sql := 'exec sp_KanAlimSeansIsaretle @siraNo = ' + yeniSiraNo;
+
+   (*
    sql := ' update hareketler set KanAlindimi = 0 where dosyaNo = ' + QuotedStr(d) +
           ' and gelisNo = ' + g +
           ' update hasta_gelisler set KanAlimZamani =  NULL ' +
@@ -1841,9 +1873,10 @@ begin
 
           ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(tarih(_Tarih_)) +
           ' where dosyaNo = ' + QuotedStr(d) + ' and gelisNo = ' + g;
-
+     *)
 
    datalar.QueryExec(sql);
+
    ShowMessageSkin('Kan Alýnan Seans Yapýldý','','','info');
  except on e : exception do
   begin
@@ -2143,7 +2176,7 @@ begin
        Application.ProcessMessages;
        satir := GridTetkikler.Controller.SelectedRows[_row_].RecordIndex;
        adet :=  GridTetkikler.DataController.GetValue(satir,GridTetkikler.DataController.GetItemByFieldName('adet').Index);
-       islemRefNo := GridTetkikler.DataController.GetValue(satir,GridTetkikler.DataController.GetItemByFieldName('islemRefNo').Index);
+       islemRefNo := GridTetkikler.DataController.GetValue(satir,GridTetkikler.DataController.GetItemByFieldName('SIRANO').Index);
        islemRefNos :=  islemRefNos + ifThen(islemRefNos = '','',',') + islemRefNo;
    end;
 
@@ -2154,7 +2187,7 @@ begin
        Application.ProcessMessages;
        satir := GridMalzeme.Controller.SelectedRows[_row_].RecordIndex;
        adet :=  GridMalzeme.DataController.GetValue(satir,GridMalzeme.DataController.GetItemByFieldName('adet').Index);
-       islemRefNo := GridMalzeme.DataController.GetValue(satir,GridMalzeme.DataController.GetItemByFieldName('islemRefNo').Index);
+       islemRefNo := GridMalzeme.DataController.GetValue(satir,GridMalzeme.DataController.GetItemByFieldName('SIRANO').Index);
        islemRefNos :=  islemRefNos + ifThen(islemRefNos = '','',',') + islemRefNo;
    end;
 
@@ -2211,7 +2244,7 @@ begin
          begin
              Application.ProcessMessages;
              satir := GridTetkikler.Controller.SelectedRows[_row_].RecordIndex;
-             islemRefNo := GridTetkikler.DataController.GetValue(satir,GridTetkikler.DataController.GetItemByFieldName('islemRefNo').Index);
+             islemRefNo := varToStr(GridTetkikler.DataController.GetValue(satir,GridTetkikler.DataController.GetItemByFieldName('SIRANO').Index));
            //  islemRefNos :=  islemRefNos + ifThen(islemRefNos = '','',',') + islemRefNo;
 
              ENabizHizmetSil(HastaneRefNo,sysTakipNo,eNabizSonuc,islemRefNo);
@@ -2226,7 +2259,7 @@ begin
        begin
            Application.ProcessMessages;
            satir := GridMalzeme.Controller.SelectedRows[_row_].RecordIndex;
-           islemRefNo := GridMalzeme.DataController.GetValue(satir,GridMalzeme.DataController.GetItemByFieldName('islemRefNo').Index);
+           islemRefNo := GridMalzeme.DataController.GetValue(satir,GridMalzeme.DataController.GetItemByFieldName('SIRANO').Index);
            //islemRefNos :=  islemRefNos + ifThen(islemRefNos = '','',',') + islemRefNo;
 
            ENabizHizmetSil(HastaneRefNo,sysTakipNo,eNabizSonuc,islemRefNo);
@@ -2312,12 +2345,13 @@ var
    mesajTipi,HastaneRefNo,eNabizSonuc,islemRefNo,islemRefNos,sysTakipNo : string;
    _d_,_g_,sonuc,TakipNo,BasvuruNo,islemSiraNo,msg,islemSiraNos : string;
    _row_ ,satir ,adet,_msg_ ,i , hizmetOk,tetkikOk,radOk: integer;
+   kanalindimi : string;
 begin
 
    DurumGoster(True,True);
    pBar.Properties.Max := GridList.Controller.SelectedRowCount;
    pBar.Position := 0;
-
+   kanalindimi := '0';
    try
      for _row_ := 0 to GridList.Controller.SelectedRowCount - 1 do
      begin
@@ -2329,7 +2363,16 @@ begin
            BasvuruNo := varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('basvuruNo').Index));
            sysTakipNo := varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('sysTakipNo').Index));
            islemSiraNo := varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('sysTakipNo').Index));
+           kanalindimi := varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('KanAlindimi').Index));
            hizmetOk := 0; tetkikOk := 0; radOk := 0;
+
+           if kanalindimi = '0'
+           then begin
+             txtLog.Lines.Add('Medula Hizmet Kayýt : ' + takipno + ' - Kan Alým Zamaný Bulunamadý , Kan alýnan seans belirtilmemiþ');
+             Continue;
+           end;
+
+
            if _tag_ = MedulaKaydet then
            begin
                  if datalar.eNabizKayit = 'Evet'
@@ -2386,7 +2429,7 @@ begin
                   txtLog.Lines.Add('islemSiraNo Boþ');
            end;
 
-            sleep(1000);
+           // sleep(1000);
             pBar.Position := pBar.Position  + 1;
      end; // for end
 
@@ -3233,7 +3276,7 @@ begin
        Doktorlar.TableName := 'DoktorlarT';
        Doktorlar.DisplayField := 'tanimi';
        Doktorlar.ValueField := 'kod';
-       Doktorlar.Filter := ' durum = ''Aktif'' and sirketKod = ' + QuotedStr(datalar.AktifSirket);
+       Doktorlar.Filter := DoktorlarFilter;
        TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
        Doktorlar.Properties.Items;
      finally
@@ -3243,7 +3286,7 @@ begin
    else
    begin
       TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
-      AnaForm.Doktorlar.Properties.Items;
+      AnaForm.Doktors.Properties.Items;
    end;
 
 end;

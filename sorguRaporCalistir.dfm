@@ -24,7 +24,6 @@ object frmRaporCalistir: TfrmRaporCalistir
     Align = alBottom
     Color = clBackground
     TabOrder = 0
-    ExplicitTop = 216
     object txtinfo: TLabel
       Left = 7
       Top = 11

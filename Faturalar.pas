@@ -531,7 +531,7 @@ begin
              Then
                ShowMessageSkin('Faturanýn e-arþiv Durumu Silmeye Uygun Deðildir','','','info')
              else
-               if mrYES = ShowMessageSkin('Fatura Silinecek Eminmisiniz ?','','','msg')
+               if mrYES = ShowMessageSkin('Fatura Ýptal Edilecek Eminmisiniz ?','','','msg')
                then
                 Fatura(faturaSil);
         end;
@@ -572,6 +572,9 @@ begin
   chkList.Properties.Items.Clear;
   ii := chkList.Properties.Items.Add;
   ii.Caption := 'Fatura Detayý Göster';
+  ii := chkList.Properties.Items.Add;
+  ii.Caption := 'Ýptalleri Göster';
+  chkList.Width := 300;
 
   GridFaturalar.DataController.DataSource := DataSource;
   FaturaDetayGrid.Dataset.Connection := Datalar.ADOConnection2;

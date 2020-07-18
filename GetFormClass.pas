@@ -116,6 +116,7 @@ uses
     DLLTakipNo ,
     HastaSeansIsle,
     SKSKriterTanim,
+    TIKriterTanim,
     takipOkuBilgisi,
     raporDetay,
     TahlilTakipListesi,
@@ -372,6 +373,7 @@ begin
    TagfrmHastaListeD : Result := TfrmHastaListeD;
    TagfrmHastaSeans : Result := TfrmHastaSeans;
    TagfrmSKSKriter : Result := TfrmSKSKriter;
+   TagfrmTIKriter : Result := TfrmTIKriter;
    TagfrmTakipBilgisiOku : Result := TfrmTakipBilgisiOku;
    TagfrmRaporDetay : Result := TfrmRaporDetay;
    TagfrmTahliltakip : Result := TfrmTahliltakip;
@@ -499,6 +501,7 @@ begin
    TagfrmHastaListeD : Result := frmHastaListeD;
    TagfrmHastaSeans : Result := frmHastaSeans;
    TagfrmSKSKriter : Result := frmSKSKriter;
+   TagfrmTIKriter : Result := frmTIKriter;
    TagfrmTakipBilgisiOku : Result := frmTakipBilgisiOku;
    TagfrmRaporDetay : Result := frmRaporDetay;
    TagfrmTahliltakip : Result := frmTahliltakip;
@@ -979,6 +982,7 @@ begin
     TagfrmTopluGelis : Application.CreateForm(TfrmTopluGelis,frmTopluGelis);
     TagfrmHastaSeans : Application.CreateForm(TfrmHastaSeans,frmHastaSeans);
     TagfrmSKSKriter : Application.CreateForm(TfrmSKSKriter,frmSKSKriter);
+    TagfrmTIKriter : Application.CreateForm(TfrmTIKriter,frmTIKriter);
     TagfrmTakipBilgisiOku : Application.CreateForm(TfrmTakipBilgisiOku,frmTakipBilgisiOku);
     TagfrmRaporDetay : Application.CreateForm(TfrmRaporDetay,frmRaporDetay);
     TagfrmKanTetkikTakip : Application.CreateForm(TfrmKanTetkikTakip,frmKanTetkikTakip);

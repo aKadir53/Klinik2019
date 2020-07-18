@@ -524,7 +524,7 @@ object frmFaturalar: TfrmFaturalar
     end
     object S2: TMenuItem
       Tag = -27
-      Caption = 'Sil'
+      Caption = 'Sil (Fatura '#304'ptal)'
       ImageIndex = 42
       OnClick = cxButtonCClick
     end

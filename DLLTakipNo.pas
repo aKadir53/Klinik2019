@@ -83,14 +83,43 @@ implementation
 function TFrmTakipNo.Init(Sender: TObject) : Boolean;
 begin
    txtTarih.Date := tarihyap(_provizyonTarihi_);
+   txtTarih.Properties.ReadOnly := True;
    txtSigortaliTuru.EditValue := _SigortaliTur_;
    txtDevredilenKurum.EditValue := _DevKurum_;
    txtTcKimlikNo.EditValue := _TC_;
    txtYUPASS.EditValue := _Yupass_;
+   txtYUPASS.Properties.ReadOnly := True;
    txtBransKodu.EditValue := _BransKodu_;
    txtTedaviTuru.EditValue := _TedaviTuru_;
 
 
+   if varTostr(txtDevredilenKurum.EditValue) = '99'
+   then begin
+      akipAl1.Enabled := False;
+      PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+      pnlYardimHakki.Visible := True;
+      setDataStringKontrol(self,pnlYardimHakki, 'pnlYardimHakki','',Sayfa3_Kolon1,'',410,220,alClient);
+      SayfaCaption('Provizyon Giriþ','Provizyon Cevap','Yurt Dýþý Yardým Hakký','','',2);
+
+      if varToStr(txtYUPASS.EditValue) = ''
+      then begin
+         ShowMessageSkin('Yurt Dýþý Sigortalý Hastalarda Yupass Zorunludur',
+         'Hasta Kartýnda Geliþ Satýrý Üzerinde,',
+         '[Gelis Düzenle] Yaparak Yupass Bilgisini Giriniz','info');
+         Result := False;
+         exit;
+      end;
+   end
+   else
+   begin
+    akipAl1.Enabled := True;
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+    SayfaCaption('Provizyon Giriþ','Provizyon Cevap','','','');
+    pnlYardimHakki.Visible := False;
+   end;
+
+
+  (*
   if txtYUPASS.EditValue <> '' then
   begin
    // TdxLayoutItem(FindComponent('dxLAtxtYUPASS')).Visible := True;
@@ -106,7 +135,7 @@ begin
    // TdxLayoutItem(FindComponent('dxLAtxtYUPASS')).Visible := false;
    // txtYUPASS.Visible := false;
   end;
-
+    *)
 
   FormInputZorunluKontrolPaint(self,$00FCDDD1);
   Result := True;
@@ -153,7 +182,7 @@ begin
           if not datalar.memData_yurtDisiYardimHakki.Eof
           then begin
            datalar.HastaKabulWS.GirisParametre.yardimHakkiID :=  datalar.memData_yurtDisiYardimHakki.FieldByName('id').AsInteger;  //ClientDataSet1.FieldByName('id').AsInteger
-           datalar.HastaKabulWS.GirisParametre.hastaTCKimlikNo := txtYUPASS.EditValue;
+           datalar.HastaKabulWS.GirisParametre.hastaTCKimlikNo := varToStr(txtYUPASS.EditValue);
           end
           else begin
            datalar.HastaKabulWS.GirisParametre.yardimHakkiID := 0;
@@ -277,8 +306,15 @@ end;
 
 procedure TfrmTakipNo.btnYardimHakkiClick(Sender: TObject);
 begin
-  if txtYUPASS.Text <> '' then
-   YurtDisiYardimHakkiGetirSorgula(txtYUPASS.Text,txtTarih.Text)
+  if txtYUPASS.Text <> ''
+  then begin
+    YurtDisiYardimHakkiGetirSorgula(txtYUPASS.Text,txtTarih.Text);
+    if datalar.memData_yurtDisiYardimHakki.RecordCount > 0
+    Then begin
+      akipAl1.Enabled := True;
+      PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+    end;
+  end
   else
    ShowMessageSkin('Yupass Bilgisi Girilmemiþ','Lütfen Yupass Bilgisini Girip ,tekrar deneyin','','info');
 end;

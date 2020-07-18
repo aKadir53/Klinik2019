@@ -409,6 +409,19 @@ begin
    if not inherited Init(Sender) then exit;
    txtSigortaliTuru.Filter := '';
    txtDevredilenKurum.Filter := '';
+
+   txtTakipTarihi.Date := Date;
+   txtTcKimlikNoAra.Text := _TC_;
+   txtTel.Text := _mobilTel_;
+   txtAdres.Text := ifThen(_adres_= '','.',_adres_);
+
+   if _Tc_ <> ''
+   then
+    btnKabul.Visible := False
+   else
+    btnKabul.Visible := True;
+
+
    Result := True;
 end;
 

@@ -75,8 +75,8 @@ object frmDoktorlar: TfrmDoktorlar
     end
   end
   object GridFirmalar: TcxGridKadir
-    Left = 24
-    Top = 167
+    Left = 16
+    Top = 162
     Width = 721
     Height = 252
     Font.Charset = TURKISH_CHARSET
@@ -455,5 +455,23 @@ object frmDoktorlar: TfrmDoktorlar
       GridView = DBGrid
       Options.DetailFrameColor = clHighlight
     end
+  end
+  object chkSirketler: TcxCheckGroupKadir
+    Left = 119
+    Top = 24
+    Caption = 'chkSirketler'
+    EditValue = '0'
+    Properties.ClearKey = 46
+    Properties.EditValueFormat = cvfStatesString
+    Properties.ImmediatePost = True
+    Properties.Items = <
+      item
+        Caption = 'xxx'
+      end>
+    TabOrder = 2
+    TumuSecili = False
+    OrderField = value
+    Height = 41
+    Width = 185
   end
 end

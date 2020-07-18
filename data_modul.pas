@@ -386,6 +386,7 @@ type
     RxTahlilSonucaciklama: TStringField;
     MalAlim: THTTPRIO;
     ITS: THTTPRIO;
+    IdHTTP1: TIdHTTP;
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
     procedure TakipHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;
@@ -506,6 +507,7 @@ type
    KimlikDogrulamaOlmadanSeansOnayla : string;
    KurumBransi : string;
    eNabizKayit : string;
+   MedulayaGidenKaydiKitle : String;
    IlacTedavisi : TIlacTedavi;
    DokumanRev : TDokumanRevDetay;
    HemsireTalimat : THemsireTalimat;
@@ -515,6 +517,10 @@ type
    UzmanMuayeneUpdate : TUzmanMuayeneForm;
    MedEczaneIlac : TReceteIlacBilgisi;
    AppalicationVer ,yvKversiyon : integer;
+   RaporSablon : TRaporSablon;
+   TetkikTarihi : String;
+   HastaYatis : THospitalizasyon;
+   messaboxAcik : Boolean;
 
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
     function MasterBaglan : Boolean; overload;
@@ -535,6 +541,8 @@ type
 var
   DATALAR: TDATALAR;
   CommandLog : TstringList;
+
+
 
 implementation
 
@@ -732,17 +740,26 @@ begin
         }
 
         if not UpdateThermo (10, iThermo, 'e-fatura bilgileri') then Exit;
+
         if WebErisimBilgiOrtak('EF','00') = 'Gerçek'
         Then begin
           efaturaURL := WebErisimBilgiOrtak('EF','02');
-          efaturaUsername := WebErisimBilgiOrtak('EF','03');
-          efaturaSifre := WebErisimBilgiOrtak('EF','04');
+
+           efaturaUsername := WebErisimBilgiFirma('EF','03');
+          efaturaSifre := WebErisimBilgiFirma('EF','04');
+
+        //  efaturaUsername := WebErisimBilgiOrtak('EF','03');
+        //  efaturaSifre := WebErisimBilgiOrtak('EF','04');
         end
         Else
         begin
-          efaturaURL := WebErisimBilgi('EF','05');
-          efaturaUsername := WebErisimBilgi('EF','06');
-          efaturaSifre := WebErisimBilgi('EF','07');
+          efaturaURL := WebErisimBilgiOrtak('EF','05');
+          efaturaUsername := WebErisimBilgiOrtak('EF','06');
+          efaturaSifre := WebErisimBilgiOrtak('EF','07');
+
+          //efaturaURL := WebErisimBilgi('EF','05');
+         // efaturaUsername := WebErisimBilgi('EF','06');
+         // efaturaSifre := WebErisimBilgi('EF','07');
         end;
         portalURL := WebErisimBilgiOrtak('EF','08');
         portalUSer := WebErisimBilgiOrtak('EF','09');

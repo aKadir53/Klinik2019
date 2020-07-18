@@ -514,27 +514,38 @@ object frmHastaListeD: TfrmHastaListeD
       FormId = 0
       object He1: TMenuItemModul
         Tag = 10
-        Caption = 'Hepatitler Dahil'
-        OnClick = H1Click
+        Caption = 'T'#252'm Hastalar'
+        OnClick = cxButtonCClick
         FormId = 0
       end
       object He2: TMenuItemModul
         Tag = 11
-        Caption = 'Hepatitler Hari'#231
-        OnClick = H1Click
+        Caption = 'Se'#231'ili Hasta'
+        OnClick = cxButtonCClick
         FormId = 0
       end
       object He3: TMenuItemModul
         Caption = 'Hepatit / Tele'
         Visible = False
-        OnClick = H1Click
         FormId = 0
       end
+    end
+    object T2: TMenuItem
+      Tag = 190
+      Caption = 'Tetkik Tedavi Kart'#305
+      ImageIndex = 47
+      OnClick = cxButtonCClick
     end
     object HastaYllkTekikCetveli1: TMenuItem
       Tag = -37
       Caption = 'Hasta Y'#305'll'#305'k Tekik Cetveli'
       ImageIndex = 45
+      OnClick = cxButtonCClick
+    end
+    object T3: TMenuItem
+      Tag = -90
+      Caption = 'Y'#305'll'#305'k Tetkik '#304'la'#231' De'#287'erlendirme'
+      ImageIndex = 62
       OnClick = cxButtonCClick
     end
     object A1: TMenuItem
@@ -586,6 +597,12 @@ object frmHastaListeD: TfrmHastaListeD
       Tag = -111
       Caption = 'E-Nab'#305'z Doktor Eri'#351'im'
       ImageIndex = 133
+      OnClick = cxButtonCClick
+    end
+    object H2: TMenuItem
+      Tag = -112
+      Caption = 'Hasta Sorgula'
+      ImageIndex = 3
       OnClick = cxButtonCClick
     end
   end

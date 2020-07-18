@@ -21,7 +21,7 @@ uses
   cxLabel, cxStyles, dxSkinscxPCPainter, cxCustomData, cxFilter, cxData,
   cxDataStorage, DB, cxDBData, cxGridLevel, cxClasses, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid, KadirLabel,
-  cxImageComboBox, cxPCdxBarPopupMenu, cxMemo, cxPC , Data_Modul;
+  cxImageComboBox, cxPCdxBarPopupMenu, cxMemo, cxPC , Data_Modul,StrUtils;
 
 type
   TfrmTopluGelis = class(TGirisForm)
@@ -542,12 +542,18 @@ begin
            TC := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('TCKIMLIKNO').Index);
            Brans := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Brans').Index);
            Tel := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('EV_TEL1').Index);
+           Tel := trim(StringReplace(StringReplace(StringReplace(Tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+
            Adres := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('EV_ADRES').Index);
            provizyonTarihi := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('provizyonTarihi').Index);
 
           sql := 'select * from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and isnull(TakipNO,'''') = ' + QuotedStr('');
+          ado := datalar.QuerySelect(sql);
           datalar.HastaKabulWS.Cevap := nil;
-          if not datalar.QuerySelect(sql).Eof
+          datalar.HastaKabulWS.SysTakipNo := '';
+          datalar.HastaKabulWS.SysTakipNoMsj := '';
+          datalar.HastaKabulWS.SysTakipNoCevapMsj := '';
+          if not ado.Eof
           then begin
              datalar.HastaKabulWS.GirisParametre.saglikTesisKodu := datalar._kurumKod;
              datalar.HastaKabulWS.GirisParametre.takipTipi := 'N';
@@ -565,7 +571,27 @@ begin
 
              datalar.HastaKabulWS.UserName := datalar._username;
              datalar.HastaKabulWS.Password := datalar._sifre;
+             datalar.HastaKabulWS.saglikNetUsername := datalar._userSaglikNet2_;
+             datalar.HastaKabulWS.salikNetPassword := datalar._passSaglikNet2_;
+
+             (*
+             //systakipno alma iþlemimi
+             datalar.HastaKabulWS.SysTakipNoMsj := '';
+             datalar.HastaKabulWS.SysTakipAl := True;
+
+             if ado.FieldByName('sysTakipNo').AsString = ''
+             then begin
+               datalar.HastaKabulWS.HastaneRefNo := ado.FieldByName('SIRANO').AsString;
+               sql := 'exec sp_SaglikNetOnlineHastaKayitXML ' + QuotedStr(dosyaNo) + ',' + gelisNo;
+               datalar.HastaKabulWS.SysTakipNoMsj := datalar.QuerySelect(sql).FieldByName('SYSMessage').AsString;
+             end
+             else
+              datalar.HastaKabulWS.SysTakipAl := False;
+             //systakipno alma iþlemimi
+               *)
              datalar.HastaKabulWS.TakipAl_3KimlikDorulama;
+
+             HastaKayitSonucYaz(datalar.HastaKabulWS.S0,datalar.HastaKabulWS.S1,datalar.HastaKabulWS.S2,datalar.HastaKabulWS.HastaneRefNo);
 
              if datalar.HastaKabulWS.Cevap.sonuckodu = '0543'
              then begin
@@ -589,10 +615,21 @@ begin
                     sql := 'update Hasta_gelisler ' +
                            ' set TakipNo = ' + QuotedStr(datalar.HastaKabulWS.Cevap.TakipNo) +
                            ',basvuruNo = ' + QuotedStr(datalar.HastaKabulWS.Cevap.hastaBasvuruNo) +
+
+                           ifThen(datalar.HastaKabulWS.SysTakipNo = '','',',sysTakipNo = ' + QuotedStr(datalar.HastaKabulWS.SysTakipNo)) +
+
                            ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
 
-                    datalar.QueryExec(ado,sql);
-                    txtLog.Lines.Add(AD + ' : ' + datalar.HastaKabulWS.Cevap.TakipNo + ' Baþvuru : ' + datalar.HastaKabulWS.Cevap.hastaBasvuruNo);
+                    datalar.QueryExec(sql);
+                    txtLog.Lines.Add(AD + ' : ' + datalar.HastaKabulWS.Cevap.TakipNo +
+                                     ' Baþvuru : ' + datalar.HastaKabulWS.Cevap.hastaBasvuruNo + ' - ' +
+                                     ifThen(datalar.HastaKabulWS.SysTakipAl = True,
+                                             'SysTakipNo : ' + datalar.HastaKabulWS.SysTakipNo + ' - Sonuc : ' + datalar.HastaKabulWS.SysTakipNoCevapMsj
+                                     ));
+
+
+
+
              End
              else
                     txtLog.Lines.Add(AD + ' : ' + datalar.HastaKabulWS.Cevap.sonucMesaji);
@@ -605,6 +642,7 @@ begin
    finally
      DurumGoster(False);
      Takipsor.Enabled := True;
+     ado.free;
    end;
 end;
 

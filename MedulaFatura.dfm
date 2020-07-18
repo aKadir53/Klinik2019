@@ -1183,7 +1183,7 @@ object frmMedulaFatura: TfrmMedulaFatura
       end
       object D1: TMenuItem
         Caption = 'D'#246'nem Sonland'#305'rma Portali'
-        ImageIndex = 103
+        ImageIndex = 32
         OnClick = D1Click
       end
     end
@@ -1291,6 +1291,12 @@ object frmMedulaFatura: TfrmMedulaFatura
       ImageIndex = 45
       OnClick = cxButtonCClick
     end
+    object M1: TMenuItem
+      Tag = -30
+      Caption = 'Medula Epikriz'
+      ImageIndex = 3
+      OnClick = cxButtonCClick
+    end
   end
   object PopupMenu2: TPopupMenu
     Left = 56
@@ -1368,5 +1374,12 @@ object frmMedulaFatura: TfrmMedulaFatura
   object DataSource1: TDataSource
     Left = 72
     Top = 616
+  end
+  object popupYil: TPopupMenu
+    Left = 232
+    Top = 128
+    object N3: TMenuItem
+      Caption = 'N'
+    end
   end
 end

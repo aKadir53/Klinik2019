@@ -85,7 +85,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Navigator.Buttons.GotoBookmark.Visible = True
             Navigator.Buttons.Filter.Visible = True
             OnFocusedRecordChanged = gridIlacSarfFocusedRecordChanged
-            DataController.DataModeController.GridMode = True
             DataController.DataSource = DataSource1
             DataController.Filter.Options = [fcoCaseInsensitive, fcoShowOperatorDescription]
             DataController.Filter.Active = True
@@ -102,8 +101,8 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Filtering.ColumnFilteredItemsList = True
             FilterRow.InfoText = 'Filitre'
             FilterRow.SeparatorColor = 3155860
+            FilterRow.Visible = True
             FilterRow.ApplyChanges = fracImmediately
-            NewItemRow.Visible = True
             OptionsBehavior.FocusCellOnTab = True
             OptionsBehavior.IncSearch = True
             OptionsView.NoDataToDisplayInfoText = 'Listelenecek Etken Madde Yok'
@@ -118,6 +117,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               DataBinding.FieldName = 'kod'
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 89
             end
             object gridIlacSarftanimi: TcxGridDBColumn
@@ -125,6 +125,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               DataBinding.FieldName = 'tanimi'
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Width = 307
             end
             object gridIlacSarfTurKodu: TcxGridDBColumn
@@ -757,10 +758,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 2
-          ExplicitTop = 28
-          ExplicitWidth = 894
-          ExplicitHeight = 520
           object ilacList: TcxGridDBTableView
             Navigator.Buttons.First.Visible = True
             Navigator.Buttons.PriorPage.Visible = True
@@ -928,7 +925,6 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Style.Color = 8454143
             TabOrder = 1
             OnKeyDown = Edit1KeyDown
-            ExplicitWidth = 890
             Width = 888
           end
         end

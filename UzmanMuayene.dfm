@@ -556,10 +556,6 @@ object frmUzmanMuayene: TfrmUzmanMuayene
         Caption = 'Epikriz A'#231#305'klama'
         ImageIndex = 0
         TabVisible = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object cxGroupBoxEpikrizAck: TcxGroupBox
           Left = 0
           Top = 0
@@ -1156,8 +1152,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 392
-    Top = 248
+    Left = 456
+    Top = 256
     object K1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'

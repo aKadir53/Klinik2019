@@ -36,7 +36,7 @@ type
     PopupMenu2: TPopupMenu;
     KurumFaturacmali1: TMenuItem;
     KurumFatura1: TMenuItem;
-    N1: TMenuItem;
+    //N1: TMenuItem;
     FaturaptalTm1: TMenuItem;
     FaturaOkuTm1: TMenuItem;
     N2: TMenuItem;
@@ -169,6 +169,9 @@ type
     cxTabSheet1: TcxTabSheet;
     FaturaListColumn5: TcxGridDBColumn;
     txtFaturaEpikriz: TcxMemo;
+    M1: TMenuItem;
+    popupYil: TPopupMenu;
+    N3: TMenuItem;
     procedure TopPanelButonClick(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure txtKurumTipiChange(Sender: TObject);
@@ -235,7 +238,7 @@ var
   islemTip , OnayTip , SgkBildir : string;
 
 implementation
-uses AnaUnit,rapor,MedEczane;
+uses AnaUnit,rapor,MedEczane, HastaListe;
 
 {$R *.dfm}
 
@@ -243,12 +246,16 @@ function TfrmMedulaFatura.Init(Sender: TObject) : Boolean;
 begin
  inherited;
 
+   txtTopPanelTarih1.Properties.ReadOnly := True;
+   txtTopPanelTarih2.Properties.ReadOnly := True;
    txtDonemTopPanel.Yil := copy(tarihal(date()),1,4);
    txtDonemTopPanel.EditValue := copy(tarihal(date()),5,2);
    KurumTipTopPanel.ItemIndex := 1;
    chkList.EditValue := '10';
 
    chkList.Properties.OnEditValueChanged := TopPanelPropertiesChange;
+
+
 
    Result := True;
 end;
@@ -348,6 +355,10 @@ begin
 
 
    inherited;
+
+
+
+//  Bilgiler;
 
 //
 end;
@@ -477,6 +488,19 @@ inherited;
             if Form <> nil then Form.ShowModal;
           end;
 
+    -30 : begin
+           if FindTab(AnaForm.sayfalar,TagfrmTopluEpikriz)
+           Then begin
+             Form := TGirisForm(FormClassType(TagfrmTopluEpikriz));
+             TGirisForm(FormClassType(TagfrmTopluEpikriz))._dosyaNO_ := '';
+             TGirisForm(FormClassType(TagfrmTopluEpikriz))._TC_ := '';
+             TGirisForm(FormClassType(TagfrmTopluEpikriz)).Init(Form);
+           end
+           Else begin
+            Form := FormINIT(TagfrmTopluEpikriz,self,'',NewTab(AnaForm.sayfalar,TagfrmTopluEpikriz),ikHayir,'Giriþ');
+            if Form <> nil then Form.show;
+           end;
+          end;
   end;
 
 
@@ -585,6 +609,12 @@ begin
    pBar.Properties.Max := FaturaList.Controller.SelectedRowCount;
    pBar.Position := 0;
    try
+      if FaturaList.Controller.SelectedRowCount = 1
+      then
+       datalar.FaturaKayitWS.BeklemeSuresi := 0
+      else
+       datalar.FaturaKayitWS.BeklemeSuresi := 1;
+
       for x := 0 to FaturaList.Controller.SelectedRowCount - 1 do
       begin
          pBar.Position := pBar.Position + 1;
@@ -598,6 +628,18 @@ begin
 
           _tn_ := varToStr(FaturaList.DataController.GetValue(
                                           FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('takipNo').Index));
+
+          if varToStr(FaturaList.DataController.GetValue(
+            FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('MedulaEpikriz').Index))
+           = ''
+          Then begin
+             if mrNo = ShowMessageSkin('Fatura Epikriz Boþ','Devam Etmek Ýstiyor musunuz?','','msg')
+             Then begin
+                M1.Click;
+                Break;
+             end;
+          End;
+
 
          if _Tag_ = -1  // Fatura Teslim
          Then Begin
@@ -646,61 +688,62 @@ begin
 
          end;
 
-
-        if datalar.FaturaKayitWS.FaturaCevap.sonucKodu = '0000'
-        Then Begin
-             try
-              // FaturaList.Controller.FocusedRow := FaturaList.Controller.SelectedRows[x];
-               FaturaList.DataController.SetValue(
-                                          FaturaList.Controller.SelectedRows[x].RecordIndex,
-                                          FaturaList.DataController.GetItemByFieldName('faturaTutar').Index,datalar.FaturaKayitWS.FaturaCevap.faturaTutari);
-            //   FaturaList.DataController.SetValue(
-           //                               FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('Tutar').Index,
-            //                              (datalar.FaturaKayitWS.FaturaCevap.faturaTutari  - roundTo((datalar.FaturaKayitWS.faturacevap.faturaTutari/1.08),2)));
-               if tip = ',GSSFaturaTeslimNo = '
-               Then Begin
+        if Assigned(datalar.FaturaKayitWS.FaturaCevap)
+        then
+          if datalar.FaturaKayitWS.FaturaCevap.sonucKodu = '0000'
+          Then Begin
+               try
+                // FaturaList.Controller.FocusedRow := FaturaList.Controller.SelectedRows[x];
                  FaturaList.DataController.SetValue(
-                                          FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('GSSFaturaTeslimNo').Index,
-                                          datalar.FaturaKayitWS.FaturaCevap.faturaTeslimNo);
-               end;
-               FaturaList.DataController.SetValue(
-                                          FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('faturaTarihi').Index,
-                                          txtTopPanelTarih2.GetValue);
-             except
-             end;
-
-
-               txtLog.Lines.Add(datalar.FaturaKayitWS.FaturaCevap.hastaBasvuruNo+' ; ' + datalar.FaturaKayitWS.FaturaCevap.sonucMesaji);
-
-               if length(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari) > 0
-               then begin
-
-                 sql := 'delete from FaturaHizmetDetayTutarOku where takipNo = ' + QuotedStr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipNo);
-                 datalar.QueryExec(sql);
-
-                 for  i := 0 to length(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari) - 1 do
-                 begin
-                  try
-                    txtLog.Lines.Add('Takip No : ' + datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipNo +
-                                     ' Takip Tutar = ' + floattostr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipToplamTutar) +
-                                     ' [' + datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemSiraNo + ' = ' +
-                                     floattostr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemTutari) + ']');
-
-                    sql := //'delete from FaturaHizmetDetayTutarOku where islemsiraNo = ' + QuotedStr(FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemSiraNo) +
-                           ' insert into FaturaHizmetDetayTutarOku (takipNo,islemsiraNo,tutar) '+
-                           ' values(' + QuotedStr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipNo) + ',' +
-                                        QuotedStr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemSiraNo) + ',' +
-                                        floattostr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemTutari) + ')';
-                    datalar.QueryExec(sql);
-                  except end;
+                                            FaturaList.Controller.SelectedRows[x].RecordIndex,
+                                            FaturaList.DataController.GetItemByFieldName('faturaTutar').Index,datalar.FaturaKayitWS.FaturaCevap.faturaTutari);
+              //   FaturaList.DataController.SetValue(
+             //                               FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('Tutar').Index,
+              //                              (datalar.FaturaKayitWS.FaturaCevap.faturaTutari  - roundTo((datalar.FaturaKayitWS.faturacevap.faturaTutari/1.08),2)));
+                 if tip = ',GSSFaturaTeslimNo = '
+                 Then Begin
+                   FaturaList.DataController.SetValue(
+                                            FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('GSSFaturaTeslimNo').Index,
+                                            datalar.FaturaKayitWS.FaturaCevap.faturaTeslimNo);
                  end;
-                 FaturaCevapYaz(datalar.FaturaKayitWS.FaturaCevap);
-
+                 FaturaList.DataController.SetValue(
+                                            FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('faturaTarihi').Index,
+                                            txtTopPanelTarih2.GetValue);
+               except
                end;
-        End
-        Else Begin
-            txtLog.Lines.Add(datalar.FaturaKayitWS.FaturaCevap.hastaBasvuruNo+' ; ' + datalar.FaturaKayitWS.FaturaCevap.sonucMesaji + msj);
-        End;
+
+
+                 txtLog.Lines.Add(datalar.FaturaKayitWS.FaturaCevap.hastaBasvuruNo+' ; ' + datalar.FaturaKayitWS.FaturaCevap.sonucMesaji);
+
+                 if length(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari) > 0
+                 then begin
+
+                   sql := 'delete from FaturaHizmetDetayTutarOku where takipNo = ' + QuotedStr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipNo);
+                   datalar.QueryExec(sql);
+
+                   for  i := 0 to length(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari) - 1 do
+                   begin
+                    try
+                      txtLog.Lines.Add('Takip No : ' + datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipNo +
+                                       ' Takip Tutar = ' + floattostr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipToplamTutar) +
+                                       ' [' + datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemSiraNo + ' = ' +
+                                       floattostr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemTutari) + ']');
+
+                      sql := //'delete from FaturaHizmetDetayTutarOku where islemsiraNo = ' + QuotedStr(FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemSiraNo) +
+                             ' insert into FaturaHizmetDetayTutarOku (takipNo,islemsiraNo,tutar) '+
+                             ' values(' + QuotedStr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].takipNo) + ',' +
+                                          QuotedStr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemSiraNo) + ',' +
+                                          floattostr(datalar.FaturaKayitWS.FaturaCevap.faturaDetaylari[0].islemDetaylari[i].islemTutari) + ')';
+                      datalar.QueryExec(sql);
+                    except end;
+                   end;
+                   FaturaCevapYaz(datalar.FaturaKayitWS.FaturaCevap);
+
+                 end;
+          End
+          Else Begin
+              txtLog.Lines.Add(datalar.FaturaKayitWS.FaturaCevap.hastaBasvuruNo+' ; ' + datalar.FaturaKayitWS.FaturaCevap.sonucMesaji + msj);
+          End;
         //sleep(2000);
 
       end; // for end
@@ -739,6 +782,7 @@ begin
    //  HizmetDetayKodToplam;
    //  RenkKontrol;
 end;
+
 
 
 procedure TfrmMedulaFatura.FaturadanCikar;
@@ -855,6 +899,10 @@ begin
    r := length(Cvp.faturaDetaylari);
    for j := 0 to r - 1 do
    begin
+
+      birimFiyat := datalar.QuerySelect('select top 1 round(tutar/1.08,4) Tutar from FaturaHizmetDetayTutarOku where takipno = ' +
+                        QuotedStr(Cvp.faturaDetaylari[j].takipNo) + ' and tutar > 0').FieldByName('tutar').AsFloat;
+
       TNo := Cvp.faturaDetaylari[j].takipNo;
       teslimNo := Cvp.faturaTeslimNo;
       Ftarihi := txtTopPanelTarih2.GetValue;
@@ -863,9 +911,9 @@ begin
       kdv := 8;
      // kdvTutar := faturaTutar - tutar;
       if teslimNo = '0' Then teslimNo := '';
-      sql := 'update kurumfatura set tutar = ' + floattostr(tutar) +
-             ',faturatutar = ' + floattostr(faturaTutar) +
-             ',kdvtutar = ' + floattostr(kdvTutar) +
+      sql := 'update kurumfatura set ' + //tutar = ' + floattostr(tutar) +
+             'faturatutar = ' + floattostr(faturaTutar) +
+            // ',kdvtutar = ' + floattostr(kdvTutar) +
              ',GssFaturaTeslimNo = ' + QuotedStr(teslimNo) +
              ',FaturaTarihi = ' + QuotedStr(Ftarihi) +
              ',birimFiyat = ' + floattostr(BirimFiyat) +
@@ -1065,6 +1113,7 @@ var
    state : boolean;
 begin
      DurumGoster;
+     _stop := 1;
      try
          for x := 0 to FaturaList.Controller.SelectedRowCount - 1 do
          begin
@@ -1085,7 +1134,7 @@ begin
                     sql := 'update kurumfatura set ' +
                            'GSSFaturaTeslimNo = ' + QuotedStr(ifThen(datalar.HastaKabulWS.Takip.faturaTeslimNo = '0','',datalar.HastaKabulWS.Takip.faturaTeslimNo)) +
                            'where takipNo = ' + QuotedStr(takipNo);
-                    datalar.QueryExec(datalar.ADO_SQL,sql);
+                    datalar.QueryExec(sql);
 
                     txtLog.Lines.Add(takipNo + ' ; ' + datalar.HastaKabulWS.Takip.faturaTeslimNo);
                 End
@@ -1252,6 +1301,8 @@ procedure TfrmMedulaFatura.FormCreate(Sender: TObject);
 var
  chk : TcxCheckGroupItem;
 begin
+
+
    cxPanel.Visible := false;
    dxStatusBar1.Visible := false;
    SayfaCaption('','','','','');
@@ -1459,7 +1510,7 @@ begin
      *)
    end
    Else begin
-    F := FormINIT(TagfrmMedula,self,GirisFormRecord,'',NewTab(AnaForm.sayfalar,TagfrmMedula),ikHayir,'Giriþ');
+    F := FormINIT(TagfrmMedula,self,GirisFormRecord,'',NewTab(AnaForm.sayfalar,TagfrmMedula),ikHayir,'Mesul Müdür Giriþ');
     TfrmMedEczane(F)._user := u;
     TfrmMedEczane(F)._pas := s;
     if F <> nil then F.show;
@@ -1487,10 +1538,12 @@ end;
 procedure TfrmMedulaFatura.HizmetleriOku1Click(Sender: TObject);
 var
  GirisFormRecord : TGirisFormRecord;
+ F : TGirisForm;
 begin
   GirisFormRecord.F_TakipNo_ := _Dataset.FieldByName('takipNo').AsString;
   GirisFormRecord.F_BasvuruNo_ := _Dataset.FieldByName('basvuruNo').AsString;
-  FormINIT(TagfrmTakipBilgisiOku,GirisFormRecord).ShowModal;
+  F := FormINIT(TagfrmTakipBilgisiOku,GirisFormRecord);
+  if F <> nil then F.ShowModal;
 end;
 
 end.

@@ -333,6 +333,16 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               HeaderAlignmentHorz = taCenter
               Width = 80
             end
+            object ListeColumn18: TcxGridDBColumn
+              Caption = 'Uz. Onay Zamani'
+              DataBinding.FieldName = 'UzmanOnayZamani'
+              PropertiesClassName = 'TcxDateEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              Properties.Kind = ckDateTime
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+            end
             object ListeColumn14: TcxGridDBColumn
               Caption = 'Lab Kabul Durum'
               DataBinding.FieldName = 'LabKabulDurum'
@@ -397,6 +407,11 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
             end
             object ListeColumn16: TcxGridDBColumn
               DataBinding.FieldName = 'testler'
+              Visible = False
+            end
+            object ListeColumn17: TcxGridDBColumn
+              Caption = 'GelisTarih'
+              DataBinding.FieldName = 'bhdat'
               Visible = False
             end
           end
@@ -777,6 +792,10 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
       object sayfa_log: TcxTabSheet
         Caption = #304#351'lem Loglar'#305
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object txtLog: TcxMemo
           Left = 0
           Top = 0
@@ -1043,16 +1062,30 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
       ImageIndex = 99
       OnClick = cxButtonCClick
     end
-    object etkikTakipFormlar1: TMenuItem
-      Tag = 100
-      Caption = 'Tetkik Takip Formlar'#305' Yazd'#305'r'
+    object S3: TMenuItem
+      Caption = 'Yazd'#305'r'
       ImageIndex = 28
-      OnClick = cxButtonCClick
+      object etkikTakipFormlar1: TMenuItem
+        Tag = 100
+        Caption = 'Tetkik Takip Formlar'#305' Yazd'#305'r'
+        OnClick = cxButtonCClick
+      end
+      object S4: TMenuItem
+        Tag = 101
+        Caption = 'Sonu'#231' Yaz'
+        OnClick = cxButtonCClick
+      end
     end
     object K2: TMenuItem
       Tag = 110
       Caption = 'Ktv/Urr Hesaplama'
       ImageIndex = 45
+      OnClick = cxButtonCClick
+    end
+    object U1: TMenuItem
+      Tag = 120
+      Caption = 'Uzman Onay'#305' Tarihi'
+      ImageIndex = 49
       OnClick = cxButtonCClick
     end
   end

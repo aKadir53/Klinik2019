@@ -38,8 +38,8 @@ object frmSon6AylikTetkikSonuc: TfrmSon6AylikTetkikSonuc
       TabOrder = 0
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
-      ExplicitLeft = 90
-      ExplicitTop = 40
+      ExplicitLeft = 42
+      ExplicitTop = 50
       object gridTetkikList: TcxGridDBTableView
         Navigator.Buttons.First.Visible = True
         Navigator.Buttons.PriorPage.Visible = True

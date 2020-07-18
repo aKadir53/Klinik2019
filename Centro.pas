@@ -41,7 +41,7 @@ begin
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
    try
-     sql := 'update gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
+     sql := 'update Hasta_gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
             ',LabRefId = ' + QuotedStr(refId) +
             ' where SIRANO = ' + id;
      datalar.QueryExec(ado,sql);
@@ -119,11 +119,11 @@ Begin
                        end;
                      end;
 
-                     if (HTICvpMNT.Kod = '1') and (HTICvpMNT.Mesaj = '')
+                     if (HTICvpMNT.ReferansId > 0) and (HTICvpMNT.Mesaj = '')
                      then begin
                        ornekdurumyaz('Gönderildi',id,inttostr(HTICvpMNT.ReferansId));
                        txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' +
-                       HTIMNT.Gelis.ReferansNo + ' - ' + HTICvpMNT.Mesaj + ' ' + 'Ýþlem Baþarýlý');
+                       'Cevap ReferansID : ' + inttostr(HTICvpMNT.ReferansId) + ' - ' + HTIMNT.Gelis.ReferansNo + ' - ' + HTICvpMNT.Mesaj + ' ' + 'Ýþlem Baþarýlý');
                      end
                      else
                      begin
@@ -430,7 +430,7 @@ begin
             if (HTSOCvp.Sonuclar[0] = nil) and (length(HTSOCvp.Sonuclar) = 1)
             then  begin
                txtLog.Lines.Add(inttostr(HTSO.TC) + ' - Sonuç Bulunamadý');
-               exit;
+               Continue;
             end;
 
             if length(HTSOCvp.Sonuclar) > 0
@@ -495,25 +495,32 @@ begin
                             sonucA := trim(StringReplace(StringReplace(SonucA,'DÜÞÜK','',[rfReplaceAll]),'düþük','',[rfReplaceAll]));
                             sonucA := trim(StringReplace(SonucA,'-','',[rfReplaceAll]));
 
-                            sql := 'update hareketler set ' + _F_ + '= ' + sonucA +
-                                      ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
-                             datalar.QueryExec(sql);
+                               sql := 'update hareketler set gd = ' + sonucA +
+                                       ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
+                                       ' and gelisNO = ' + gelisNo + ' and Tip1 = ' + QuotedStr(_F_);
 
-                            sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
-                                   ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-                            datalar.QueryExec(sql);
+                               datalar.QueryExec(sql);
+
+                               sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
+                                     ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
+                                     ' and gelisNO = ' + gelisNo + ' and Tip1 = ' + QuotedStr(_F_); ;
+                               datalar.QueryExec(sql);
+
                          End
                          else
                          begin
                             try
-                             sql := 'update hareketler set ' + _F_ + '= ' + sonuc +
-                                      ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                             sql := 'update hareketler set gd = ' + sonuc +
+                                      ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                                      ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo
+                                      + ' and Tip1 = ' + QuotedStr(_F_);
 
                              datalar.QueryExec(sql);
                             except
                                sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
-                                      ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                                      ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
+                                      ' and gelisNO = ' + gelisNo + ' and Tip1 = ' + QuotedStr(_F_);
                                datalar.QueryExec(sql);
 
                             end;
@@ -539,7 +546,7 @@ end;
 
 function OrderCentro(dosyaNo : string ; gelis : string ; Field : string = '') : TenayServiceSYNLAB_SYNEVO_CENTRO.Order;
 var
-  sql : string;
+  sql , tt : string;
   HastaTenay : TenayServiceSYNLAB_SYNEVO_CENTRO.Order;
   GelisMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.Gelis;
   istekler : TenayServiceSYNLAB_SYNEVO_CENTRO.Array_Of_Tetkik;
@@ -575,13 +582,15 @@ begin
       else HastaTenay.Cinsiyeti := TenayServiceSYNLAB_SYNEVO_CENTRO.Cinsiyet.Kadin;
 
       DTarih := TXSDateTime.Create;
-  //    Dtarih.Year := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,1,4));
-  //    Dtarih.Month := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,5,2));
-   //   Dtarih.Day := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,7,2));
 
-     DTarih.AsDateTime := tarihyap(ado.fieldbyname('DOGUMTARIHI').Asstring);
+     // Dtarih.Year := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,1,4));
+     // Dtarih.Month := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,5,2));
+    //  Dtarih.Day := strtoint(copy(ado.fieldbyname('DOGUMTARIHI').Asstring,7,2));
 
-      HastaTenay.DogumTarihi := DTarih;
+      DateToXsdateTime(DTarih,tarihyap(ado.fieldbyname('DOGUMTARIHI').Asstring));
+
+      DTarih.XSToNative(FormatDateTime('YYYY-MM-DD',tarihyap(ado.fieldbyname('DOGUMTARIHI').Asstring))+'T00:00:00');
+      HastaTenay.DogumTarihi :=  DTarih;
 
 
       sql := 'select BHDAT,ornekNo,KanAlimZamani from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
@@ -606,12 +615,11 @@ begin
       //    TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
 
 
-          TTarih.AsDateTime := tarihyap(ado.fieldbyname('BHDAT').Asstring);
+       //   DateToXsdateTime(TTarih, ado.fieldbyname('BHDAT').AsDateTime);
+
+          TTarih.XSToNative(FormatDateTime('YYYY-MM-DD',ado.fieldbyname('BHDAT').AsDateTime)+ 'T00:00:00');
 
           GelisMNT.Tarih := TTarih;
-
-
-
 
 
           if Field = '' then Field := 'OrnekNo';
@@ -647,9 +655,12 @@ begin
             istek.Barkod := ado.fieldbyname('barkod').Value;
           //  istek.OrnekTurId := ifThen(TurId = '','0',TurId);
             ATarih := TXSDateTime.Create;
-            DecodeDateTime(KanAlimZamani, yil, ay, gun, saat, dakika, saniye, salise);
+           // DecodeDateTime(KanAlimZamani, yil, ay, gun, saat, dakika, saniye, salise);
 
-            ATarih.AsDateTime := KanAlimZamani;
+          //  ATarih.AsDateTime := DateTimeToXSDateTime(KanAlimZamani);
+          //  DateToXsdateTime(ATarih,KanAlimZamani);
+            ATarih.XSToNative(FormatDateTime('YYYY-MM-DD',KanAlimZamani)+ 'T00:00:00');
+
             istek.AlindigiTarih := ATarih;
             istekler[i] := istek;
             i := i + 1;
@@ -684,6 +695,9 @@ begin
 
   finally
     ado.Free;
+   // DTarih.Free;
+ //   TTarih.Free;
+  //  ATarih.Free;
   end;
 
 

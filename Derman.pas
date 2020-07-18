@@ -296,6 +296,9 @@ procedure sonucyaz(Cvp : HastaTahlilSonuclariCevap ; Tip : string);
 var
  x : integer;
 begin
+
+            if not Assigned(Cvp.SonucDetay) then exit;
+
             testAdet := length(Cvp.SonucDetay);
             if TestAdet = 0 then exit;
 
@@ -321,6 +324,7 @@ begin
                  Cvp.SonucDetay[x].SonucDeger := StringReplace(Cvp.SonucDetay[x].SonucDeger,'Poz','POZ',[rfReplaceAll]);
                  Cvp.SonucDetay[x].SonucDeger := StringReplace(Cvp.SonucDetay[x].SonucDeger,'Neg','NEG',[rfReplaceAll]);
                  Cvp.SonucDetay[x].SonucDeger := StringReplace(Cvp.SonucDetay[x].SonucDeger,',','.',[rfReplaceAll]);
+                 Cvp.SonucDetay[x].SonucDeger := trim(StringReplace(StringReplace(Cvp.SonucDetay[x].SonucDeger,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
                  sonuc := Cvp.SonucDetay[x].SonucDeger;
 
 
@@ -434,7 +438,6 @@ begin
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('CikisOrnekNo').Index));
 
 
-
          okuGiris.OrnekNo := ornekNo;
          okuGiris.GelenHastaid := id;
 
@@ -456,7 +459,7 @@ begin
          if CvpG.sonuckod <> '-1'
          then begin
            sonucyaz(CvpG,'G');
-           txtLog.Lines.Add(CvpG.SonucDetay[x].OrnekNo + ' - ' + CvpG.SonucDetay[x].GelenHastaid + ' - ' + CvpG.sonuc);
+           txtLog.Lines.Add(okuGiris.OrnekNo + ' - ' + okuGiris.GelenHastaid  + ' - ' + CvpG.sonuc);
          end
          else
            txtLog.Lines.Add(CvpG.sonuc);
@@ -482,7 +485,7 @@ begin
          if CvpC.sonuckod <> '-1'
          then begin
            sonucyaz(CvpC,'C');
-           txtLog.Lines.Add(CvpC.SonucDetay[x].OrnekNo + ' - ' + CvpC.SonucDetay[x].GelenHastaid + ' - ' + CvpC.sonuc);
+           txtLog.Lines.Add(okuGirisC.OrnekNo + ' - ' + okuGirisC.GelenHastaid + ' - ' + CvpC.sonuc);
          end
          else
            txtLog.Lines.Add(CvpC.sonuc);

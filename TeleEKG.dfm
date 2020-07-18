@@ -249,7 +249,7 @@ object frmTeleEKG: TfrmTeleEKG
   end
   object DataSource1: TDataSource
     DataSet = ADO_SQL
-    Left = 80
+    Left = 88
     Top = 80
   end
   object PopupMenu1: TPopupMenu
@@ -291,6 +291,13 @@ object frmTeleEKG: TfrmTeleEKG
     object D1: TMenuItem
       Tag = -5
       Caption = 'D'#252'zenle'
+      ImageIndex = 34
+      OnClick = cxButtonCClick
+    end
+    object T2: TMenuItem
+      Tag = -6
+      Caption = 'Ayn'#305' Metni Sonu'#231' Olarak T'#252'm'#252'ne Yaz'
+      ImageIndex = 32
       OnClick = cxButtonCClick
     end
   end

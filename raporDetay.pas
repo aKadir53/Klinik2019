@@ -230,6 +230,8 @@ procedure TfrmRaporDetay.RaporAra;
 var
   sql : string;
 begin
+    datalar.RaporBilgisi.Turu := '0';
+
     if mrYes = ShowPopupForm('Hasta Raporlarýný Bul',84,ifThen(_Yupass_ = '',_TC_,_Yupass_))
     Then Begin
          sql := 'select * from raporlar where dosyaNo = ' + QuotedStr(_dosyaNo_) +
@@ -240,29 +242,61 @@ begin
            if  Mryes = ShowMessageSkin('Rapor Sistemde Kayýtlý Deðil , Kaydetmek Ýstermisiniz ?','','','msg')
            Then Begin
 
-               sql := 'insert into raporlar (dosyaNo,raporNo,raporTarihi,verenTesisKodu,raporTakipno,turu,baslangicTarihi,bitisTarihi,' +
-                      'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,tanilar,butKodu) ' +
-                      ' values ( ' + QuotedStr(_dosyaNo_) + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporNo').AsString) + ','
-                                   + QuotedStr(NoktasizTarih(datalar.memDataRaporlar.fieldbyname('raporTarihi').AsString)) + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('verenTesis').AsString)  + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTakipNo').AsString) + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTuru').AsString) + ','
-                                   + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('baslangicTarihi').Asdatetime)) + '  as datetime) ' + ','
-                                   + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('bitisTarihi').AsDateTime)) + '  as datetime) ' + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('protokolNo').AsString) + ','
-                                   + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('protokolTarihi').AsDateTime)) + '  as datetime) ' + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('tedaviRaporTuru').AsString) + ','
-                                   + datalar.memDataRaporlar.fieldbyname('seansGun').AsString + ','
-                                   + datalar.memDataRaporlar.fieldbyname('seansSayi').AsString + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('Tani').AsString) + ','
-                                   + QuotedStr(datalar.memDataRaporlar.fieldbyname('butKodu').AsString)+
+               if datalar.RaporBilgisi.Turu = '10'
+               then begin
+                  sql := 'insert into raporlar (dosyaNo,raporNo,raporTarihi,verenTesisKodu,raporTakipno,turu,baslangicTarihi,bitisTarihi,' +
+                        'protokolNo,protokolTarihi,aciklama) ' +
+                        ' values ( ' + QuotedStr(_dosyaNo_) + ','
+                                     + QuotedStr(datalar.memDataRaporlarI.fieldbyname('raporNo').AsString) + ','
+                                     + QuotedStr(NoktasizTarih(datalar.memDataRaporlarI.fieldbyname('raporTarihi').AsString)) + ','
+                                     + QuotedStr(datalar.memDataRaporlarI.fieldbyname('verenTesis').AsString)  + ','
+                                     + QuotedStr(datalar.memDataRaporlarI.fieldbyname('raporTakipNo').AsString) + ','
+                                     + QuotedStr(datalar.memDataRaporlarI.fieldbyname('raporTuru').AsString) + ','
+                                     + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlarI.fieldbyname('baslangicTarihi').Asdatetime)) + '  as datetime) ' + ','
+                                     + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlarI.fieldbyname('bitisTarihi').AsDateTime)) + '  as datetime) ' + ','
+                                     + QuotedStr(datalar.memDataRaporlarI.fieldbyname('protokolNo').AsString) + ','
+                                     + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlarI.fieldbyname('protokolTarihi').AsDateTime)) + '  as datetime) ' + ','
+                                     + QuotedStr(datalar.memDataRaporlarI.fieldbyname('aciklama').AsString) +
 
-                                   ')' ;
-                                 //  + memDataRaporlar.fieldbyname('seansSayi').AsString + ','
-                                  // + memDataRaporlar.fieldbyname('Tani').AsString + ')';
+                                     ')' ;
+                                   //  + memDataRaporlar.fieldbyname('seansSayi').AsString + ','
+                                    // + memDataRaporlar.fieldbyname('Tani').AsString + ')';
 
-               datalar.QueryExec(sql);
+                 datalar.QueryExec(sql);
+
+
+               end
+               else
+               begin
+                   sql := 'insert into raporlar (dosyaNo,raporNo,raporTarihi,verenTesisKodu,raporTakipno,turu,baslangicTarihi,bitisTarihi,' +
+                          'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,tanilar,butKodu) ' +
+                          ' values ( ' + QuotedStr(_dosyaNo_) + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporNo').AsString) + ','
+                                       + QuotedStr(NoktasizTarih(datalar.memDataRaporlar.fieldbyname('raporTarihi').AsString)) + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('verenTesis').AsString)  + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTakipNo').AsString) + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('raporTuru').AsString) + ','
+                                       + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('baslangicTarihi').Asdatetime)) + '  as datetime) ' + ','
+                                       + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('bitisTarihi').AsDateTime)) + '  as datetime) ' + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('protokolNo').AsString) + ','
+                                       + ' cast( ' + QuotedStr(tarihal(datalar.memDataRaporlar.fieldbyname('protokolTarihi').AsDateTime)) + '  as datetime) ' + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('tedaviRaporTuru').AsString) + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('seansGun').AsString) + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('seansSayi').AsString) + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('Tani').AsString) + ','
+                                       + QuotedStr(datalar.memDataRaporlar.fieldbyname('butKodu').AsString)+
+
+                                       ')' ;
+                                     //  + memDataRaporlar.fieldbyname('seansSayi').AsString + ','
+                                      // + memDataRaporlar.fieldbyname('Tani').AsString + ')';
+
+                   datalar.QueryExec(sql);
+
+
+
+
+               end;
+
                RaporGrid.Dataset.Requery();
                RaporGrid.Dataset.Next;
 
@@ -289,34 +323,39 @@ begin
     datalar.RaporBilgisi.raporTakipNo := RaporGrid.Dataset.FieldByName('raporTakipNo').AsString;
     sira := RaporGrid.Dataset.FieldByName('sira').AsString;
 
-       if mrYes = ShowMessageSkin('Rapor Sistemden Silinecek Eminmisini?','','','msg')
-       Then Begin
-        // datalar.ADOConnection2.BeginTrans;
-        ado := TADOQuery.Create(nil);
-        ado.Connection := datalar.ADOConnection2;
-        try
+       if RaporGrid.Dataset.FieldByName('raporTakipNo').AsString = ''
+       then begin
+         if mrYes = ShowMessageSkin('Rapor Sistemden Silinecek Eminmisini?','','','msg')
+         Then Begin
+          // datalar.ADOConnection2.BeginTrans;
+          ado := TADOQuery.Create(nil);
+          ado.Connection := datalar.ADOConnection2;
           try
-         //    sql := 'delete from RaporDetay_Doktorlar where sira = ' + datalar.RaporBilgisi.sira;
-         //    datalar.QueryExec(ado,sql);
-             sql := 'delete from IlacRaporEtkenMaddeler where RaporSira = ' + sira;
-             datalar.QueryExec(ado,sql);
-             sql := 'delete from IlacRaporTeshisler where RaporSira = ' + sira;
-             datalar.QueryExec(ado,sql);
-             sql := 'delete from Raporlar where sira = ' + sira;
-             datalar.QueryExec(ado,sql);
-           //  datalar.ADOConnection2.CommitTrans;
-             ShowMessageSkin('Rapor Sistemden Silindi','','','info');
-             RaporGrid.Dataset.Requery();
-          except on e : exception do
-           begin
-           //  datalar.ADOConnection2.RollbackTrans;
-             ShowMessageSkin('Hata oluþtu , Rapor Sistemden Silinemedi',e.Message,'','info');
-           end;
-          end;
-          finally
-            ado.free;
-          end;
-       End;
+            try
+           //    sql := 'delete from RaporDetay_Doktorlar where sira = ' + datalar.RaporBilgisi.sira;
+           //    datalar.QueryExec(ado,sql);
+               sql := 'delete from IlacRaporEtkenMaddeler where RaporSira = ' + sira;
+               datalar.QueryExec(ado,sql);
+               sql := 'delete from IlacRaporTeshisler where RaporSira = ' + sira;
+               datalar.QueryExec(ado,sql);
+               sql := 'delete from Raporlar where sira = ' + sira;
+               datalar.QueryExec(ado,sql);
+             //  datalar.ADOConnection2.CommitTrans;
+               ShowMessageSkin('Rapor Sistemden Silindi','','','info');
+               RaporGrid.Dataset.Requery();
+            except on e : exception do
+             begin
+             //  datalar.ADOConnection2.RollbackTrans;
+               ShowMessageSkin('Hata oluþtu , Rapor Sistemden Silinemedi',e.Message,'','info');
+             end;
+            end;
+            finally
+              ado.free;
+            end;
+         End;
+       End
+         else
+           ShowMessageSkin('Medulaya Kayýtlý Rapor','Sistemden Silinemez','','info');
 
   end;
 end;
@@ -564,7 +603,11 @@ begin
                               end;
                        end;
    RaporBasHekimOnay : begin
-                              if raporTakipNo = '' then exit;
+                              if raporTakipNo = ''
+                              then begin
+                               ShowMessageSkin('RaporTakipNo Boþ , Rapor Onaylanamaz','','','info');
+                               exit;
+                              end;
                               DurumGoster(True,False,'Rapor Onay Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
                               try
                                 Sonuc := RaporIslemGonder(_id_,'imzaliEraporBashekimOnayBilgisi','','','');
@@ -582,7 +625,11 @@ begin
                               end;
                        end;
    RaporBasHekimOnayRed : begin
-                              if raporTakipNo = '' then exit;
+                              if raporTakipNo = ''
+                              then begin
+                               ShowMessageSkin('RaporTakipNo Boþ , Rapor Onay Ýptal Yapýlamaz','','','info');
+                               exit;
+                              end;
                               DurumGoster(True,False,'Rapor Onay Red Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
                               try
                                 Sonuc := RaporIslemGonder(_id_,'imzaliEraporBashekimOnayRedBilgisi','','','');
@@ -645,7 +692,7 @@ begin
                  QuotedStr(datalar.RaporBilgisi.verenTesisKodu) + ',' +
                  QuotedStr(datalar.RaporBilgisi.duzenlemeTuru) + ',' +
                  QuotedStr(datalar.RaporBilgisi.baslangicTarihi) + ',' +
-                 QuotedStr(datalar.RaporBilgisi.bitisTarihi) + ',' +
+                 ifThen(datalar.RaporBilgisi.bitisTarihi = '','NULL',QuotedStr(datalar.RaporBilgisi.bitisTarihi)) + ',' +
                  QuotedStr(datalar.RaporBilgisi.protokolNo) + ',' +
                  QuotedStr(datalar.RaporBilgisi.aciklama) + ',' +
                  QuotedStr(datalar.RaporBilgisi.Tanilar) +
@@ -1130,6 +1177,7 @@ begin
     datalar.RaporBilgisi.butkodu :=  RaporGrid.Dataset.FieldByName('butkodu').AsString;
     datalar.RaporBilgisi.seansGun :=  RaporGrid.Dataset.FieldByName('seansGun').AsString;
     datalar.RaporBilgisi.seansSayi :=  RaporGrid.Dataset.FieldByName('seansSayi').AsString;
+    datalar.RaporBilgisi.Tanilar :=  RaporGrid.Dataset.FieldByName('Tanilar').AsString;
 
     datalar.RaporBilgisi.raporTakipNo := RaporGrid.Dataset.FieldByName('raporTakipNo').AsString;
 
@@ -1147,7 +1195,7 @@ begin
                  ',verenTesisKodu =' + QuotedStr(datalar.RaporBilgisi.verenTesisKodu) +
                  ',duzenlemeTuru = ' + QuotedStr(datalar.RaporBilgisi.duzenlemeTuru) +
                  ',baslangicTarihi = ' + QuotedStr(datalar.RaporBilgisi.baslangicTarihi) +
-                 ',bitisTarihi = ' + QuotedStr(datalar.RaporBilgisi.bitisTarihi) +
+     ifThen(datalar.RaporBilgisi.bitisTarihi = 'NULL',',bitisTarihi = NULL',',bitisTarihi = ' + QuotedStr(datalar.RaporBilgisi.bitisTarihi)) +
                  ',protokolNo = ' + QuotedStr(datalar.RaporBilgisi.protokolNo) +
                  ',aciklama = ' + QuotedStr(datalar.RaporBilgisi.aciklama) +
                  ',duzenleyenDoktor = ' + QuotedStr(datalar.RaporBilgisi.duzenleyenDoktor) +
@@ -1157,7 +1205,7 @@ begin
                  ',seansSayi = ' + QuotedStr(datalar.RaporBilgisi.seansSayi) +
                  ',Tanilar = ' +  QuotedStr(datalar.RaporBilgisi.Tanilar) +
 
-                 'where sira = ' + datalar.RaporBilgisi.sira;
+                 ' where sira = ' + datalar.RaporBilgisi.sira;
 
           datalar.QueryExec(sql);
 
@@ -1489,7 +1537,7 @@ begin
           GirisFormRecord.F_ResourceID_ := RaporGrid.Dataset.FieldByName('sira').AsString;
           Form := FormINIT(TagfrmRaporSablon,GirisFormRecord);
           if Form <> nil then Form.showModal;
-
+          RaporGrid.Dataset.Requery;
        end;
 
   end;

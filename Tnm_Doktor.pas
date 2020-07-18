@@ -12,7 +12,8 @@ uses
   cxImage, cxStyles, dxSkinscxPCPainter, cxCustomData, cxFilter, cxData,
   cxDataStorage, cxDBData, cxCurrencyEdit, cxGridLevel, cxGridCustomTableView,
   cxGridTableView, cxGridBandedTableView, cxGridDBBandedTableView, cxClasses,
-  cxGridCustomView, cxGridDBTableView, cxGrid;
+  cxGridCustomView, cxGridDBTableView, cxGrid, cxCheckGroup, cxDropDownEdit,
+  cxImageComboBox;
 
 
 
@@ -57,6 +58,7 @@ type
     DBGriddoktorAdi: TcxGridDBColumn;
     DBGridDoktorCalismaDakika: TcxGridDBColumn;
     DBGridIGUCalismaDakika: TcxGridDBColumn;
+    chkSirketler: TcxCheckGroupKadir;
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxTextEditKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -79,8 +81,8 @@ type
   end;
 
 const _TableName_ = 'DoktorlarT';
-      formGenislik = 500;
-      formYukseklik = 530;
+      formGenislik = 600;
+      formYukseklik = 550;
 
 var
   frmDoktorlar: TfrmDoktorlar;
@@ -94,6 +96,8 @@ function TfrmDoktorlar.Init(Sender: TObject) : Boolean;
  var
   List : TListeAc;
   bransKodu,calismaTipi,cardType,medulaGonderimTipi,Sirketlerx : TcxImageComboKadir;
+  chk : TcxCheckGroupItem;
+  i : integer;
 begin
 
   Result := False;
@@ -207,6 +211,7 @@ begin
         OrtakEventAta(medulaGonderimTipi);
         setDataStringKontrol(self,medulaGonderimTipi,'MesulMudur','BaþHekim mi?',kolon1,'',100);
 
+
         Sirketlerx := TcxImageComboKadir.Create(self);
         Sirketlerx.Conn := Datalar.ADOConnection2;
         Sirketlerx.TableName := 'SIRKETLER_TNM';
@@ -216,10 +221,24 @@ begin
         Sirketlerx.Filter := ' FirmaTip = 1';
         Sirketlerx.EditValue := datalar.AktifSirket;
         Sirketlerx.ItemIndex := -1;
-        setDataStringKontrol(self,Sirketlerx,'SirketKod','Þirket',kolon1,'',120);
+        setDataStringKontrol(self,Sirketlerx,'SirketKod','Default Merkez',kolon1,'',120);
+
 
         setDataString(self,'TDisID','TDisID',Kolon1,'TDis',80);
         addButton(self,nil,'btnTDisID','','TDisID Getir',Kolon1,'TDis',120,ButtonClick,10);
+
+
+        chkSirketler.Conn := datalar.ADOConnection2;
+        chkSirketler.TableName := 'SIRKETLER_TNM';
+        chkSirketler.ValueField := 'SirketKod';
+        chkSirketler.DisplayField := 'Tanimi';
+        chkSirketler.Filter := ' FirmaTip = 1';
+        chkSirketler.Caption := 'Çalýþtýðý Merkezler';
+
+
+        setDataStringKontrol(self,chkSirketler,'SirketKods','Merkezler',kolon1,'',250);
+
+
 
 
 (*
@@ -642,7 +661,11 @@ begin
 end;
 
 procedure TfrmDoktorlar.cxKaydetClick(Sender: TObject);
+var
+  SK : string;
 begin
+
+      //         SK := TcxCheckGroupKadir(FindComponent('SirketKod')).getItemCheckString;
 
   inherited;
 
@@ -652,12 +675,17 @@ begin
     sil : begin
           end;
     Kaydet : begin
+
+
+
                if TcxImageComboKadir(FindComponent('MesulMudur')).EditValue = 1
                then begin
                   datalar.QueryExec(' set nocount on ' +
                                     ' update DoktorlarT set MesulMudur = 0 where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
                                     ' set nocount off');
                end;
+
+
 
              end;
     yeni : begin

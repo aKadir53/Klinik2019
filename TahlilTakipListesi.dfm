@@ -25,19 +25,17 @@ object frmTahliltakip: TfrmTahliltakip
     TabOrder = 0
     Properties.ActivePage = cxTabSheet1
     Properties.TabPosition = tpBottom
-    LookAndFeel.NativeStyle = False
-    LookAndFeel.SkinName = 'McSkin'
-    ClientRectBottom = 650
-    ClientRectLeft = 4
-    ClientRectRight = 1280
-    ClientRectTop = 5
+    ClientRectBottom = 645
+    ClientRectLeft = 3
+    ClientRectRight = 1277
+    ClientRectTop = 3
     object cxTabSheet1: TcxTabSheet
       Caption = 'Kay'#305'tlar'
       ImageIndex = 0
       object PnltetkikDegerlendir: TcxGroupBox
         Left = 1000
         Top = 33
-        Align = alRight
+        Align = alClient
         Caption = 'Tetkik Sonu'#231' De'#287'erlendir'
         ParentFont = False
         Style.Font.Charset = DEFAULT_CHARSET
@@ -46,22 +44,21 @@ object frmTahliltakip: TfrmTahliltakip
         Style.Font.Name = 'MS Sans Serif'
         Style.Font.Style = [fsBold]
         Style.IsFontAssigned = True
-        TabOrder = 0
-        Visible = False
-        Height = 612
-        Width = 276
+        TabOrder = 1
+        Height = 609
+        Width = 274
         object cxPageControlTetkikDegerlendir: TcxPageControl
           Left = 3
           Top = 15
-          Width = 270
-          Height = 587
+          Width = 268
+          Height = 584
           Align = alClient
           TabOrder = 0
           Properties.ActivePage = TetkikDegerlendirSayfa1
           Properties.Options = [pcoAlwaysShowGoDialogButton, pcoGoDialog, pcoGradientClientArea]
-          ClientRectBottom = 580
+          ClientRectBottom = 577
           ClientRectLeft = 3
-          ClientRectRight = 263
+          ClientRectRight = 261
           ClientRectTop = 26
           object TetkikDegerlendirSayfa1: TcxTabSheet
             Caption = 'Tetkik De'#287'erlendir'
@@ -69,8 +66,8 @@ object frmTahliltakip: TfrmTahliltakip
             object cxGrid1: TcxGrid
               Left = 0
               Top = 25
-              Width = 260
-              Height = 529
+              Width = 258
+              Height = 526
               Align = alClient
               Font.Charset = TURKISH_CHARSET
               Font.Color = clWindowText
@@ -158,7 +155,7 @@ object frmTahliltakip: TfrmTahliltakip
             object btnTetkikDegerlendir: TcxButton
               Left = 0
               Top = 0
-              Width = 260
+              Width = 258
               Height = 25
               Align = alTop
               Caption = 'Tetkik Sonu'#231'lar'#305'n'#305' De'#287'erlendir'
@@ -172,8 +169,8 @@ object frmTahliltakip: TfrmTahliltakip
             object cxGrid13: TcxGrid
               Left = 0
               Top = 0
-              Width = 260
-              Height = 554
+              Width = 258
+              Height = 551
               Align = alClient
               Font.Charset = TURKISH_CHARSET
               Font.Color = clWindowText
@@ -257,6 +254,7 @@ object frmTahliltakip: TfrmTahliltakip
                   DataBinding.FieldName = 'kriter'
                   PropertiesClassName = 'TcxTextEditProperties'
                   Properties.ReadOnly = True
+                  Options.Editing = False
                   Width = 288
                 end
               end
@@ -276,9 +274,9 @@ object frmTahliltakip: TfrmTahliltakip
         Align = alTop
         Caption = 'pnlTitle'
         PanelStyle.Active = True
-        TabOrder = 1
+        TabOrder = 2
         Height = 33
-        Width = 1276
+        Width = 1274
         object tarih2: TcxDateEditKadir
           Left = 198
           Top = 2
@@ -415,15 +413,16 @@ object frmTahliltakip: TfrmTahliltakip
       object cxGridKadir1: TcxGridKadir
         Left = 0
         Top = 33
-        Width = 1000
-        Height = 612
-        Align = alClient
-        TabOrder = 2
+        Width = 992
+        Height = 609
+        Align = alLeft
+        TabOrder = 0
         ExcelFileName = 'TahlilSonuclar'#305
         ExceleGonder = True
         PopupForm = False
         object Liste: TcxGridDBBandedTableView
           OnDblClick = ListeDblClick
+          OnMouseDown = ListeMouseDown
           OnCustomDrawCell = ListeCustomDrawCell
           DataController.DataSource = DataSource1
           DataController.Filter.Options = [fcoCaseInsensitive]
@@ -436,6 +435,7 @@ object frmTahliltakip: TfrmTahliltakip
               Column = Listetc
             end>
           DataController.Summary.SummaryGroups = <>
+          OptionsCustomize.ColumnsQuickCustomization = True
           OptionsData.Deleting = False
           OptionsData.Editing = False
           OptionsData.Inserting = False
@@ -444,6 +444,7 @@ object frmTahliltakip: TfrmTahliltakip
           OptionsView.Footer = True
           OptionsView.GroupByBox = False
           OptionsView.HeaderHeight = 33
+          OnCustomization = ListeCustomization
           Bands = <
             item
               Caption = 'Kimlik Bilgileri'
@@ -1208,6 +1209,13 @@ object frmTahliltakip: TfrmTahliltakip
           GridView = Liste
         end
       end
+      object cxSplitter1: TcxSplitter
+        Left = 992
+        Top = 33
+        Width = 8
+        Height = 609
+        Control = cxGridKadir1
+      end
     end
     object cxTabSheet2: TcxTabSheet
       Caption = 'LOG'
@@ -1219,8 +1227,8 @@ object frmTahliltakip: TfrmTahliltakip
         Lines.Strings = (
           '')
         TabOrder = 0
-        Height = 645
-        Width = 1276
+        Height = 642
+        Width = 1274
       end
     end
   end
@@ -1418,6 +1426,7 @@ object frmTahliltakip: TfrmTahliltakip
       Tag = -1
       Caption = 'Tetkik Sonu'#231' De'#287'erlendir'
       ImageIndex = 102
+      Visible = False
       OnClick = cxButtonCClick
     end
   end

@@ -104,6 +104,9 @@ begin
         topluset.Dataset1 := ADO_Tetkikler;
         topluset.Dataset2 := ADO_Tele;
 
+        topluset.Dataset3 := datalar.ADO_AktifSirket;
+        topluset.Dataset4 := datalar.ADO_aktifSirketLogo;
+
         PrintYap('201','\Hasta Tetkik Takip Hepatit',inttostr(TagfrmKanTetkikTakip),topluset,ptNone);
 
       End
@@ -111,7 +114,8 @@ begin
       Begin
         topluset.Dataset1 := ADO_Tetkikler;
         topluset.Dataset2 := ADO_Tele;
-
+        topluset.Dataset3 := datalar.ADO_AktifSirket;
+        topluset.Dataset4 := datalar.ADO_aktifSirketLogo;
         PrintYap('203','\Hasta Tetkik Takip Hepatit',inttostr(TagfrmKanTetkikTakip),topluset,ptNone);
 
       End;

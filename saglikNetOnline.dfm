@@ -1273,7 +1273,6 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
       Tag = -3
       Caption = 'Hasta Kart'#305
       ImageIndex = 44
-      Visible = False
       OnClick = cxKaydetClick
     end
     object T1: TMenuItem

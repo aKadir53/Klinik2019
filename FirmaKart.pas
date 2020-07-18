@@ -672,6 +672,8 @@ begin
 
 
   setDataString(self,'tanimi','Firma Adý  ',Kolon1,'',350,True);
+  setDataString(self,'FaturaUnvan','Fatura Unvaný  ',Kolon1,'',350,True);
+
   setDataString(self,'ruhsatNo','Ruhsat No  ',Kolon1,'',100,True);
  // setDataStringKontrol(self,NaceKod, 'NaceKod','Nace Kodu  ',Kolon1,'',130);
  // setDataString(self,'anaFaliyet','Firma Ana Faaliye',Kolon1,'',450,True);
@@ -850,7 +852,8 @@ begin
               FotoDeleteRecord;
             end;
   kaydet : begin
-              if TcxImageComboKadir(FindComponent('FirmaTip')).EditValue = 1
+              if (TcxImageComboKadir(FindComponent('FirmaTip')).EditValue = 1) and
+                 (Kart = sql_new)
               then begin
                   AktifSirket := datalar.QuerySelect('select count(*) from SIRKETLER_TNM where FirmaTip = 1').Fields[0].AsInteger;
                   if AktifSirket >= datalar.AktifSirketSayisi

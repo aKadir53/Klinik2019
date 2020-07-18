@@ -132,6 +132,7 @@ object frmHastaRecete: TfrmHastaRecete
             Navigator.Buttons.Filter.Visible = True
             FilterBox.CustomizeDialog = False
             OnEditValueChanged = gridIlaclarEditValueChanged
+            OnFocusedRecordChanged = gridIlaclarFocusedRecordChanged
             DataController.DataModeController.DetailInSQLMode = True
             DataController.DataSource = DataSource5
             DataController.Filter.Options = [fcoCaseInsensitive]
@@ -406,7 +407,6 @@ object frmHastaRecete: TfrmHastaRecete
             Align = alLeft
             Caption = 'Doz,adet son yaz'#305'lan'#305' getir'
             ParentFont = False
-            State = cbsChecked
             Style.Font.Charset = DEFAULT_CHARSET
             Style.Font.Color = clWindowText
             Style.Font.Height = -11
@@ -1179,11 +1179,21 @@ object frmHastaRecete: TfrmHastaRecete
       Visible = False
     end
     object ReeteOnay1: TMenuItem
-      Tag = -12
+      Tag = -120
       Caption = 'Re'#231'ete Onay'
       ImageIndex = 49
-      Visible = False
-      OnClick = cxButtonCClick
+      object O1: TMenuItem
+        Tag = -12
+        Caption = 'Onay'
+        ImageIndex = 49
+        OnClick = cxButtonCClick
+      end
+      object O2: TMenuItem
+        Tag = -13
+        Caption = 'Onay '#304'ptal'
+        ImageIndex = 50
+        OnClick = cxButtonCClick
+      end
     end
     object lemler1: TMenuItem
       Tag = -7
@@ -1250,10 +1260,10 @@ object frmHastaRecete: TfrmHastaRecete
   end
   object DataSource12: TDataSource
     DataSet = ADO_ReceteIlacAciklama
-    Left = 802
-    Top = 117
+    Left = 810
+    Top = 189
   end
-  object ADO_ReceteIlacAciklama: TADOTable
+  object ADO_ReceteIlacAciklama_: TADOTable
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
     Filtered = True
@@ -1261,8 +1271,8 @@ object frmHastaRecete: TfrmHastaRecete
     MasterFields = 'id'
     MasterSource = DataSource5
     TableName = 'ReceteIlacAciklama'
-    Left = 796
-    Top = 60
+    Left = 788
+    Top = 76
   end
   object DataSource11: TDataSource
     DataSet = ADO_receteAcikla
@@ -1482,8 +1492,8 @@ object frmHastaRecete: TfrmHastaRecete
     SQL.Strings = (
       'select * from ReceteDetay'
       'where receteId =:@id')
-    Left = 388
-    Top = 182
+    Left = 404
+    Top = 190
   end
   object ADO_receteTani: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1505,5 +1515,25 @@ object frmHastaRecete: TfrmHastaRecete
       'where receteId =:@id')
     Left = 980
     Top = 134
+  end
+  object ADO_ReceteIlacAciklama: TADOQuery
+    Connection = DATALAR.ADOConnection2
+    CursorType = ctStatic
+    OnNewRecord = ADO_ReceteIlacAciklamaNewRecord
+    Parameters = <
+      item
+        Name = '@id'
+        Attributes = [paSigned]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'select * from ReceteTani'
+      'where receteId =:@id')
+    Left = 812
+    Top = 150
   end
 end

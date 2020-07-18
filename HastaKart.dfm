@@ -579,6 +579,7 @@ object frmHastaKart: TfrmHastaKart
           DataBinding.FieldName = 'yupass'
           PropertiesClassName = 'TcxTextEditProperties'
           Properties.Alignment.Horz = taCenter
+          Visible = False
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
           Position.BandIndex = 1

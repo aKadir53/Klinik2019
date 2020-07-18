@@ -9,12 +9,12 @@ uses
   cxTextEdit, cxMaskEdit, cxButtonEdit, cxDBEdit,kadirType,KadirLabel,
   GirisUnit,Data_Modul, cxDropDownEdit, cxImageComboBox, cxStyles,kadir,
   dxSkinscxPCPainter, cxCustomData, cxFilter, cxData, cxDataStorage, cxDBData,
-  cxGridLevel, cxClasses, cxGridCustomView, cxGridCustomTableView,
+  cxGridLevel, cxClasses, cxGridCustomView, cxGridCustomTableView,MAth,
   cxGridTableView, cxGridDBTableView, cxGrid, dxSkinsCore, dxSkinBlue,
   dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky,
   dxSkinLondonLiquidSky, dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters,
   cxPCdxBarPopupMenu, cxRadioGroup, cxPC, cxListBox, Vcl.ExtCtrls, Vcl.Buttons,
-  cxLabel, cxCheckBox;
+  cxLabel, cxCheckBox, cxSplitter;
 
 
 
@@ -80,6 +80,7 @@ type
     cxGroupBox1: TcxGroupBox;
     cxButtonKadirTaniSil: TcxButtonKadir;
     cxButtonKadirTaniEkle: TcxButtonKadir;
+    User_Spliter: TcxSplitter;
     procedure FormCreate(Sender: TObject);
 
     procedure cxTextEditKeyDown(Sender: TObject; var Key: Word;
@@ -115,6 +116,7 @@ type
     procedure cxGridUserSetIzinPropertiesEditValueChanged(Sender: TObject);
     procedure cxGridMenuSetCOLUMN2PropertiesEditValueChanged(Sender: TObject);
     procedure cxButtonKadirTaniEkleClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
     FEskiSifre : StrinG;
@@ -761,6 +763,9 @@ var
   c : char;
 begin
 
+  DurumGoster(True,False);
+  try
+
     if (TcxImageComboKadir(FindComponent('Grup')).EditValue = '2')
        and (TcxButton(sender).Tag = Kaydet)
        and (TcxImageComboKadir(FindComponent('Grup')).EditValue = Null)
@@ -877,12 +882,32 @@ begin
      else
       RollbackTrans (DATALAR.ADOConnection2);
   end;
+  finally
+   DurumGoster(False);
+  end;
 end;
 
 procedure TfrmUsers.formlarClick(Sender: TObject);
 begin
   //inherited;
 
+end;
+
+procedure TfrmUsers.FormResize(Sender: TObject);
+var
+ Fr : Double;
+ W,H : Double;
+begin
+ // W := ScreenWidth;
+ // H := ScreenWidth;
+
+  W := ClientWidth;
+ H := ClientHeight;
+
+  Fr := min(W/Sayfalar.Width,H/Sayfalar.Height);
+ // pnlDurum.Left := round((Self.Width/2) - (pnlDurum.Width/2));
+ // pnlDurum.Top := round((Self.ClientHeight/2) - (pnlDurum.Height/2));
+  sayfalar.ScaleBy(Trunc(FR*100),100);
 end;
 
 end.

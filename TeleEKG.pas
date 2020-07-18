@@ -47,6 +47,7 @@ type
     btnListele: TcxButtonKadir;
     D1: TMenuItem;
     K1: TMenuItem;
+    T2: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure ADO_SQLBeforePost(DataSet: TDataSet);
     procedure ListeDblClick(Sender: TObject);
@@ -54,7 +55,7 @@ type
     procedure cxButtonCClick(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure Yazdir;
-    procedure Duzenle;
+    procedure Duzenle(Tag : integer ; gridAktif : TcxGridDBTableView);
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -94,10 +95,11 @@ begin
 end;
 
 
-procedure TfrmTeleEKG.Duzenle;
+procedure TfrmTeleEKG.Duzenle(Tag : integer  ; gridAktif : TcxGridDBTableView);
 var
   ado : TADOQuery;
-  sql : string;
+  sql,dosyaNo,gelisNo : string;
+  x : integer;
 begin
     datalar.TeleEkg.Tarih := ADO_SQL.FieldByName('TARIH').AsDateTime;
     datalar.TeleEkg.ack := ADO_SQL.FieldByName('sonuc').AsString;
@@ -108,15 +110,47 @@ begin
 
     if mrYes = ShowPopupForm(_HastaAdSoyad_,TeleEkgDuzenle)
     Then Begin
+      if Tag = -5 then
+      begin
           sql := 'update hareketler set islemAciklamasi = ' + QuotedStr(datalar.TeleEkg.ack) +
                 ',TARiH = ' + QuotedStr(FormatDateTime('YYYYMMDD',datalar.TeleEkg.Tarih)) +
                 ' where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNo_ +
                 ' and code = ' + QuotedStr(datalar.TeleEkg.code);
           datalar.QueryExec(sql);
-
           ADO_SQL.Requery();
-
+      end
+      else
+      begin
+         DurumGoster(True,True);
+         PBar.Properties.Max := gridAktif.Controller.SelectedRowCount;
+         pBar.Position := 0;
+         try
+             for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
+             begin
+                 sleep(1000);
+                 Application.ProcessMessages;
+                 dosyaNo := gridAktif.DataController.GetValue(
+                                                gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
+                 gelisNo := gridAktif.DataController.GetValue(
+                                                gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
+                 sql := 'update hareketler set islemAciklamasi = ' + QuotedStr(datalar.TeleEkg.ack) +
+                          ',TARiH = ' + QuotedStr(FormatDateTime('YYYYMMDD',datalar.TeleEkg.Tarih)) +
+                          ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo +
+                          ' and code = ' + QuotedStr(datalar.TeleEkg.code);
+                 datalar.QueryExec(sql);
+                 pBar.Position := pBar.Position + 1;
+             end;
+         finally
+           DurumGoster(False);
+           ADO_SQL.Requery();
+         end;
+      end;
     End;
+
+
+
+
+
 end;
 
 procedure TfrmTeleEKG.Yazdir;
@@ -165,9 +199,12 @@ inherited;
   -1 : begin
          yazdir;
        end;
-  -5 : begin
-         Duzenle;
+-5,-6 : begin
+         Duzenle(Tcontrol(sender).Tag , Liste);
        end;
+
+
+
 
   end;
 
@@ -194,6 +231,7 @@ begin
           ' where code in (''530100'',''801840'') and h.Tarih between ' + QuotedStr(tarih1_) +
           ' and ' + QuotedStr(tarih2_) + ' and hk.HASTAADI like ' + QuotedStr(''+'%') +
           ' and h.Tip = ''L''' +
+          ' and hk.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
           ' order by hk.HASTAADI,hk.HASTASOYADI,dosyano,gelisNo';
 
    datalar.QuerySelect(ado_sql,sql);
@@ -208,7 +246,12 @@ begin
  // setDataStringKontrol(self,DiyalizTip, 'DiyalizTip','',Kolon1,'',290);
   addButton(self,btnListele,'btnListele', '','Liste',Kolon1,'trh',60);
   TcxButton(FindComponent('btnListele')).OnClick := btnListeleClick;
-  setDataStringKontrol(self,cxGrid2, 'cxGrid2','',Kolon1,'',750,0,alLeft);
+  setDataStringKontrol(self,cxGrid2, 'cxGrid2','',Kolon1,'',1,1,alClient);
+
+  Kolon2.Visible := False;
+  Kolon3.Visible := False;
+  Kolon4.Visible := False;
+
 
 end;
 
@@ -222,7 +265,7 @@ end;
 procedure TfrmTeleEKG.ListeDblClick(Sender: TObject);
 begin
   inherited;
-  Duzenle;
+  Duzenle(-5,Nil);
 end;
 
 end.

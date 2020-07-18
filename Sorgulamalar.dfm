@@ -362,11 +362,12 @@ object frmSorgulamalar: TfrmSorgulamalar
           Flat = True
           FooterParams.Color = clWindow
           IndicatorOptions = [gioShowRowIndicatorEh]
-          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit]
+          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgRowSelect, dgCancelOnExit]
           PopupMenu = ToolMenu
           RowHeight = 21
           TabOrder = 1
           TitleParams.MultiTitle = True
+          OnKeyDown = gridRaporlarKeyDown
           Columns = <
             item
               Alignment = taCenter
@@ -606,8 +607,7 @@ object frmSorgulamalar: TfrmSorgulamalar
     object R2: TMenuItem
       Tag = -3
       Caption = 'Sorguyu Sil'
-      ImageIndex = 37
-      Visible = False
+      ImageIndex = 43
       OnClick = Y1Click
     end
     object N1: TMenuItem

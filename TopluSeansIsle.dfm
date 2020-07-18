@@ -1206,13 +1206,13 @@
                 Caption = 'Hasta Bilgileri'
                 FixedKind = fkLeft
                 Styles.Header = cxStyle2
-                Width = 277
+                Width = 256
               end
               item
                 Caption = 'Geli'#351' Bilgisi'
                 FixedKind = fkLeft
                 Styles.Header = cxStyle2
-                Width = 314
+                Width = 303
               end
               item
                 Caption = 'Seans Bilgileri'
@@ -1292,7 +1292,7 @@
               Options.Filtering = False
               Options.Sorting = False
               Styles.Content = cxStyle4
-              Width = 42
+              Width = 36
               Position.BandIndex = 2
               Position.ColIndex = 2
               Position.RowIndex = 0
@@ -1339,7 +1339,7 @@
               HeaderAlignmentVert = vaCenter
               Options.Sorting = False
               Styles.Content = cxStyle5
-              Width = 120
+              Width = 104
               Position.BandIndex = 2
               Position.ColIndex = 6
               Position.RowIndex = 0
@@ -1356,7 +1356,7 @@
               Options.Editing = False
               Options.Sorting = False
               Styles.Content = cxStyle4
-              Width = 85
+              Width = 73
               Position.BandIndex = 2
               Position.ColIndex = 7
               Position.RowIndex = 0
@@ -1416,7 +1416,7 @@
               Options.FilteringPopup = False
               Options.SortByDisplayText = isbtOn
               Styles.Content = cxStyle5
-              Width = 35
+              Width = 30
               Position.BandIndex = 2
               Position.ColIndex = 12
               Position.RowIndex = 0
@@ -1590,7 +1590,7 @@
               Options.FilteringPopup = False
               Options.Sorting = False
               Styles.Content = cxStyle5
-              Width = 30
+              Width = 26
               Position.BandIndex = 2
               Position.ColIndex = 14
               Position.RowIndex = 0
@@ -1808,19 +1808,32 @@
             object Listesebeb: TcxGridDBBandedColumn
               Caption = 'Seansa Girmeme Sebebi'
               DataBinding.FieldName = 'sebeb'
-              PropertiesClassName = 'TcxComboBoxProperties'
-              Properties.Items.Strings = (
-                '0 - Ba'#351'ka Merkeze Ge'#231'ici Gitme'
-                '9 - Hastaneye Yatma'
-                '10 - Kendi '#304'ste'#287'i '#304'le Girmedi'
-                '11 - T'#305'bbi Sebeb')
-              Visible = False
+              PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.ClearKey = 46
+              Properties.Items = <
+                item
+                  Description = 'Ba'#351'ka Merkeze Ge'#231'ici Gitme'
+                  ImageIndex = 0
+                  Value = '0'
+                end
+                item
+                  Description = 'Hastaneye Yatma'
+                  Value = '9'
+                end
+                item
+                  Description = 'Kendi '#304'ste'#287'i '#304'le Girmedi'
+                  Value = '10'
+                end
+                item
+                  Description = 'T'#305'bbi Sebeb'
+                  Value = '11'
+                end>
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.FilteringPopup = False
               Options.Sorting = False
               Styles.Content = cxStyle5
-              Width = 212
+              Width = 100
               Position.BandIndex = 2
               Position.ColIndex = 20
               Position.RowIndex = 0
@@ -1912,7 +1925,7 @@
               Options.Editing = False
               Options.FilteringPopup = False
               Options.Sorting = False
-              Width = 60
+              Width = 125
               Position.BandIndex = 2
               Position.ColIndex = 19
               Position.RowIndex = 0
@@ -1963,7 +1976,7 @@
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
               Styles.Content = cxStyle5
-              Width = 85
+              Width = 73
               Position.BandIndex = 2
               Position.ColIndex = 3
               Position.RowIndex = 0
@@ -2011,7 +2024,7 @@
               HeaderHint = 'Kimlik Do'#287'rulama'
               HeaderImageIndex = 106
               Options.Editing = False
-              Width = 30
+              Width = 26
               Position.BandIndex = 2
               Position.ColIndex = 11
               Position.RowIndex = 0
@@ -2777,7 +2790,7 @@
                 item
                   Caption = 'Hasta Geli'#351' Listesi'
                   Styles.Header = cxStyle2
-                  Width = 701
+                  Width = 712
                 end>
               object GridListColumn1: TcxGridDBBandedColumn
                 Caption = 'D.No'
@@ -2933,6 +2946,20 @@
                 Width = 24
                 Position.BandIndex = 0
                 Position.ColIndex = 10
+                Position.RowIndex = 0
+              end
+              object GridListColumn12: TcxGridDBBandedColumn
+                DataBinding.FieldName = 'KanAlindimi'
+                PropertiesClassName = 'TcxDateEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Properties.Kind = ckDateTime
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Width = 100
+                Position.BandIndex = 0
+                Position.ColIndex = 11
                 Position.RowIndex = 0
               end
             end
@@ -3155,6 +3182,7 @@
     end
     object S9: TMenuItem
       Caption = 'Seans Kapat'
+      ImageIndex = 18
       OnClick = cxButtonCClick
       object D3: TMenuItem
         Tag = -50
@@ -3166,6 +3194,12 @@
         Caption = 'Hem'#351'ire'
         OnClick = cxButtonCClick
       end
+    end
+    object P3: TMenuItem
+      Tag = 100
+      Caption = 'Protokol Defteri'
+      ImageIndex = 120
+      OnClick = cxButtonCClick
     end
   end
   object HTTPRIO1: THTTPRIO

@@ -75,6 +75,7 @@ type
                          var sonucMesaj : string;
                          var durum : integer;
                          uygulamaKodu : pwidechar);stdCall;
+
   TReceteImzala = procedure(Id : integer;
                       recete : PWideChar;
                       doktorkullanici : PWideChar;
@@ -371,6 +372,8 @@ type
     ISI : variant;
     Enfeksiyon : string;
     yeniSiraNo : string;
+    diyalizdegelisenDiger : string;
+    diyalizdegelisenDigerI : string;
    end;
 
 type
@@ -498,6 +501,7 @@ type
       IdealKilo : string;
       SIRANO : string;
       sysTakipNo : string;
+      DiyalizTedaviYonetimiDegisti : Boolean;
     end;
 
 
@@ -563,6 +567,15 @@ type
    TOdemeSorguOku = record
      DigerIslemler : TDataSet;
      Taniler : TDataSet;
+   end;
+
+type
+   THospitalizasyon = record
+     Baslangic : string;
+     Bitis : String;
+     TaniKodu : string;
+     Tani : string;
+     Aciklama : string;
    end;
 
 type
@@ -1094,6 +1107,13 @@ type
     anketTip : integer;
   end;
 
+  TRaporSablon = record
+    sablonId : integer;
+    sablonAdi : string;
+    sirketKod : string;
+    doktor : string;
+  end;
+
   TIntegerArray = array of Integer;
 
 
@@ -1252,6 +1272,7 @@ Const
   TagfrmHizliKayit = 5050;
   TagfrmTopluHastaTedaviListesi = 5060;
   TagfrmHastaKonsultasyon = 5070;
+  TagfrmTIKriter = 5011;
 
   TagfrmMedEczane = 5080;
   TagfrmMedula = 5081;
@@ -1260,6 +1281,8 @@ Const
 
   TagfrmITS = 6000;
   TagfrmITSPaket = 6001;
+
+
 
   Kaydet = 0;
   Sil = 1;
@@ -1274,15 +1297,22 @@ Const
   CentroLab = 3;
   SISTEMTIP = 10;
   DERMANLAB = 8;
+  EGELABLAB = 9;
   AHENK = 1;
   SIMGE = 22;
   BIOLAB = 7;
   ELAB = 24;
+  UNYE = 31;
   INTERKOMLAB = 26;
   DUZENLAB = 16;
   AENLAB = 13;
   ERBILLAB = 12;
   DERENLAB = 5;
+  BIRLABLAB = 14;
+  GAMA = 18;
+
+  RENTEKLAB = 99;
+  EXCEL = 98;
 
 
   ExceleGonder = 9997;
@@ -1301,6 +1331,7 @@ Const
   ReceteMedulaKaydet = 11;
   ReceteMedulaSil = 12;
   ReceteMedulaOnay = 13;
+  ReceteMedulaOnayIptal = -13;
   RaporMedulaKaydet = 11;
   RaporMedulaSil = 12;
   RaporBasHekimOnay = 13;
@@ -1375,10 +1406,13 @@ Const
   meddeSil = 71;
   MaddeDuzenle = 72;
   hastaGelisAc = 73;
+  hastaYatisAc = -73;
   hastaGelisDuzenle = 74;
+  hastaYatisDuzenle = -74;
   raporInsert = 75;
   raporUpdate = 76;
   raporSablon = -76;
+  raporSablonInsert = -75;
   ReceteYeniPersonel = 77;
   ReceteDuzenlePersonel = 78;
   hastaTakipleriGetir = 79;
@@ -1409,8 +1443,11 @@ Const
   AnketDuzenle = 108;
   UzmanMuayeneDoktorTarihDuzenle = 109;
 
+  TibbiDenetimSorgu = 110;
+
   PortaldenFaturaOku = 200;
   MobilUygulamaLinki = 300;
+  TetkikTarihDuzenle = 301;
 
   ITSAlimBildir = 6000;
   ITSSarfBildir = 6001;

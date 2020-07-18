@@ -3319,7 +3319,7 @@ begin
 
                 try
                   datalar.RxTahlilSonuc.FieldByName('Tanim').AsString :=
-                  HareketSiraNoHizmetAdi(StringReplace(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].sutKodu,'L','',[rfReplaceAll]),
+                  HareketSiraNoHizmetAdi(StringReplace(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].sutKodu,'','',[rfReplaceAll]),
                   trim(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tahlilBilgileri[i].tahlilSonuclari[r].tahlilTipi));
                 except
                 end;
@@ -3336,7 +3336,13 @@ begin
              datalar.RxRadIslem.FieldByName('sutKodu').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].sutKodu;
              datalar.RxRadIslem.FieldByName('bransKodu').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].bransKodu;
              datalar.RxRadIslem.FieldByName('islemTarihi').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].islemTarihi;
-             datalar.RxRadIslem.FieldByName('drTescilNo').AsString := trim(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].drTescilNo);
+             datalar.RxRadIslem.FieldByName('drTescilNo').AsString :=
+             ifThen(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].drTescilNo = '',
+                    datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].istemYapanDrTescilNo,
+                    datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].drTescilNo);
+
+             //trim(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].drTescilNo);
+
              datalar.RxRadIslem.FieldByName('hizmetSunucuRefNo').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].hizmetSunucuRefNo;
              datalar.RxRadIslem.FieldByName('islemSiraNo').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].islemSiraNo;
              datalar.RxRadIslem.FieldByName('ozeldurum').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].ozelDurum;
@@ -4121,6 +4127,8 @@ var
   memData : TADOQuery;
 begin
 
+      datalar.RxKayitliIslem.Active := False;
+      datalar.RxKayitliIslem.Active := True;
       HizmetVeriSeti := hizmetKayitGirisDVO.Create;
       hatali := TStringList.Create;
       memData := TADOQuery.Create(nil);
@@ -4189,6 +4197,9 @@ begin
              end;
              memData.Next;
 
+             if i < 20 then datalar.HizmetKayitWS.BeklemeSuresi := 0
+             else datalar.HizmetKayitWS.BeklemeSuresi := 2;
+
              if (i in [20,40,60,80]) or (memData.Eof)  // 20 adet veri yada dosya sonu ise gönder ve verisetini sýfýrla
              then begin
                  HizmetVeriSeti.takipNo := _takip;
@@ -4209,19 +4220,18 @@ begin
                    Then begin
                        sonuc := datalar.HizmetKayitWS.Cevap.sonucKodu + ' - ' + datalar.HizmetKayitWS.Cevap.sonucMesaji;
                    end
-                else
-                 begin
-                   sonuc := '';
-                   for r := 0 to hatali.Count - 1 do
+                   else
+                   begin
+                       sonuc := datalar.HizmetKayitWS.Cevap.sonucKodu + ' - ' + datalar.HizmetKayitWS.Cevap.sonucMesaji;
+                       for r := 0 to hatali.Count - 1 do
                        begin
                          sonuc := sonuc + hatali[r] + #13;
                        end;
 
-                 end;
+                   end;
 
 
   //                ShowMessageSkin(datalar.HizmetKayitWS.Cevap.sonucMesaji,'','','info');
-
 
                  TahlilDizi := 1;
                  DigerDizi := 1;
@@ -4740,11 +4750,11 @@ begin
        TahlilElemanlar.sutKodu := memData.fieldbyname('code').AsString;
        TahlilElemanlar.adet := memData.fieldbyname('adet').AsInteger;
        TahlilElemanlar.islemTarihi := memData.fieldbyname('islemTarihi').AsString;
-       TahlilElemanlar.drTescilNo := ''; //memData.fieldbyname('DrTescilNo').AsString;
+       TahlilElemanlar.drTescilNo := memData.fieldbyname('DrTescilNo').AsString;
        TahlilElemanlar.bransKodu := memData.fieldbyname('bransKodu').AsString;
        TahlilElemanlar.hizmetSunucuRefNo := memData.fieldbyname('hizmetSunucuRefNo').AsString;
-       TahlilElemanlar.ozeldurum := 'f';//memData.fieldbyname('ozeldurum').AsString;
-       TahlilElemanlar.istemYapanDrTescilNo := memData.fieldbyname('DrTescilNo').AsString;
+       TahlilElemanlar.ozeldurum := memData.fieldbyname('ozeldurum').AsString;
+       TahlilElemanlar.istemYapanDrTescilNo := memData.fieldbyname('istemYapandoktorTescilNo').AsString;
        TahlilElemanlar.istemYapanDrBrans := memData.fieldbyname('bransKodu').AsString;
        TahlilElemanlar.islemSiraNo := '';
 
@@ -4771,7 +4781,7 @@ begin
                   ' join labtestler t on t.butkodu = h.code and t.uygulamaAdet = h.tip1' +
                   '  where isnull(g.eski_SIRANO, g.SIRANO) = ' + memData.FieldByName('gelisSiraNo').AsString +
                   //dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo +
-                   ' and (charindex(''901620.'',h.code)) > 0 and isnull(SGKTip,'''') <> '''''  +
+                   ' and onay = 1 and (charindex(''901620.'',h.code)) > 0 and isnull(SGKTip,'''') <> '''''  +
                    ' and hk.sirketKod = ' + QuotedStr(datalar.aktifSirket);
 
           ado := datalar.QuerySelect(sql1);
@@ -4812,16 +4822,16 @@ begin
           Rad.sutKodu := memData.fieldbyname('code').AsString;
           Rad.adet := memData.fieldbyname('adet').AsInteger;
           Rad.islemTarihi := memData.fieldbyname('islemTarihi').AsString;
-          Rad.drTescilNo := '';//memData.fieldbyname('drTescilNo').AsString;
+          Rad.drTescilNo := memData.fieldbyname('drTescilNo').AsString;
           Rad.bransKodu := memData.fieldbyname('bransKodu').AsString;
           Rad.hizmetSunucuRefNo := memData.fieldbyname('hizmetSunucuRefNo').AsString;
-          Rad.ozelDurum := 'f';//memData.fieldbyname('ozeldurum').AsString;
+          Rad.ozelDurum := memData.fieldbyname('ozeldurum').AsString;
           Rad.sonuc := '';//memData.fieldbyname('aciklama').AsString;
           Rad.birim := memData.fieldbyname('birim').AsString;
           Rad.aciklama := memData.fieldbyname('aciklama').AsString;
           Rad.modality := memData.fieldbyname('modality').AsString;
           Rad.accession := memData.fieldbyname('accession').AsString;
-          Rad.istemYapanDrTescilNo := memData.fieldbyname('drTescilNo').AsString;
+          Rad.istemYapanDrTescilNo := memData.fieldbyname('istemYapandoktorTescilNo').AsString;
           Rad.istemYapanDrBrans := memData.fieldbyname('bransKodu').AsString;
           TetkikveRadyolojiBilgileriMemData := Rad;
 end;

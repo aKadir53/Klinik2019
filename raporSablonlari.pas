@@ -13,7 +13,7 @@ uses
   dxSkinscxPCPainter, cxCustomData, cxFilter, cxData, cxDataStorage, cxDBData,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGridLevel,
   cxClasses, cxGridCustomView, cxGrid, cxButtons, KadirLabel, Menus,
-  cxImageComboBox, cxTextEdit, cxMemo, cxDBEdit;
+  cxImageComboBox, cxTextEdit, cxMemo, cxDBEdit, cxMaskEdit, cxDropDownEdit;
 
 type
   TfrmRaporSablon = class(TGirisForm)
@@ -66,6 +66,16 @@ type
     cxGroupBox6: TcxGroupBox;
     btnAckKaydet: TcxButton;
     R1: TMenuItem;
+    DataSource4: TDataSource;
+    Tetkik: TADOTable;
+    cxGroupBox7: TcxGroupBox;
+    cxGrid3: TcxGrid;
+    cxGridDBTableView2: TcxGridDBTableView;
+    cxGridDBTetkik: TcxGridDBColumn;
+    cxGridLevel2: TcxGridLevel;
+    cxGroupBox8: TcxGroupBox;
+    cxButtonKadirTetkikEkle: TcxButtonKadir;
+    cxButtonKadirTetkikSil: TcxButtonKadir;
     procedure btnSendClick(Sender: TObject);
     procedure TabloAc(doktor : string);
     procedure FormCreate(Sender: TObject);
@@ -106,6 +116,37 @@ var
  _List_ : ArrayListeSecimler;
 begin
   inherited;
+
+
+
+  if TcxButton(sender).Tag = 30
+  then begin
+    List.Kolonlar.Clear;
+    List.KolonBasliklari.Clear;
+    List.Table := 'LabTestler';
+    List.Kolonlar.Add('Butkodu');
+    List.Kolonlar.Add('tanimi');
+    List.KolonBasliklari.Add('Kodu');
+    List.KolonBasliklari.Add('Adý');
+    List.TColcount := 4;
+    List.TColsW := '60,200';
+    List.ListeBaslik := 'Tetkikler';
+    _List_ := List.ListeGetir;
+    if length(_List_) > 0
+    Then BEgin
+       sql := 'insert into IlacRaporSablonTetkik(SablonId,TetkikKodu) ' +
+                         'values( ' + Sablonlar.FieldByName('id').AsString + ',' +
+                                      QuotedStr(_List_[0].kolon1) + ')';
+       datalar.QueryExec(sql);
+
+       Tetkik.Active := False;
+       Tetkik.Active := True;
+
+    End;
+
+  end;
+
+
 
   if TcxButton(sender).Tag = 3
   then begin
@@ -199,10 +240,18 @@ begin
    4 :if MrYes = ShowMessageSkin('Teþhis Þablondan Çýkartýlýyor Emin misiniz ?','','','msg')
      Then Begin
        Tani.Delete;
+       Tani.Active := False;
+       Tani.Active := True;
      End;
+   40 :if MrYes = ShowMessageSkin('Tetkik Þablondan Çýkartýlýyor Emin misiniz ?','','','msg')
+     Then Begin
+       Tetkik.Delete;
+       Tetkik.Active := False;
+       Tetkik.Active := True;
+     End;
+
   end;
- Tani.Active := False;
- Tani.Active := True;
+
 end;
 
 procedure TfrmRaporSablon.cxButtonKadirTaniSilClick(Sender: TObject);
@@ -231,7 +280,7 @@ end;
 
 procedure TfrmRaporSablon.FormCreate(Sender: TObject);
 var
-doktorlar , pBirim :TcxImageComboKadir;
+  doktorlar , pBirim , tetkikler :TcxImageComboKadir;
 begin
   inherited;
   cxPanel.Visible := false;
@@ -254,22 +303,51 @@ begin
     doktorlar.ValueField := 'Kod';
     doktorlar.DisplayField := 'Tanimi';
     doktorlar.BosOlamaz := False;
-    doktorlar.Filter := ' durum = ''Aktif''';
+    doktorlar.Filter := '';
 
-  Sablonlar.Active := true;
-  SablonDetay.Active := true;
-  Tani.Active := true;
-  SablonAciklama.Active := True;
-  cxGridHastaGelisdoktor.Properties := doktorlar.Properties;
-  cxGridDBTableView1kullanZamanUnit.Properties := pBirim.Properties;
+    tetkikler := TcxImageComboKadir.Create(nil);
+    tetkikler.Conn := Datalar.ADOConnection2;
+    tetkikler.TableName := 'LabTestler';
+    tetkikler.ValueField := 'ButKodu';
+    tetkikler.DisplayField := 'Tanimi';
+    tetkikler.BosOlamaz := False;
+    tetkikler.Filter := '';
 
+    Sablonlar.Active := true;
+    SablonDetay.Active := true;
+    Tani.Active := true;
+    Tetkik.Active := true;
+    SablonAciklama.Active := True;
+    cxGridHastaGelisdoktor.Properties := doktorlar.Properties;
+    cxGridDBTableView1kullanZamanUnit.Properties := pBirim.Properties;
+    cxGridDBTetkik.Properties := tetkikler.Properties;
 end;
 
 procedure TfrmRaporSablon.S1Click(Sender: TObject);
 var
-  sql : string;
+  sql , ackTetkik , sablonID : string;
   ado : TADOQuery;
 begin
+
+   case TMenuItem(sender).Tag of
+   5 : begin
+        datalar.RaporSablon.doktor := '';
+        datalar.RaporSablon.sablonAdi := '';
+        datalar.RaporSablon.sirketKod := datalar.AktifSirket;
+        datalar.RaporSablon.sablonId := 0;
+
+        if mrYes = ShowPopupForm('Yeni Þablon',raporSablonInsert)
+        then begin
+           sablonlar.Append;
+           sablonlar.FieldByName('SablonTanimi').AsString := datalar.RaporSablon.sablonAdi;
+           sablonlar.FieldByName('doktor').AsString := datalar.RaporSablon.doktor;
+           sablonlar.FieldByName('sirketKod').AsString := datalar.RaporSablon.sirketKod;
+           sablonlar.Post;
+
+        end;
+       end;
+   end;
+
   if cxGridHastaGelis.Controller.SelectedRowCount = 0 Then exit;
 
   case TMenuItem(sender).Tag of
@@ -341,9 +419,22 @@ begin
                        SablonDetay.Next;
                      End;
 
+                     ackTetkik := '';
+                     Tetkik.First;
+                     while not Tetkik.Eof do
+                     Begin
+                      ackTetkik := ackTetkik + ',' + datalar.QuerySelect('exec sp_IlacRaporTetkikAciklama ' + _ResourceID + ',' + Tetkik.FieldByName('TetkikKodu').AsString).FieldByName('ack').AsString;
+                      Tetkik.Next;
+                     End;
+
                      SablonAciklama.First;
-                     datalar.QueryExec('Update Raporlar set Aciklama = ' + QuotedStr(SablonAciklama.FieldByName('aciklama').AsString) +
-                                       ' where sira = ' + _ResourceID);
+                     sql :=
+                     'Update Raporlar set Aciklama = ' + QuotedStr(SablonAciklama.FieldByName('aciklama').AsString)
+                                       + QuotedStr(' - ' + ackTetkik) +
+                                       ' where sira = ' + _ResourceID;
+                     datalar.QueryExec(sql);
+
+
                      datalar.ADOConnection2.CommitTrans;
                      ShowMessageSkin('Rapor Þablondan Dolduruldu','','','info');
                  except on e : Exception do

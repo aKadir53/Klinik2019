@@ -57,7 +57,7 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
         Top = 0
         Width = 656
         Height = 494
-        ActivePage = TabSheet7
+        ActivePage = TabSheet3
         Align = alClient
         Images = DATALAR.imag24png
         TabHeight = 25
@@ -554,7 +554,7 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
                 EditButtons = <>
                 FieldName = 'adet'
                 Footers = <>
-                Width = 19
+                Width = 49
               end
               item
                 DynProps = <>
@@ -798,7 +798,7 @@ object frmTakipBilgisiOku: TfrmTakipBilgisiOku
         Size = 20
       end>
     Left = 520
-    Top = 50
+    Top = 114
     object bilgiTtckimlikNo: TStringField
       FieldName = 'tckimlikNo'
     end

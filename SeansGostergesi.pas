@@ -98,9 +98,9 @@ begin
    Begin
      if chkDevredilen.Checked
      Then
-       sql := 'exec sp_SeansGostergesiMakina' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',''G'''
+       sql := 'exec sp_SeansGostergesiMakina' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',''G''' + ',' + QuotedStr(datalar.AktifSirket)
      Else
-       sql := 'exec sp_SeansGostergesiMakina' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',''''';
+       sql := 'exec sp_SeansGostergesiMakina' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',''''' + ',' + QuotedStr(datalar.AktifSirket) ;
 
    End;
 
@@ -526,9 +526,11 @@ begin
    if txtTip.ItemIndex = 0
    Then
      PrintYap('034','\SeansDagilim','',TopluDataset,pTNone)
-   Else
+   Else begin
+     TopluDataset.Dataset3 := datalar.QuerySelect('select * from Makinalar where sirketKod = ' + QuotedStr(datalar.AktifSirket));
      PrintYap('043','\SeansDagilim','',TopluDataset,pTNone);
 
+   end;
 (*
 
 

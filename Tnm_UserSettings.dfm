@@ -13,6 +13,7 @@ object frmUsers: TfrmUsers
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object SpeedButton1: TSpeedButton
@@ -106,6 +107,10 @@ object frmUsers: TfrmUsers
     object cxTabSheet2: TcxTabSheet
       Caption = 'Men'#252' Yetkileri'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object cxGrid1: TcxGrid
         Left = 0
         Top = 0
@@ -176,6 +181,10 @@ object frmUsers: TfrmUsers
     object cxTabSheet3: TcxTabSheet
       Caption = 'Kullan'#305'c'#305'n'#305'n Firmalar'#305
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object cxGroupBox1: TcxGroupBox
         Left = 0
         Top = 0
@@ -342,6 +351,14 @@ object frmUsers: TfrmUsers
         NewButtonVisible = False
       end
     end
+  end
+  object User_Spliter: TcxSplitter
+    Left = 406
+    Top = 0
+    Width = 8
+    Height = 562
+    AlignSplitter = salRight
+    Control = cxPageControl1
   end
   object UserSettings: TADOTable
     Connection = DATALAR.ADOConnection2

@@ -73,7 +73,7 @@ var
   _dataset_ : TClientDataSet;
   gndref,gndrefs,tstref,hstref,fromglstar,toglstar,HataMesaji: string;
   XML : TXMLData;
-  XMLString , sm , hata ,dosyaNo,gelisNo,id , sonuc ,testKod , _F_ ,sql , msj : string;
+  XMLString , sm , hata ,dosyaNo,gelisNo,id , SS,sonuc ,testKod , _F_ ,sql , msj : string;
   SonucListesi : ReLabSonucListesiResult;
   I,x : integer;
   t : boolean;
@@ -89,6 +89,8 @@ begin
 
    progres.Properties.Max := dataset.RecordCount;
    progres.Position := 0;
+
+
 
    while not dataset.Eof do
     begin
@@ -117,6 +119,7 @@ begin
 
       if testKod <> ''
       Then Begin
+         SS := StringReplace(dataset.FieldByName('SONUC').AsString, 'Ä°','Ý',[rfReplaceAll]);
          sonuc := dataset.FieldByName('SONUC').AsString;
          sonucAciklama := dataset.FieldByName('SONUCTEXT').AsString;
          if pos('SAMPLE RESULT',sonucaciklama) > 0
@@ -133,7 +136,7 @@ begin
          if (pos('NEG',Sonuc) > 0)
          Then sonuc := '-1'
          Else
-         if (pos('POZ',Sonuc) > 0)
+         if (pos('POZ',Sonuc) > 0) or (pos('POS',Sonuc) > 0)
          Then sonuc := '1'
          Else
          sonuc := Sonuc;
@@ -148,7 +151,7 @@ begin
                     ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
              datalar.QueryExec(sql);
 
-            sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucAciklama) +
+            sql := 'update hareketler set islemAciklamasi  = dbo.fn_gecersizKarakterHarf(' + QuotedStr(SS) + ')' +
                       ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                       ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
             datalar.QueryExec(sql);
@@ -218,6 +221,8 @@ begin
     // txtLog.Lines.Add(e.Message);
    end;
   end;
+
+
 
   id := glmref;
   try

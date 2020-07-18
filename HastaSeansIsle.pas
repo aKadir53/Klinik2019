@@ -3,7 +3,7 @@ unit HastaSeansIsle;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils,StrUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
   cxContainer, cxEdit, Menus, StdCtrls, cxButtons, cxGroupBox, DB, ADODB,
   cxTextEdit, cxMaskEdit, cxButtonEdit, cxDBEdit,kadirType,KadirLabel,Kadir,
@@ -194,6 +194,8 @@ type
     procedure PageControl_SeansPageChanging(Sender: TObject;
       NewPage: TcxTabSheet; var AllowChange: Boolean);
     procedure M2Click(Sender: TObject);
+    procedure ListeSFocusedItemChanged(Sender: TcxCustomGridTableView;
+      APrevFocusedItem, AFocusedItem: TcxCustomGridTableItem);
 
   private
     { Private declarations }
@@ -231,6 +233,24 @@ begin
                       ' where h.dosyaNo = ' + QuotedStr(_dosyaNO_) +
                       ' and h.gelisNO = ' + _gelisNO_);
 
+   if _pasifSebeb_ = '5'
+  Then begin
+    PopupMenuEnabled(Self,PopupMenu5,False);
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu5);
+    PopupMenuEnabled(Self,PopupMenu1,False);
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+    y1.Enabled := True;
+    s6.Enabled := True;
+    h1.Enabled := True;
+    ListeS.OptionsData.Editing := False;
+    ListeS.OptionsData.Deleting := False;
+    ListeDoktorKod.Options.Editing := False;
+    ListemakinaNo.Options.Editing := False;
+    ListeSeans.Options.Editing := False;
+    ListeraporTakipNo.Options.Editing := False;
+    ListeGIRISKILO.Options.Editing := False;
+    ListeCIKISKILO.Options.Editing := False;
+  end;
 
   Result := True;
 end;
@@ -296,10 +316,10 @@ begin
                           'values ( ' + #39 + _dosyaNo_ + #39+ ','+ _gelisNo_ + ',' + _gelisSiraNo_ + ','
                           + #39 + tarihal(datalar.SeansOlusturPrm.ilkSeansTarihi) + #39 + ','
                           + #39 + '0' + #39 + ','
-                          + #39 + _SeansBilgi.DiyalizorTipi + #39 + ',' //DiyalizorTipi
-                          + #39 + _SeansBilgi.DiyalizorCinsi + #39 + ','  //DiyalizorCinsi
-                          + #39 + _SeansBilgi.Diyalizat + #39 + ','
-                          + #39 + _SeansBilgi.GirisYolu + #39 + ','
+                          + ifThen(_SeansBilgi.DiyalizorTipi = '','NULL',QuotedStr(_SeansBilgi.DiyalizorTipi))  + ',' //DiyalizorTipi
+                          + ifThen(_SeansBilgi.DiyalizorCinsi = '','NULL',QuotedStr(_SeansBilgi.DiyalizorCinsi)) + ','  //DiyalizorCinsi
+                          + ifThen(_SeansBilgi.Diyalizat = '','NULL',QuotedStr(_SeansBilgi.Diyalizat))+ ','
+                          + ifThen(_SeansBilgi.GirisYolu = '','NULL',QuotedStr(_SeansBilgi.GirisYolu)) + ','
                           + #39 + _SeansBilgi.APH + #39 + ','
                           + #39 + _SeansBilgi.Na + #39 + ','
                           + #39 + _SeansBilgi.Igne + #39 + ','
@@ -311,7 +331,7 @@ begin
                           + #39 + copy(_doktor_,1,4) + #39 + ','
                           + #39 + _Makina_ + #39 + ','
                           + QuotedStr('') + ','
-                          + QuotedStr(_Seans_[1]) + ','
+                          + QuotedStr(ifThen(_Seans_='','1',_Seans_)) + ','
                           + QuotedStr(kod) + ','
                           + QuotedStr('S') + ','
                           + QuotedStr(_SeansBilgi.YA) + ','
@@ -372,7 +392,7 @@ begin
                             + #39 + copy(_doktor_,1,4) + #39 + ','
                             + #39 + _Makina_ + #39 + ','
                             + QuotedStr('') + ','
-                            + QuotedStr(_seans_[1]) + ','
+                            + QuotedStr(ifThen(_Seans_='','1',_Seans_)) + ','
                             + QuotedStr(kod) + ','
                             + QuotedStr('S') + ','
                             +'(select top 1 raporTakipNo from raporlar where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and turu = ''1'' and Aktif = 1) ,'
@@ -524,6 +544,9 @@ begin
 
                  if datalar.SeansBilgi.KanAlimi = 1
                  then begin
+                   datalar.QueryExec('exec sp_KanAlimSeansIsaretle @siraNo = ' + Datalar.SeansBilgi.yeniSiraNo);
+
+                 (*
                     datalar.QueryExec(
                    'update hareketler set KanAlindimi = 0 where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_
                    +
@@ -535,7 +558,7 @@ begin
                                       ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(NoktasizTarih(Datalar.SeansBilgi.islemTarihi)) +
                                       ' where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_);
 
-
+                     *)
 
                  end;
 
@@ -547,10 +570,10 @@ begin
                  ',Doktor = ' +  QuotedStr(Datalar.SeansBilgi.doktor) +
                  ',hemsire = ' + QuotedStr(Datalar.SeansBilgi.hemsire) +
                  ',raporTakipNo = ' + QuotedStr(Datalar.SeansBilgi.raporTakipNo) +
-                 ',DiyalizorCinsi = ' +  QuotedStr(Datalar.SeansBilgi.DiyalizorCinsi) +
-                 ',DiyalizorTipi = ' +  QuotedStr(Datalar.SeansBilgi.DiyalizorTipi) +
-                 ',DIYALIZOR = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizor) +
-                 ',D = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizat) +
+                 ',DiyalizorCinsi = ' +  ifThen(Datalar.SeansBilgi.DiyalizorCinsi='','NULL', QuotedStr(Datalar.SeansBilgi.DiyalizorCinsi)) +
+                 ',DiyalizorTipi = ' +  ifThen(Datalar.SeansBilgi.DiyalizorTipi = '','NULL',QuotedStr(Datalar.SeansBilgi.DiyalizorTipi)) +
+                 ',DIYALIZOR = ' + ifThen(Datalar.SeansBilgi.Diyalizor='','NULL',QuotedStr(Datalar.SeansBilgi.Diyalizor)) +
+                 ',D = ' +  ifThen(Datalar.SeansBilgi.Diyalizat='','NULL', QuotedStr(Datalar.SeansBilgi.Diyalizat)) +
                  ',HEPARINTIP = ' +  QuotedStr(Datalar.SeansBilgi.HeparinTip) +
                  ',HEPARIN = ' +  QuotedStr(Datalar.SeansBilgi.Heparin) +
                  ',HEPARINUYG = ' +  QuotedStr(Datalar.SeansBilgi.HeparinUyg) +
@@ -563,7 +586,7 @@ begin
                  ',IdealKilo = ' +  QuotedStr(Datalar.SeansBilgi.Kilo) +
                  ',GIRISKILO = ' +  QuotedStr(Datalar.SeansBilgi.girisKilo) +
                  ',CIKISKILO = ' +  QuotedStr(Datalar.SeansBilgi.cikisKilo) +
-                 ',GIRISYOLU = ' +  QuotedStr(Datalar.SeansBilgi.GirisYolu) +
+                 ',GIRISYOLU = ' +  ifThen(Datalar.SeansBilgi.GirisYolu='','NULL',QuotedStr(Datalar.SeansBilgi.GirisYolu)) +
                  ',GIRISYOLU_ENF = ' +  QuotedStr(Datalar.SeansBilgi.Enfeksiyon) +
 
                  ',aldigiKilo = ' +  QuotedStr(Datalar.SeansBilgi.AldigiKilo) +
@@ -591,14 +614,14 @@ begin
                  then begin
 
                     sql:=  ' update Hareketler set raporTakipNo = ' + QuotedStr(Datalar.SeansBilgi.raporTakipNo) +
-                           ',DiyalizorCinsi = ' +  QuotedStr(Datalar.SeansBilgi.DiyalizorCinsi) +
-                           ',DiyalizorTipi = ' +  QuotedStr(Datalar.SeansBilgi.DiyalizorTipi) +
-                           ',DIYALIZOR = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizor) +
+                           ',DiyalizorCinsi = ' +  ifThen(Datalar.SeansBilgi.DiyalizorCinsi='','NULL', QuotedStr(Datalar.SeansBilgi.DiyalizorCinsi)) +
+                           ',DiyalizorTipi = ' +  ifThen(Datalar.SeansBilgi.DiyalizorTipi = '','NULL',QuotedStr(Datalar.SeansBilgi.DiyalizorTipi)) +
+                           ',DIYALIZOR = ' + ifThen(Datalar.SeansBilgi.Diyalizor='','NULL',QuotedStr(Datalar.SeansBilgi.Diyalizor)) +
+                           ',D = ' +  ifThen(Datalar.SeansBilgi.Diyalizat='','NULL', QuotedStr(Datalar.SeansBilgi.Diyalizat)) +
                            ',YA = ' +  QuotedStr(Datalar.SeansBilgi.YA) +
                            ',APH = ' +  QuotedStr(Datalar.SeansBilgi.APH) +
                            ',Igne = ' +  QuotedStr(Datalar.SeansBilgi.Igne) +
                            ',IgneV = ' +  QuotedStr(Datalar.SeansBilgi.IgneV) +
-                           ',D = ' +  QuotedStr(Datalar.SeansBilgi.Diyalizat) +
                            ',HEPARINTIP = ' +  QuotedStr(Datalar.SeansBilgi.HeparinTip) +
                            ',HEPARIN = ' +  QuotedStr(Datalar.SeansBilgi.Heparin) +
                            ',HEPARINUYG = ' +  QuotedStr(Datalar.SeansBilgi.HeparinUyg) +
@@ -607,7 +630,7 @@ begin
                            ',UF = ' +  QuotedStr(Datalar.SeansBilgi.UF) +
                            ',HCOOO = ' +  QuotedStr(Datalar.SeansBilgi.HCOOO) +
                            ',Na = ' +  QuotedStr(Datalar.SeansBilgi.Na) +
-                           ',GIRISYOLU = ' +  QuotedStr(Datalar.SeansBilgi.GirisYolu) +
+                           ',GIRISYOLU = ' +  ifThen(Datalar.SeansBilgi.GirisYolu='','NULL',QuotedStr(Datalar.SeansBilgi.GirisYolu)) +
                            ',IdealKilo = ' +  QuotedStr(Datalar.SeansBilgi.Kilo) +
                            ' where dosyaNo = ' + QuotedStr(Datalar.SeansBilgi.dosyaNo) +
                            ' and gelisNo = ' + Datalar.SeansBilgi.gelisNo + ' and Durum = 0 and Tip = ''S''';
@@ -1132,6 +1155,9 @@ begin
   Datalar.SeansBilgi.Durum := cxGrid_Seans.Dataset.FieldByName('Durum').AsInteger;
   Datalar.SeansBilgi.hemsireNot := cxGrid_Seans.Dataset.FieldByName('hekimGozlemDdiger').AsString;
   Datalar.SeansBilgi.doktorNot := cxGrid_Seans.Dataset.FieldByName('hekimGozlemD').AsString;
+  Datalar.SeansBilgi.diyalizdegelisenDiger := cxGrid_Seans.Dataset.FieldByName('diyalizdegelisenDiger').AsString;
+  Datalar.SeansBilgi.diyalizdegelisenDigerI := cxGrid_Seans.Dataset.FieldByName('diyalizdegelisenDigerI').AsString;
+
 
   Datalar.SeansBilgi.islemSiraNo := cxGrid_Seans.Dataset.FieldByName('islemSiraNo').AsString;
   Datalar.SeansBilgi.SeansCaption := _HastaAdSoyad_ + ' - ' + cxGrid_Seans.Dataset.FieldByName('seansGunu').AsString +
@@ -1201,6 +1227,9 @@ begin
   -20 : begin
            if ListeS.Controller.SelectedRowCount > 0
            Then begin
+
+             datalar.QueryExec('exec sp_KanAlimSeansIsaretle @siraNo = ' + cxGrid_Seans.Dataset.FieldByName('yeniSiraNo').AsString);
+           (*
              datalar.QueryExec(
              'update hareketler set KanAlindimi = 0 where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_
              +
@@ -1218,7 +1247,7 @@ begin
                                 ' where dosyaNo = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L''');
 
 
-
+             *)
               cxGrid_Seans.Dataset.Requery();
            end;
         end;
@@ -1294,6 +1323,7 @@ procedure TfrmHastaSeans.FormCreate(Sender: TObject);
 var
   index,i : integer;
   Ts : TStringList;
+  DoktorCombo : TcxImageComboKadir;
 
 begin
   Tag := TagfrmHastaSeans;
@@ -1309,10 +1339,17 @@ begin
 
  // setDataStringKontrol(self,PageControl_Seans , 'PageControl_Seans','',Kolon1,'',758);
 
+  setDataStringIC(self,'DoktorCombo','DoktorCombo',Kolon1,'BB',150,'DoktorlarT','Kod','Tanimi','');
+  TdxLayoutGroup(FindComponent('dxLaDoktorCombo')).Visible := false;
 
-  TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items := AnaForm.Doktorlar.Properties.Items;
+  TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
+  TcxImageComboKadir(FindComponent('DoktorCombo')).Properties.Items;
+
+//  AnaForm.Doktors.Properties.Items;
 
   PageControl_Seans.ActivePage := Seanslar_Sayfa;
+
+
 
   SayfaCaption('Seanslar','','','','');
 
@@ -1350,17 +1387,21 @@ begin
   inherited;
   ListeAc2.Where := 'dosyaNo = ' + QuotedStr(_dosyaNo_);
   List := ListeAc2.ListeGetir;
+ (*
   cxGrid_Seans.Dataset.Edit;
   cxGrid_Seans.Dataset.FieldByName('raporTakipNo').AsString := List[0].kolon1;
   cxGrid_Seans.Dataset.Post;
+   *)
 
-  RTarih := cxGrid_Seans.Dataset.FieldByName('Tarih').AsString;
-  ado := TADOQuery.Create(nil);
-  ado.Connection := datalar.ADOConnection2;
+  sql := 'update Hareketler set raporTakipNo = ' + QuotedStr(List[0].kolon1) +
+         ' where tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNo_)  + ' and siraNo = ' + varToStr(cxGrid_Seans.Dataset.FieldByName('islemRefNo').AsString);
+  datalar.QueryExec(sql);
+
+  RTarih := FormatDateTime('YYYYMMDD', cxGrid_Seans.Dataset.FieldByName('Tarih').AsDateTime);
   sql := 'update Hareketler set raporTakipNo = ' + QuotedStr(List[0].kolon1) +
          ' where tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNo_)  + ' and Tarih > ' + QuotedStr(RTarih) + ' and durum = 0 ';
-  datalar.QueryExec(ado,sql);
-  ado.Free;
+  datalar.QueryExec(sql);
+
 
   cxGrid_Seans.Dataset.Requery();
 end;
@@ -1373,6 +1414,9 @@ var
   talepSira , kod , Rtarih , sql ,ktip , takipno ,makineNo,Hst,seans,raporTakipNo : string;
   ado : TADOQuery;
 begin
+
+  if _pasifSebeb_ = '5' then exit;
+  
   if datalar.SeansOnayDoktorHemsireYapar <> 'Evet'
   then begin
 
@@ -1437,6 +1481,41 @@ begin
    ShowMessageSkin('Seans Onaylarýný Doktor ve Hemþire Seansý Kapatarak Yapmalýdýr','','','info');
 
 
+end;
+
+procedure TfrmHastaSeans.ListeSFocusedItemChanged(
+  Sender: TcxCustomGridTableView; APrevFocusedItem,
+  AFocusedItem: TcxCustomGridTableItem);
+var
+   Doktorlar : TcxImageComboKadir;
+begin
+  inherited;
+   if AFocusedItem = ListeDoktorKod
+   then begin
+     Doktorlar := TcxImageComboKadir.Create(nil);
+     try
+       Doktorlar.Conn := Datalar.ADOConnection2;
+       Doktorlar.TableName := 'DoktorlarT';
+       Doktorlar.DisplayField := 'tanimi';
+       Doktorlar.ValueField := 'kod';
+       Doktorlar.Filter := DoktorlarFilter;
+       TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
+       Doktorlar.Properties.Items;
+     finally
+        FreeAndNil(Doktorlar);
+     end;
+   end
+   else
+   begin
+       Doktorlar := TcxImageComboKadir.Create(nil);
+       Doktorlar.Conn := Datalar.ADOConnection2;
+       Doktorlar.TableName := 'DoktorlarT';
+       Doktorlar.DisplayField := 'tanimi';
+       Doktorlar.ValueField := 'kod';
+       Doktorlar.Filter := '';
+       TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
+       Doktorlar.Properties.Items;
+   end;
 end;
 
 procedure TfrmHastaSeans.ListeSFocusedRecordChanged(

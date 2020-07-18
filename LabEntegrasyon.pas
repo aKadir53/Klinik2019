@@ -133,6 +133,11 @@ type
     E3: TMenuItem;
     K2: TMenuItem;
     ListeColumn16: TcxGridDBColumn;
+    ListeColumn17: TcxGridDBColumn;
+    ListeColumn18: TcxGridDBColumn;
+    U1: TMenuItem;
+    S3: TMenuItem;
+    S4: TMenuItem;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -192,6 +197,7 @@ implementation
   GemSoftBIYOTIP,
   TenaySynevo,
   TenaySYNLAB,
+  TenayGama,
   Referans,
   TenaySISTEMTIP,
   Derman,
@@ -199,11 +205,15 @@ implementation
   TenaySIMGE,
   TenayBIOLAB,
   ELABUnit,
+  ELABUNYEUnit,
   Interkom,
   Duzen,
   AEN,
   LiosERBIL,
-  LiosDEREN;
+  LiosDEREN,
+  Birlab,
+  RENTEKpas,
+  EGALAB;
 
 {$R *.dfm}
 
@@ -224,6 +234,23 @@ begin
   if Liste.Controller.SelectedRowCount = 0 then exit;
 
   case TMenuItem(Sender).Tag of
+  GAMA :      begin
+                  DurumGoster(True,True);
+                  try
+                    TenayOrderKaydetGama(Liste,txtLog,pBar);
+                  finally
+                    DurumGoster(False);
+                  end;
+              end;
+
+  EGELABLAB : begin
+                DurumGoster(True,True);
+                try
+                  EGALAB.OrderKaydetAlis(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
     BIYOTIP : begin
                 DurumGoster(True,True);
                 try
@@ -309,7 +336,7 @@ REFERANSLAB : begin
                 end;
              end;
 
-    ELAB  : begin
+    ELAB,UNYE  : begin
                 DurumGoster(True,True);
                 try
                   ELABOrderKaydet(Liste,txtLog,pBar);
@@ -344,6 +371,15 @@ INTERKOMLAB : begin
                   DurumGoster(False);
                 end;
               end;
+ BIRLABLAB  : begin
+                DurumGoster(True,True);
+                try
+                  Birlab.OrderKaydet(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+             end;
+
   end;
 
 
@@ -358,7 +394,7 @@ begin
    if Liste.Controller.SelectedRowCount = 0 then exit;
 
   case TMenuItem(Sender).Tag of
-       ELAB : begin
+       ELAB,UNYE : begin
                 DurumGoster(True,True);
                 try
                   ELABUnit.SonucAlBarkod(Liste,txtLog,pBar);
@@ -378,6 +414,33 @@ begin
    if Liste.Controller.SelectedRowCount = 0 then exit;
 
   case TMenuItem(Sender).Tag of
+
+  GAMA        : begin
+                  DurumGoster(True,True);
+                  try
+                    TenaySonucAlTCdenGama(txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,txtLog,pBar,False);
+                  finally
+                    DurumGoster(False);
+                  end;
+                end;
+
+  EGELABLAB   : begin
+                 DurumGoster(True,True);
+                 try
+                   EGALAB.SonucAlALis(txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,Liste,pBar,txtLog);
+                 finally
+                  DurumGoster(False);
+                 end;
+              end;
+    EXCEL   : begin
+                 DurumGoster(True,True);
+                 try
+                   kadir.ExceldenLabSonucYukle(txtTopPanelTarih1.GetValue,txtTopPanelTarih2.GetValue,pBar,txtLog);
+                 finally
+                  DurumGoster(False);
+                 end;
+              end;
+
     BIYOTIP : Begin
                  DurumGoster(True,True);
                  try
@@ -481,6 +544,16 @@ begin
                 end;
               end;
 
+       UNYE : begin
+                DurumGoster(True,True);
+                try
+                  ELABUNYEUnit.SonucAl(txtTopPanelTarih1.EditValue,
+                                       txtTopPanelTarih2.EditValue,Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+
 INTERKOMLAB  : begin
                 DurumGoster(True,True);
                 try
@@ -532,6 +605,15 @@ DUZENLAB  : begin
 
             end;
 
+BIRLABLAB : begin
+                DurumGoster(True,True);
+                try
+                  Birlab.SonucAl(txtTopPanelTarih1.date,txtTopPanelTarih2.date,Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+
   end;
 end;
 
@@ -570,12 +652,13 @@ var
  GirisFormRecord : TGirisFormRecord;
  F : TGirisForm;
  dosyaNo,sirketKod,sube : string;
- i : integer;
+ x,i : integer;
  DosyaNos , sql : string;
  ado : TADOQuery;
  topluset : TDataSetKadir;
   aTabSheet : TcxTabSheet;
   bTamam : Boolean;
+  id ,ids : string;
 begin
   datalar.KontrolUserSet := False;
 
@@ -638,7 +721,11 @@ begin
  -21 : begin
           DurumGoster(True,True);
           try
-            //BarkodOlustur(Liste,txtLog,pBar);
+            if strToint(datalar._labID) = RENTEKLAB
+            Then
+              RenTekPas.BarkodOlustur(Liste,txtLog,pBar)
+            Else
+              ENA.BarkodOlustur(Liste,txtLog,pBar);
           finally
             DurumGoster(False);
           end;
@@ -647,7 +734,7 @@ begin
  -22 : begin
           DurumGoster(True,True);
           try
-           // BarkodYazdir(Liste,memData,txtLog,pBar);
+            BarkodYazdir(Liste,memData,txtLog,pBar);
           finally
             DurumGoster(False);
           end;
@@ -689,6 +776,36 @@ begin
            end;
 
        end;
+
+ 101 : begin
+           DosyaNos := '';
+           if Liste.Controller.SelectedRowCount > 0
+           then begin
+               for i := 0 to Liste.Controller.SelectedRowCount - 1 do
+               begin
+                   Application.ProcessMessages;
+                   DosyaNos := DosyaNos + ifThen(DosyaNos <> '', ',','') + varToStr(Liste.DataController.GetValue(
+                   Liste.Controller.SelectedRows[i].RecordIndex,Liste.DataController.GetItemByFieldName('DosyaNo').Index));
+               end;
+              try
+                sql := 'exec sp_HastaLabSonucToplu ' + txtTopPanelTarih1.GetSQLValue + ',' +
+                                                       txtTopPanelTarih2.GetSQLValue  + ',' +
+                                                       QuotedStr(DosyaNos) + ',' +
+                                                       QuotedStr(datalar.AktifSirket);
+
+                datalar.QuerySelect(sql);
+                Topluset.Dataset0 := datalar.QuerySelect(sql);
+
+                Topluset.Dataset1 := datalar.ADO_AktifSirket;
+
+                PrintYap('112','\Lab Sonuç Yazdýr (Toplu)',intToStr(TagfrmHastaTetkikEkle),Topluset);
+
+              finally
+
+              end;
+           end;
+       end;
+
  110 : begin
          if FindTab(AnaForm.sayfalar,TagfrmKtvListesi)
          Then begin
@@ -709,6 +826,34 @@ begin
          F.txtTopPanelTarih1.Date := self.txtTopPanelTarih1.Date;
          F.txtTopPanelTarih2.Date := self.txtTopPanelTarih2.Date;
 
+       end;
+
+ 120 : begin
+          if mrYes = ShowPopupForm('Uzman Onay Tarihi',TetkikTarihDuzenle,self)
+          Then Begin
+            DurumGoster(True);
+            try
+             ids := '';
+             if Liste.Controller.SelectedRowCount > 0
+             then begin
+                 for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+                 begin
+                     Application.ProcessMessages;
+                     ids := ids + ifThen(ids <> '', ',','') + varToStr(Liste.DataController.GetValue(
+                     Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('SIRANO').Index));
+                 end;
+
+                 sql := 'set nocount on update Hasta_Gelisler set UzmanOnayZamani = ' + QuotedStr(datalar.TetkikTarihi) +
+                                   ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','','')) ' +
+                                   ' set nocount off';
+                 datalar.QueryExec(sql);
+                _Dataset.Requery();
+             end;
+
+            finally
+              DurumGoster(False);
+            end;
+          End;
        end;
  end;
 
@@ -760,8 +905,8 @@ begin
   // IslemItemSub1.OnClick :=  IslemItemSubClick;
 
    if strToint(datalar._labID) in [ENALAB,SYNEVO,SYNLAB,SISTEMTIP,DERMANLAB,AHENK,
-                                   BIOLAB,SIMGE,CentroLab,DUZENLAB,AENLAB,
-                                   ERBILLAB,DERENLAB]
+                                   BIOLAB,SIMGE,CentroLab,DUZENLAB,AENLAB,EGELABLAB,GAMA,
+                                   ERBILLAB,DERENLAB,BIRLABLAB,EXCEL]
    then begin
      if datalar._LabCalismaYon = '2'
      Then BEgin
@@ -823,10 +968,10 @@ begin
       SonucAlItem.Visible := False;
    end
    else
-   if strToint(datalar._labID) = ELAB
+   if strToint(datalar._labID) in [ELAB,UNYE]
    then begin
       IslemItemSub1.Caption := 'Hasta Kaydet';
-      IslemItemSub2.Caption := 'Tüm Sonuçlarý Al';
+      IslemItemSub2.Caption := 'Sonuçlarý Al(TC)';
       IslemItemSub3.Caption := 'Sonuç Al(Barkod)';
       IslemItemSub1.Visible := False;
       IslemItemSub2.Visible := True;
@@ -985,8 +1130,8 @@ begin
   HastaBilgiRecordSet(Hadi,HSadi,HTc,'');
   *)
 
-  if AFocusedRecord = nil then exit;
-  index := AFocusedRecord.Index;
+  if Liste.Controller.SelectedRowCount = 0 then exit;
+  index :=  AFocusedRecord.RecordIndex;
 
   _dosyaNO_ := varToStr(Liste.DataController.GetValue(index,dosyaNo.Index));
   _gelisNO_ := varToStr(Liste.DataController.GetValue(index,HastaAdi.Index));

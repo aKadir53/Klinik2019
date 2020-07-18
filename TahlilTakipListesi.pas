@@ -22,7 +22,8 @@ uses
   dxSkinXmas2008Blue, Menus, cxGroupBox, cxRadioGroup, sGauge,
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
-  cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxCheckGroup;
+  cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxCheckGroup,
+  cxSplitter;
 
 type
   TfrmTahliltakip = class(TGirisForm)
@@ -153,6 +154,7 @@ type
     ListeColumn5: TcxGridDBBandedColumn;
     cxStyle10: TcxStyle;
     chkBand: TcxCheckGroup;
+    cxSplitter1: TcxSplitter;
     procedure cxButtonCClick(Sender: TObject);
     procedure Tarih;
     procedure T1Click(Sender: TObject);
@@ -174,6 +176,9 @@ type
     procedure K2Click(Sender: TObject);
     procedure S1Click(Sender: TObject);
     procedure BandVisible(band2 : Boolean = True ; band3 : Boolean = True ; band4 : Boolean = True ; band5 : Boolean = True);
+    procedure ListeCustomization(Sender: TObject);
+    procedure ListeMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
 
   private
 
@@ -202,6 +207,8 @@ var
 begin
   ADO_Uyar.Active := true;
   tarih2.Date := ayliktarih(date,tarih1);
+
+  Liste.RestoreFromRegistry('Klinik2019_TahlilTakipListesi');
 
   // Hemogramlarýn kolon baþlýklarýný labtestlerden alýp yazýyor. Dinamik olarak.
   for c := 0 to Liste.ColumnCount - 1 do
@@ -236,6 +243,23 @@ inherited;
       GirisRecord.F_BasvuruNo_ := ADO_TetkiklerHastaList.fieldbyname('basvuruNo').AsString;
 
       case Tcontrol(sender).Tag of
+      -1 : begin
+      (*
+             if PnltetkikDegerlendir.Visible = True
+              Then begin
+                PnltetkikDegerlendir.Visible := False;
+                cxSplitter1.Visible := False;
+                cxGridKadir1.Align := alClient;
+              end
+              Else
+              begin
+               PnltetkikDegerlendir.Visible := True;
+               cxSplitter1.Visible := True;
+               cxGridKadir1.Align := alLeft;
+               PnltetkikDegerlendir.Align := alClient;
+              end;
+              *)
+           end;
       -2 : begin
               F := FormINIT(TagfrmHastaTetkikEkle,GirisRecord);
               if F <> nil then F.ShowModal;
@@ -436,6 +460,7 @@ begin
       datalar.QuerySelect(ado,sql);
 
       topluset.Dataset0 := ado;
+      topluset.Dataset1 := Datalar.ADO_AktifSirket;
       PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),topluset);
     finally
       DurumGoster(False);
@@ -566,9 +591,7 @@ end;
 
 procedure TfrmTahliltakip.btnSendClick(Sender: TObject);
 begin
-
   ListeDblClick(Liste);
-
 end;
 
 procedure TfrmTahliltakip.btnTetkikDegerlendirClick(Sender: TObject);
@@ -587,12 +610,9 @@ begin
          begin
            Application.ProcessMessages;
            try
-             d := Liste.DataController.GetValue(
-                                            Liste.Controller.SelectedRows[i].RecordIndex,0);
-             g := Liste.DataController.GetValue(
-                                            Liste.Controller.SelectedRows[i].RecordIndex,1);
-             ad := Liste.DataController.GetValue(
-                                            Liste.Controller.SelectedRows[i].RecordIndex,2);
+             d := Liste.DataController.GetValue(Liste.Controller.SelectedRows[i].RecordIndex,Liste.DataController.GetItemByFieldName('dosyaNo').Index);
+             g := Liste.DataController.GetValue(Liste.Controller.SelectedRows[i].RecordIndex,Liste.DataController.GetItemByFieldName('g').Index);
+             ad := Liste.DataController.GetValue(Liste.Controller.SelectedRows[i].RecordIndex,Liste.DataController.GetItemByFieldName('h').Index);
              //label3.Caption := ad;
 
              ado_tetkikDegerlendir.SQL.Clear;
@@ -654,6 +674,12 @@ begin
 
 end;
 
+procedure TfrmTahliltakip.ListeCustomization(Sender: TObject);
+begin
+  inherited;
+   Liste.StoreToRegistry('Klinik2019_TahlilTakipListesi');
+end;
+
 procedure TfrmTahliltakip.ListeDblClick(Sender: TObject);
 var
   dosyaNo,gelisNo,hasta : string;
@@ -679,6 +705,13 @@ begin
    End
    Else ShowMessageSkin('Tekik Düzenleme Yetkiniz Yok','','','info');
    *)
+end;
+
+procedure TfrmTahliltakip.ListeMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+   Liste.StoreToRegistry('Klinik2019_TahlilTakipListesi');
 end;
 
 procedure TfrmTahliltakip.S1Click(Sender: TObject);
@@ -713,6 +746,7 @@ begin
 
     datalar.QuerySelect(ado,sql);
     TopluDataset.Dataset0 := ado;
+    TopluDataset.Dataset1 := Datalar.ADO_AktifSirket;
     PrintYap('112','\Lab Sonuç Yazdýr (Toplu)',intToStr(TagfrmTahliltakip),TopluDataset);
   finally
       ado.Free;

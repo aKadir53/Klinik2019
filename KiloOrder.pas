@@ -58,7 +58,7 @@ type
     GridEkstreColumn1: TcxGridDBBandedColumn;
     GridEkstreColumn2: TcxGridDBBandedColumn;
     GridEkstreColumn3: TcxGridDBBandedColumn;
-    GridEkstreColumn4: TcxGridDBBandedColumn;
+    GridEkstreAtes: TcxGridDBBandedColumn;
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
     GridEkstreDoktor: TcxGridDBBandedColumn;
@@ -74,6 +74,8 @@ type
     procedure GridEkstreEditKeyDown(Sender: TcxCustomGridTableView;
       AItem: TcxCustomGridTableItem; AEdit: TcxCustomEdit; var Key: Word;
       Shift: TShiftState);
+    procedure GridEkstreEditValueChanged(Sender: TcxCustomGridTableView;
+      AItem: TcxCustomGridTableItem);
   private
     { Private declarations }
   public
@@ -207,14 +209,48 @@ procedure TfrmKiloOrder.GridEkstreEditKeyDown(Sender: TcxCustomGridTableView;
 begin
   inherited;
 
+  if key = VK_LEFT
+  then begin
+    TcxCustomGridTableView(sender).Controller.FocusedItem :=
+    TcxGridDBTableView(sender).Columns[
+    TcxCustomGridTableView(sender).Controller.FocusedItem.Index - 1];
+  end;
+
+  if key = VK_RIGHT then key := 13;
+
   if key = 13
   then
-    if AItem = GridEkstreCIKISKILO
+    if AItem = GridEkstreAtes
     then begin
       ado.Next;
       TcxCustomGridTableView(sender).Controller.FocusedItem := GridEkstreIdealKilo;
     end;
 
+
+end;
+
+procedure TfrmKiloOrder.GridEkstreEditValueChanged(
+  Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem);
+begin
+  inherited;
+  Sender.Controller.EditingController.Edit.PostEditValue;
+
+  if (TcxGridDBColumn(AItem).DataBinding.FieldName = 'IdealKilo')
+  then begin
+     if mrYes = ShowMessageSkin('Ýdeal Kiloda Deðiþiklik Yaptýnýz','Hasta Kartýndan da Deðiþtirilsin mi?','','msg')
+     then begin
+       datalar.QueryExec('update hastakart set IdealKilo = ' + ado.FieldByName('IdealKilo').AsString +
+                         ' where dosyaNO = ' + QuotedStr(ado.FieldByName('dosyaNo').AsString));
+
+
+       datalar.QueryExec('update hareketler set IdealKilo = ' + ado.FieldByName('IdealKilo').AsString +
+                         ' where dosyaNO = ' + QuotedStr(ado.FieldByName('dosyaNo').AsString) +
+                         ' and gelisNo = ' + ado.FieldByName('gelisNo').AsString +
+                         ' and durum = 0 and Tip = ''S'''  );
+       ado.Requery();
+     end;
+
+  end;
 
 end;
 
@@ -251,6 +287,9 @@ begin
      gelisNo := ado.FieldByName('gelisNo').AsString;
      sira := ado.FieldByName('siraNo').AsString;
 
+     datalar.QueryExec('exec sp_KanAlimSeansIsaretle @siraNo = ' + sira);
+
+     (*
      datalar.QueryExec(
      'update hareketler set KanAlindimi = 0 where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO
      +
@@ -262,7 +301,7 @@ begin
                         ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(FormatDateTime('YYYYMMDD',ado.FieldByName('Tarih').Asdatetime)) +
                         ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNO);
 
-
+      *)
      ado.Requery();
   end;
 
@@ -299,9 +338,9 @@ procedure TfrmKiloOrder.Y1Click(Sender: TObject);
 var
   TopluDataset : TDataSetKadir;
 begin
-    TopluDataset.Dataset0 := datalar.ADO_AktifSirket;
-    TopluDataset.Dataset1 := datalar.ADO_aktifSirketLogo;
-    TopluDataset.Dataset2 := ado;
+    TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+    TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+    TopluDataset.Dataset1 := ado;
     PrintYap('211','\KiloOrder','',TopluDataset,pTNone);
 end;
 

@@ -32,7 +32,7 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
       Height = 346
       Align = alClient
       TabOrder = 0
-      Properties.ActivePage = cxTabHastaListe
+      Properties.ActivePage = cxTabHastaGelis
       Properties.TabPosition = tpBottom
       ClientRectBottom = 316
       ClientRectLeft = 3
@@ -70,6 +70,10 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
               '10')
             Properties.OnChange = cxSalonBilgisiPropertiesChange
             TabOrder = 0
+            ExplicitLeft = 2
+            ExplicitTop = -2
+            ExplicitWidth = 229
+            ExplicitHeight = 51
             Width = 227
           end
         end
@@ -148,6 +152,10 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
             Align = alClient
             TabOrder = 0
             TabStop = False
+            ExplicitLeft = 2
+            ExplicitTop = -2
+            ExplicitWidth = 229
+            ExplicitHeight = 313
             object cxGridHastaGelis: TcxGridDBTableView
               OnFocusedRecordChanged = cxGridHastaGelisFocusedRecordChanged
               DataController.DataModeController.GridMode = True

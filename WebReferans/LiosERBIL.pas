@@ -275,7 +275,7 @@ begin
           datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\ERBIL\HastaKaydet_' + dosyaNo + '_' + gelisNo + '.XML';
 
 
-          DateToXsdate(DT,_DT_);
+          DateToXsdateTime(DT,_DT_);
           Testler := Order(dosyaNo , gelisNo);
 
           try

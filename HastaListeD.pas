@@ -78,6 +78,9 @@ type
     H1: TMenuItem;
     M1: TMenuItem;
     E3: TMenuItem;
+    H2: TMenuItem;
+    T2: TMenuItem;
+    T3: TMenuItem;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -103,7 +106,6 @@ type
     procedure ListeCellClick(Sender: TcxCustomGridTableView;
       ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
       AShift: TShiftState; var AHandled: Boolean);
-    procedure H1Click(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure ListeFocusedRecordChanged(Sender: TcxCustomGridTableView;
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
@@ -131,7 +133,7 @@ var
   frmHastaListeD: TfrmHastaListeD;
   ay1 , ay2  , donemYil ,_Tarih_: string;
 implementation
-  uses Data_Modul,AnaUnit, HastaListe;// HastaRecete, HastaSeansIsle;
+  uses Data_Modul,AnaUnit, HastaListe,MedEczane;// HastaRecete, HastaSeansIsle;
 {$R *.dfm}
 
 
@@ -157,6 +159,9 @@ var
  Datasets : TDataSetKadir;
  x , satir : integer;
  dosyaNo , dosyaNos ,sql : string;
+
+ ado,ado0,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
+ m : string;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -207,11 +212,15 @@ begin
        end;
 
  -7 : begin
-          DurumGoster(True,False,'Hastanýn Reçeteleri Yükleniyor...');
-          F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet);
-          F._foto_ := _foto_;
-          if F <> nil then F.ShowModal;
-          DurumGoster(False,False);
+           DurumGoster(True,False,'Hastanýn Reçeteleri Yükleniyor...');
+          try
+            F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet);
+            F._foto_ := _foto_;
+            if F <> nil then F.ShowModal;
+          finally
+            DurumGoster(False,False);
+          end;
+
        // ReceteForm(ado_BransKodlari.FieldByName('dosyaNo').AsString,ado_BransKodlari.FieldByName('gelisNo').AsString);
       end;
 
@@ -249,9 +258,28 @@ begin
           F := FormINIT(TagfrmKanTetkikTakip,GirisFormRecord,ikHayir);
           if F <> nil then F.ShowModal;
        end;
+
+ -90 : begin
+         TetkikIlacTedaviYazdir(GirisFormRecord.F_dosyaNo_,ay1);
+
+
+       end;
+
 -110 : begin
          if datalar.doktorKodu <> ''
          then begin
+
+             try
+              F := FormINIT(TagfrmMedEczane,GirisFormRecord,ikHayir,'');
+              TfrmMedEczane(F).receteForm := self;
+              TfrmMedEczane(F)._user := datalar._doktorReceteUser;
+              TfrmMedEczane(F)._pas := datalar._doktorRecetePas;
+              if F <> nil then F.ShowModal;
+
+             finally
+               F.Free;
+             end;
+             (*
              if FindTab(AnaForm.sayfalar,TagfrmMedEczane)
              Then begin
                F := TGirisForm(FormClassType(TagfrmMedEczane));
@@ -264,7 +292,8 @@ begin
              Else begin
               F := FormINIT(TagfrmMedEczane,self,GirisFormRecord,'',NewTab(AnaForm.sayfalar,TagfrmMedEczane),ikEvet,'Giriþ');
               if F <> nil then F.show;
-             end;
+             end; *)
+
          end
          else
            ShowMessageSkin('Doktor Kullanýcýsý Olmalýsýnýz','','','info');
@@ -278,6 +307,10 @@ begin
          begin
            ShowMessageSkin('Doktor Kullanýcýsý Olmalýsýnýz','','','info');
          end;
+       end;
+-112 : begin
+           F := FormINIT(TagfrmHizliKayit,GirisFormRecord,ikEvet,'Giriþ');
+           if F <> nil then F.ShowModal;
        end;
 
 -100 : begin
@@ -299,7 +332,9 @@ begin
                QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\QR\' + dosyaNo+'.jpg');
             end;
 
-              sql := 'select * from hastakart h ' +
+              sql := 'select h.*,p.foto,kg.ADI,I.atc_tanimi,I.aciklama ilacAlerjiAciklama from hastakart h ' +
+                     ' join SKRS_KAN_GRUBU kg on kg.EntegrasyonKodu = h.KANGRUBU ' +
+                     ' left join Hasta_Ilac_Uyari I on I.dosyaNO = h.dosyaNo ' +
                      'left join PersonelFoto p on h.dosyano = p.dosyano ' +
                      'where h.dosyaNo in (select datavalue from dbo.strTotable(' + QuotedStr(dosyaNos) + ','',''))' ;
 
@@ -314,6 +349,49 @@ begin
 
 
        end;
+
+
+ 10,11,12 : begin
+             m := 'E';
+
+             case TMenuItem(sender).Tag of
+              10 : dosyaNo := '';
+              11 : dosyaNO := _Dataset.FieldByName('dosyaNo').AsString;
+             end;
+
+             if TMenuItem(sender).Tag in [12]
+             then begin
+              Datasets.Dataset1 := cxGrid2.Dataset;
+              PrintYap('203T','Hasta Tetkik Takip Hepatit Toplu',inttostr(TagfrmHastaListe),Datasets);
+             end
+             else begin
+
+              DurumGoster(True);
+              try
+              ado := TADOQuery.Create(nil);
+              sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = ' + QuotedStr(dosyaNo) + ' , @yil = ' + QuotedStr(ay1) +
+                            ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                            ',@seans = ' + QuotedStr(txtSeansTopPanel.text);
+              datalar.QuerySelect(ado,sql);
+
+              Datasets.Dataset0 := ado;
+              Datasets.Dataset1 := datalar.ADO_AktifSirket;
+              Datasets.Dataset2 := datalar.ADO_aktifSirketLogo;
+              PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),Datasets);
+              finally
+                DurumGoster(False);
+                ado.Free;
+              end;
+
+             end;
+
+           end;
+
+   190 : begin
+          F := FormINIT(TagfrmHastaTetkikEkle,GirisFormRecord);
+          F._Foto_ := _foto_;
+          if F <> nil then F.ShowModal;
+         end;
 
 
  330,9020 : begin
@@ -392,46 +470,6 @@ begin
   ay1 := txtDonemTopPanel.getValueIlkTarih; //tarihal(ayaditoay(txtAy.Text));
   ay2 := txtDonemTopPanel.getValueSonTarih; //tarihal(ayliktarih2(txtAy.Text));
   SayfaCaption('','','','','');
-
-end;
-
-procedure TfrmHastaListeD.H1Click(Sender: TObject);
-var
-  sql : string;
-  ado,ado0,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
-  m : string;
-  topluset : TDataSetKadir;
-begin
-
-   case TMenuItem(sender).Tag of
-    10 : m := 'E';
-    11 : m := 'H';
-   end;
-
-   if TMenuItem(sender).Tag in [12]
-   then begin
-    topluset.Dataset1 := cxGrid2.Dataset;
-    PrintYap('203T','Hasta Tetkik Takip Hepatit Toplu',inttostr(TagfrmHastaListe),topluset);
-   end
-   else begin
-
-    DurumGoster(True);
-    try
-    ado := TADOQuery.Create(nil);
-    sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = '''' , @yil = ' + QuotedStr(ay1) +
-                  ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-                  ',@seans = ' + QuotedStr(txtSeansTopPanel.text);
-    datalar.QuerySelect(ado,sql);
-
-    topluset.Dataset0 := ado;
-    PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),topluset);
-    finally
-      DurumGoster(False);
-      ado.Free;
-    end;
-
-   end;
-
 
 end;
 
@@ -700,7 +738,7 @@ var
 begin
   yil := strtoint(copy(datetostr(date),7,4))+1;
 //--  popupYil.Items.Clear;
-  for I := 1 to 5 do
+  for I := 1 to 10 do
   begin
    yil := yil - 1;
    if popupYil.items.Find(inttostr(yil)) = nil

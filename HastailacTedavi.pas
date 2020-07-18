@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,Kadir,TedaviKart,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,Kadir,GetFormClass,TedaviKart,
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxContainer,
   cxEdit, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
@@ -71,6 +71,29 @@ type
     cxSplitter1: TcxSplitter;
     cxGridIlacTedaviPlaniColumn6: TcxGridDBColumn;
     cxGridIlacTedaviPlaniColumn7: TcxGridDBColumn;
+    Son6AylikTetkikSonu1: TMenuItem;
+    Tetkik: TcxTabSheet;
+    DataSource6: TDataSource;
+    ADO_Tetkikler: TADOQuery;
+    cxGrid3: TcxGrid;
+    gridTetkikList: TcxGridDBTableView;
+    cxGridDBColumn2: TcxGridDBColumn;
+    cxGridDBColumn3: TcxGridDBColumn;
+    ARALIK: TcxGridDBColumn;
+    KASIM: TcxGridDBColumn;
+    EKIM: TcxGridDBColumn;
+    EYLUL: TcxGridDBColumn;
+    AGUSTOS: TcxGridDBColumn;
+    TEMMUZ: TcxGridDBColumn;
+    HAZIRAN: TcxGridDBColumn;
+    MAYIS: TcxGridDBColumn;
+    NISAN: TcxGridDBColumn;
+    MART: TcxGridDBColumn;
+    SUBAT: TcxGridDBColumn;
+    OCAK: TcxGridDBColumn;
+    cxGridDBColumn4: TcxGridDBColumn;
+    cxGridLevel3: TcxGridLevel;
+    cxSplitter2: TcxSplitter;
     procedure FormCreate(Sender: TObject);
     procedure IlacTedavi(_dosyaNo , gelisNo,_Tarih : string ; islem : integer = 99999);
     procedure ItemClick(Sender: TObject);
@@ -84,6 +107,8 @@ type
     procedure ilacEkle(islem : integer);
     procedure Yukle;override;
     procedure SmsGonder;
+    procedure TetkikSonucGridKolonGizle;
+    procedure Listele;
 
   private
     { Private declarations }
@@ -93,7 +118,7 @@ type
   end;
 
 const _TableName_ = 'IlacTedavi';
-      formGenislik = 900;
+      formGenislik = 1200;
       formYukseklik = 600;
 var
   frmHastaIlacTedavi: TfrmHastaIlacTedavi;
@@ -102,6 +127,58 @@ var
 implementation
       uses Data_Modul,AnaUnit,HastaRecete,IlacSarfListesi;
 {$R *.dfm}
+
+
+procedure TfrmHastaIlacTedavi.TetkikSonucGridKolonGizle;
+begin
+  OCAK.Visible := False;
+  SUBAt.Visible := False;
+  MART.Visible := False;
+  NISAN.Visible := False;
+  MAYIS.Visible := False;
+  HAZIRAN.Visible := False;
+  TEMMUZ.Visible := False;
+  AGUSTOS.Visible := False;
+  EYLUL.Visible := False;
+  EKIM.Visible := False;
+  KASIM.Visible := False;
+  ARALIK.Visible := False;
+end;
+
+
+procedure TfrmHastaIlacTedavi.Listele;
+var
+  sql ,_Tarih: string;
+  i : integer;
+  ado : TADOQuery;
+begin
+  _Tarih := NoktasizTarih(_provizyonTarihi_);
+  try
+    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '1,''H'',' + QuotedStr(datalar.AktifSirket);
+    datalar.QuerySelect(ADO_Tetkikler,sql);
+
+    TetkikSonucGridKolonGizle;
+
+    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '0,''H'',' + QuotedStr(datalar.AktifSirket);
+    ado := TADOQuery.Create(nil);
+    try
+      datalar.QuerySelect(ado,sql);
+
+      while not ado.Eof do
+      begin
+        i := gridTetkikList.GetColumnByFieldName(ado.fieldbyname('ad').AsString).Index;
+        gridTetkikList.Columns[i].Visible := True;
+        gridTetkikList.Columns[i].Width := 50;
+        gridTetkikList.Columns[i].Index := ado.RecNo + 2;
+        ado.Next;
+      end;
+    finally
+      ado.Free;
+    end;
+  except
+  end;
+end;
+
 
 procedure TfrmHastaIlacTedavi.ReceteyeEkle;
 var
@@ -254,7 +331,7 @@ begin
    datalar.QuerySelect(ADO_GecmisIlacTedavi,sql);
   // GecmisIlacTree.FullExpand;
 
-
+   Listele;
 
  //  sql :=  ' exec sp_GecmisDonemIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' +QuotedStr(NoktasizTarih(_provizyonTarihi_)) + ',0';
  //  datalar.QuerySelect(ADO_IlacGelis,sql);
@@ -357,6 +434,12 @@ begin
    sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'01');
    Datasets.Dataset1 := datalar.QuerySelect(sql);;
 
+   Datasets.Dataset2 := datalar.ADO_AktifSirket;
+
+   Datasets.Dataset3 := datalar.ADO_aktifSirketLogo  ;
+
+
+
 (*
    sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(_Tarih_,1,4)+'02');
    Datasets.Dataset2 := datalar.QuerySelect(sql);;
@@ -412,10 +495,17 @@ begin
 end;
 
 procedure TfrmHastaIlacTedavi.cxButtonCClick(Sender: TObject);
+var
+ Form : TGirisForm;
+ GirisFormRecord : TGirisFormRecord;
 begin
   datalar.KontrolUserSet := False;
   inherited;
   if datalar.KontrolUserSet = True then exit;
+
+
+  GirisFormRecord.F_dosyaNO_ := _dosyaNO_;
+  GirisFormRecord.F_gelisNo_ := _gelisNo_;
 
     case TMenuItem(sender).Tag of
     -4 : begin
@@ -442,6 +532,17 @@ begin
           TetkikIlacTedaviYazdir(FormatDateTime('YYYYMMDD', strTodate(_provizyonTarihi_)));
 
        end;
+ -31 : begin
+          GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
+          GirisFormRecord.F_dosyaNO_ := _dosyaNO_;
+          GirisFormRecord.F_provizyonTarihi_ := _provizyonTarihi_;
+
+          Form := FormINIT(TagfrmSon6AylikTetkikSonuc,GirisFormRecord);
+          if Form <> nil then Form.showModal;
+        //  Son6AylikTetkikSonuc(_dosyaNO_,_provizyonTarihi_);
+
+       end;
+
 
     end;
 
@@ -477,6 +578,7 @@ begin
   if not inherited Init(Sender) then exit;
   _HastaBilgileriniCaptionGoster_ := True;
   yukle;
+  Listele;
   Result := True;
 end;
 
@@ -497,7 +599,15 @@ begin
   TableName := _TableName_;
   cxPanel.Visible := false;
   cxTab.Width := 200;
-  SayfaCaption('Tedavi','','','','');
+
+
+
+ //setDataStringKontrol(self,cxGrid15,'cxGrid15','',Kolon1,'',150,100,alClient,'',clLeft);
+
+
+
+
+  SayfaCaption('Tedavi','Tetkik Sonuc','','','');
   Olustur(self,_TableName_,'Ýlaç Tedavi',23);
   Menu := PopupMenu1;
 

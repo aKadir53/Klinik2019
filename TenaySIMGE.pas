@@ -226,7 +226,7 @@ begin
                 if (HTSOTCCvp.Sonuclar[0] = nil) and (length(HTSOTCCvp.Sonuclar) = 1)
                 then  begin
                    txtLog.Lines.Add(inttostr(HTSOTC.TC) + ' - Sonuç Bulunamadý');
-                   exit;
+                   Continue;
                 end;
 
                       for _Sonuclar_ in HTSOTCCvp.Sonuclar do

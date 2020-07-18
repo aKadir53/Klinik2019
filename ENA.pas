@@ -160,7 +160,7 @@ begin
       if  (ornekNo = '') and (CikisornekNo = '') and (OrnekNo_TamKan = '')
           and (kayitTip = 'Yeni Kayýt')
       Then Begin
-         sql := 'select top 1 barkodNo from Centro_barkodlar where durum = 0 order by barkodNo';
+         sql := 'select top 1 barkodNo from Centro_barkodlar where durum = 0 and sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' order by barkodNo';
          datalar.QuerySelect(adoB,sql);
          i := 0;
          barkod := adoB.Fields[0].AsInteger;
@@ -181,7 +181,8 @@ begin
          datalar.QueryExec(sql);
 
          sql := 'update Centro_barkodlar set durum = 1,dosyaNo = ' + QuotedStr(dosyaNo) + ',gelisNo = ' + QuotedStr(gelisNo) +
-                ' where barkodNo = ' + QuotedStr(intToStr(barkod));
+                ' where barkodNo = ' + QuotedStr(intToStr(barkod)) +
+                ' and sirketKod = ' + QuotedStr(datalar.AktifSirket);
          datalar.QueryExec(sql);
 
       End;
@@ -644,33 +645,53 @@ begin
                             sonucA := trim(StringReplace(StringReplace(SonucA,'DÜÞÜK','',[rfReplaceAll]),'düþük','',[rfReplaceAll]));
                             sonucA := trim(StringReplace(SonucA,'-','',[rfReplaceAll]));
                              *)
-                            sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
-                                      ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
-                                      ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 
-                             datalar.QueryExec(sql);
+                            _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,'NEGATÝF','',[rfReplaceAll]);
+                            _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,'POZÝTÝF','',[rfReplaceAll]);
+                            _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,'(','',[rfReplaceAll]);
+                            _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,')','',[rfReplaceAll]);
 
-                            sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(_tetkikSonuc_.Sonuc) +
-                                   ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
-                                   ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
-                            datalar.QueryExec(sql);
+                            try
+                              sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
+                                        ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                                        ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+
+                               datalar.QueryExec(sql);
+                               sleep(10);
+
+                              sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(_tetkikSonuc_.Sonuc) +
+                                     ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
+                                     ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
+                              datalar.QueryExec(sql);
+                            except on e : exception
+                             do begin
+                                 ShowMessageSkin(e.Message,sql,'','info');
+                                 Continue;
+                             end;
+                            end;
                          End
                          else
                          begin
-                            try
-                             sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
-                                      ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
-                                      ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
+                           try
+                              try
+                                 sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
+                                          ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
+                                          ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
 
-                             datalar.QueryExec(sql);
-                            except
-                               sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
-                                      ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
-                                      ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
-                               datalar.QueryExec(sql);
+                                 datalar.QueryExec(sql);
+                              except
+                                 sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
+                                        ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
+                                        ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
+                                 datalar.QueryExec(sql);
 
+                              end;
+                            except on e : exception
+                             do begin
+                                 ShowMessageSkin(e.Message,sql,'','info');
+                                 Continue;
+                             end;
                             end;
-
                          end;
 
                       End;
@@ -736,9 +757,7 @@ begin
       HastaTenay.DogumTarihi := DTarih;
 
 
-      sql := 'select BHDAT,ornekNo,SIRANO ,' +
-             ' (select Tarih from hareketlerSeans ' +
-                ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis + ' and KanAlindimi = 1) KanAlimZamani ' +
+      sql := 'select BHDAT,ornekNo,SIRANO , KanAlimZamani ' +
              ' from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
       datalar.QuerySelect(ado,sql);
 
@@ -749,12 +768,12 @@ begin
       if 1 = 1
       then  begin
           GelisMNT := TenayENA.Gelis.Create;
-          GelisMNT.ReferansNo := ado.fieldbyname('SIRANO').AsString;
+          GelisMNT.ReferansNo := ado.fieldbyname('ornekNo').AsString;
           GelisMNT.OrnekNo := 0;
 
 
           TTarih := TXSDateTime.Create;
-          DateToXsdate(TTarih,KanAlimZamani);
+          DateToXsdateTime(TTarih,KanAlimZamani);
          // TTarih.Year := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,1,4));
          // TTarih.Month := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,5,2));
          // TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
@@ -800,7 +819,7 @@ begin
           //  istek.OrnekTurId := ifThen(TurId = '','0',TurId);
             ATarih := TXSDateTime.Create;
 
-            DecodeDateTime(ado.fieldbyname('Tarih').AsDateTime, yil, ay, gun, saat, dakika, saniye, salise);
+            DecodeDateTime(KanAlimZamani, yil, ay, gun, saat, dakika, saniye, salise);
 
 
             ATarih.Year := yil;

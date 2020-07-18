@@ -678,7 +678,7 @@ begin
 
                   if not FileExists(filename)
                   then begin
-                   ShowMessageSkin(filename,' Dosya Bulunamadý','','info');
+                   ShowMessageSkin(filename,'C:\RTF\ içersinde , Dosya Bulunamadý','','info');
                    exit;
                   end;
 

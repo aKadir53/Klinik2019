@@ -169,8 +169,8 @@ begin
    d1 := TXSDateTime.Create;
    d2 := TXSDateTime.Create;
 
-   DatetoxsDate(d1,Trh1);
-   DatetoxsDate(d2,Trh2);
+   DatetoxsDateTime(d1,Trh1);
+   DatetoxsDateTime(d2,Trh2);
 
    kullanici := C_LoginSecurity.Create;
    kullanici.Username := datalar._labusername;  //'AmwEN06';//

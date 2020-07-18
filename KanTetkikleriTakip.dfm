@@ -34,8 +34,8 @@ object frmKanTetkikTakip: TfrmKanTetkikTakip
     ExcelFileName = 'KanTetkikTakip'
     ExceleGonder = True
     PopupForm = False
-    ExplicitLeft = 88
-    ExplicitTop = 25
+    ExplicitTop = 0
+    ExplicitHeight = 700
     object GridTetkikler: TcxGridDBTableView
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True

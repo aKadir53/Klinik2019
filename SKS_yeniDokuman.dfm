@@ -1145,72 +1145,73 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 312
-    Top = 320
-    object G1: TMenuItem
-      Tag = -1
-      Caption = 'G'#246'zden Ge'#231'irme Ekle'
-      ImageIndex = 102
-      OnClick = cxButtonCClick
-    end
-    object G2: TMenuItem
-      Tag = -2
-      Caption = 'G'#246'zden Ge'#231'irme '#304'ptal'
-      ImageIndex = 84
-      OnClick = cxButtonCClick
-    end
-    object N1: TMenuItem
-      Caption = '-'
-    end
-    object R1: TMenuItem
-      Tag = -3
-      Caption = 'Revizyon Ekle'
-      ImageIndex = 85
-      OnClick = cxButtonCClick
-    end
-    object R2: TMenuItem
-      Tag = -4
-      Caption = 'Revizyon Sil'
-      ImageIndex = 87
-      OnClick = cxButtonCClick
-    end
-    object onayDurum: TMenuItem
-      Tag = -5
-      Caption = 'Revizyon Onay'
-      ImageIndex = 86
-      OnClick = cxButtonCClick
-    end
-    object kontrolDurum: TMenuItem
-      Tag = -6
-      Caption = 'Revizyon Kontrol'
-      ImageIndex = 108
-      OnClick = cxButtonCClick
-    end
-    object N2: TMenuItem
-      Caption = '-'
-    end
-    object D1: TMenuItem
-      Tag = -10
-      Caption = 'D'#246'k'#252'man A'#231
-      ImageIndex = 101
-      OnClick = cxButtonCClick
-    end
-    object D2: TMenuItem
-      Tag = -11
-      Caption = 'D'#246'k'#252'man D'#252'zenle'
-      ImageIndex = 114
-      OnClick = cxButtonCClick
-    end
-    object N3: TMenuItem
-      Caption = '-'
+    Left = 304
+    Top = 16
+    object M1: TMenuItem
+      Caption = 'Men'#252
+      ImageIndex = 79
+      object D2: TMenuItem
+        Tag = -11
+        Caption = 'D'#246'k'#252'man D'#252'zenle'
+        ImageIndex = 135
+        OnClick = cxButtonCClick
+      end
+      object N4: TMenuItem
+        Tag = -12
+        Caption = #304'lk Yay'#305'nlanan D'#246'k'#252'man'#305' G'#246'ster'
+        ImageIndex = 136
+        OnClick = cxButtonCClick
+      end
+      object D1: TMenuItem
+        Tag = -10
+        Caption = 'D'#246'k'#252'man'#305' G'#246'ster'
+        ImageIndex = 134
+        OnClick = cxButtonCClick
+      end
+      object kontrolDurum: TMenuItem
+        Tag = -6
+        Caption = 'Revizyon Kontrol'
+        ImageIndex = 108
+        OnClick = cxButtonCClick
+      end
+      object onayDurum: TMenuItem
+        Tag = -5
+        Caption = 'Revizyon Onay'
+        ImageIndex = 86
+        OnClick = cxButtonCClick
+      end
+      object R2: TMenuItem
+        Tag = -4
+        Caption = 'Revizyon Sil'
+        ImageIndex = 87
+        OnClick = cxButtonCClick
+      end
+      object R1: TMenuItem
+        Tag = -3
+        Caption = 'Revizyon Ekle'
+        ImageIndex = 85
+        OnClick = cxButtonCClick
+      end
+      object G2: TMenuItem
+        Tag = -2
+        Caption = 'G'#246'zden Ge'#231'irme '#304'ptal'
+        ImageIndex = 84
+        OnClick = cxButtonCClick
+      end
+      object G1: TMenuItem
+        Tag = -1
+        Caption = 'G'#246'zden Ge'#231'irme Ekle'
+        ImageIndex = 102
+        OnClick = cxButtonCClick
+      end
     end
     object P1: TMenuItem
       Caption = 'Dosya Y'#252'kle (PDF,XLS,DOC,RTF)'
       ImageIndex = 110
       object Y1: TMenuItem
         Tag = -20
-        Caption = 'Y'#252'kle'
-        ImageIndex = 9
+        Caption = 'Y'#252'kle (PDF,XLS,DOC,RTF)'
+        ImageIndex = 111
         OnClick = cxButtonCClick
       end
       object S1: TMenuItem

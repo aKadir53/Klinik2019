@@ -64,6 +64,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
             LevelTabs.ImageBorder = 2
             LevelTabs.Style = 1
             object cxGridTetkikler: TcxGridDBTableView
+              PopupMenu = PopupMenu1
               Navigator.Buttons.First.Visible = False
               Navigator.Buttons.PriorPage.Visible = False
               Navigator.Buttons.Prior.Visible = False
@@ -124,6 +125,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               OptionsData.Deleting = False
               OptionsData.DeletingConfirmation = False
               OptionsData.Inserting = False
+              OptionsSelection.MultiSelect = True
               OptionsView.NavigatorOffset = 20
               OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
               OptionsView.Footer = True
@@ -153,10 +155,6 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
                 HeaderAlignmentVert = vaCenter
                 Options.Editing = False
                 Width = 63
-              end
-              object cxGridTetkikleryapanDoktor: TcxGridDBColumn
-                DataBinding.FieldName = 'yapanDoktor'
-                Visible = False
               end
               object cxGridTetkikleristeyenDoktor: TcxGridDBColumn
                 DataBinding.FieldName = 'isteyenDoktor'
@@ -256,7 +254,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
                 PropertiesClassName = 'TcxMemoProperties'
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
-                Width = 150
+                Width = 120
               end
               object cxGridTetkiklerISLENDIMI: TcxGridDBColumn
                 DataBinding.FieldName = 'ISLENDIMI'
@@ -271,7 +269,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
                 HeaderAlignmentVert = vaCenter
                 Options.Editing = False
                 Styles.Content = AnaForm.cxStyle2
-                Width = 103
+                Width = 90
               end
               object cxGridTetkiklerColumn1: TcxGridDBColumn
                 Caption = 'G'#246'nderim'
@@ -304,6 +302,16 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               object cxGridTetkiklerColumn3: TcxGridDBColumn
                 DataBinding.FieldName = 'Grupsira'
                 Visible = False
+              end
+              object cxGridTetkikleryapanDoktor: TcxGridDBColumn
+                DataBinding.FieldName = 'Doktor'
+                PropertiesClassName = 'TcxImageComboBoxProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Properties.Items = <>
+                HeaderAlignmentHorz = taCenter
+                Options.Editing = False
+                Width = 80
               end
             end
             object cxGridLevel15: TcxGridLevel
@@ -996,6 +1004,18 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
       Tag = -23
       Caption = 'Tarih Bilgisi Kan Al'#305'nan Seans Tarihi'
       ImageIndex = 120
+      OnClick = ItemClick
+    end
+    object T8: TMenuItem
+      Tag = -25
+      Caption = 'Tetkik Tarihini D'#252'zenle'
+      ImageIndex = 73
+      OnClick = ItemClick
+    end
+    object D1: TMenuItem
+      Tag = -26
+      Caption = 'Doktor Bilgisini D'#252'zenle'
+      ImageIndex = 49
       OnClick = ItemClick
     end
     object Y1: TMenuItem

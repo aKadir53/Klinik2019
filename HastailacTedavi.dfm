@@ -4,7 +4,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
   BorderStyle = bsToolWindow
   Caption = 'frmHastaIlacTedavi'
   ClientHeight = 571
-  ClientWidth = 986
+  ClientWidth = 1200
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,7 +22,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
     PanelStyle.Active = True
     TabOrder = 0
     Height = 571
-    Width = 978
+    Width = 1192
     object frmHastaIlacTedavi_cxGroupBox1: TcxGroupBox
       Left = 2
       Top = 2
@@ -30,18 +30,18 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       PanelStyle.Active = True
       TabOrder = 0
       Height = 567
-      Width = 974
+      Width = 1188
       object frmHastaIlacTedavi_cxPageControl1: TcxPageControl
         Left = 2
         Top = 2
-        Width = 970
+        Width = 1184
         Height = 563
         Align = alClient
         TabOrder = 0
         Properties.ActivePage = cxTabSheet1
         ClientRectBottom = 556
         ClientRectLeft = 3
-        ClientRectRight = 963
+        ClientRectRight = 1177
         ClientRectTop = 26
         object cxTabSheet1: TcxTabSheet
           Caption = #304'la'#231' Tedavi Plan'#305
@@ -49,9 +49,9 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
           object cxGrid15: TcxGrid
             Left = 0
             Top = 0
-            Width = 960
+            Width = 681
             Height = 530
-            Align = alClient
+            Align = alLeft
             Font.Charset = TURKISH_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
@@ -129,7 +129,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 DataBinding.FieldName = 'ilacName'
                 HeaderAlignmentHorz = taCenter
                 Options.Editing = False
-                Width = 294
+                Width = 265
               end
               object cxGridIlacTedaviPlanigrup: TcxGridDBColumn
                 DataBinding.FieldName = 'grup'
@@ -217,8 +217,20 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 Visible = False
               end
               object cxGridIlacTedaviPlaniColumn3: TcxGridDBColumn
+                Caption = 'K.Yolu'
                 DataBinding.FieldName = 'Kyol'
-                Visible = False
+                PropertiesClassName = 'TcxLookupComboBoxProperties'
+                Properties.DropDownListStyle = lsFixedList
+                Properties.ImmediatePost = True
+                Properties.KeyFieldNames = 'kod'
+                Properties.ListColumns = <
+                  item
+                    FieldName = 'tanimi'
+                  end>
+                Properties.ListSource = DATALAR.ReceteKullanimYollari_Datasource
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Width = 111
               end
               object cxGridIlacTedaviPlaniColumn4: TcxGridDBColumn
                 DataBinding.FieldName = 'adet'
@@ -280,6 +292,234 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
               Options.DetailFrameWidth = 0
             end
           end
+          object cxGrid3: TcxGrid
+            Left = 689
+            Top = 0
+            Width = 485
+            Height = 530
+            Align = alClient
+            Font.Charset = TURKISH_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 1
+            LevelTabs.ImageBorder = 2
+            LevelTabs.Style = 1
+            object gridTetkikList: TcxGridDBTableView
+              Navigator.Buttons.First.Visible = True
+              Navigator.Buttons.PriorPage.Visible = True
+              Navigator.Buttons.Prior.Visible = True
+              Navigator.Buttons.Next.Visible = True
+              Navigator.Buttons.NextPage.Visible = True
+              Navigator.Buttons.Last.Visible = True
+              Navigator.Buttons.Insert.Visible = True
+              Navigator.Buttons.Append.Visible = False
+              Navigator.Buttons.Delete.Visible = True
+              Navigator.Buttons.Edit.Visible = True
+              Navigator.Buttons.Post.Visible = True
+              Navigator.Buttons.Cancel.Visible = True
+              Navigator.Buttons.Refresh.Visible = True
+              Navigator.Buttons.SaveBookmark.Visible = True
+              Navigator.Buttons.GotoBookmark.Visible = True
+              Navigator.Buttons.Filter.Visible = True
+              FilterBox.CustomizeDialog = False
+              DataController.DataModeController.DetailInSQLMode = True
+              DataController.DataSource = DataSource6
+              DataController.Filter.Options = [fcoCaseInsensitive]
+              DataController.Filter.Active = True
+              DataController.Filter.TranslateBetween = True
+              DataController.Filter.TranslateLike = True
+              DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
+              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.FooterSummaryItems = <>
+              DataController.Summary.SummaryGroups = <>
+              Filtering.MRUItemsList = False
+              Filtering.ColumnMRUItemsList = False
+              FilterRow.InfoText = 'Arama Sat'#305'r'#305
+              FilterRow.SeparatorWidth = 2
+              FilterRow.ApplyChanges = fracImmediately
+              NewItemRow.InfoText = 'Kay'#305't Ekle'
+              OptionsBehavior.CellHints = True
+              OptionsBehavior.FocusCellOnTab = True
+              OptionsCustomize.ColumnGrouping = False
+              OptionsCustomize.ColumnHidingOnGrouping = False
+              OptionsCustomize.ColumnsQuickCustomization = True
+              OptionsData.Deleting = False
+              OptionsData.Editing = False
+              OptionsData.Inserting = False
+              OptionsView.NavigatorOffset = 20
+              OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
+              OptionsView.CellAutoHeight = True
+              OptionsView.GroupByBox = False
+              OptionsView.HeaderHeight = 25
+              OptionsView.Indicator = True
+              OptionsView.RowSeparatorColor = clBlack
+              object cxGridDBColumn2: TcxGridDBColumn
+                DataBinding.FieldName = 'TetkikKodu'
+                Visible = False
+                Width = 56
+              end
+              object cxGridDBColumn3: TcxGridDBColumn
+                DataBinding.FieldName = 'Tetkik'
+                Width = 94
+              end
+              object ARALIK: TcxGridDBColumn
+                DataBinding.FieldName = 'ARALIK'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Width = 30
+              end
+              object KASIM: TcxGridDBColumn
+                DataBinding.FieldName = 'KASIM'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object EKIM: TcxGridDBColumn
+                DataBinding.FieldName = 'EKIM'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object EYLUL: TcxGridDBColumn
+                DataBinding.FieldName = 'EYLUL'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object AGUSTOS: TcxGridDBColumn
+                DataBinding.FieldName = 'AGUSTOS'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Width = 35
+              end
+              object TEMMUZ: TcxGridDBColumn
+                DataBinding.FieldName = 'TEMMUZ'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object HAZIRAN: TcxGridDBColumn
+                DataBinding.FieldName = 'HAZIRAN'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object MAYIS: TcxGridDBColumn
+                DataBinding.FieldName = 'MAYIS'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object NISAN: TcxGridDBColumn
+                DataBinding.FieldName = 'NISAN'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object MART: TcxGridDBColumn
+                DataBinding.FieldName = 'MART'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object SUBAT: TcxGridDBColumn
+                DataBinding.FieldName = 'SUBAT'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object OCAK: TcxGridDBColumn
+                DataBinding.FieldName = 'OCAK'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taCenter
+                Properties.Alignment.Vert = taVCenter
+                Visible = False
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Options.Editing = False
+                Width = 35
+              end
+              object cxGridDBColumn4: TcxGridDBColumn
+                DataBinding.FieldName = 'INo'
+                Visible = False
+                Width = 26
+              end
+            end
+            object cxGridLevel3: TcxGridLevel
+              Caption = 'Hastalar'
+              GridView = gridTetkikList
+              Options.DetailFrameColor = clBlack
+              Options.DetailFrameWidth = 0
+            end
+          end
+          object cxSplitter2: TcxSplitter
+            Left = 681
+            Top = 0
+            Width = 8
+            Height = 530
+            Control = cxGrid15
+          end
+        end
+        object Tetkik: TcxTabSheet
+          Caption = 'Tetkik Sonu'#231
+          ImageIndex = 1
+          TabVisible = False
         end
       end
     end
@@ -334,6 +574,12 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
         ImageIndex = 64
         OnClick = cxButtonCClick
       end
+    end
+    object Son6AylikTetkikSonu1: TMenuItem
+      Tag = -31
+      Caption = 'Son 6 Aylik Tetkik Sonu'#231
+      ImageIndex = 45
+      OnClick = cxButtonCClick
     end
     object N3: TMenuItem
       Caption = '-'
@@ -446,5 +692,18 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       Color = clYellow
       TextColor = clBlack
     end
+  end
+  object DataSource6: TDataSource
+    DataSet = ADO_Tetkikler
+    Left = 536
+    Top = 226
+  end
+  object ADO_Tetkikler: TADOQuery
+    Connection = DATALAR.ADOConnection2
+    Parameters = <>
+    SQL.Strings = (
+      'exec sp_HastaTetkikTakipPIVOT '#39'015099'#39','#39'20160301'#39',1')
+    Left = 536
+    Top = 296
   end
 end

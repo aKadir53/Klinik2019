@@ -304,7 +304,7 @@ var
 begin
       ado := TADOQuery.Create(nil);
       ado.Connection := datalar.ADOConnection2;
-
+      try
       for x := 0 to length(sonuclar.TestList) - 1 do
       begin
           _F_ := '';
@@ -364,7 +364,10 @@ begin
                         sonuclar.TestList[x].Result);
 
       end;
-      ado.Free;
+
+      finally
+        ado.Free;
+      end;
 end;
 
 begin

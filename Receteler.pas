@@ -263,6 +263,8 @@ type
     cxGridDBTableView3Column1: TcxGridDBColumn;
     cxSplitter1: TcxSplitter;
     cxSplitter3: TcxSplitter;
+    Y2: TMenuItem;
+    R2: TMenuItem;
     procedure TopPanelButonClick(Sender: TObject);
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure cxGridDBTableView1DblClick(Sender: TObject);
@@ -493,20 +495,24 @@ begin
    ado1.close;
    ado1.SQL.Clear;
    try
-       (*
-       if chkBarkod.Checked
-       then begin
+
+    if TMenuItem(sender).Tag = -8 then
+    begin
        sql := ' select * from Recete R ' +
-                'left join gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
+                'left join Hasta_gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
                 'left join hastaKart H on H.dosyaNo = R.dosyaNo ' +
-                ' where convert(varchar,R.Tarih,112) between ' + tarihal(txttarih1E.Date) +
-                ' and ' + tarihal(txttarih2E.Date) +
+                ' where convert(varchar,R.Tarih,112) between ' + txtTopPanelTarih1.GetSQLValue +
+                ' and ' + txtTopPanelTarih2.GetSQLValue +
                 ' and r.id IN (select datavalue from dbo.StrToTable(' + QuotedStr(copy(id,2,500)) + ','',''))' +
                 ' order by R.id';
-       end
-       else
-       begin
-       *)
+
+       datalar.QuerySelect(ado1,sql);
+       TopluDataset.Dataset2 := ado1;
+       PrintYap('050T','\Reçete Barkod',inttoStr(TagfrmHastaRecete) ,TopluDataset,kadirType.pTNone);
+
+    end
+    else
+    begin
        sql := ' select * from Recete R ' +
                 'left join receteDetay D on R.id = D.ReceteId ' +
                 'left join Hasta_gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
@@ -517,11 +523,15 @@ begin
                 ' and r.id IN (select datavalue from dbo.StrToTable(' + QuotedStr(copy(id,2,500)) + ','',''))' +
                 ' order by R.id';
 
-      // end;
        datalar.QuerySelect(ado1,sql);
        TopluDataset.Dataset2 := ado1;
 
-       PrintYap('050T','\Reçete Yazdýr Toplu',inttoStr(TagfrmHastaRecete) ,TopluDataset,kadirType.pTNone);
+       PrintYap('051T','\Reçete Yazdýr',inttoStr(TagfrmHastaRecete) ,TopluDataset,kadirType.pTNone);
+
+
+    end;
+
+
 
 
    finally

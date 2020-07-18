@@ -604,7 +604,9 @@ begin
               'exec sp_TakipKontrolListesi ' + txtTopPanelTarih1.GetSQLValue + ',' +
                                                txtTopPanelTarih2.GetSQLValue + ',' +
                                                QuotedStr(datalar.AktifSirket) + ',' +
-                                               QuotedStr(ifThen(chkList.EditValue = '1','H','E'));
+                                               QuotedStr(ifThen(chkList.EditValue = '1','H','E')) + ',' +
+                                               QuotedStr(ifThen(varToStr(txtDonemTopPanel.EditValue)='','1000'))
+                                               ;
         datalar.QuerySelect(ADO_SQL, sql);
        (*
         ADO_SQL.First;
@@ -1548,15 +1550,23 @@ end;
 procedure TfrmTakipKontrol.T1Click(Sender: TObject);
 var
   r: integer;
+ GirisFormRecord : TGirisFormRecord;
+ F : TGirisForm;
 begin
   inherited;
 
-  if UserRight('Hasta Kartý', 'Tedavi Kartý') = false then
-  begin
-    ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !', '', '', 'info');
-    exit;
-  end;
-  r := Takipler.DataController.DataControllerInfo.FocusedRecordIndex;
+  GirisFormRecord.F_dosyaNo_ := ado_sql.FieldByName('dosyaNo').AsString;
+  GirisFormRecord.F_gelisNo_ := ado_sql.FieldByName('gelisNo').AsString;
+  GirisFormRecord.F_GelisSIRANO := ado_sql.FieldByName('SIRANO').AsString;
+  GirisFormRecord.F_provizyonTarihi_ := FormatDateTime('YYYYMMDD', ado_sql.FieldByName('BHDAT').AsDateTime);
+  GirisFormRecord.F_HastaAdSoyad_ := ado_sql.FieldByName('ADSOYAD').AsString;
+  GirisFormRecord.F_TakipNo_ := ado_sql.FieldByName('TakipNO').AsString;
+
+
+  F := FormINIT(TagfrmHastaTetkikEkle,GirisFormRecord);
+  F._Foto_ := _foto_;
+  if F <> nil then F.ShowModal;
+
  (*
   Application.CreateForm(TfrmTedaviBilgisi, frmTedaviBilgisi);
   GorselAyar(frmTedaviBilgisi, datalar.global_img_list4);

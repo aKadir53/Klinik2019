@@ -172,7 +172,7 @@ begin
           GridDataSource := TDataSource.Create(frmSorgulamalar);
           GridDataSource.DataSet := GridAdo;
           datalar.QuerySelect(GridAdo,sql);
-          Grid := CreateGrid('Grid'+intToStr(pageInc),aTabSheet,GridDataSource);
+          Grid := CreateGrid('Grid'+intToStr(pageInc),aTabSheet,GridDataSource,True);
           Grid.Align := alClient;
           Grid.ExceleGonder := True;
           Grid.ExcelFileName := frmSorgulamalar.ADO_SQL1.fieldbyname('raporAdi').AsString;

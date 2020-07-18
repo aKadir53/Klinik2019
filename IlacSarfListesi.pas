@@ -564,14 +564,16 @@ try
          end;
 
 
-         sql := 'insert into HastaIlacTedavi (dosyaNo,gelisNo,ilac,ilacname,doz,miktar,peryot) ' +
+         sql := 'insert into HastaIlacTedavi (dosyaNo,gelisNo,ilac,ilacname,doz,miktar,peryot,kyol) ' +
                 ' values (' + QuotedStr(_dosyaNo_) + ','
                             + _gelisNo_ + ','
                             + QuotedStr(Eklenenler.fieldbyname('ETKENMADDE').AsString) + ','
                             + QuotedStr(Eklenenler.fieldbyname('Formu').AsString) + ','
                             + doz2 + ','
                             + doz1 + ','
-                            + peryot + ')';
+                            + peryot + ','
+                            + QuotedStr(Eklenenler.fieldbyname('KYolu').AsString) +
+                            ')';
 
          datalar.QueryExec(sql);
 

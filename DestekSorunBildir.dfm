@@ -916,6 +916,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     object txtCvpPersonel: TcxComboBox
       Left = 4
       Top = 31
+      Enabled = False
       Properties.DropDownRows = 15
       Properties.Items.Strings = (
         'MELTEM EHL'#304'L'
