@@ -395,11 +395,14 @@ begin
 
     -23 : begin
            //TetkikTarihDegistir;
-            datalar.QueryExec('update hareketler set Tarih = ' +
-    '(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
-                              ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L'''
+            datalar.QueryExec('if exists(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
+                              'begin ' +
+                              'update hareketler set Tarih = ' +
+                              '(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
+                              ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L''' +
+                              ' end '
 
-            );
+                              );
             ADO_Tetkikler.Requery;
           end;
 

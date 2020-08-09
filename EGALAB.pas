@@ -237,10 +237,10 @@ begin
                     (testKod = '906630') or
                     (testKod = '906660')
                  Then Begin
-                       if (pos('NEG',Sonuclar[x].EKSONUC1) > 0) or (pos('NEG',Sonuclar[x].REF_DEGER) > 0) or (pos('NEG',Sonuclar[x].Sonuc) > 0)
+                       if (pos('NEG',Sonuclar[x].EKSONUC1) > 0) or (pos('NEG',Sonuclar[x].Sonuc) > 0)
                        Then sonuc := '-1'
                        Else
-                       if (pos('POZ',Sonuclar[x].EKSONUC1) > 0) or (pos('POZ',Sonuclar[x].REF_DEGER) > 0) or (pos('POZ',Sonuclar[x].Sonuc) > 0)
+                       if (pos('POZ',Sonuclar[x].EKSONUC1) > 0) or (pos('POZ',Sonuclar[x].Sonuc) > 0)
                        Then sonuc := '1'
                        Else
                        if (pos('NEG',Sonuclar[x].Aciklama) > 0)

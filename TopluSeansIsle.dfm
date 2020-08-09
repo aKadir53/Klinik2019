@@ -936,7 +936,7 @@
       Height = 570
       Align = alClient
       TabOrder = 0
-      Properties.ActivePage = SeanslarPage
+      Properties.ActivePage = TetkiklerPage
       Properties.Style = 11
       OnPageChanging = HizmetPagePageChanging
       ClientRectBottom = 563
@@ -1169,6 +1169,7 @@
             OnFocusedRecordChanged = ListeFocusedRecordChanged
             DataController.DataModeController.SmartRefresh = True
             DataController.DataSource = DataSource1
+            DataController.Filter.Options = [fcoCaseInsensitive]
             DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding]
             DataController.Summary.DefaultGroupSummaryItems = <>
             DataController.Summary.FooterSummaryItems = <
@@ -2762,6 +2763,8 @@
               PopupMenu = PopupMenu2
               DataController.DataModeController.SmartRefresh = True
               DataController.DataSource = DataSource4
+              DataController.Filter.Options = [fcoCaseInsensitive]
+              DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding]
               DataController.Summary.DefaultGroupSummaryItems = <>
               DataController.Summary.FooterSummaryItems = <
                 item
@@ -2770,6 +2773,9 @@
                   Column = GridListColumn1
                 end>
               DataController.Summary.SummaryGroups = <>
+              FilterRow.InfoText = 'Arama Sat'#305'r'#305
+              FilterRow.Visible = True
+              FilterRow.ApplyChanges = fracImmediately
               OptionsBehavior.AlwaysShowEditor = True
               OptionsCustomize.ColumnGrouping = False
               OptionsCustomize.ColumnSorting = False
@@ -3560,6 +3566,8 @@
         Tag = 10
         Caption = 'Tan'#305'lar'#305' Kaydet'
         OnClick = T2Click
+      end
+      object T6: TMenuItem
       end
     end
   end

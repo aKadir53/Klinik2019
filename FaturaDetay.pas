@@ -84,6 +84,7 @@ type
       ACanvas: TcxCanvas; AViewInfo: TcxGridColumnHeaderViewInfo;
       var ADone: Boolean);
     procedure FormShow(Sender: TObject);
+    procedure PropertiesEditValueChanged(Sender: TObject);override;
  //   function EArsivGonder(FaturaId : string) : string;
  //   function EArsivIptal(FaturaGuid : string) : string;
  //   function EArsivPDF(FaturaGuid : string ; _tag_ : integer) : string;
@@ -131,7 +132,7 @@ const
   gercek = 'https://efatura.uyumsoft.com.tr/Services/Integration';
 var
   frmFaturaDetay: TfrmFaturaDetay;
-
+  faturaNoDegisti : Boolean;
 implementation
 
 uses data_modul, StrUtils, Jpeg;
@@ -165,13 +166,26 @@ begin
 end;
 
 procedure TfrmFaturaDetay.cxKaydetClick(Sender: TObject);
+var
+  faturaId , id , sql : string;
 begin
   //SirketKodx.Text := datalar.AktifSirket; giriþ formuna eklendi.
   inherited;
 
   case TControl(sender).Tag  of
     Kaydet : begin
-              FaturaGrid.Enabled := True;
+               FaturaGrid.Enabled := True;
+
+               if faturaNoDegisti = True
+               then begin
+                   faturaId := TcxButtonEdit(FindComponent('sira')).Text;
+                   sql :=  'exec sp_FaturaNumaraTarihceIDUpdate ' + faturaId;
+                   datalar.QueryExec(sql);
+                   faturaNoDegisti := False;
+               end;
+
+
+
              end;
     Yeni   : begin
                TcxTextEditKadir(FindComponent('faturaNo')).text := '0';
@@ -226,6 +240,16 @@ end;
 procedure TfrmFaturaDetay.NewRecord(DataSet: TDataSet);
 begin
    FaturaGrid.Dataset.FieldByName('FaturaId').AsInteger := TcxButtonEditKadir(FindComponent('Sira')).EditingValue;
+end;
+
+procedure TfrmFaturaDetay.PropertiesEditValueChanged(Sender: TObject);
+begin
+  inherited;
+ if TcxTextEdit(Sender).name = 'GIBFaturaNo'
+ Then begin
+   faturaNoDegisti := True;
+ end;
+
 end;
 
 procedure TfrmFaturaDetay.AfterPost(DataSet: TDataSet);
@@ -326,6 +350,8 @@ begin
   ClientWidth := 780;
   ClientHeight := 630;
 
+  faturaNoDegisti := False;
+
   cxPanel.Visible := True;
   Menu := PopupMenu1;
   indexFieldName := 'sira';
@@ -343,7 +369,7 @@ begin
 
   setDataString(self,'FaturaNo','Fatura Ref.No',Kolon1,'FaturaID',50,True,'',false,0,'0');
 
-  setDataString(self,'GIBFaturaNo','Fatura GIB No',Kolon1,'FaturaID',120,False,'',True);
+  setDataString(self,'GIBFaturaNo','Fatura GIB No',Kolon1,'FaturaID',130,False,'',False);
  // setDataString(self,'Guid','Fatura Guid',Kolon1,'FaturaID',250,False,'',True);
 
   FaturaTarihi := TcxDateEditKadir.Create(Self);

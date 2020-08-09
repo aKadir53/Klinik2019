@@ -9,7 +9,8 @@ uses Windows, forms,Messages, SysUtils,strutils, Variants, Classes, Graphics, Co
      kadir ,kadirType, MedulaHizmetKayit,
      hastaKabulIslemleriWS,MedulaYardimciIslem,
      HizmetKayitIslemleriWS,faturaKayitIslemleriWS,
-     MedulaRaporIslem,raporIslemleriWS;
+     MedulaRaporIslem,raporIslemleriWS,
+     saglikTesisiEczaneYardimciIslemleriWS;
 //     saglikTesisiRaporIslemleriWSIlac,
 //     saglikTesisiRaporislemleriWS,
 //     SaglikTesisiYardimciIslemler1,
@@ -71,7 +72,8 @@ function TahlilMemData(memData : TADOQuery) : TahlilBilgisiDVO;
 function TaniMemData(memData : TADOQuery) : hizmetKayitIslemleriWS.taniBilgisiDVO;
 function HizmetKaydiOku(_takipNo , basvuruNo : string) : string;
 function HizmetKaydiIptal(_TakipNo_ : string) : string;
-procedure HizmetIptalSonucDBYaz;
+procedure HizmetIptalSonucDBYaz; overload;
+procedure HizmetIptalSonucDBYaz(TakipNo : string);overload;
 function TetkikveRadyolojiBilgileriMemData(memData : TADOQuery) : TetkikveRadyolojiBilgisiDVO;
 function MalzemeMemData(DataSet : TADOQuery) : hizmetKayitIslemleriWS.MalzemeBilgisiDVO;
 
@@ -128,6 +130,8 @@ function TakipTipleri(_kod_ : string) : string;
 //function Kesinti(evrakId : integer ; var sonuc : string; http1 : THTTPRIO) : KesintiTakipler;
 
 //function OrneklenmisTakipler(evrakId : integer ; var sonuc : string; http1 : THTTPRIO) : OrneklenenTakipler;
+
+
 //function EtkinmaddeSUTKuraligetir(etkinmaddeKodu , raporTarihi : string ; var EMaddeCvp : EtkinMaddeSutListesiSorguCevapDVO ;  http1 : THTTPRIO) : string;
 
 //function MedulaListeGetir(var Cvp : EtkinMaddeListesiSorguCevapDVO ; var Cvp1 : RaporTeshisListesiSorguCevapDVO ; tip : string ; http1 : THTTPRIO) : string;
@@ -1834,6 +1838,53 @@ begin
 
 end;
 
+
+(*
+
+function EtkinmaddeSUTKuraliGetir(etkinmaddeKodu , raporTarihi : string ; var EMaddeCvp : EtkinMaddeSutListesiSorguCevapDVO ; http1 : THTTPRIO) : string;
+var
+   EM_Gon : EtkinMaddeSutListesiSorguIstekDVO;
+   Em_Cvp : EtkinMaddeSutListesiSorguCevapDVO;
+begin
+      EM_Gon := EtkinMaddeSutListesiSorguIstekDVO.Create;
+      Em_Cvp := EtkinMaddeSutListesiSorguCevapDVO.Create;
+
+      datalar.Login;
+
+      EM_Gon.etkinMaddeKodu := etkinmaddeKodu;
+      EM_Gon.raporTarihi := raporTarihi;
+
+      EM_Gon.tesisKodu := DATALAR._kurumKod;
+
+   //   http1.HTTPWebNode.UserName := datalar._username;
+   //   http1.HTTPWebNode.Password := datalar._sifre;
+      http1.URL := YardimciIslemMedEczaneURL; //'https://medula.sgk.gov.tr/medula/hastane/yardimciIslemlerWS';
+
+     try
+       Application.ProcessMessages;
+       Em_Cvp := (http1 as SaglikTesisiEczaneYardimciIslemleriWS).etkinMaddeSutListesiSorgula(E;
+       EMaddeCvp.etkinMaddeSutListesi := Em_Cvp.etkinMaddeSutListesi;
+     except
+        on E: SysUtils.Exception do
+        begin
+          Showmessageskin(E.Message,'','','info');
+          exit;
+        end;
+     end;
+
+     if Em_Cvp.sonucKodu = '0000'
+     then
+      result := Em_Cvp.sonucKodu
+     Else
+      result := Em_Cvp.sonucMesaji;
+
+     EM_Gon.Free;
+  //   Em_Cvp.Free;
+
+end;
+  *)
+
+
 {
 
 function TakipformuKayit(Diyabet : TakipFormu ; var TakipFormNo : string ; Http1 : THTTPRIO) : string;
@@ -2156,47 +2207,7 @@ begin
 end;
 
 
-function EtkinmaddeSUTKuraliGetir(etkinmaddeKodu , raporTarihi : string ; var EMaddeCvp : EtkinMaddeSutListesiSorguCevapDVO ; http1 : THTTPRIO) : string;
-var
-   EM_Gon : EtkinMaddeSutListesiSorguIstekDVO;
-   Em_Cvp : EtkinMaddeSutListesiSorguCevapDVO;
-begin
-      EM_Gon := EtkinMaddeSutListesiSorguIstekDVO.Create;
-      Em_Cvp := EtkinMaddeSutListesiSorguCevapDVO.Create;
 
-      datalar.Login;
-
-      EM_Gon.etkinMaddeKodu := etkinmaddeKodu;
-      EM_Gon.raporTarihi := raporTarihi;
-
-      EM_Gon.tesisKodu := DATALAR._kurumKod;
-
-   //   http1.HTTPWebNode.UserName := datalar._username;
-   //   http1.HTTPWebNode.Password := datalar._sifre;
-      http1.URL := yardimciIslemURL; //'https://medula.sgk.gov.tr/medula/hastane/yardimciIslemlerWS';
-
-     try
-       Application.ProcessMessages;
-       Em_Cvp := (http1 as SaglikTesisiYardimciIslemler).etkinMaddeSutListesiSorgula(EM_Gon);
-       EMaddeCvp.etkinMaddeSutListesi := Em_Cvp.etkinMaddeSutListesi;
-     except
-        on E: SysUtils.Exception do
-        begin
-          Showmessageskin(E.Message,'','','info');
-          exit;
-        end;
-     end;
-
-     if Em_Cvp.sonucKodu = '0000'
-     then
-      result := Em_Cvp.sonucKodu
-     Else
-      result := Em_Cvp.sonucMesaji;
-
-     EM_Gon.Free;
-  //   Em_Cvp.Free;
-
-end;
 
 
 
@@ -2824,8 +2835,6 @@ begin
        result :=  FaturaTeslimNo + ':' + DATALAR.FaturaKayitWS.FaturaOkuCevap.sonucMesaji;
 
 
-
-
 end;
 
 
@@ -3163,6 +3172,10 @@ end;
 
 
 function FaturaKayit(BasvuruNo , Tarih : string ; HizmetDetayi : string) :  string;
+var
+  msg,s : string;
+  x : integer;
+  hata : faturaHataDVO;
 Begin
 
       datalar.FaturaKayitWS.FaturaGiris.saglikTesisKodu := datalar._kurumKod;
@@ -3188,15 +3201,26 @@ Begin
           result := '0000';
       End
       Else begin
-       result := datalar.FaturaKayitWS.FaturaCevap.sonucMesaji;
+        if length(datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar) > 0
+        then
+          for hata in datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar do
+      //    x := 0 to length(datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar) - 1 do
+          begin
+            msg := msg + hata.hataKodu + '-' + hata.hataMesaji + #13;
+            //datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar[x].hataMesaji + #13 ;
+          end;
+        result := datalar.FaturaKayitWS.FaturaCevap.sonucMesaji + ' ' + msg;
       End;
 
 End;
 
 
 function FaturaTutarOku(BasvuruNo , Tarih : string ;  HizmetDetayi : string) :  string;
+var
+  msg,s : string;
+  x : integer;
+  hata : faturaHataDVO;
 Begin
-
 
       datalar.FaturaKayitWS.FaturaGiris.saglikTesisKodu := datalar._kurumKod;
       datalar.FaturaKayitWS.FaturaGiris.ktsHbysKodu := ktsHbysKodu;
@@ -3222,10 +3246,15 @@ Begin
           result := '0000';
       End
       Else begin
-       if length(datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar) > 0
-       Then
-         result := datalar.FaturaKayitWS.FaturaCevap.sonucMesaji + ' ' + datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar[0].hataMesaji
-       Else result := datalar.FaturaKayitWS.FaturaCevap.sonucMesaji;
+        if length(datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar) > 0
+        then
+          for hata in datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar do
+      //    x := 0 to length(datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar) - 1 do
+          begin
+            msg := msg + hata.hataKodu + '-' + hata.hataMesaji + #13;
+            //datalar.FaturaKayitWS.FaturaCevap.hataliKayitlar[x].hataMesaji + #13 ;
+          end;
+        result := datalar.FaturaKayitWS.FaturaCevap.sonucMesaji + ' ' + msg;
       End;
 
 End;
@@ -3253,6 +3282,21 @@ begin
          datalar.QueryExec(sql);
      end;
 end;
+
+
+procedure HizmetIptalSonucDBYaz(TakipNo : string);
+var
+ i,j : integer;
+ sql : string;
+begin
+         sql := 'update hareketler  ' +
+                ' set islemSiraNo = ''''' +
+                ' from hareketler h ' +
+                ' join Hasta_Gelisler g on g.SIRANO = h.gelisSIRANO ' +
+                ' where g.TakipNo = ' + QuotedStr(TakipNo);
+         datalar.QueryExec(sql);
+end;
+
 
 function HizmetKaydiOku(_takipNo , basvuruNo : string) : string;
 var
@@ -3336,6 +3380,8 @@ begin
              datalar.RxRadIslem.FieldByName('sutKodu').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].sutKodu;
              datalar.RxRadIslem.FieldByName('bransKodu').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].bransKodu;
              datalar.RxRadIslem.FieldByName('islemTarihi').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].islemTarihi;
+             datalar.RxRadIslem.FieldByName('sonuc').AsString := datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].sonuc + ' - ' +
+                                                                 datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].aciklama;
              datalar.RxRadIslem.FieldByName('drTescilNo').AsString :=
              ifThen(datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].drTescilNo = '',
                     datalar.HizmetKayitWS.HizmetOkuCevap.hizmetler.tetkikveRadyolojiBilgileri[i].istemYapanDrTescilNo,

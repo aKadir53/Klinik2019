@@ -126,6 +126,7 @@ type
     RdGroup: TcxRadioGroup;
     pGecenSure: TcxTimeEdit;
     pSaat: TRxClock;
+    txtTekTarih: TcxDateEditKadir;
 
     procedure cxKaydetClick(Sender: TObject);virtual;
     procedure cxButtonCClick(Sender: TObject);
@@ -183,6 +184,8 @@ type
     procedure MaskEditPropertiesValidate(Sender: TObject;
      var DisplayValue: Variant; var ErrorText: TCaption; var Error: Boolean);virtual;
 
+    procedure AppException(Sender: TObject; E: Exception);
+    procedure PrintScreenDetect(Sender: TObject; var Result: Boolean);
 
   private
     F_dosyaNO_ : string;
@@ -271,7 +274,8 @@ type
                                     DiyalizTip : Boolean = False;
                                     Donem : Boolean = False;
                                     ChkListe : Boolean = False;
-                                    ChangeButtonListClick : Boolean = True);
+                                    ChangeButtonListClick : Boolean = True;
+                                    tekTarih : Boolean = False);
 
     procedure setDataStringC(sender : Tform ; fieldName,caption : string;
       parent : TdxLayoutGroup;grup : string ;uzunluk : integer;List : Tstrings);overload;
@@ -404,6 +408,46 @@ uses AnaUnit,Data_Modul,FormKontrolUserSet;
 {$R *.dfm}
 
 
+procedure TGirisForm.PrintScreenDetect(Sender: TObject; var Result: Boolean);
+var
+  image1 : TcxImage;
+  bmpF,jpgF : string;
+begin
+    if GetAsyncKeyState(VK_SNAPSHOT) <> 0
+    then begin
+      if not DirectoryExists('C:\NoktaV3\Ekran\') then
+       MkDir('C:\NoktaV3\Ekran\');
+
+      image1 := TcxImage.Create(nil);
+      image1.Properties.GraphicClassName := 'TJPEGImage';
+
+      try
+       ScreenShot(image1.Picture.BitMap);
+       //ScreenShotActiveWindow(image1.Picture.BitMap);
+       image1.Picture.SaveToFile('C:\NoktaV3\Ekran\screen.bmp');
+       bmpF := 'C:\NoktaV3\Ekran\screen.bmp';
+       jpgF := 'C:\NoktaV3\Ekran\screen.jpg';
+       BMPtoJPG(bmpF, jpgF);
+      finally
+        image1.Free;
+      end;
+
+    end;
+
+
+
+   // Label1.Caption:='PrintScreen Key was pressed';
+    Result := True;
+end;
+
+
+procedure TGirisForm.AppException(Sender: TObject; E: Exception);
+begin
+  Application.ShowException(E);
+ // Application.Terminate;
+end;
+
+
 procedure TGirisForm.NaceKodPropertiesButtonClick(Sender: TObject;
   AButtonIndex: Integer);
 var
@@ -490,7 +534,8 @@ begin
                                                 QuotedStr(vartoStr(AktifPasifTopPanel.EditValue)) + ',' +
                                                 QuotedStr(varToStr(txtSeansTopPanel.EditValue)) + ',' +
                                                 QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
-                                                QuotedStr(datalar.AktifSirket);
+                                                QuotedStr(datalar.AktifSirket) + ',' +
+                                                QuotedStr(varToStr(ifThen(txtTekTarih.GetValue='NULL','',txtTekTarih.GetValue)));
          end;
 
        TagfrmFirmaPersonelEgitimList :
@@ -601,20 +646,23 @@ begin
            begin
              sql := 'exec sp_CariHesapExtresi ' + QuotedStr(vartostr(KurumTipTopPanel.EditValue)) + ',' +
                                                   txtTopPanelTarih1.GetSQLValue + ',' +
-                                                  txtTopPanelTarih2.GetSQLValue;
+                                                  txtTopPanelTarih2.GetSQLValue + ',' +
+                                                  QuotedStr(datalar.AktifSirket);
 
 
            end;
 
        TagfrmCekler :
            begin
-             sql := 'exec sp_Cekler ' + vartostr(KurumTipTopPanel.EditValue);
+             sql := 'exec sp_Cekler ' + vartostr(KurumTipTopPanel.EditValue) + ',' +
+                                          QuotedStr(datalar.AktifSirket);
            end;
 
        TagfrmKasaBanka :
            begin
              sql := 'exec sp_KasaDefteri ' +      txtTopPanelTarih1.GetSQLValue + ',' +
-                                                  txtTopPanelTarih2.GetSQLValue;
+                                                  txtTopPanelTarih2.GetSQLValue + ',' +
+                                                  QuotedStr(datalar.AktifSirket);
            end;
 
 
@@ -674,11 +722,13 @@ procedure TGirisForm.TapPanelElemanVisible(ButtonList : Boolean = True;Tarih1 : 
                                     DiyalizTip : Boolean = False;
                                     Donem : Boolean = False;
                                     ChkListe : Boolean = False;
-                                    ChangeButtonListClick : Boolean = True);
+                                    ChangeButtonListClick : Boolean = True;
+                                    tekTarih : Boolean = False);
 begin
   btnListTopPanel.Visible := ButtonList;
   txtTopPanelTarih1.Visible := Tarih1;
   txtTopPanelTarih2.Visible := Tarih2;
+  txtTekTarih.Visible := tekTarih;
   txtTopPanelTarih1.EditValue := date;
   txtTopPanelTarih2.EditValue := date;
   ENabizmesajTipi.Visible := ENabizmesajTip;
@@ -691,6 +741,7 @@ begin
   DiyalizTipTopPanel.Visible := DiyalizTip;
   txtDonemTopPanel.Visible := Donem;
   chkList.Visible := ChkListe;
+
 end;
 
 procedure TGirisForm.Timer1Timer(Sender: TObject);
@@ -1940,6 +1991,7 @@ begin
         cxEdit.Properties.ReadOnly := ReadOnly;
         cxEdit.Properties.ValidateOnEnter := True;
         cxEdit.Properties.CharCase := EditCharCase;
+        cxEdit.Properties.ImmediatePost := True;
         cxEdit.BosOlamaz := Zorunlu;//KontrolZorunlumu(TForm(sender).Tag,fieldName); //Zorunlu;
         cxEdit.Width := uzunluk;
         control := cxEdit;
@@ -2429,12 +2481,14 @@ begin
   dxLaC := TdxLayoutGroup(parent).CreateItemForControl(obje);
   dxLaC.Name := 'dxLa'+fieldName;
   dxLaC.AlignHorz := ahLeft;
+
   obje.Width := uzunluk;
   if yukseklik > 0 then obje.Height := Yukseklik;
 
+  //dxLaC.AlignHorz := ahClient;
+  dxLaC.AlignVert := avParentManaged;
  // dxLaC.Width := uzunluk;
   dxLaC.Caption := caption;
-
 
   if grup = '' then
     dxLaC.Parent := parent
@@ -2449,6 +2503,19 @@ begin
         end;
       dxLaC.Parent := TdxLayoutGroup(Self.findcomponent(grup));
     end;
+
+    (*
+  if (obje.ClassName = 'TcxGrid') or
+     (obje.ClassName = 'TcxGridKadir')
+  then begin
+    if Aling = alClient
+    then begin
+      dxLaC.Height := sayfa1.Height-20;
+      dxLaC.Width := sayfa1.Width-20;
+    end;
+
+  end;
+      *)
 
   if (obje.ClassName = 'TcxGrid') or
      (obje.ClassName = 'TcxGridKadir') or
@@ -2981,6 +3048,8 @@ end;
 
 procedure TGirisForm.FormCreate(Sender: TObject);
 begin
+//    Application.OnException := AppException;
+    Application.OnIdle := PrintScreenDetect;
    _Dataset := TADOQuery.Create(self);
    _DataSource := TDataSource.Create(self);
    _DataSource.DataSet := _Dataset;
@@ -2988,6 +3057,8 @@ end;
 
 procedure TGirisForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  image1 : TImage;
 begin
 
   if key = 13 then
@@ -3017,6 +3088,7 @@ begin
   then begin
      if TGirisForm(self).Parent = nil then close;
   end;
+
 
 
 end;

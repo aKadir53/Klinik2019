@@ -489,7 +489,7 @@ begin
 
        if Tarih > datalar.GelisDuzenleRecordK.GirisTarihi
        then begin
-         ShowMessageSkin('Geliþ Tarihi Ýlk Seans Tarihinden Küçük Olamaz','','','info');
+         ShowMessageSkin('Geliþ Tarihi Ýlk Seans Tarihinden Büyük Olamaz','','','info');
          exit;
        end
        else
@@ -1372,7 +1372,7 @@ begin
                        '50,50,100,100,80,50','ListdosyaNo','Hastalar',
                        ' SirketKod = ' + QuotedStr(datalar.AktifSirket), //+
                       // ' and Sube in (select datavalue from dbo.strtotable(' + QuotedStr(datalar.AktifSube) + ','',''))',
-                        6,True,Self);
+                        6,True,Self,2);
 
 
   //List.Where := ' SirketKod = ' + QuotedStr(datalar.AktifSirket);

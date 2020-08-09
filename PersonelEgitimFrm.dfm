@@ -74,7 +74,7 @@ object frmPersonelEgitim: TfrmPersonelEgitim
         HeaderAlignmentHorz = taCenter
         Width = 64
         Position.BandIndex = 0
-        Position.ColIndex = 2
+        Position.ColIndex = 3
         Position.RowIndex = 0
       end
       object GridListColumn2: TcxGridDBBandedColumn
@@ -87,7 +87,7 @@ object frmPersonelEgitim: TfrmPersonelEgitim
         HeaderAlignmentHorz = taCenter
         Width = 84
         Position.BandIndex = 0
-        Position.ColIndex = 3
+        Position.ColIndex = 4
         Position.RowIndex = 0
       end
       object GridListColumn3: TcxGridDBBandedColumn
@@ -111,7 +111,29 @@ object frmPersonelEgitim: TfrmPersonelEgitim
         Options.Editing = False
         Width = 95
         Position.BandIndex = 0
-        Position.ColIndex = 4
+        Position.ColIndex = 5
+        Position.RowIndex = 0
+      end
+      object GridListColumn4: TcxGridDBBandedColumn
+        Caption = 'Kat'#305'l'#305'm'
+        DataBinding.FieldName = 'egitimDurum'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Items = <
+          item
+            Description = 'Kat'#305'ld'#305
+            ImageIndex = 0
+            Value = 1
+          end
+          item
+            Description = 'Kat'#305'lmad'#305
+            Value = 0
+          end>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Position.BandIndex = 0
+        Position.ColIndex = 2
         Position.RowIndex = 0
       end
     end

@@ -115,12 +115,13 @@ uses
   AlisWS in 'AlisWS.pas',
   EGALAB in 'EGALAB.pas',
   elabUNYE in 'elabUNYE.pas',
-  TenayGama in 'WebReferans\TenayGama.pas';
+  TenayGama in 'WebReferans\TenayGama.pas',
+  saglikTesisiEczaneYardimciIslemleriWS in 'saglikTesisiEczaneYardimciIslemleriWS.pas';
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 4038;
+  AppalicationVer : integer = 4051;
   yvKversiyon : integer = 3;
   NoktaURL : string = 'https://www.noktayazilim.net';
   VersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019Versiyon.txt';

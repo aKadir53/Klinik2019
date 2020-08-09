@@ -13,7 +13,8 @@ uses
   cxDBData, Data.Win.ADODB, cxGridCustomView, cxGridCustomTableView,
   cxGridTableView, cxGridBandedTableView, cxGridDBBandedTableView, cxClasses,
   cxGridLevel, cxGrid, KadirLabel,data_modul,GirisUnit, cxTextEdit,
-  cxDropDownEdit,GetFormClass,KadirType,cxImageComboBox;
+  cxDropDownEdit,GetFormClass,KadirType,cxImageComboBox, cxButtonEdit,
+  cxHyperLinkEdit;
 
 
 type
@@ -47,6 +48,7 @@ type
     cxGridLevel1: TcxGridLevel;
     DataSource2: TDataSource;
     ADO_WebServisErisim_Ortak: TADOQuery;
+    Mavi: TcxStyle;
     procedure sBitBtn1Click(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -54,6 +56,11 @@ type
     procedure ADO_WebServisErisimAfterScroll(DataSet: TDataSet);
     procedure SifreBilgisiDegis(Tag : integer);
     procedure ADO_WebServisErisimAfterPost(DataSet: TDataSet);
+    procedure PopupMenu1Popup(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure GridListSLB_TanimiStylesGetContentStyle(
+      Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+      AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
   private
     { Private declarations }
   public
@@ -77,10 +84,43 @@ const
 var
   frmKurumBilgi: TfrmKurumBilgi;
   mevcutSifre,mevcutSifreD : string;
+  SifreDegisSGKOPEN,SifreDegisSGKOPEND : Boolean;
+
 
 implementation
-  uses MedulaKurumSifreDegis;
+  uses MedulaKurumSifreDegis,AnaUnit;
 {$R *.dfm}
+
+procedure TfrmKurumBilgi.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  YeniSifre , YeniSifreD : String;
+begin
+  inherited;
+  AnaForm.HesapBilgileriYukle;
+  YeniSifre := WebErisimBilgiFirma('98','08');
+  YeniSifreD := WebErisimBilgiFirma('98','10');
+
+  if (mevcutSifre <> YeniSifre) and (SifreDegisSGKOPEN = False)
+  Then begin
+     ShowMessageSkin('Medula Hasta Kabul Deðiþiklik Yapýldý',
+                     'Ancak Deðiþiklik SGK Ekranýnda Yapýlmadý',
+                     '[ Sifre(Gerçek) ] Üzerinde Sað Týklayarak SGK Ekranýna Gidiniz','info');
+     CanClose := False;
+
+  end;
+
+
+  if (mevcutSifreD <> YeniSifreD) and (SifreDegisSGKOPEND = False)
+  Then begin
+     ShowMessageSkin('Mesul Müdür Þifresinde Deðiþiklik Yapýldý',
+                     'Ancak Deðiþiklik SGK Ekranýnda Yapýlmadý',
+                     '[ Mesul Müdür Sifre ] Üzerinde Sað Týklayarak SGK Ekranýna Gidiniz','info');
+     CanClose := False;
+
+  end;
+
+
+end;
 
 procedure TfrmKurumBilgi.FormCreate(Sender: TObject);
 begin
@@ -93,7 +133,14 @@ begin
   cxGridKadir1.Align := alClient;
   cxGridKadir2.Parent := sayfa2;
   cxGridKadir2.Align := alClient;
+
+
+  mevcutSifre := WebErisimBilgiFirma('98','08');
+  mevcutSifreD := WebErisimBilgiFirma('98','10');
+  SifreDegisSGKOPEN := False;
+  SifreDegisSGKOPEND := False;
   SayfaCaption('Firma Parametreleri','Ortak Parametreler','','','');
+
 end;
 
 function TfrmKurumBilgi.Init(Sender : TObject) : Boolean;
@@ -139,6 +186,34 @@ begin
   cxTab.Tabs[0].Caption := datalar.AktifSirketAdi;
 
   Result := True;
+end;
+
+procedure TfrmKurumBilgi.PopupMenu1Popup(Sender: TObject);
+var
+  menuitem : string;
+begin
+  inherited;
+
+  menuitem :=  GridList.DataController.GetValue(GridList.Controller.SelectedRows[0].RecordIndex,
+                        GridList.DataController.GetItemByFieldName('SLB_Tanimi').Index);
+
+  if menuitem = 'Mesul Müdür Sifre'
+  then begin
+     HastaKabulifreBilgileriniDeitir1.Visible := False;
+     DnemSonlandrmaifremiDei1.Visible := True;
+  end
+  else
+  if menuitem = 'Sifre (Gerçek)'
+  then begin
+     HastaKabulifreBilgileriniDeitir1.Visible := True;
+     DnemSonlandrmaifremiDei1.Visible := False;
+  end
+  else
+  begin
+     HastaKabulifreBilgileriniDeitir1.Visible := False;
+     DnemSonlandrmaifremiDei1.Visible := False;
+  end;
+
 end;
 
 procedure TfrmKurumBilgi.ADO_WebServisErisimAfterPost(DataSet: TDataSet);
@@ -249,50 +324,27 @@ var
  F : TGirisForm;
  GirisRecord : TGirisFormRecord;
 begin
-   (*
-   if TurkCharKontrol(txtSifre.Text) = True
-   then begin
-      ShowMessageSkin('Türkçe Karakter Ýçermeyen Harf veya Rakam Giriniz','','','info');
-      txtSifre.SetFocus;
-      exit;
-   end;
-   if TurkCharKontrol(txtDonemSonlandirmaSifre.Text) = True
-   then begin
-      ShowMessageSkin('Türkçe Karakter Ýçermeyen Harf veya Rakam Giriniz','','','info');
-      txtDonemSonlandirmaSifre.SetFocus;
-      exit;
-   end;
-   *)
 
    F := FormINIT(TagKurumSifreDegisForm,GirisRecord,ikHayir,'');
 
+   AnaForm.HesapBilgileriYukle;
+
    if Tag = -1
    then begin
-     mevcutSifre := WebErisimBilgi('99','01');
-     ADO_WebServisErisim.Post;
-
-   //  txtSifreLog.Lines.Add(datetimetostr(now) + ' : Yeni Hasta Kabul Þifre : ' + txtSifre.Text);
-   //  txtSifreLog.Lines.SaveToFile('SifreLog.txt');
-
-
-     KurumSifreDegisForm.kullaniciAdi := WebErisimBilgi('99','00');
-     KurumSifreDegisForm.sifre := WebErisimBilgi('99','01');
+     KurumSifreDegisForm.kullaniciAdi := WebErisimBilgiFirma('98','07');
+     KurumSifreDegisForm.sifre := WebErisimBilgiFirma('98','08');
      KurumSifreDegisForm.mevcutSifre := mevcutSifre;
+     SifreDegisSGKOPEN := True;
    end
    else
    begin
-     mevcutSifreD := WebErisimBilgi('991','01');
-     ADO_WebServisErisim.Post;
-
-  //   txtSifreLog.Lines.Add(datetimetostr(now) + ' : Yeni Dönem Son. Þifre : ' + txtDonemSonlandirmaSifre.Text);
-  //   txtSifreLog.Lines.SaveToFile('SifreLog.txt');
-
-     KurumSifreDegisForm.kullaniciAdi := WebErisimBilgi('991','00');
-     KurumSifreDegisForm.sifre := WebErisimBilgi('991','01');
+     KurumSifreDegisForm.kullaniciAdi := WebErisimBilgiFirma('98','09');
+     KurumSifreDegisForm.sifre := WebErisimBilgiFirma('98','10');
      KurumSifreDegisForm.mevcutSifre := mevcutSifreD;
+     SifreDegisSGKOPEND := True;
    end;
 
-   KurumSifreDegisForm.WebBrowser1.Navigate(datalar.DonemSonlandir);
+   KurumSifreDegisForm.WebBrowser1.Navigate('https://medula.sgk.gov.tr/hastane/login.jsf');
    if F <> nil then F.show;
 
 end;
@@ -320,6 +372,25 @@ begin
 
   txtSifreLog.Lines.SaveToFile('SifreLog.txt');
   *)
+end;
+
+procedure TfrmKurumBilgi.GridListSLB_TanimiStylesGetContentStyle(
+  Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+  AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+begin
+  inherited;
+
+  if (varToStr(GridList.DataController.GetValue(ARecord.RecordIndex,
+       GridList.DataController.GetItemByFieldName('SLB_Tanimi').Index)) = 'Sifre (Gerçek)')
+       or
+     (varToStr(GridList.DataController.GetValue(ARecord.RecordIndex,
+       GridList.DataController.GetItemByFieldName('SLB_Tanimi').Index)) = 'Mesul Müdür Sifre')
+    Then begin
+      AStyle := Mavi;
+    end;
+
+
+
 end;
 
 procedure TfrmKurumBilgi.sBitBtn1Click(Sender: TObject);

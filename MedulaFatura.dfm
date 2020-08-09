@@ -1201,6 +1201,10 @@ object frmMedulaFatura: TfrmMedulaFatura
       Caption = 'E-Nab'#305'z G'#246'nderim'
       Visible = False
     end
+    object S3: TMenuItem
+      Caption = 'SYSTakipNo D'#252'zenle'
+      OnClick = S3Click
+    end
     object N6: TMenuItem
       Caption = '-'
     end

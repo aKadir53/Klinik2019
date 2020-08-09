@@ -40,6 +40,7 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
         ExceleGonder = False
         PopupForm = False
         object gridAnketDetay: TcxGridDBBandedTableView
+          OnCustomDrawCell = gridAnketDetayCustomDrawCell
           DataController.DataSource = DataSource2
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
@@ -97,6 +98,11 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
               Format = '#.##0'
               Kind = skAverage
               Column = gridAnketDetayColumn13
+            end
+            item
+              Format = '#.##0'
+              Kind = skAverage
+              Column = gridAnketDetayColumn15
             end>
           DataController.Summary.SummaryGroups = <>
           OptionsSelection.InvertSelect = False
@@ -144,7 +150,7 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
               Caption = 'Toplam O. Da'#287#305'l'#305'm (10)'
               Styles.Content = cxStyle14
               Styles.Header = cxStyle3
-              Width = 80
+              Width = 143
             end>
           object gridAnketDetayColumn1: TcxGridDBBandedColumn
             Caption = 'Sorular'
@@ -153,7 +159,7 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 350
+            Width = 291
             Position.BandIndex = 0
             Position.ColIndex = 1
             Position.RowIndex = 0
@@ -241,7 +247,7 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
             DataBinding.FieldName = 'KKatilmiyorumP'
             HeaderAlignmentHorz = taCenter
             Options.Editing = False
-            Width = 47
+            Width = 46
             Position.BandIndex = 5
             Position.ColIndex = 1
             Position.RowIndex = 0
@@ -250,6 +256,7 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
             Caption = 'Say'#305
             DataBinding.FieldName = 'KKatilmiyorum'
             HeaderAlignmentHorz = taCenter
+            Width = 45
             Position.BandIndex = 5
             Position.ColIndex = 0
             Position.RowIndex = 0
@@ -260,34 +267,54 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
             PropertiesClassName = 'TcxTextEditProperties'
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 30
+            Width = 26
             Position.BandIndex = 0
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object gridAnketDetayColumn13: TcxGridDBBandedColumn
+            Caption = 'Puan Top'
             DataBinding.FieldName = 'SoruBTOD'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
+            PropertiesClassName = 'TcxTextEditProperties'
             Properties.Alignment.Horz = taCenter
             Properties.Alignment.Vert = taVCenter
-            Properties.DisplayFormat = '#0'
             FooterAlignmentHorz = taCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
             Options.Editing = False
+            Width = 70
             Position.BandIndex = 6
             Position.ColIndex = 0
             Position.RowIndex = 0
-            IsCaptionAssigned = True
           end
           object gridAnketDetayColumn14: TcxGridDBBandedColumn
+            Caption = 'Anket Say'#305
             DataBinding.FieldName = 'anketSayi'
             PropertiesClassName = 'TcxTextEditProperties'
             Properties.Alignment.Horz = taCenter
             Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
             Options.Editing = False
+            Width = 63
             Position.BandIndex = 0
             Position.ColIndex = 2
             Position.RowIndex = 0
-            IsCaptionAssigned = True
+          end
+          object gridAnketDetayColumn15: TcxGridDBBandedColumn
+            Caption = '%'
+            DataBinding.FieldName = 'SoruBTODYuzde'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.DisplayFormat = '0.00'
+            FooterAlignmentHorz = taCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Position.BandIndex = 6
+            Position.ColIndex = 1
+            Position.RowIndex = 0
           end
         end
         object cxGridKadir1Level2: TcxGridLevel
@@ -542,7 +569,7 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
   end
   object DataSource2: TDataSource
     DataSet = ADOQuery1
-    Left = 168
+    Left = 216
     Top = 250
   end
   object ADOQuery1: TADOQuery

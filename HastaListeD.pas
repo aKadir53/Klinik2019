@@ -428,6 +428,8 @@ procedure TfrmHastaListeD.FormCreate(Sender: TObject);
 var
  d : string;
 begin
+  inherited;
+
   cxPanel.Visible := false;
  // ToolBar1.Visible := false;
 
@@ -477,7 +479,8 @@ function TfrmHastaListeD.Init(Sender: TObject): Boolean;
 var
   seans : string;
 begin
-   TapPanelElemanVisible(True,false,false,false,True,false,True,false,False,True,False,True,False);
+   TapPanelElemanVisible(True,false,false,false,True,false,True,false,False,True,False,True,False,True,True);
+   txtTekTarih.Clear;
 
    AktifPasifTopPanel.EditValue := '1';
    KurumTipTopPanel.EditValue := '1000';

@@ -83,6 +83,8 @@ procedure TfrmGunSonuOzet.btnGonderClick(Sender: TObject);
 var
  s : integer;
  sonuc : PWideChar;
+ ado : TADOQuery;
+ sql : string;
 begin
 //  SNetUserTotxtFile;
 //  txtToTxtFile(msj,'C:\NoktaV3\sysOnlineMesaj.xml');
@@ -100,9 +102,37 @@ begin
      if TcxButton(sender).Tag = 0
      then
        s := SendMesajGonder(pwideChar(msj),'GunSonu',sonuc,pwideChar(''))
-     else
+     else begin
+
+       try
+        ado := TADOQuery.Create(nil);
+        ado.Connection := datalar.ADOConnection2;
+        ado.CommandTimeout := 0;
+        sql := 'exec sp_SaglikNetOnlineGunSonu ' + txtTarih.GetSQLValue + ',' +
+                                                   QuotedStr(datalar.AktifSirket) + ',' +
+                                                   inttostr(0) + ',' +
+                                                   intTostr(0) + ',' +
+                                                   QuotedStr('') + ',' +
+                                                   QuotedStr(FormatDateTime('YYYYMMDD', ADO_SQL.FieldByName('tarih').AsDateTime));
+        datalar.QuerySelect(ado,sql);
+        msj := ado.Fields[0].AsString;
+        sorgu := ado.Fields[1].AsString;
+        ado.Close;
+        ado.Free;
+       except
+         ado.Free;
+         exit;
+       end;
+
+       XMLDocument2.XML.Clear;
+       XMLDocument2.XML.Add(sorgu);
+       XMLDocument2.Active := true;
+       XMLDocument2.SaveToFile('c:\NoktaV3\GunSonuOzetMesajSorgu.xml');
+       WebBrowser2.Navigate('c:\NoktaV3\GunSonuOzetMesajSorgu.xml');
+
        s := SendMesajGonder(pwideChar(sorgu),'GunSonuSorgu',sonuc,pwideChar(''));
 
+     end;
 
      Ado_GunSonuOzetLog.Append;
      Ado_GunSonuOzetLog.FieldByName('tarih1').AsDateTime := txtTarih.Date;
@@ -176,7 +206,12 @@ begin
         ado := TADOQuery.Create(nil);
         ado.Connection := datalar.ADOConnection2;
         ado.CommandTimeout := 0;
-        sql := 'exec sp_SaglikNetOnlineGunSonu ' + txtTarih.GetSQLValue + ',' +  QuotedStr(datalar.AktifSirket) + ',' + inttostr(sifir) + ',' + intTostr(ayKacCekiyor);
+        sql := 'exec sp_SaglikNetOnlineGunSonu ' + txtTarih.GetSQLValue + ',' +
+                                                   QuotedStr(datalar.AktifSirket) + ',' +
+                                                   inttostr(sifir) + ',' +
+                                                   intTostr(ayKacCekiyor) + ',' +
+                                                   QuotedStr(_Tip_) + ',' +
+                                                   QuotedStr('');
         datalar.QuerySelect(ado,sql);
         msj := ado.Fields[0].AsString;
         sorgu := ado.Fields[1].AsString;
@@ -192,12 +227,13 @@ begin
        XMLDocument1.Active := true;
        XMLDocument1.SaveToFile('c:\NoktaV3\GunSonuOzetMesaj.xml');
        WebBrowser1.Navigate('c:\NoktaV3\GunSonuOzetMesaj.xml');
+      (*
        XMLDocument2.XML.Clear;
        XMLDocument2.XML.Add(sorgu);
        XMLDocument2.Active := true;
        XMLDocument2.SaveToFile('c:\NoktaV3\GunSonuOzetMesajSorgu.xml');
        WebBrowser2.Navigate('c:\NoktaV3\GunSonuOzetMesajSorgu.xml');
-
+        *)
      finally
        DurumGoster(False);
      end;

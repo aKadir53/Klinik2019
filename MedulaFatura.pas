@@ -172,6 +172,7 @@ type
     M1: TMenuItem;
     popupYil: TPopupMenu;
     N3: TMenuItem;
+    S3: TMenuItem;
     procedure TopPanelButonClick(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure txtKurumTipiChange(Sender: TObject);
@@ -218,6 +219,7 @@ type
     procedure chkTutarTipClick(Sender: TObject);
     procedure ENabzSGKBildirimPaketiGnder1Click(Sender: TObject);
     procedure D1Click(Sender: TObject);
+    procedure S3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -743,6 +745,10 @@ begin
           End
           Else Begin
               txtLog.Lines.Add(datalar.FaturaKayitWS.FaturaCevap.hastaBasvuruNo+' ; ' + datalar.FaturaKayitWS.FaturaCevap.sonucMesaji + msj);
+
+
+
+
           End;
         //sleep(2000);
 
@@ -1011,6 +1017,27 @@ begin
 
    ado.Free;
 
+
+end;
+
+procedure TfrmMedulaFatura.S3Click(Sender: TObject);
+var
+ sql : string;
+begin
+    datalar.GelisDuzenleRecordK.dosyaNo := cxGrid4.Dataset.FieldByName('dosyaNo').AsString;
+    datalar.GelisDuzenleRecordK.gelisNo := cxGrid4.Dataset.FieldByName('gelisNo').AsString;;
+   // datalar.GelisDuzenleRecordK.TakipNo := cxGrid1.Dataset.FieldByName('TakipNo').AsString;
+   // datalar.GelisDuzenleRecordK.basvuruNo := cxGrid1.Dataset.FieldByName('BasvuruNo').AsString;
+    datalar.GelisDuzenleRecordK.sysTakipNo := cxGrid4.Dataset.FieldByName('sysTakipNo').AsString;
+
+    if mrYes = ShowPopupForm('Hasta Geliþ Düzenle',hastaGelisDuzenle,'','frmSaglikNetOnline')
+    Then Begin
+       sql := 'update Hasta_Gelisler set ' +
+              'sysTakipNo = ' + QuotedStr(datalar.GelisDuzenleRecordK.sysTakipNo) +
+              ' where dosyaNo = ' + QuotedStr (datalar.GelisDuzenleRecordK.dosyaNo) +
+              ' and gelisNo = ' + datalar.GelisDuzenleRecordK.gelisNo;
+       datalar.QueryExec(sql);
+    End;
 
 end;
 

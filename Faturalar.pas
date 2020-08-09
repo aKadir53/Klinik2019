@@ -152,14 +152,14 @@ var
  Sonuc : TStringList;
 begin
    sonucStr := '';
-   if mrYes = ShowMessageSkin('Seçili Faturalar E-Arþive Gönderilecek',
+   if mrYes = ShowMessageSkin('Seçili Faturalar  Gönderilecek',
                                '','','msg')
    then begin
      pBar.Properties.Max := GridFaturalar.Controller.SelectedRowCount;
      pBar.Position := 0;
      Sonuc := TStringList.Create;
      try
-       DurumGoster(True,True,'Fatura E-Arþive Gönderiliyor , ' + faturaId);
+       DurumGoster(True,True,'Fatura Gönderiliyor , ' + faturaId);
        try
          for i := 0 to GridFaturalar.Controller.SelectedRowCount - 1 do
          begin

@@ -206,7 +206,7 @@ function TaniKodToTaniAd(kod: string): string;
 function doktorTC(kod: string): string;
 function doktorAdi(kod: string): string;
 function doktorKodToReceteUser(kod: string ; var Tc : string ; var Ad : string;
-                                             var user : string ; sifre : string): string;
+                                             var user : string ; var sifre : string): string;
 
 function doktorEReceteUser(kod: string; var user: string;
   var pass: string): string;
@@ -334,6 +334,7 @@ function sutKodu(Tip: string = '0'): string;
 procedure GssOkuBilgisiTemizle(Takip: string);
 procedure ScreenShot(DestBitmap: TBitmap);
 procedure ScreenShotFTP;
+procedure ScreenShotActiveWindow(Bild: TBitMap);
 function BMPtoJPG(var BMPpic, JPGpic: string): Boolean;
 function SQL_Host(var server: string; var user: string; var password: string;
   var db: string): Boolean;
@@ -351,7 +352,7 @@ function HastaOlmusmu(DosyaNo: string): Boolean;
 function TakipFaturadami(_Takip: string): Boolean;
 function TurkCharKontrol(Text : string) : Boolean;
 procedure GirisZamanYaz(KullaniciAdi : string);
-function ListeAcCreate(TableName,kolonlar,kolonBasliklar,kolonGenislik,name,baslik,where : string;colcount : integer ; grup : boolean = false;Owner : TComponent = nil) : TListeAc;
+function ListeAcCreate(TableName,kolonlar,kolonBasliklar,kolonGenislik,name,baslik,where : string;colcount : integer ; grup : boolean = false;Owner : TComponent = nil ; filterCol : integer = 0) : TListeAc;
 procedure PopupMenuToToolBar(AOwner : TForm; TB : TToolBar ; Menu : TPopupMenu);
 procedure PopupMenuToToolBarEnabled(AOwner : TComponent ; TB : TToolbar ; Menu : TPopupMenu);
 procedure PopupMenuEnabled(AOwner : TComponent ; Menu : TPopupMenu ; Enableded : Boolean = True);
@@ -574,8 +575,10 @@ procedure TetkikIlacTedaviYazdir(_dosyaNo_ , _Tarih_ : string);
 
 procedure ExceldenLabSonucYukle(t1,t2 : String ; progres : TcxProgressBar ; txtLog : Tcxmemo);
 
+function ComboYil(yil : integer = 2020 ; index : integer = 10) : TStringList;
+
 const
-  //LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
+//  LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
  // NoktaDll = 'D:\Projeler\VS\c#\ListeDLL_Cades\ListeDLL\bin\x86\Debug\NoktaDLL.dll';
   NoktaDll = 'NoktaDLL.dll';
   LIB_DLL = 'EFaturaDLL.dll';
@@ -661,6 +664,27 @@ function findMethod(dllHandle : Cardinal; methodname : string) : FARPROC;
 begin
  Result := GetProcAddress(dllHandle,pchar(methodname));
 end;
+
+
+
+function ComboYil(yil : integer = 2020 ; index : integer = 10) : TStringList;
+var
+ I : integer;
+ List : TStringList;
+begin
+  List := TStringList.Create;
+  try
+    inc(yil);
+    for I := 0 to index do
+    begin
+     yil := yil - 1;
+     List.Add(intTostr(yil));
+    end;
+    ComboYil := List;
+  finally
+  end;
+end;
+
 
 
 function HastaKayitUniqKontrol(DosyaNo,TC,sirketKod : string) : string;
@@ -2017,14 +2041,14 @@ var
              if pos('Sorgula TakipNoListeleme',islemTipi) > 0 then
              begin
                sql := 'update KurumsysTakipNoList set sorguCvp = ' + QuotedStr(sonuc) +
-                      ' where SIRANO = ' + HastaneRefNo;
+                      ' where isnull(Eski_SIRANO,SIRANO)  = ' + HastaneRefNo;
                datalar.QueryExec(sql);
                exit;
              end;
              if pos('Sil TakipNoListeleme',islemTipi) > 0 then
              begin
                sql := 'update KurumsysTakipNoList set silCvp = ' + QuotedStr(sonuc) +
-                      ' where SIRANO = ' + HastaneRefNo;
+                      ' where isnull(Eski_SIRANO,SIRANO)  = ' + HastaneRefNo;
                datalar.QueryExec(sql);
                //exit;
              end;
@@ -2037,7 +2061,7 @@ var
              //   ado := TADOQuery.Create(nil);
              //   ado.Connection := datalar.ADOConnection2;
                 sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr(takip) +
-                       ' where SIRANO = ' + HastaneRefNo;
+                       ' where isnull(Eski_SIRANO,SIRANO)  = ' + HastaneRefNo;
                 datalar.QueryExec(sql);
                 _Sonuc_ := SS[1] + ' - ' + SS[2];
              //   ado.Free;
@@ -2054,7 +2078,7 @@ var
              //   ado := TADOQuery.Create(nil);
              //   ado.Connection := datalar.ADOConnection2;
                 sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr(takip) +
-                       ' where SIRANO = ' + HastaneRefNo;
+                       ' where isnull(Eski_SIRANO,SIRANO)  = ' + HastaneRefNo;
                 datalar.QueryExec(sql);
                // ado.Free;
                end;
@@ -2069,7 +2093,7 @@ var
                                   ' set SGKBildir = 1 ' +
                                   ' from KurumFatura KF ' +
                                   ' join Hasta_Gelisler G on G.TakipNo = KF.takipNo ' +
-                                  ' where g.SIRANO = ' + QuotedStr(HastaneRefNo)
+                                  ' where isnull(g.Eski_SIRANO,g.SIRANO) = ' + QuotedStr(HastaneRefNo)
                                  );
 
             end;
@@ -2116,7 +2140,7 @@ begin
    s := SendMesajGonder(pwidechar(mesaj),pwidechar(islemTipi),sonuc,HastaneRefNo);
    if islemTipi = 'SysTakipNoSorgula'
    then begin
-     xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'Cvp');
+     xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay');
    end
    else
    sonucYaz(s);
@@ -2548,6 +2572,7 @@ var
 begin
   Grid := TcxGridKadir.Create(Form);
   Grid.Parent := Form;
+
   Level := Grid.Levels.Add;
   Level.Name := name+'Level';
   View := Grid.CreateView(TcxGridDBTableView) as TcxGridDBTableView;
@@ -2721,9 +2746,10 @@ begin
 
              end;
 
-             if (KolonProperties[i] = 'TcxTextProperties')
+             if (KolonProperties[i] = 'TcxTextProperties') or
+             (KolonProperties[i] = 'TcxTextEditProperties')
              Then Begin
-                TcxTextEditProperties(Properties).Alignment.Horz := taCenter;
+                TcxTextEditProperties(Properties).Alignment.Horz := taLeftJustify;
                 TcxTextEditProperties(Properties).Alignment.Vert := TcxEditVertAlignment.taVCenter;
              End;
 
@@ -4414,7 +4440,7 @@ var
   dosya, min, max : string;
   sonsatir , x : integer;
   liste ,sql : string;
-  ad,soyadi,tc , testid , itemid , sonuc , _F_  , testKod,testad ,dosyaNo,gelisNo,id ,tip : string;
+  ad,soyadi,tc , testid , itemid , sonuc , sonucTitre , _F_  , testKod,testad ,dosyaNo,gelisNo,id ,tip : string;
   ado : TADOQuery;
   openDialog1 : TOpenDialog;
   v ,sayfa : variant;
@@ -4450,6 +4476,7 @@ begin
        itemid := sayfa.cells[x,4];
        testid := sayfa.cells[x,11];
        sonuc := sayfa.cells[x,6];
+       sonucTitre := sayfa.cells[x,6];
 
        ad := sayfa.cells[x,2];
        soyadi := sayfa.cells[x,3];
@@ -4482,6 +4509,10 @@ begin
          Then Begin
              Sonuc := StringReplace(Sonuc,'Poz','POZ',[rfReplaceAll]);
              Sonuc := StringReplace(Sonuc,'Neg','NEG',[rfReplaceAll]);
+             Sonuc := StringReplace(Sonuc,'>','',[rfReplaceAll]);
+             Sonuc := StringReplace(Sonuc,'<','',[rfReplaceAll]);
+             Sonuc := StringReplace(Sonuc,',','.',[rfReplaceAll]);
+
              if (pos('NEG',Sonuc) > 0)
              Then sonuc := '-1'
              Else
@@ -4489,6 +4520,19 @@ begin
              Then sonuc := '1'
              Else
              sonuc := Sonuc;
+
+             sql := 'update hareketler set Gd = ' + QuotedStr(Sonuc)  +
+                      ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                      ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+
+             datalar.QueryExec(ado,sql);
+
+             sql := 'update hareketler set islemAciklamasi = ' + QuotedStr(sonucTitre) +
+                          ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
+                          ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
+             datalar.QueryExec(ado,sql);
+
+
          end
          else begin
            Sonuc := StringReplace(Sonuc,',','.',[rfReplaceAll]);
@@ -4834,6 +4878,7 @@ begin
          sql := 'update hareketler set code = ' + QuotedStr(code) +
                 ' where dosyaNo = ' + QuotedStr (gelisBilgisi.dosyaNo) +
                 ' and gelisNo = ' + gelisBilgisi.gelisNo +
+                ' and Tip = ''S'' ' +
                 ' and isnull(islemSiraNo,'''') = '''' ' ;
          datalar.QueryExec(sql);
      end;
@@ -5705,7 +5750,7 @@ begin
 end;
 
 
-function ListeAcCreate(TableName,kolonlar,kolonBasliklar,kolonGenislik,name,baslik,where : string;colcount : integer;Grup : boolean = false;Owner : TComponent = nil) : TListeAc;
+function ListeAcCreate(TableName,kolonlar,kolonBasliklar,kolonGenislik,name,baslik,where : string;colcount : integer;Grup : boolean = false;Owner : TComponent = nil ; filterCol : integer = 0) : TListeAc;
 var
   I : integer;
   lst : TstringList;
@@ -5729,7 +5774,7 @@ begin
       Result.TColcount := colcount;
       Result.SkinName := AnaForm.dxSkinController1.SkinName;
       Result.Conn := datalar.ADOConnection2;
-      Result.Filtercol := 1;
+      Result.Filtercol := filterCol;
     except
       FreeAndNil (Result);
       raise;
@@ -6157,6 +6202,30 @@ begin
     end;
   finally
     Bitmap.Free;
+  end;
+end;
+
+
+
+procedure ScreenShotActiveWindow(Bild: TBitMap);
+var
+  c: TCanvas;
+  r, t: TRect;
+  h: THandle;
+begin
+  c := TCanvas.Create;
+  c.Handle := GetWindowDC(GetDesktopWindow);
+  h := GetForeGroundWindow;
+  if h <> 0 then
+    GetWindowRect(h, t);
+  try
+    r := Rect(0, 0, t.Right - t.Left, t.Bottom - t.Top);
+    Bild.Width  := t.Right - t.Left;
+    Bild.Height := t.Bottom - t.Top;
+    Bild.Canvas.CopyRect(r, c, t);
+  finally
+    ReleaseDC(0, c.Handle);
+    c.Free;
   end;
 end;
 
@@ -9481,7 +9550,7 @@ begin
 end;
 
 function doktorKodToReceteUser(kod: string ; var Tc : string ; var Ad : string;
-                                             var user : string ; sifre : string): string;
+                                             var user : string ; var sifre : string): string;
 var
   sql: string;
   ado : TADOQuery;

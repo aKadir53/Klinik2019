@@ -16,7 +16,7 @@ uses
   cxSchedulerWeekView, cxSchedulerYearView, cxSchedulerGanttView, cxGroupBox,
   cxRadioGroup, cxSchedulerAggregateStorage, cxSchedulerDBStorage, Menus,
   cxButtons, dxSkinscxPCPainter, cxPCdxBarPopupMenu, cxPC, Vcl.OleCtrls, SHDocVw,
-  cxSchedulerStrs, cxMaskEdit,strUtils,
+  cxSchedulerStrs, cxMaskEdit,strUtils,ShellApi,MSHTML,
   cxDropDownEdit, cxImageComboBox, Data.SqlExpr, cxCustomData, cxFilter, cxData,
   cxDataStorage, cxDBData, cxMemo, cxGridLevel, cxGridBandedTableView,
   cxGridDBBandedTableView, cxGridCustomTableView, cxGridTableView,
@@ -188,6 +188,11 @@ type
     procedure ToolButton16Click(Sender: TObject);
     procedure ToolButton15Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure ToolButton12Click(Sender: TObject);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+    procedure WebBrowser1NavigateComplete2(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
   private
     { Private declarations }
     procedure WMSettingChange(var Message: TMessage); message WM_SETTINGCHANGE;
@@ -208,6 +213,7 @@ var
   f : double;
   _pressItem_ : TdxNavBarItem;
   _targetGroup_ : TdxNavBarGroup;
+  _uygulama : String;
 
 implementation
       uses Tnm_Ilaclar,
@@ -255,6 +261,95 @@ begin
 
     end;
   end;
+end;
+
+procedure TAnaForm.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+var
+   iDoc: IHTMLDocument2;
+   i: integer;
+   ov: OleVariant;
+   iDisp: IDispatch;
+   iColl: IHTMLElementCollection;
+   iInputElement : IHTMLInputElement;
+   iTextElement:IHTMLTextAreaElement;
+   formelement:IHtmlFormElement;
+   _goster : integer;
+  Buttons: OleVariant;
+  Button: OleVariant;
+  bb , muayeneKayit , YeniSifreDogrulama , sifreDegistirildi , hosgeldin : integer;
+  ss : string;
+begin
+ //  if ButtonClick = True then exit;
+   ss := (Webbrowser1.Document as ihtmldocument2).body.parentelement.outerhtml;
+ //  cxMemo1.Text := (Webbrowser1.Document as ihtmldocument2).body.parentelement.outerhtml;
+   YeniSifreDogrulama := pos('Yeni Þifre Doðrulama',ss);
+   muayeneKayit := pos('MUAYENE KAYIT',ss);
+   sifreDegistirildi := pos('Deðiþtirildi',ss);
+   hosgeldin := pos('Hoþgeldin',ss);
+
+   if (hosgeldin > 0) and (YeniSifreDogrulama = 0)
+   then begin
+      WebBrowser1.Navigate('https://medula.sgk.gov.tr/hastane/pages/sifreDegistir.jsf');
+   end;
+
+
+
+      idoc := Webbrowser1.document as IHTMLDocument2;
+      ov := 'INPUT';
+      IDisp := iDoc.all.tags(ov);
+      if assigned(IDisp)
+      then begin
+               IDisp.QueryInterface(IHTMLElementCollection, iColl);
+               if assigned(iColl)
+               then begin
+                         for i := 1 to iColl.Get_length do
+                         begin
+                            iDisp := iColl.item(pred(i), 0);
+                            iDisp.QueryInterface(IHTMLInputElement, iInputElement);
+                            if assigned(iInputElement) then
+
+
+                           (*
+                            if _uygulama = 'Medula'
+                            Then begin
+                              if iInputElement.Get_name = 'j_id_9:userName' //'j_username'
+                              then iInputElement.Set_value(_user);
+
+                              if iInputElement.Get_name = 'j_id_9:j_id_j' //'j_password'
+                              then iInputElement.Set_value(_pas);
+                            end;
+                             *)
+
+                           (*
+                            if (iInputElement.Get_type_ = 'submit')
+                         //  and (iInputElement.Get_name = 'form1:buttonSorgula')
+                               then iInputElement.select;
+                             *)
+                          end;
+
+                          Buttons := WebBrowser1.OleObject.Document.getElementsByTagName('button');
+                          for I := 0 to Buttons.Length - 1 do
+                          begin
+                            Button := Buttons.item(I);
+                            if Button.innerText = 'Deðiþtir' then
+                            begin
+                              Button.click();
+                              ButtonClick := True;
+                              Break;
+                            end;
+                          end;
+
+               end;
+      end;
+end;
+
+procedure TAnaForm.WebBrowser1NavigateComplete2(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+var
+  url__ : string;
+begin
+   url__ := URL;
 end;
 
 procedure TAnaForm.WMSettingChange(var Message: TMessage);
@@ -385,7 +480,7 @@ begin
           datalar.efaturaSifre := WebErisimBilgiFirma('EF','04');
          // datalar.efaturaUsername := WebErisimBilgi('EF','03');
          // datalar.efaturaSifre := WebErisimBilgi('EF','04');
-          datalar.portalURL := WebErisimBilgiFirma('EF','08');
+          datalar.portalURL := WebErisimBilgiOrtak('EF','08');
           datalar.portalUSer := WebErisimBilgiFirma('EF','09');
           datalar.portalSifre := WebErisimBilgiFirma('EF','10');
         end
@@ -401,7 +496,7 @@ begin
 
 
 
-
+        datalar.E2033HataTakipYaz  := WebErisimBilgi('SNT','04');
         datalar.efaturaTaslak := WebErisimBilgi('EF','11');
 
 
@@ -436,7 +531,7 @@ begin
       datalar.KurumBransi := WebErisimBilgiFirma('98','11');
    //   datalar._labSonucIcinGozArdiEt := WebErisimBilgiFirma('817');
 
-      _LabDataset_ := datalar.QuerySelect('select WebserviceURL,CalismaTipi,BarkodBasim from LabFirmalar where kod = ' +
+      _LabDataset_ := datalar.QuerySelect('select WebserviceURL,CalismaTipi,BarkodBasim from OSGB_MASTER.dbo.LabFirmalar where kod = ' +
                                      QuotedStr(datalar._labID));
 
        datalar._laburl := _LabDataset_.FieldByName('WebserviceURL').AsString;
@@ -1105,6 +1200,12 @@ begin
    end;
 end;
 
+procedure TAnaForm.ToolButton12Click(Sender: TObject);
+begin
+  ShowPopupForm('Neler Yeni',NelerYeni);
+
+end;
+
 procedure TAnaForm.ToolButton15Click(Sender: TObject);
 begin
     if not datalar.MemDataKullaniciDokumanOku.Eof
@@ -1187,7 +1288,13 @@ begin
    101 : begin
            menuclik(TToolButton(sender).Tag,TagfrmDoktorlar,1);
          end;
+
+   200 : begin
+              ShellExecute(0, 'open', PChar('Chrome.exe'), PChar('https://www.noktayazilim.net/KlinikKlavuz/index.html'),
+             nil, SW_SHOWNORMAL);
+         end;
    400 : begin
+
                u := datalar._donemuser;
                s := datalar._donemsifre;
                if FindTab(AnaForm.sayfalar,TagfrmMedula)
@@ -1199,6 +1306,24 @@ begin
                 TfrmMedEczane(F)._pas := s;
                 if F <> nil then F.show;
                end;
+
+
+      (*
+        // GirisFormRecord.F_TC_ := _TC_;
+        // GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
+         try
+          F := FormINIT(TagfrmMedula,GirisFormRecord,ikHayir,'');
+          TfrmMedEczane(F).receteForm := nil;
+          TfrmMedEczane(F)._user := datalar._donemuser;
+          TfrmMedEczane(F)._pas := datalar._donemsifre;
+          if F <> nil then F.ShowModal;
+
+         finally
+           F.Free;
+         end;
+        *)
+
+
          end
          else
            menuclik(TToolButton(sender).Tag);
@@ -1380,8 +1505,10 @@ procedure TAnaForm.sayfalarPageChanging(Sender: TObject; NewPage: TcxTabSheet;
   var AllowChange: Boolean);
 begin
    if NewPage.PageIndex in [0,1]
-   then
-     Sayfalar.Properties.CloseButtonMode := cbmNone
+   then begin
+     Sayfalar.Properties.CloseButtonMode := cbmNone;
+     ButtonClick := false;
+   end
    else
      Sayfalar.Properties.CloseButtonMode := cbmActiveTab;
 

@@ -161,13 +161,13 @@ begin
   datalar.QuerySelect(AlimGrid.Dataset,
                       'select * from itsBildirim where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
                       ' and convert(varchar,isnull(AlimBildirimTarih,date_create),112) between ' + txtilkTarih.GetSQLValue + ' and ' + txtsonTarih.GetSQLValue +
-                      ' and AlimBildirimId <> '''' and SarfBildirimId = '''''
+                      ' and isnulL(AlimBildirimId,'''') <> '''' and isnull(SarfBildirimId,'''') = '''''
                       );
 
   datalar.QuerySelect(SarfGrid.Dataset,
                       'select * from itsBildirim where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-                      ' and SarfBildirimTarih between ' + txtilkTarih.GetSQLValue + ' and ' + txtsonTarih.GetSQLValue +
-                      ' and SarfBildirimId <> '''' '
+                      ' and convert(varchar,isnull(SarfBildirimTarih,date_create),112) between ' + txtilkTarih.GetSQLValue + ' and ' + txtsonTarih.GetSQLValue +
+                      ' and isnull(SarfBildirimId,'''') <> '''' '
                       );
 
 end;

@@ -421,6 +421,7 @@ object frmTahliltakip: TfrmTahliltakip
         ExceleGonder = True
         PopupForm = False
         object Liste: TcxGridDBBandedTableView
+          PopupMenu = PopupMenu1
           OnDblClick = ListeDblClick
           OnMouseDown = ListeMouseDown
           OnCustomDrawCell = ListeCustomDrawCell
@@ -451,7 +452,7 @@ object frmTahliltakip: TfrmTahliltakip
               FixedKind = fkLeft
               Styles.Content = cxStyle8
               Styles.Header = cxStyle3
-              Width = 300
+              Width = 371
             end
             item
               Caption = 'Potasyum'
@@ -517,8 +518,15 @@ object frmTahliltakip: TfrmTahliltakip
             Position.RowIndex = 0
           end
           object ListedosyaNo: TcxGridDBBandedColumn
+            Caption = 'DosyaNo'
             DataBinding.FieldName = 'dosyaNo'
-            Visible = False
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 53
             Position.BandIndex = 0
             Position.ColIndex = 0
             Position.RowIndex = 0
@@ -539,7 +547,7 @@ object frmTahliltakip: TfrmTahliltakip
             GroupSummaryAlignment = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 150
+            Width = 134
             Position.BandIndex = 0
             Position.ColIndex = 3
             Position.RowIndex = 0
@@ -592,7 +600,7 @@ object frmTahliltakip: TfrmTahliltakip
             GroupSummaryAlignment = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 72
+            Width = 94
             Position.BandIndex = 0
             Position.ColIndex = 6
             Position.RowIndex = 0
@@ -1427,6 +1435,12 @@ object frmTahliltakip: TfrmTahliltakip
       Caption = 'Tetkik Sonu'#231' De'#287'erlendir'
       ImageIndex = 102
       Visible = False
+      OnClick = cxButtonCClick
+    end
+    object E1: TMenuItem
+      Tag = 9997
+      Caption = 'Excel G'#246'nder'
+      ImageIndex = 75
       OnClick = cxButtonCClick
     end
   end

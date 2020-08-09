@@ -14,6 +14,7 @@ object frmKurumBilgi: TfrmKurumBilgi
   KeyPreview = True
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -27,6 +28,8 @@ object frmKurumBilgi: TfrmKurumBilgi
     ExceleGonder = False
     PopupForm = False
     object GridList: TcxGridDBBandedTableView
+      PopupMenu = PopupMenu1
+      DataController.DataModeController.GridMode = True
       DataController.DataSource = DataSource1
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
@@ -79,6 +82,7 @@ object frmKurumBilgi: TfrmKurumBilgi
         HeaderAlignmentHorz = taCenter
         Options.Editing = False
         Styles.Content = cxStyle2
+        Styles.OnGetContentStyle = GridListSLB_TanimiStylesGetContentStyle
         Width = 217
         Position.BandIndex = 0
         Position.ColIndex = 4
@@ -211,6 +215,7 @@ object frmKurumBilgi: TfrmKurumBilgi
     Top = 72
   end
   object cxStyleRepository1: TcxStyleRepository
+    Left = 112
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svFont, svTextColor]
@@ -221,27 +226,39 @@ object frmKurumBilgi: TfrmKurumBilgi
       Font.Style = [fsBold]
       TextColor = 4194432
     end
+    object Mavi: TcxStyle
+      AssignedValues = [svColor, svFont, svTextColor]
+      Color = 16744448
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      TextColor = clWhite
+    end
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
+    OnPopup = PopupMenu1Popup
     Left = 64
     Top = 152
     object HastaKabulifreBilgileriniDeitir1: TMenuItem
       Tag = -1
-      Caption = 'Hasta Kabul '#350'ifre Bilgilerini De'#287'i'#351'tir'
+      Caption = 'Hasta Kabul '#350'ifre Bilgilerini SGK Ekran'#305'nda De'#287'i'#351'tir'
       ImageIndex = 69
       Visible = False
       OnClick = cxButtonCClick
     end
     object DnemSonlandrmaifremiDei1: TMenuItem
       Tag = -2
-      Caption = 'D'#246'nem Sonland'#305'rma '#350'ifremi De'#287'i'#351
+      Caption = 'D'#246'nem Sonland'#305'rma '#350'ifremi SGK Ekran'#305'nda De'#287'i'#351'tir'
       ImageIndex = 70
       Visible = False
       OnClick = cxButtonCClick
     end
   end
   object cxStyleRepository2: TcxStyleRepository
+    Left = 16
     PixelsPerInch = 96
     object cxStyle2: TcxStyle
       AssignedValues = [svColor, svFont]

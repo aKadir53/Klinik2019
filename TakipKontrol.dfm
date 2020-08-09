@@ -1121,22 +1121,21 @@ object frmTakipKontrol: TfrmTakipKontrol
         Caption = 'Seanslar'#305' '#304'ptal Et'
         Hint = 'S'
         ImageIndex = 80
+        Visible = False
         OnClick = HizmetleriptalEt1Click
       end
       object ahlilleriptalEt1: TMenuItem
         Tag = -8
         Caption = 'Tahlilleri '#304'ptal Et'
-        Hint = 'T'
+        Hint = 'L'
         ImageIndex = 47
-        Visible = False
-        OnClick = HizmetleriptalEt1Click
+        OnClick = ahlilleriptalEt1Click
       end
       object R1: TMenuItem
         Tag = -10
-        Caption = 'Radyoloji '#304'ptal'
+        Caption = 'T'#252'm Hizmetleri  '#304'ptal Et'
         Hint = 'R'
         ImageIndex = 95
-        Visible = False
         OnClick = HizmetleriptalEt1Click
       end
     end
@@ -1146,7 +1145,7 @@ object frmTakipKontrol: TfrmTakipKontrol
       ImageIndex = 76
       object S5: TMenuItem
         Caption = 'Seanslar'#305' Kaydet'
-        Hint = 'S'
+        Hint = 'T'#252'm'#252
         ImageIndex = 80
         OnClick = mHizmetleriKaydet1Click
       end
@@ -1169,6 +1168,10 @@ object frmTakipKontrol: TfrmTakipKontrol
       Tag = -100
       Caption = 'islemS'#305'raNo lar'#305' Sisteme Al'
       OnClick = I1Click
+    end
+    object H3: TMenuItem
+      Caption = 'Seans HizmetSunucuRefNo Sisteme Al (Eski_SiraNo)'
+      OnClick = H3Click
     end
     object N3: TMenuItem
       Caption = '-'

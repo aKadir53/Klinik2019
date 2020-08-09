@@ -679,6 +679,16 @@ object frmTopluGelis: TfrmTopluGelis
             HeaderAlignmentVert = vaCenter
             Width = 50
           end
+          object ListeSeans: TcxGridDBColumn
+            DataBinding.FieldName = 'Seans'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 36
+          end
           object ListeprovizyonTarihi: TcxGridDBColumn
             Caption = 'Provizyon Tarihi'
             DataBinding.FieldName = 'provizyonTarihi'
@@ -795,10 +805,6 @@ object frmTopluGelis: TfrmTopluGelis
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Width = 183
-          end
-          object ListeSeans: TcxGridDBColumn
-            DataBinding.FieldName = 'Seans'
-            Visible = False
           end
           object Listedtar: TcxGridDBColumn
             DataBinding.FieldName = 'dtar'

@@ -222,7 +222,9 @@ begin
   then
     if AItem = GridEkstreAtes
     then begin
-      ado.Next;
+      //ado.Next;
+      TcxCustomGridTableView(sender).Controller.FocusNextRecord
+      (TcxCustomGridTableView(sender).Controller.FocusedRecordIndex,True,True,False,False);
       TcxCustomGridTableView(sender).Controller.FocusedItem := GridEkstreIdealKilo;
     end;
 

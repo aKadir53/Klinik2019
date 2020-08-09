@@ -105,6 +105,11 @@ type
     M1: TMenuItem;
     M2: TMenuItem;
     S4: TMenuItem;
+    H2: TMenuItem;
+    gridListeColumn9: TcxGridDBColumn;
+    gridListeColumn10: TcxGridDBColumn;
+    gridListeColumn11: TcxGridDBColumn;
+    S5: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
 
@@ -133,6 +138,7 @@ type
     procedure btnSilClick(Sender: TObject);
     procedure btnKayitSorgulaListClick(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
+    procedure S5Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -277,6 +283,14 @@ begin
           Application.ProcessMessages;
         end;
 
+  -23 : begin
+          msg := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('HastaneRefNoSorgu').Index);
+          sysTakipNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('SysTakipNo').Index);
+          HastaneRefNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('SIRANO').Index);
+          MesajGonder(msg,'HastaneRefNoSorgu',sysTakipNo);
+          Application.ProcessMessages;
+        end;
+
     end;
 
 end;
@@ -326,7 +340,7 @@ var
   ado : TADOQuery;
   c : char;
   i : integer;
-  takip ,HastaneRefNo : string;
+  takip ,HastaneRefNo , TakipGereklimi : string;
   _row_ : integer;
   sysTakipNo,ad,soyad,id : string;
   SNetLogin,SNetMsg : TStringList;
@@ -345,13 +359,15 @@ begin
      for _row_ := 0 to gridListe.Controller.SelectedRowCount - 1 do
      begin
        if stop = 1 then Break;
-       HastaneRefNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,0);
+       HastaneRefNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,
+                                                         gridListe.DataController.GetItemByFieldName('SIRANO').Index);
        sysTakipNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,4);
        ad := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,2);
        soyad := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,3);
        msg := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,8);
     //   mesajTipi := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,12);
-
+       TakipGereklimi := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[_row_].RecordIndex,
+                                                            gridListe.DataController.GetItemByFieldName('TakipGereklimi').Index);
        pnlDurumDurum.Caption := ad + ' ' + soyad;
        pBar.Position := pBar.Position + 1;
 
@@ -361,8 +377,13 @@ begin
 
        if (mesajTipi = 'Hasta Kayýt') and (sysTakipNo = '')
        then begin
+         if TakipGereklimi <> 'Evet'
+         then begin
           //       ShowMessageSkin(msg,'','','info');
-          MesajGonder(msg,mesajTipi,HastaneRefNo);
+            MesajGonder(msg,mesajTipi,HastaneRefNo);
+         end
+         else
+           txtLog.Lines.Add(HastaneRefNo + ' - Sgklý Hastalarda Medula Takip Numarasý Aldýktan Sonra Ýþlem Yapýnýz');
          Application.ProcessMessages;
        end;
        if (mesajTipi <> 'Hasta Kayýt') and (sysTakipNo <> '')
@@ -442,7 +463,7 @@ var
   c : char;
   i,s : integer;
   takip : string;
-  TSonuc : TStringList;
+  TSonuc , TMesaj : TStringList;
 
   procedure sonucYaz(Basarili : integer);
   begin
@@ -469,14 +490,14 @@ var
              if pos('Sorgula TakipNoListeleme',islemTipi) > 0 then
              begin
                sql := 'update KurumsysTakipNoList set sorguCvp = ' + QuotedStr(sonuc) +
-                      ' where SIRANO = ' + HastaneRefNo;
+                      ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo;
                datalar.QueryExec(sql);
                exit;
              end;
              if pos('Sil TakipNoListeleme',islemTipi) > 0 then
              begin
                sql := 'update KurumsysTakipNoList set silCvp = ' + QuotedStr(sonuc) +
-                      ' where SIRANO = ' + HastaneRefNo;
+                      ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo;
                datalar.QueryExec(sql);
                //exit;
              end;
@@ -487,7 +508,7 @@ var
                 takip := '' else takip := SS[2];
 
                 sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr(takip) +
-                       ' where SIRANO = ' + HastaneRefNo;
+                       ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo;
                 datalar.QueryExec(sql);
                 txtLog.Lines.Add(SS[1] + ' - ' + SS[2]);
 
@@ -499,17 +520,21 @@ var
                SYSOnlineCvpDBDurumYaz(HastaneRefNo,'',islemTipi,SS[0],SS[1],datalar.username);
                if SS[0] = 'E2033'
                then begin
-                takip := copy(SS[1],pos('=',SS[1])+1,50);
-                sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr(takip) +
-                       ' where SIRANO = ' + HastaneRefNo;
-                datalar.QueryExec(sql);
+                if datalar.E2033HataTakipYaz = 'Evet'
+                then begin
+                  takip := copy(SS[1],pos('=',SS[1])+1,50);
+                  sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr(takip) +
+                         ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo;
+                  datalar.QueryExec(sql);
+                end;
+
                end
                else
                if SS[0] = 'E2003'
                then begin
                 takip := '';
                 sql := 'update Hasta_gelisler set SYSTakipNo = ' + QuotedStr('') +
-                       ' where SIRANO = ' + HastaneRefNo;
+                       ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo;
                 datalar.QueryExec(sql);
                end;
 
@@ -557,15 +582,67 @@ begin
   try
    sonuc := '';
 
-   if FileExists('C:\NoktaV3\Message\SysTakipNoSorgulaCvp.xml')
+   if FileExists('C:\NoktaV3\Message\SysTakipNoSorgulaCvpDetay.xml')
    then
-     DeleteFile('C:\NoktaV3\Message\SysTakipNoSorgulaCvp.xml');
+     try DeleteFile('C:\NoktaV3\Message\SysTakipNoSorgulaCvpDetay.xml');except end;
+
+   if FileExists('C:\NoktaV3\Message\HastaneRefNoSorguCvpDetay.xml')
+   then
+     try DeleteFile('C:\NoktaV3\Message\HastaneRefNoSorguCvpDetay.xml');except end;
 
    s := SendMesajGonder(pwidechar(mesaj),pwidechar(islemTipi),sonuc,HastaneRefNo);
 
    if islemTipi = 'SysTakipNoSorgula'
    then begin
-     xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'Cvp');
+
+     TMesaj := TStringList.Create;
+     try
+       TMesaj.LoadFromFile('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay.xml');
+       if pos('<HASTANE_REFERANS_NUMARASI value="'+HastaneRefNo,TMesaj.Text) = 0
+       then begin
+         if mrYes = ShowMessageSkin('Sorgulanan SysTakipNo Dokumaný Ýçindeki Hastane Referans Numarasý',
+                         'Satýrdaki HstRefNo ile Uyuþmuyor',
+                         'sysTakipNo Satýrdan Kaldýrýlsýn mý?','msg')
+         Then begin
+           datalar.QueryExec('update Hasta_Gelisler ' +
+                             ' set sysTakipNo = '''' ' +
+                             ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo
+                             );
+         end;
+       end;
+       xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay');
+     finally
+      TMesaj.free;
+     end;
+
+   end
+   else
+   if islemTipi = 'HastaneRefNoSorgu'
+   then begin
+
+     TMesaj := TStringList.Create;
+     try
+       TMesaj.LoadFromFile('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay.xml');
+       if pos(HastaneRefNo,TMesaj.Text) = 0
+       then begin
+         if mrYes = ShowMessageSkin('Sorgulanan HstRefNo Dokumaný Ýçindeki sysTakipNo',
+                         'Satýrdaki SYSTakipNo ile Uyuþmuyor',
+                         'SYSTakipNo Satýrdan Kaldýrýlsýn mý?','msg')
+         Then begin
+           datalar.QueryExec('update Hasta_Gelisler ' +
+                             ' set sysTakipNo = '''' ' +
+                             ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo
+                             );
+         end;
+       end;
+       xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay');
+     finally
+      TMesaj.free;
+     end;
+
+     xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay');
+
+
    end
    else
    sonucYaz(s);
@@ -577,6 +654,28 @@ begin
 
 end;
 
+
+procedure TfrmSaglikNetOnline.S5Click(Sender: TObject);
+var
+ sql : string;
+begin
+
+    datalar.GelisDuzenleRecordK.dosyaNo := cxGrid1.Dataset.FieldByName('dosyaNo').AsString;
+    datalar.GelisDuzenleRecordK.gelisNo := cxGrid1.Dataset.FieldByName('gelisNo').AsString;;
+   // datalar.GelisDuzenleRecordK.TakipNo := cxGrid1.Dataset.FieldByName('TakipNo').AsString;
+   // datalar.GelisDuzenleRecordK.basvuruNo := cxGrid1.Dataset.FieldByName('BasvuruNo').AsString;
+    datalar.GelisDuzenleRecordK.sysTakipNo := cxGrid1.Dataset.FieldByName('sysTakipNo').AsString;
+
+    if mrYes = ShowPopupForm('Hasta Geliþ Düzenle',hastaGelisDuzenle,'','frmSaglikNetOnline')
+    Then Begin
+       sql := 'update Hasta_Gelisler set ' +
+              'sysTakipNo = ' + QuotedStr(datalar.GelisDuzenleRecordK.sysTakipNo) +
+              ' where dosyaNo = ' + QuotedStr (datalar.GelisDuzenleRecordK.dosyaNo) +
+              ' and gelisNo = ' + datalar.GelisDuzenleRecordK.gelisNo;
+       datalar.QueryExec(sql);
+    End;
+
+end;
 
 function TfrmSaglikNetOnline.SendMesajGonder(m,t : PWideChar ; var sonuc : PWideChar ; HastaneRefNo : string) : integer;
 var

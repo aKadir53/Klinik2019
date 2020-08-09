@@ -90,6 +90,7 @@ type
     Y1: TMenuItem;
     N3: TMenuItem;
     gridAnketlerColumn2: TcxGridDBColumn;
+    gridAnketDetayColumn15: TcxGridDBBandedColumn;
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Anket(islem: Integer);
@@ -101,6 +102,9 @@ type
       var ADone: Boolean);
     procedure ADOQuery1AfterPost(DataSet: TDataSet);
     procedure ADOQuery1BeforePost(DataSet: TDataSet);
+    procedure gridAnketDetayCustomDrawCell(Sender: TcxCustomGridTableView;
+      ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+      var ADone: Boolean);
 
   private
     { Private declarations }
@@ -393,6 +397,24 @@ procedure TfrmCalisanGeriBildirimAnket.GozlemYazdir(const GozlemID: integer);
 
 begin
 
+end;
+
+procedure TfrmCalisanGeriBildirimAnket.gridAnketDetayCustomDrawCell(
+  Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;
+  AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);
+var
+  kas : integer;
+begin
+  inherited;
+  try
+   kas :=  AViewInfo.GridRecord.Values[14];
+   if ADO_Anket.FieldByName('anketSayisi').AsInteger <>
+      AViewInfo.GridRecord.Values[13]
+    then begin
+       ACanvas.Brush.Color := clRed;
+    end;
+  except
+  end;
 end;
 
 procedure TfrmCalisanGeriBildirimAnket.gridAnketDetayCustomDrawGroupCell(

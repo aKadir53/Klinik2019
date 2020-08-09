@@ -183,6 +183,7 @@ type
 
 const
  LIB_DLL = 'NoktaDLL.dll';
+ //LIB_DLL = 'D:\Projeler\VS\c#\ListeDLL_Cades\ListeDLL\bin\x86\Debug\NoktaDLL.dll';
 
 var
    frmRaporDetay: TfrmRaporDetay;

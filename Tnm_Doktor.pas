@@ -667,6 +667,19 @@ begin
 
       //         SK := TcxCheckGroupKadir(FindComponent('SirketKod')).getItemCheckString;
 
+  case TcxButton(sender).Tag  of
+    sil : begin
+          end;
+    Kaydet : begin
+               if TcxImageComboKadir(FindComponent('MesulMudur')).EditValue = 1
+               then begin
+                  datalar.QueryExec(' set nocount on ' +
+                                    ' update DoktorlarT set MesulMudur = 0 where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                                    ' set nocount off');
+               end;
+             end;
+  end;
+
   inherited;
 
 
@@ -676,14 +689,6 @@ begin
           end;
     Kaydet : begin
 
-
-
-               if TcxImageComboKadir(FindComponent('MesulMudur')).EditValue = 1
-               then begin
-                  datalar.QueryExec(' set nocount on ' +
-                                    ' update DoktorlarT set MesulMudur = 0 where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
-                                    ' set nocount off');
-               end;
 
 
 

@@ -9,10 +9,11 @@ uses
 type
   TKurumSifreDegisForm = class(TGirisForm)
     WebBrowser1: TWebBrowser;
-    procedure WebBrowser1DocumentComplete(ASender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
+
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
   private
     { Private declarations }
   public
@@ -47,7 +48,7 @@ begin
 end;
 
 procedure TKurumSifreDegisForm.WebBrowser1DocumentComplete(ASender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
+  const pDisp: IDispatch; const URL: OleVariant);
 var
    iDoc: IHTMLDocument2;
    i,j,x: integer;
@@ -60,10 +61,26 @@ var
    formelement:IHtmlFormElement;
    menuelement : IHTMLTable;
    _goster : integer;
+  bb , muayeneKayit , YeniSifreDogrulama , sifreDegistirildi , hosgeldin : integer;
+  ss : string;
 begin
+ //  if ButtonClick = True then exit;
+   ss := (Webbrowser1.Document as ihtmldocument2).body.parentelement.outerhtml;
+ //  cxMemo1.Text := (Webbrowser1.Document as ihtmldocument2).body.parentelement.outerhtml;
+   YeniSifreDogrulama := pos('Yeni Þifre Doðrulama',ss);
+   muayeneKayit := pos('MUAYENE KAYIT',ss);
+   sifreDegistirildi := pos('Deðiþtirildi',ss);
+   hosgeldin := pos('Hoþgeldin',ss);
+
+   if (hosgeldin > 0) and (YeniSifreDogrulama = 0)
+   then begin
+      WebBrowser1.Navigate('https://medula.sgk.gov.tr/hastane/pages/sifreDegistir.jsf');
+   end;
+
       datalar.browserOk := 1;
       //datalar.Login;
 
+      (*
       ovTable := WebBrowser1.OleObject.Document.all.tags('TABLE').item(1);
       for i := 0 to (ovTable.Rows.Length - 1) do
       begin
@@ -77,6 +94,7 @@ begin
          end;
         end;
       end;
+      *)
 
 
       idoc := Webbrowser1.document as IHTMLDocument2;
@@ -103,31 +121,30 @@ begin
                          iDisp.QueryInterface(IHTMLInputElement, iInputElement);
                          if assigned(iInputElement) then
 
-                                    if iInputElement.Get_name = 'j_username'
+                                    if iInputElement.Get_name = 'j_id_9:userName'
                                     then begin
                                       iInputElement.Set_value(kullaniciAdi);
-
                                     end;
 
-                                    if iInputElement.Get_name = 'j_password'
+                                    if iInputElement.Get_name = 'j_id_9:j_id_j'
+                                    then begin
+                                      iInputElement.Set_value(mevcutSifre);
+                                    end;
+
+
+                                    if iInputElement.Get_name = 'form:j_id_v'
                                     then begin
                                       iInputElement.Set_value(mevcutSifre);
 
                                     end;
 
-                                    if iInputElement.Get_name = 'oldPassword'
-                                    then begin
-                                      iInputElement.Set_value(mevcutSifre);
-
-                                    end;
-
-                                    if iInputElement.Get_name = 'newPassword'
+                                    if iInputElement.Get_name = 'form:parola'
                                     then begin
                                        iInputElement.Set_value(sifre);
 
                                     end;
 
-                                    if iInputElement.Get_name = 'confirmNewPassword'
+                                    if iInputElement.Get_name = 'form:pt'
                                     then begin
                                       iInputElement.Set_value(sifre);
 

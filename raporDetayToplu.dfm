@@ -205,6 +205,10 @@ object frmHastaRaporlari: TfrmHastaRaporlari
         HeaderAlignmentVert = vaCenter
         Width = 101
       end
+      object ListeRaporlarColumn11: TcxGridDBColumn
+        DataBinding.FieldName = 'sira'
+        Visible = False
+      end
     end
     object cxGridLevel2: TcxGridLevel
       Caption = 'Hastalar'
@@ -212,6 +216,15 @@ object frmHastaRaporlari: TfrmHastaRaporlari
       Options.DetailFrameColor = clBlack
       Options.DetailFrameWidth = 0
     end
+  end
+  object txtLog: TcxMemo
+    Left = 304
+    Top = 328
+    Lines.Strings = (
+      'txtLog')
+    TabOrder = 1
+    Height = 89
+    Width = 185
   end
   object PopupMenu3: TPopupMenu
     Images = DATALAR.imag24png

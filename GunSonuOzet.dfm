@@ -145,8 +145,6 @@ object frmGunSonuOzet: TfrmGunSonuOzet
         TabOrder = 0
         ExceleGonder = False
         PopupForm = False
-        ExplicitTop = 24
-        ExplicitHeight = 496
         object gridListe: TcxGridDBTableView
           DataController.DataSource = DataSource1
           DataController.Summary.DefaultGroupSummaryItems = <>
@@ -203,9 +201,6 @@ object frmGunSonuOzet: TfrmGunSonuOzet
         Style.IsFontAssigned = True
         Transparent = True
         Visible = False
-        ExplicitLeft = 360
-        ExplicitTop = 16
-        ExplicitWidth = 46
       end
     end
     object cxTabSheet2: TcxTabSheet
@@ -365,8 +360,8 @@ object frmGunSonuOzet: TfrmGunSonuOzet
   end
   object DataSource1: TDataSource
     DataSet = ADO_SQL
-    Left = 112
-    Top = 216
+    Left = 64
+    Top = 272
   end
   object Ado_GunSonuOzetLog: TADOQuery
     Connection = DATALAR.ADOConnection2

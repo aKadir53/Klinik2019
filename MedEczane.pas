@@ -307,8 +307,10 @@ var
    Button: OleVariant;
    _goster : integer;
    DocV : string;
+   bb , muayeneKayit , YeniSifreDogrulama , sifreDegistirildi , hosgeldin : integer;
+   ss : string;
 begin
-      if ButtonClick = True then exit;
+     if ButtonClick = True then exit;
 
       idoc := Webbrowser1.document as IHTMLDocument2;
 

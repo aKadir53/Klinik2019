@@ -641,6 +641,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       object Y2: TMenuItem
         Tag = -104
         Caption = 'Y'#252'kl'#252' Dosya '#350'ablonu (RTF)'
+        Visible = False
         OnClick = cxButtonCClick
       end
       object B1: TMenuItem

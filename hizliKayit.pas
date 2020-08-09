@@ -517,7 +517,7 @@ begin
            ',@Istel2 = ' + #39 + '' + #39 +
            ',@vyer = ' + #39 + '' + #39 +
            ',@huviyetTarih = ' + #39 + '' + #39 +
-           ',@kanGrubu = ' + #39 + '' + #39 +
+           ',@kanGrubu = ' + #39 + '8' + #39 +
            ',@USER_ID = ' + #39 + kullanici + #39 +
            ',@DATE_CREATE = ' + #39 + tarihal(date) + #39 +
           // ',@raporNo = ' + #39 + txtRaporNo.Text + #39 +
@@ -557,6 +557,7 @@ begin
           error := ado.Fieldbyname('error').AsString;
 
 
+
    if memDataRaporlar.fieldbyname('raporNo').AsString <> ''
    then begin
        sql := 'select * from raporlar where dosyaNo = ' + QuotedStr(_dosyaNo) +
@@ -567,7 +568,7 @@ begin
        if ado.Eof
        Then Begin
              sql := 'insert into raporlar (dosyaNo,raporNo,raporTarihi,verenTesisKodu,raporTakipno,turu,baslangicTarihi,bitisTarihi,' +
-                    'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,aktif) ' +
+                    'protokolNo,protokolTarihi,tedaviRaporTuru,seansGun,SeansSayi,aktif,butKodu) ' +
                     ' values ( ' + QuotedStr(_dosyaNo) + ','
                                  + QuotedStr(memDataRaporlar.fieldbyname('raporNo').AsString) + ','
                                  + QuotedStr(Tarih(memDataRaporlar.fieldbyname('raporTarihi').AsString)) + ','
@@ -580,12 +581,16 @@ begin
                                  + ' cast( ' + QuotedStr(tarihal(memDataRaporlar.fieldbyname('protokolTarihi').AsDateTime)) + '  as datetime) ' + ','
                                  + QuotedStr(memDataRaporlar.fieldbyname('tedaviRaporTuru').AsString) + ','
                                  + memDataRaporlar.fieldbyname('seansGun').AsString + ','
-                                 + memDataRaporlar.fieldbyname('seansSayi').AsString + ',1' + ')' ;
+                                 + memDataRaporlar.fieldbyname('seansSayi').AsString + ',1' + ','
+                                 + QuotedStr(memDataRaporlar.FieldByName('butKodu').AsString) +
+
+                                 ')' ;
                                //  + memDataRaporlar.fieldbyname('seansSayi').AsString + ','
                                 // + memDataRaporlar.fieldbyname('Tani').AsString + ')';
 
              datalar.QueryExec(sql);
-             ShowMessageSkin('Hasta Sisteme Aktarýldý','','','info');
+             ShowMessageSkin('Hasta Sisteme Aktarýldý',
+                             error,'','info');
         End
        Else
          ShowMessageSkin('Rapor Sistemde Kayýtlý','','','info');

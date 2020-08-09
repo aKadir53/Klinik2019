@@ -1002,7 +1002,7 @@ begin
     TagfrmHastaDiyalizIzlemListesi : Application.CreateForm(TfrmIzlem,frmIzlem);
     TagfrmKtvListesi : Application.CreateForm(TfrmKtvListesi,frmKtvListesi);
     TagfrmHastaKonsultasyon : Application.CreateForm(TfrmHastaKonsultasyon,frmHastaKonsultasyon);
-    TagfrmMedEczane : Application.CreateForm(TfrmMedEczane ,frmMedEczane );
+    TagfrmMedEczane,TagfrmMedula : Application.CreateForm(TfrmMedEczane ,frmMedEczane );
 
   end;
   try

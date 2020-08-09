@@ -179,7 +179,6 @@ object frmTestAyarlari: TfrmTestAyarlari
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Options.Editing = False
         Width = 52
       end
       object cxGrid1DBTableView1Column2: TcxGridDBColumn
@@ -267,7 +266,6 @@ object frmTestAyarlari: TfrmTestAyarlari
           end>
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Options.Editing = False
         Width = 72
       end
       object cxGrid1DBTableView1Column10: TcxGridDBColumn

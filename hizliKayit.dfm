@@ -648,7 +648,6 @@ object frmHizliKayit: TfrmHizliKayit
         Top = 79
         Properties.EditMask = '!\(999\)000-00-00;1;_'
         Properties.MaxLength = 0
-        Properties.OnValidate = MaskEditPropertiesValidate
         TabOrder = 20
         Text = '(   )   -  -  '
         Width = 121
@@ -933,10 +932,6 @@ object frmHizliKayit: TfrmHizliKayit
         object cxTabSheet2: TcxTabSheet
           Caption = 'Log'
           ImageIndex = 1
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object txtHata: TcxMemo
             Left = 0
             Top = 0
@@ -963,8 +958,8 @@ object frmHizliKayit: TfrmHizliKayit
     Active = True
     Indexes = <>
     SortOptions = []
-    Left = 432
-    Top = 262
+    Left = 424
+    Top = 190
     object TakipDataTcKimlikNo: TStringField
       FieldName = 'TcKimlikNo'
     end
@@ -1013,8 +1008,8 @@ object frmHizliKayit: TfrmHizliKayit
         SortOptions = []
       end>
     SortOptions = []
-    Left = 532
-    Top = 135
+    Left = 548
+    Top = 143
     object memDataRaporlarRaporTuru: TStringField
       DisplayWidth = 13
       FieldName = 'RaporTuru'
@@ -1071,8 +1066,8 @@ object frmHizliKayit: TfrmHizliKayit
   end
   object DataSource3: TDataSource
     DataSet = memDataRaporlar
-    Left = 476
-    Top = 263
+    Left = 548
+    Top = 191
   end
   object MemTable_Doktorlar: TSQLMemTable
     CurrentVersion = '13.00 '

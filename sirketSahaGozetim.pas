@@ -270,20 +270,20 @@ var
  sql : string;
 begin
 
-sql :=
-'SELECT sgd.sirketSahaGozetimId, sgd.id, sgd.Tespitler, sgd.TespitTarihi, sgd.Image, sgd.DokumanTip, sgd.Bolum,'+
-              ' rb.tanimi AS BolumTanimi,sgd.FaliyetKapamaTarihi,sgd.TakipSüresi,sgd.KapamaOnayi ,'+
-              ' sgd.YapilacakFaliyetTuru, sft.tanimi AS FaaliyetTanimi, sgd.KokNeden, sgd.FaliyetPlan,'+
-              ' sgd.UygulanacakFaliyetTarihi, sgd.BolumYetkilisi, sgd.Sonuc, sts.tanimi AS SonucTanimi, sgd.YapilanFaliyet'+
-' FROM dbo.SirketSahaGozetimDetay AS sgd LEFT OUTER JOIN '+
-                'dbo.RDS_RiskBolum AS rb ON rb.kod = sgd.Bolum LEFT OUTER JOIN  '+
-                'dbo.SahaGozetimFaaliyetTuru AS sft ON sft.kod = sgd.YapilacakFaliyetTuru LEFT OUTER JOIN '+
-                'dbo.SahaGozetimTakipTetkikSonuc AS sts ON sts.kod = sgd.Sonuc ' +
-     ' where sgd.sirketSahaGozetimId = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text);
+    sql :=
+    'SELECT sgd.sirketSahaGozetimId, sgd.id, sgd.Tespitler, sgd.TespitTarihi, sgd.Image, sgd.DokumanTip, sgd.Bolum,'+
+                  ' rb.tanimi AS BolumTanimi,sgd.FaliyetKapamaTarihi,sgd.TakipSüresi,sgd.KapamaOnayi ,'+
+                  ' sgd.YapilacakFaliyetTuru, sft.tanimi AS FaaliyetTanimi, sgd.KokNeden, sgd.FaliyetPlan,'+
+                  ' sgd.UygulanacakFaliyetTarihi, sgd.BolumYetkilisi, sgd.Sonuc, sts.tanimi AS SonucTanimi, sgd.YapilanFaliyet'+
+    ' FROM dbo.SirketSahaGozetimDetay AS sgd LEFT OUTER JOIN '+
+                    'dbo.RDS_RiskBolum AS rb ON rb.kod = sgd.Bolum LEFT OUTER JOIN  '+
+                    'dbo.SahaGozetimFaaliyetTuru AS sft ON sft.kod = sgd.YapilacakFaliyetTuru LEFT OUTER JOIN '+
+                    'dbo.SahaGozetimTakipTetkikSonuc AS sts ON sts.kod = sgd.Sonuc ' +
+         ' where sgd.sirketSahaGozetimId = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text);
 
-     SahaGozetimGrid.Dataset.Active := False;
-     SahaGozetimGrid.Dataset.SQL.Text := sql;
-     SahaGozetimGrid.Dataset.Active := True;
+         SahaGozetimGrid.Dataset.Active := False;
+         SahaGozetimGrid.Dataset.SQL.Text := sql;
+         SahaGozetimGrid.Dataset.Active := True;
 
 end;
 
@@ -511,7 +511,7 @@ begin
         datalar.Risk.SSGYapilanFaliyet := '';
         datalar.Risk.Image := TcxImage.Create(nil);
 
-        if mrYes = ShowPopupForm('Saha Gözetim Ekle',yeniGozetim)
+        if mrYes = ShowPopupForm('Döf Ekle',yeniGozetim)
         then begin
          try
           Satirlar.DataController.DataSet.Append;
@@ -536,7 +536,7 @@ begin
 
    9 : begin
         dataRead;
-        if mrYes = ShowPopupForm('Risk Kaynaðý Ekle',gozetimDuzenle)
+        if mrYes = ShowPopupForm('Döf Düzenle',gozetimDuzenle)
         then begin
          try
           Book := Satirlar.DataController.DataSet.Bookmark;

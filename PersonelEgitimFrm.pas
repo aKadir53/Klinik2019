@@ -80,6 +80,7 @@ type
     EgitimGridSatirlarColumn3: TcxGridDBBandedColumn;
     EgitimGridSatirlarColumn4: TcxGridDBBandedColumn;
     EgitimGridSatirlarColumn5: TcxGridDBBandedColumn;
+    GridListColumn4: TcxGridDBBandedColumn;
     procedure FormCreate(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
@@ -1021,6 +1022,15 @@ begin
   dateEdit.ValueTip := tvDate;
   setDataStringKontrol(self,dateEdit, 'BitisTarihi','Bitiþ Tarihi',Kolon1,'bsl',130);
   OrtakEventAta(dateEdit);
+
+  kombo := TcxImageComboKadir.Create(self);
+  kombo.Conn := nil;
+  kombo.BosOlamaz := True;
+  kombo.ItemList := '0;Ýptal,1;Gerçekleþti';
+  kombo.Filter := '';
+  OrtakEventAta(kombo);
+  setDataStringKontrol(self,kombo,'egitimDurum','Gerçekleþme',kolon1,'gg',70);
+  setDataString(self,'egitimDurumSebeb','Ýptal Sebebi',Kolon1,'gg',230);
 
   dateEdit := TcxDateEditKadir.Create(self);
   dateEdit.ValueTip := tvDate;

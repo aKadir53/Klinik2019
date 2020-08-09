@@ -595,7 +595,7 @@ TagfrmISGKurulToplantiTanim
         _fieldTips_ := 'string,string,string,IC,IC';
 
 
-        _ICParams_ := '0;0;0;LabFirmalar,kod,tanimi;DoktorlarT,kod,tanimi';
+        _ICParams_ := '0;0;0;OSGB_MASTER.dbo.LabFirmalar,kod,tanimi;DoktorlarT,kod,tanimi';
 
 
         //indexFieldName := 'sirketKod = ' + QuotedStr(_firmaKod_);

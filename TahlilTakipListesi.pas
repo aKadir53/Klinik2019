@@ -155,6 +155,7 @@ type
     cxStyle10: TcxStyle;
     chkBand: TcxCheckGroup;
     cxSplitter1: TcxSplitter;
+    E1: TMenuItem;
     procedure cxButtonCClick(Sender: TObject);
     procedure Tarih;
     procedure T1Click(Sender: TObject);
@@ -426,9 +427,10 @@ end;
 
 procedure TfrmTahliltakip.T3Click(Sender: TObject);
 var
-  sql , _dosyaNo_ , _gelisNo_ , _Tarih , m ,ay1,ay2 : string;
+  sql , _dosyaNo_ ,_dosyaNos_, _gelisNo_ , _Tarih , m ,ay1,ay2 : string;
   ado,ado0,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
-   DatasetKadir ,topluset : TDataSetKadir;
+  DatasetKadir ,topluset : TDataSetKadir;
+  x , satir : integer;
 begin
 
    if ADO_TetkiklerHastaList.Eof then exit;
@@ -444,6 +446,16 @@ begin
     10 : m := 'E';
     9 : m := 'H';
    end;
+
+
+   for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+   begin
+       satir := Liste.Controller.SelectedRows[x].RecordIndex;
+       _dosyaNos_ := ifThen(_dosyaNos_='',_dosyaNos_+'',_dosyaNos_+',') +
+         varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+   end;
+
+
   (*
    if TMenuItem(sender).Tag in [12]
    then begin
@@ -455,7 +467,7 @@ begin
     DurumGoster(True);
     try
       ado := TADOQuery.Create(nil);
-      sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = '''' , @yil = ' + QuotedStr(ay1) +
+      sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = ' + QuotedStr(_dosyaNos_) + ' , @yil = ' + QuotedStr(ay1) +
                     ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket);
       datalar.QuerySelect(ado,sql);
 

@@ -162,6 +162,7 @@ type
     TakiplerColumn7: TcxGridDBColumn;
     GridHizmetlerColumn1: TcxGridDBColumn;
     TakiplerColumnEpikriz: TcxGridDBColumn;
+    H3: TMenuItem;
     procedure cxButtonCClick(Sender: TObject);
     procedure mnSe1Click(Sender: TObject);
     procedure mptal1Click(Sender: TObject);
@@ -198,6 +199,8 @@ type
       ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
       out AStyle: TcxStyle);
     procedure I1Click(Sender: TObject);
+    procedure ahlilleriptalEt1Click(Sender: TObject);
+    procedure H3Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -403,14 +406,16 @@ begin
       else
       if Dataset.Name = 'RxRadIslem'
       then begin
-        datalar.QueryExec('insert into gssTakipOkuTetkikvdRadyoloji(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo) ' +
+        datalar.QueryExec('insert into gssTakipOkuTetkikvdRadyoloji(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo,sonuc) ' +
                           'values(' + QuotedStr(dataset.FieldByName('takipNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('sutKodu').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('islemTarihi').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('bransKodu').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('hizmetSunucuRefNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('islemSiraNo').AsString) + ',' +
-                                      QuotedStr(dataset.FieldByName('drTescilNo').AsString) + ')');
+                                      QuotedStr(dataset.FieldByName('drTescilNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('sonuc').AsString)  +
+                                      ')');
       end
       else
       if Dataset.Name = 'RxTaniBilgisi'
@@ -666,6 +671,150 @@ begin
 
 end;
 
+procedure TfrmTakipKontrol.ahlilleriptalEt1Click(Sender: TObject);
+var
+  satir, satirlar, satirs, x: integer;
+  Sonuc, BasvuruNo, sql, msg, takip, dosyaNo, gelisNo , tip : string;
+  islemSiraNos ,HastaneRefNo,sysTakipNo,eNabizSonuc ,mesajTipi: string;
+  secili: Boolean;
+begin
+
+  if UserRight('MEDULA ÝÞLEMLERÝ', 'Hizmet Ýptal') = false Then
+  Begin
+    ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Yok',
+      'Sistem Yöneticinizle Görüþün', '', 'info');
+    exit;
+  End;
+  tip := TMenuItem(sender).Hint;
+
+  satir := 1;
+  satirlar := Takipler.DataController.RowCount - 1;
+
+  DurumGoster(True,True);
+  pBar.Properties.Max := Takipler.Controller.SelectedRowCount;
+  pBar.Position := 0;
+
+  try
+      StatusBar1.Panels[0].Text := 'Hizmetler Siliniyor...';
+
+      if mrYes = ShowMessageSkin(
+        'Seçilen Takipler Ýçin Hizmet Silme Ýþlemi Baþlayacak',
+        'Tetkik Meduladan Silinecek', 'Onaylýyormusunuz ?', 'msg') then
+      begin
+        for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
+        begin
+        //  Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[satir].RecordIndex;
+           // x := Takipler.DataController.GetFocusedRecordIndex;
+          Application.ProcessMessages;
+          // gridAktif.GetCheckBoxState(1,satir,secili);
+          takip := varToStr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+                     Takipler.DataController.GetItemByFieldName('TakipNo').Index));
+          dosyaNo := varTostr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+                     Takipler.DataController.GetItemByFieldName('dosyano').Index));
+
+          gelisNo := varTostr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+                     Takipler.DataController.GetItemByFieldName('gelisNo').Index));
+
+
+         pnlDurumDurum.Caption :=
+         varTostr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+                                                   Takipler.DataController.GetItemByFieldName('ADSOYAD').Index)) ;
+
+
+        //  ADO_TahlillSQL.close;
+       //   ADO_TahlillSQL.Parameters[0].Value := takip;
+       //   ADO_TahlillSQL.Open;
+       //   islemSiraDoldur(TMenuItem(Sender).tag);
+
+          TakipNoHizmetIslemSiraNo(Takip,tip);
+
+          if length(datalar.islemSiralari) = 0 then
+            Continue;
+
+          if (takip <> '') and (length(datalar.islemSiralari) > 0)
+           then begin
+               if Length(datalar.islemSiralari) > 0
+               then begin
+                   msg := HizmetKaydiIptal(Takip);
+                   txtHatalar.Lines.Add('Medula Ýptal : ' + msg);
+                   if msg = '0000'
+                   Then Begin
+                      HizmetIptalSonucDBYaz;
+                      setlength(datalar.islemSiralari,0);
+                     ///// -- ENabiz Sil -- ////
+                      islemSiraNos :=  TakipNoTetkikIslemRefNo(Takip,tip);
+                      mesajTipi := 'Hizmet Sil';
+                      ENabizHizmetSil(HastaneRefNo,sysTakipNo,eNabizSonuc,islemSiraNos);
+                      txtHatalar.Lines.Add(eNabizSonuc + ' Silinen Hizmetler : ' + islemSiraNos);
+                   End
+                   Else
+                    txtHatalar.Lines.Add('Tetkikler Meduladan Ýptal edilemedi : ' + msg);
+               end
+               else
+                  txtHatalar.Lines.Add('islemSiraNo Boþ');
+
+          end
+          else
+            Continue;
+          (*
+          if msg = '0000' Then
+          Begin
+            if TMenuItem(Sender).tag = -7 then
+            begin
+              sql :=
+                'update hareketler set islemSiraNo = '''''
+                + ' where Tip = ''S'' and dosyaNo = ' + QuotedStr(dosyaNo)
+                + ' and gelisNo = ' + gelisNo;
+              datalar.QueryExec(sql);
+            end;
+
+            if TMenuItem(Sender).tag = -8 then
+            begin
+              sql :=
+                'update hareketler set islemSiraNo = '''''
+                + ' where Tip = ''L'' and dosyaNo = ' + QuotedStr(dosyaNo)
+                + ' and gelisNo = ' + gelisNo;
+              datalar.QueryExec(sql);
+
+            end;
+
+            if TMenuItem(Sender).tag = -9 then
+            begin
+              sql := ' update hareketlerIS set islemSiraNo = ''''' +
+                ' where dosyaNo = ' + QuotedStr(dosyaNo)
+                + ' and gelisNo = ' + gelisNo;
+              datalar.QueryExec(sql);
+            end;
+
+            if TMenuItem(Sender).tag = -10 then
+            begin
+              sql := ' update hareketler set islemSiraNo = ''''' +
+                ' from hareketler h join labtestler l on l.butKodu = h.code ' +
+                ' where dosyaNo = ' + QuotedStr(dosyaNo)
+                + ' and gelisNo = ' + gelisNo + ' and l.tip = 3';
+              datalar.QueryExec(sql);
+            end;
+
+            txtHatalar.Lines.Add(takip + ' : Hizmetler Ýptal Edildi');
+
+          End
+          Else
+            txtHatalar.Lines.Add(msg);
+                  *)
+          pBar.Position := pBar.Position + 1;
+        End;
+
+      End;
+
+  finally
+    DurumGoster(false);
+    StatusBar1.Panels[0].Text := '.';
+  end;
+
+
+end;
+
+
 procedure TfrmTakipKontrol.akipDetayFormu1Click(Sender: TObject);
 begin
   // DatasetiDoldur(gridAktif.Cells[1,gridAktif.row],'G');
@@ -866,6 +1015,77 @@ begin
 end;
 
 
+procedure TfrmTakipKontrol.H3Click(Sender: TObject);
+var
+  satir, satirlar, satirs, r: integer;
+  Sonuc, BasvuruNo, sql, msg, takip, dosyaNo, gelisNo , Tip,gelisSIRANO : string;
+  ado: TADOQuery;
+  secili: Boolean;
+begin
+(*
+  if UserRight('Donem Sonlandýrma', 'Okunan Hizmet Sisteme Yaz') = false Then
+  Begin
+    ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Yok',
+      'Sistem Yöneticinizle Görüþün',
+      'Okunan Hizmet Sisteme Yaz', 'info');
+    exit;
+  End;
+  *)
+
+  if mrYes = ShowMessageSkin(
+    'Seçilen Takipler Ýçin Seans HizmetSunucuRefNo numaralarý sisteme yazýlacak', 'Onaylýyormusunuz ?',
+    '', 'msg') then
+  begin
+   DurumGoster(True,True);
+   pBar.Properties.Max := Takipler.Controller.SelectedRowCount;
+   pBar.Position := 0;
+
+   ado := TADOQuery.Create(nil);
+
+   try
+    for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
+    begin
+      pnlDurumDurum.Caption :=
+      Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex,
+      Takipler.DataController.GetItemByFieldName('ADSOYAD').Index);
+      Application.ProcessMessages;
+
+  //    Takipler.DataController.FocusedRowIndex := Takipler.Controller.SelectedRows[satir].RecordIndex;
+      takip := varToStr(Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 0));
+      dosyaNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 1);
+      gelisNo := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, 2);
+      gelisSIRANO := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[satir].RecordIndex, Takipler.DataController.GetItemByFieldName('SIRANO').Index);
+
+      try
+
+          datalar.QuerySelect(ado,'sp_TakipKontrolTakipNoDetay ' + QuotedStr(takip) + ',' + QuotedStr('Diyaliz Seans'));
+
+          while not ado.Eof do
+          begin
+               sql := 'update Hareketler set Eski_sirano = ' + QuotedStr(ado.fieldbyname('hizmetSunucuRefNo').AsString) +
+                      'from hareketler h ' +
+                      ' join hasta_gelisler hg on hg.SIRANO = h.gelisSIRANO ' +
+                      ' where dbo.fn_FormattedTarih(''DD.MM.YYYY'', Tarih)  = ' +  QuotedStr(ado.fieldbyname('islemTarihi').AsString) +
+                      ' and hg.takipno = ' + QuotedStr(takip) +
+                      ' and code = ' + QuotedStr(ado.fieldbyname('sutKodu').AsString) +
+                      ' and tip = ''S''';
+               datalar.QueryExec(sql);
+               ado.Next;
+          end;
+          pBar.Position := pBar.Position + 1;
+      except on e : exception do
+       begin
+        txtHatalar.Lines.Add(takip + ' : ' + e.Message);
+       end;
+      end;
+    end;
+   finally
+     DurumGoster(False);
+     ado.Free;
+   end;
+  end;
+end;
+
 procedure TfrmTakipKontrol.HizmetleriptalEt1Click(Sender: TObject);
 var
   satir, satirlar, satirs, x: integer;
@@ -894,7 +1114,7 @@ begin
 
       if mrYes = ShowMessageSkin(
         'Seçilen Takipler Ýçin Hizmet Silme Ýþlemi Baþlayacak',
-        'Onaylýyormusunuz ?', '', 'msg') then
+        'Seans,Tetkik ve Tanýlar Meduladan Silinecek', 'Onaylýyormusunuz ?', 'msg') then
       begin
         for satir := 0 to Takipler.Controller.SelectedRowCount - 1 do
         begin
@@ -921,29 +1141,31 @@ begin
        //   ADO_TahlillSQL.Open;
        //   islemSiraDoldur(TMenuItem(Sender).tag);
 
-          TakipNoHizmetIslemSiraNo(Takip,tip);
+       //   TakipNoHizmetIslemSiraNo(Takip,tip);
 
-          if length(datalar.islemSiralari) = 0 then
-            Continue;
+         // if length(datalar.islemSiralari) = 0 then
+        //    Continue;
 
-          if (takip <> '') and (length(datalar.islemSiralari) > 0)
+
+          SetLength(datalar.islemSiralari,0);
+          if (takip <> '') and (length(datalar.islemSiralari) = 0)
            then begin
 
                 // msg := HizmetKaydiIptal(takip)
 
-               if Length(datalar.islemSiralari) > 0
+               if Length(datalar.islemSiralari) = 0
                then begin
                    msg := HizmetKaydiIptal(Takip);
                    txtHatalar.Lines.Add('Medula Ýptal : ' + msg);
                    if msg = '0000'
                    Then Begin
-                      HizmetIptalSonucDBYaz;
+                      HizmetIptalSonucDBYaz(Takip);
                       setlength(datalar.islemSiralari,0);
                      ///// -- ENabiz Sil -- ////
                       islemSiraNos :=  TakipNoTetkikIslemRefNo(Takip,tip);
                       mesajTipi := 'Hizmet Sil';
-                      ENabizHizmetSil(HastaneRefNo,sysTakipNo,eNabizSonuc,islemSiraNos);
-                      txtHatalar.Lines.Add(eNabizSonuc + ' Silinen Hizmetler : ' + islemSiraNos);
+                    //  ENabizHizmetSil(HastaneRefNo,sysTakipNo,eNabizSonuc,islemSiraNos);
+                     // txtHatalar.Lines.Add(eNabizSonuc + ' Silinen Hizmetler : ' + islemSiraNos);
                    End
                    Else
                     txtHatalar.Lines.Add('Tetkikler Meduladan Ýptal edilemedi : ' + msg);

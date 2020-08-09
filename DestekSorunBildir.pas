@@ -282,10 +282,10 @@ begin
       if cxCheckBox1.Checked
       then begin
         dosya := 'secreen_'+sorunId + '.jpg';
-        renameFile('C:\OSGB\screen.jpg','C:\OSGB\' + dosya);
+        renameFile('C:\NoktaV3\Ekran\screen.jpg','C:\NoktaV3\Ekran\' + dosya);
         IdFTP1.Connect();
         Application.ProcessMessages;
-        IdFTP1.Put('C:\OSGB\' + dosya ,'/httpdocs/secreen/' + dosya ,false);
+        IdFTP1.Put('C:\NoktaV3\Ekran\' + dosya ,'/httpdocs/secreen/' + dosya ,false);
         IdFTP1.Disconnect;
       end;
 
@@ -307,7 +307,7 @@ begin
 
 
       try
-       deletefile('C:\OSGB\' + dosya);
+       deletefile('C:\NoktaV3\Ekran\' + dosya);
       except
       end;
 

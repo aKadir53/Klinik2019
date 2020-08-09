@@ -206,7 +206,7 @@ object frmSirketSahaGozetim: TfrmSirketSahaGozetim
           Caption = 'D'#252'zeltici '#214'nleyici Faaliyetler'
           FixedKind = fkLeft
           Styles.Header = cxStyle8
-          Width = 1040
+          Width = 1095
         end>
       object SatirlarsirketSahaGozetimId: TcxGridDBBandedColumn
         DataBinding.FieldName = 'sirketSahaGozetimId'
@@ -338,7 +338,7 @@ object frmSirketSahaGozetim: TfrmSirketSahaGozetim
         Properties.Images = DATALAR.imag24png
         Properties.Items = <
           item
-            Value = 0
+            ImageIndex = 41
           end
           item
             ImageIndex = 31

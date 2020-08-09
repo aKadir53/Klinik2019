@@ -57,6 +57,8 @@ type
     Oku: TTimer;
     M1: TMenuItem;
     ListeRaporlarColumn10: TcxGridDBColumn;
+    ListeRaporlarColumn11: TcxGridDBColumn;
+    txtLog: TcxMemo;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
@@ -491,9 +493,10 @@ procedure TfrmHastaRaporlari.RaporuMedulayaKaydet(islem : integer);
 var
  // receteCvp : SaglikTesisiReceteIslemleri1.EreceteGirisCevapDVO;
   Sonuc : string;
-  _dn_ ,_gn_ , _id_ , _d_ , _erNo_  : string;
+  _dn_ ,_gn_ , _id_ , _d_ , _erNo_ ,sira  : string;
   _exe : PAnsiChar;
   fark : double;
+  x ,satir : integer;
 begin
 
   case islem of
@@ -537,21 +540,35 @@ begin
                               end;
                        end;
    RaporBasHekimOnay : begin
-                               DurumGoster(True,False,'Rapor Onay Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
-                              try
-                                Sonuc := RaporIslemGonder('imzaliEraporBashekimOnayBilgisi');
-                                if Copy(Sonuc,1,4) = '0000'
-                                then begin
-                                  RaporGrid.Dataset.edit;
-                                  RaporGrid.Dataset.FieldByName('Onay').AsString := '1';
-                                  RaporGrid.Dataset.post;
-                                  //ShowMessageSkin('Ýþlem Baþarýlý','','','info');
-                                end;
-                              finally
-                                DurumGoster(False,False,'');
-                                if Copy(Sonuc,1,4) <> '0000' then
-                                ShowMessageSkin(Sonuc,'','','info');
-                              end;
+                              DurumGoster(True,False,'Rapor Onay Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
+
+
+                               for x := 0 to ListeRaporlar.Controller.SelectedRowCount - 1 do
+                               begin
+                                    Application.ProcessMessages;
+                                     satir := ListeRaporlar.Controller.SelectedRows[x].RecordIndex;
+                                     ListeRaporlar.DataController.FocusedRecordIndex := satir;
+                                     sira := ListeRaporlar.DataController.GetValue(
+                                               ListeRaporlar.Controller.SelectedRows[x].RecordIndex,ListeRaporlar.DataController.GetItemByFieldName('sira').Index);
+
+                                      try
+                                        Sonuc := RaporIslemGonder('imzaliEraporBashekimOnayBilgisi');
+                                        if Copy(Sonuc,1,4) = '0000'
+                                        then begin
+                                          RaporGrid.Dataset.edit;
+                                          RaporGrid.Dataset.FieldByName('Onay').AsString := '1';
+                                          RaporGrid.Dataset.post;
+                                          //ShowMessageSkin('Ýþlem Baþarýlý','','','info');
+                                        end;
+                                      finally
+                                        DurumGoster(False,False,'');
+                                        if Copy(Sonuc,1,4) <> '0000' then
+                                        txtLog.Lines.Add(Sonuc);
+                                        //ShowMessageSkin(Sonuc,'','','info');
+                                      end;
+
+                               end;
+
                        end;
    RaporBasHekimOnayRed : begin
                               DurumGoster(True,False,'Rapor Onay Red Ýçin Ýmzalanýyor...Lütfen Bekleyiniz...',1);
@@ -2162,6 +2179,9 @@ begin
 
   setDataStringKontrol(self,RaporGrid ,'RaporGrid','',Kolon1,'',1,1,alClient);
 
+  setDataStringKontrol(self,txtLog ,'txtLog','',sayfa2_Kolon1,'',sayfa2.Width-20,sayfa2.Height-70,alClient);
+
+
   TcxImageComboBoxProperties(ListeRaporlarColumn6.Properties).Items := TcxImageComboKadir(FindComponent('turu')).Properties.Items;
   TcxImageComboBoxProperties(ListeRaporlarColumn7.Properties).Items := TcxImageComboKadir(FindComponent('tedaviRaporTuru')).Properties.Items;
 
@@ -2169,7 +2189,11 @@ begin
   Kolon3.Visible := false;
   Kolon4.Visible := false;
 
-  SayfaCaption('Raporlar','','','','');
+  sayfa2_Kolon2.Visible := false;
+  sayfa2_Kolon3.Visible := false;
+
+
+  SayfaCaption('Raporlar','Log','','','');
 end;
 
 procedure TfrmHastaRaporlari.btnPolClick(Sender: TObject);

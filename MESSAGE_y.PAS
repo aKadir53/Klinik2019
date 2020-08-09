@@ -31,6 +31,10 @@ type
     procedure txtMsgEnter(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    function BMPtoJPG(var BMPpic, JPGpic: string): Boolean;
+    procedure ScreenShot(DestBitmap: TBitmap);
+    procedure PrintScreenDetect(Sender: TObject; var Result: Boolean);
+
   private
     { Private declarations }
   public
@@ -49,8 +53,80 @@ var
    frmTop_ :word = 0;
    frmLeft_ :word = 0;
 
+
+
+function TfrmMessage_y.BMPtoJPG(var BMPpic, JPGpic: string): Boolean;
+var
+  Bitmap: TBitmap;
+  JpegImg: TJpegImage;
+begin
+  Result := False;
+  if not Result then;;;
+  Bitmap := TBitmap.Create;
+  try
+    Bitmap.LoadFromFile(BMPpic);
+    JpegImg := TJpegImage.Create;
+    try
+      JpegImg.Assign(Bitmap);
+      JpegImg.SaveToFile(JPGpic);
+      Result := True;
+    finally
+      JpegImg.Free;
+    end;
+  finally
+    Bitmap.Free;
+  end;
+end;
+
+procedure TfrmMessage_y.ScreenShot(DestBitmap: TBitmap);
+var
+  DC: HDC;
+begin
+  DC := GetDC(GetDesktopWindow);
+  try
+    DestBitmap.Width := GetDeviceCaps(DC, HORZRES);
+    DestBitmap.Height := GetDeviceCaps(DC, VERTRES);
+    BitBlt(DestBitmap.Canvas.Handle, 0, 0, DestBitmap.Width, DestBitmap.Height,
+      DC, 0, 0, SRCCOPY);
+  finally
+    ReleaseDC(GetDesktopWindow, DC);
+  end;
+end;
+
+
+procedure TfrmMessage_y.PrintScreenDetect(Sender: TObject; var Result: Boolean);
+var
+  image1 : TImage;
+  bmpF,jpgF : string;
+begin
+    if GetAsyncKeyState(VK_SNAPSHOT) <> 0
+    then begin
+      if not DirectoryExists('C:\NoktaV3\Ekran\') then
+       MkDir('C:\NoktaV3\Ekran\');
+
+      image1 := TImage.Create(nil);
+
+      try
+       ScreenShot(image1.Picture.BitMap);
+       //ScreenShotActiveWindow(image1.Picture.BitMap);
+       image1.Picture.SaveToFile('C:\NoktaV3\Ekran\screen.bmp');
+       bmpF := 'C:\NoktaV3\Ekran\screen.bmp';
+       jpgF := 'C:\NoktaV3\Ekran\screen.jpg';
+       BMPtoJPG(bmpF, jpgF);
+      finally
+        image1.Free;
+      end;
+
+    end;
+
+
+   // Label1.Caption:='PrintScreen Key was pressed';
+    Result := True;
+end;
+
 procedure TfrmMessage_y.FormCreate(Sender: TObject);
 begin
+    Application.OnIdle := PrintScreenDetect;
 (*
     //imgUnlem.ResHandle := 0;
     //imgUnlem.ResName := 'info_avi';

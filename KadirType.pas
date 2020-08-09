@@ -13,6 +13,7 @@ type userGroup = (ugUser,ugGroup);
 type izinKontrol = (ikEvet,ikHayir);
 type CheckTip = (ctBol,ctint);
 type  TMethods = (mTest,mGercek);
+type TYardimciServisTip = (mMedula,mMedEczane);
 
 
 
@@ -1448,6 +1449,11 @@ Const
   PortaldenFaturaOku = 200;
   MobilUygulamaLinki = 300;
   TetkikTarihDuzenle = 301;
+
+
+  NelerYeni = 333;
+
+  EtkinMaddeTeshisOku = 334;
 
   ITSAlimBildir = 6000;
   ITSSarfBildir = 6001;

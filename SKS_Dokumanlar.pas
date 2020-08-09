@@ -562,8 +562,7 @@ begin
                        // ifThen(Ado_Dokumanlar.FieldByName('DosyaTip').AsString = 'RTF'
                         DokumanAc(ado,'PDF',
                                   Ado_Dokumanlar.FieldByName('dokumanNo').AsString+'_S',
-
-                                  False,
+                                  True,
                                   Ado_Dokumanlar.FieldByName('DosyaTip').AsString);
 
                         if Ado_Dokumanlar.FieldByName('DosyaTip').AsString = 'RTF'

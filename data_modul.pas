@@ -14,12 +14,16 @@ uses
   hastaKabulIslemleriWS, MedulaHastaKabul, MedulaHizmetKayit,
   MedulaYardimciIslem, hizmetKayitIslemleriWS,
   faturaKayitIslemleriWS, MedulaFaturaKayit, yardimciIslemlerWS,
-  raporIslemleriWS, MedulaRaporIslem, Xml.Win.msxmldom;
+  raporIslemleriWS, MedulaRaporIslem, Xml.Win.msxmldom,
+  saglikTesisiEczaneYardimciIslemleriWS, MedEczaneYardimciIslem;
 
 
   Const
     yardimciIslemURL = 'https://medula.sgk.gov.tr/medula/hastane/yardimciIslemlerWS';
     yardimciIslemURLTest = 'http://sgkt.sgk.gov.tr/medula/hastane/yardimciIslemlerWS';
+
+    EczaneyardimciIslemURL = 'https://medeczane.sgk.gov.tr/medula/eczane/saglikTesisiYardimciIslemleriWS';
+    EczaneyardimciIslemURLTest = 'https://sgkt.sgk.gov.tr/medula/eczane/saglikTesisiReceteIslemleriWS';
 
     DiabetFormURL = 'https://medula.sgk.gov.tr/medula/hastane/takipFormuIslemleriWS';
     sevkURL = 'https://medula.sgk.gov.tr/medula/hastane/sevkIslemleriWS';
@@ -387,6 +391,8 @@ type
     MalAlim: THTTPRIO;
     ITS: THTTPRIO;
     IdHTTP1: TIdHTTP;
+    MedEczaneYardimciIslemWS: TMedEczaneYardimciIslem;
+
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
     procedure TakipHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;
@@ -521,6 +527,9 @@ type
    TetkikTarihi : String;
    HastaYatis : THospitalizasyon;
    messaboxAcik : Boolean;
+   EtkinMaddeTeshisKoduSelect : string;
+   EtkinMaddeKoduSelect : string;
+   E2033HataTakipYaz : string;
 
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
     function MasterBaglan : Boolean; overload;

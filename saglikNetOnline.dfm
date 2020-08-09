@@ -45,6 +45,8 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
         PopupForm = False
         object gridListe: TcxGridDBTableView
           PopupMenu = PopupMenu1
+          DataController.Filter.Options = [fcoCaseInsensitive]
+          DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding]
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
             item
@@ -53,6 +55,9 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
               Column = gridListeColumn2
             end>
           DataController.Summary.SummaryGroups = <>
+          FilterRow.InfoText = 'Arama Sat'#305'r'#305
+          FilterRow.Visible = True
+          FilterRow.ApplyChanges = fracImmediately
           OptionsData.Deleting = False
           OptionsData.Editing = False
           OptionsData.Inserting = False
@@ -60,7 +65,7 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
           OptionsView.Footer = True
           OptionsView.GroupByBox = False
           object gridListeColumn2: TcxGridDBColumn
-            Caption = 'RefNo'
+            Caption = 'HastRefNo'
             DataBinding.FieldName = 'SIRANO'
             PropertiesClassName = 'TcxTextEditProperties'
             Properties.Alignment.Horz = taCenter
@@ -173,6 +178,16 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
           object gridListeColumn8: TcxGridDBColumn
             DataBinding.FieldName = 'SYSTakipNoSorgu'
             Visible = False
+          end
+          object gridListeColumn9: TcxGridDBColumn
+            DataBinding.FieldName = 'HastaneRefNoSorgu'
+          end
+          object gridListeColumn10: TcxGridDBColumn
+            DataBinding.FieldName = 'dosyaNo'
+            Visible = False
+          end
+          object gridListeColumn11: TcxGridDBColumn
+            DataBinding.FieldName = 'TakipGereklimi'
           end
         end
         object cxGrid1Level1: TcxGridLevel
@@ -1321,6 +1336,16 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
       Caption = 'SysTakipNo Sorgula'
       ImageIndex = 36
       OnClick = cxKaydetClick
+    end
+    object H2: TMenuItem
+      Tag = -23
+      Caption = 'Hastane ReferansNo Sorgula'
+      ImageIndex = 35
+      OnClick = cxKaydetClick
+    end
+    object S5: TMenuItem
+      Caption = 'SYSTakipNo D'#252'zenle'
+      OnClick = S5Click
     end
     object N2: TMenuItem
       Caption = '-'

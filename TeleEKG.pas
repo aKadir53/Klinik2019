@@ -82,15 +82,6 @@ uses rapor;
 function TfrmTeleEKG.Init(Sender: TObject) : Boolean;
 begin
  inherited;
-  cxPanel.Visible := false;
-  SayfaCaption('Ekg','','','','');
-  ClientHeight := formYukseklik;
-  ClientWidth := formGenislik;
-  TableName := _TableName_;
-  Olustur(self,_TableName_,'Tele Ekg Listesi',26);
-  Menu := PopupMenu2;
-  Kolon2.Visible := False;
-  Kolon3.Visible := false;
   Result := True;
 end;
 
@@ -171,7 +162,8 @@ begin
 
      sql := 'sp_TeleEKGPIVOT @tarih1 = ' + QuotedStr(tarih1_) + ',@tarih2 = ' + QuotedStr(tarih2_) +
                              ',@tip = ' + inttostr(DiyalizTip.ItemIndex) +
-                             ',@Hasta = ' + QuotedStr('');
+                             ',@Hasta = ' + QuotedStr('') +
+                             ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
      datalar.QuerySelect(ado,sql);
      memData.LoadFromDataSet(ado);
 
@@ -228,7 +220,7 @@ begin
 
    sql := 'select code,hk.HASTAADI+'' ''+hk.HASTASOYADI Hasta,hk.dosyaNo,gelisno, NAME1,Tarih TARIH,islemAciklamasi sonuc from hareketler h' +
           ' join hastakart hk on hk.dosyaNo = h.dosyaNo ' +
-          ' where code in (''530100'',''801840'') and h.Tarih between ' + QuotedStr(tarih1_) +
+          ' where code in (''530100'',''801840'') and convert(varchar,h.Tarih,112) between ' + QuotedStr(tarih1_) +
           ' and ' + QuotedStr(tarih2_) + ' and hk.HASTAADI like ' + QuotedStr(''+'%') +
           ' and h.Tip = ''L''' +
           ' and hk.sirketKod = ' + QuotedStr(datalar.AktifSirket) +
@@ -241,6 +233,13 @@ procedure TfrmTeleEKG.FormCreate(Sender: TObject);
 begin
 //  tag := TagfrmTeleEkg;
 
+  cxPanel.Visible := false;
+  ClientHeight := formYukseklik;
+  ClientWidth := formGenislik;
+  TableName := _TableName_;
+  Olustur(self,_TableName_,'Tele Ekg Listesi',26);
+  Menu := PopupMenu2;
+
   setDataStringKontrol(self,tarih1, 'Tarih1','Tarih Aralýðý',Kolon1,'trh',110);
   setDataStringKontrol(self,tarih2, 'Tarih2','',Kolon1,'trh',110);
  // setDataStringKontrol(self,DiyalizTip, 'DiyalizTip','',Kolon1,'',290);
@@ -251,7 +250,7 @@ begin
   Kolon2.Visible := False;
   Kolon3.Visible := False;
   Kolon4.Visible := False;
-
+  SayfaCaption('Tele/EKG','','','','');
 
 end;
 

@@ -304,15 +304,17 @@ begin
                  End else exit;
             End;
 
+            if Length(datalar.islemSiralari) > 0
+            then begin
+              msg := HizmetKaydiIptal(_TakipNo_);
 
-            msg := HizmetKaydiIptal(_TakipNo_);
-
-            if msg = '0000'
-            Then Begin
-               HizmetIptalSonucDBYaz;
-               ShowMessageSkin('Hizmet Ýptal Edildi','','','info')
-            End
-            Else ShowMessageSkin(msg,'','','info');
+              if msg = '0000'
+              Then Begin
+                 HizmetIptalSonucDBYaz;
+                 ShowMessageSkin('Hizmet Ýptal Edildi','','','info')
+              End
+              Else ShowMessageSkin(msg,'','','info');
+            end;
 
 
    finally
@@ -426,16 +428,18 @@ begin
                  End else exit;
             End;
 
-
+            if Length(datalar.islemSiralari) > 0
+            then begin
             msg := HizmetKaydiIptal(_TakipNo_);
 
-            if msg = '0000'
-            Then Begin
-                HizmetIptalSonucDBYaz;
-               ShowMessageSkin('Hizmet Ýptal Edildi','','','info')
-            End
-            Else ShowMessageSkin(msg,'','','info');
+              if msg = '0000'
+              Then Begin
+                  HizmetIptalSonucDBYaz;
+                 ShowMessageSkin('Hizmet Ýptal Edildi','','','info')
+              End
+              Else ShowMessageSkin(msg,'','','info');
 
+            end;
 
    finally
      setlength(datalar.islemSiralari,0);
@@ -473,16 +477,18 @@ begin
                  End else exit;
             End;
 
+            if Length(datalar.islemSiralari) > 0
+            then begin
 
+              msg := HizmetKaydiIptal(_TakipNo_);
 
-            msg := HizmetKaydiIptal(_TakipNo_);
-
-            if msg = '0000'
-            Then Begin
-               HizmetIptalSonucDBYaz;
-               ShowMessageSkin('Taný Ýptal Edildi','','','info')
-            End
-            Else ShowMessageSkin(msg,'','','info');
+              if msg = '0000'
+              Then Begin
+                 HizmetIptalSonucDBYaz;
+                 ShowMessageSkin('Taný Ýptal Edildi','','','info')
+              End
+              Else ShowMessageSkin(msg,'','','info');
+            end;
 
 
     finally
@@ -535,16 +541,17 @@ begin
             End;
 
 
+            if Length(datalar.islemSiralari) > 0
+            then begin
+              msg := HizmetKaydiIptal(_TakipNo_);
 
-
-            msg := HizmetKaydiIptal(_TakipNo_);
-
-            if msg = '0000'
-            Then Begin
-               HizmetIptalSonucDBYaz;
-               ShowMessageSkin('Hizmet Ýptal Edildi','','','info')
-            End
-            Else ShowMessageSkin(msg,'','','info');
+              if msg = '0000'
+              Then Begin
+                 HizmetIptalSonucDBYaz;
+                 ShowMessageSkin('Hizmet Ýptal Edildi','','','info')
+              End
+              Else ShowMessageSkin(msg,'','','info');
+            end;
 
 
    finally

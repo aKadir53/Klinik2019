@@ -312,6 +312,7 @@ type
     ListeColumn9: TcxGridDBBandedColumn;
     GridListColumn12: TcxGridDBBandedColumn;
     P3: TMenuItem;
+    T6: TMenuItem;
     procedure hastalar(durum : string);
     procedure btnListClick(Sender: TObject);
     procedure btnYazdirClick(Sender: TObject);

@@ -135,7 +135,7 @@ end;
 function TfrmCariHesapBorcAlacakToplam.Init(Sender: TObject): Boolean;
 begin
    GridEkstre.Dataset.Active := False;
-   GridEkstre.Dataset.SQL.Text := 'exec sp_CariHesapBorcAlacakToplam';
+   GridEkstre.Dataset.SQL.Text := 'exec sp_CariHesapBorcAlacakToplam ' + QuotedStr(datalar.AktifSirket);
    GridEkstre.Dataset.Active := True;
    result := True;
 end;
