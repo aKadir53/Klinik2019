@@ -391,8 +391,8 @@ begin
                                          'values(' + _ResourceID + ','
                                                    + QuotedStr(Tani.FieldByName('teshisKodu').AsString) + ','
                                                    + QuotedStr(Tani.FieldByName('ICD10Kodu').AsString) + ','
-                                                   + QuotedStr(FormatDateTime('YYYYMMDD',Date)) + ','
-                                                   + QuotedStr(FormatDateTime('YYYYMMDD',incYear(Date,2))) +
+                                                   + QuotedStr(tarihAl(strToDate(datalar.RaporBilgisi.baslangicTarihi))) + ','
+                                                   + QuotedStr(tarihAl(strToDate(datalar.RaporBilgisi.bitisTarihi))) +
                                                    ')'
 
 

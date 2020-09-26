@@ -413,6 +413,13 @@ object frmRaporDetay: TfrmRaporDetay
         ImageIndex = 12
         OnClick = cxButtonCClick
       end
+      object N6: TMenuItem
+        Caption = '-'
+      end
+      object T2: TMenuItem
+        Caption = 'Tesis Sorgula'
+        OnClick = T2Click
+      end
     end
   end
   object cxGridPopupMenu1: TcxGridPopupMenu

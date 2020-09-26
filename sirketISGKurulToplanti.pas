@@ -352,14 +352,15 @@ var
   sql : string;
   dataset : Tdataset;
 begin
+
+   if varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) = '' then exit;
    if ilkYukleme = 0
    then begin
-
-     datalar.QueryExec('delete from SirketISGKurulToplantiEkibi where ISGKurulToplantiID = ' + TcxImageComboKadir(FindComponent('id')).EditValue );
+      datalar.QueryExec('delete from SirketISGKurulToplantiEkibi where ISGKurulToplantiID = ' + varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) );
      sql :=
      'insert into SirketISGKurulToplantiEkibi(ISGKurulToplantiID,EkipId) ' +
      'select ' + varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) +
-        ',id from SIRKET_SUBE_EKIP where ISGEkipId = ' + TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue;
+        ',id from SIRKET_SUBE_EKIP where ISGEkipId = ' + varToStr(TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue);
      datalar.QueryExec(sql);
      Ekip;
 
@@ -375,10 +376,21 @@ begin
 
   case TControl(sender).Tag  of
 Kaydet : begin
-          Ekip(TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue);
+          if varToStr(TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue) <> ''
+          then
+            Ekip(varToStr(TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue));
+            TcxImageComboKadir(FindComponent('IsgEkipID')).Enabled := True;
+            Ekip('');
+            Maddeler;
         end;
   Yeni : begin
           TcxDateEditKadir(FindComponent('kararTarihi')).EditValue := date;
+          TcxDateEditKadir(FindComponent('ToplantiZamani')).EditValue := date;
+          TcxImageComboKadir(FindComponent('IsgEkipID')).Enabled := False;
+          TcxImageComboKadir(FindComponent('SirketKod')).EditValue := datalar.AktifSirket;
+          TcxImageComboKadir(FindComponent('SirketKod')).Enabled := False;
+          KurulEkipGrid.Dataset.Active := False;
+          KurulMaddeler.Dataset.Active := False;
         end;
   end;
 end;
@@ -393,6 +405,7 @@ begin
     Ekip('');
     Maddeler;
     ilkYukleme := 0;
+    TcxImageComboKadir(FindComponent('SirketKod')).Enabled := False;
 
 end;
 
@@ -494,9 +507,25 @@ procedure TfrmISGKurulToplanti.ButtonClick(Sender: TObject);
 var
   GirisRecord : TGirisFormRecord;
   F : TGirisForm;
+  sql : string;
+  dataset : Tdataset;
 begin
-    F := FormINIT(9010,GirisRecord,ikHayir,'');
-    if F <> nil then F.ShowModal;
+  if TcxButtonEditKadir(FindComponent('id')).Text <> ''
+  Then
+    if TcxButtonKadir (Sender).ButtonName = 'btnEkipYukle' then
+    begin
+     if varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) = '' then exit;
+        datalar.QueryExec('delete from SirketISGKurulToplantiEkibi where ISGKurulToplantiID = ' + varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) );
+       sql :=
+       'insert into SirketISGKurulToplantiEkibi(ISGKurulToplantiID,EkipId) ' +
+       'select ' + varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) +
+          ',id from SIRKET_SUBE_EKIP where ISGEkipId = ' + varToStr(TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue);
+       datalar.QueryExec(sql);
+       Ekip;
+    end;
+
+    //F := FormINIT(9010,GirisRecord,ikHayir,'');
+    //if F <> nil then F.ShowModal;
 end;
 
 
@@ -555,6 +584,7 @@ begin
   sirketlerx.Filter := '';//datalar.sirketlerUserFilter;
   setDataStringKontrol(self,sirketlerx,'SirketKod','Þirket',Kolon1,'',150,0,alNone,'');
   TcxImageComboKadir(FindComponent('SirketKod')).EditValue := datalar.AktifSirket;
+    TcxImageComboKadir(FindComponent('SirketKod')).Enabled := False;
   TcxImageComboKadir(FindComponent('dxLaSirketKod')).Visible := False;
 
 
@@ -566,9 +596,9 @@ begin
   sirketlerx.DisplayField := 'Tanimi';
   sirketlerx.BosOlamaz := False;
   sirketlerx.Filter := '';//datalar.sirketlerUserFilter;
-  setDataStringKontrol(self,sirketlerx,'IsgEkipID','Ekip',Kolon1,'',150,0,alNone,'');
-  TcxImageComboKadir(FindComponent('IsgEkipID')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
-
+  setDataStringKontrol(self,sirketlerx,'IsgEkipID','Komite',Kolon1,'ekip',150,0,alNone,'');
+  //TcxImageComboKadir(FindComponent('IsgEkipID')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
+  addButton(self,nil,'btnEkipYukle','','Komite Ekip Getir',kolon1,'ekip',100,ButtonClick,50);
 
   setDataStringKontrol(self,KurulEkipGrid,'KurulEkipGrid',' ',Kolon1,'',410,250,alNone,'',clLeft);
 

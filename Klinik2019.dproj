@@ -74,12 +74,12 @@
 			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-			<VerInfo_Build>1</VerInfo_Build>
+			<VerInfo_Build>9</VerInfo_Build>
 			<VerInfo_Release>5</VerInfo_Release>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_MajorVer>4</VerInfo_MajorVer>
 			<VerInfo_Locale>1033</VerInfo_Locale>
-			<VerInfo_Keys>CompanyName=Mavi Nokta Bilgi Teknolojileri;FileDescription=Yeni Nesil Klinik;FileVersion=4.0.5.1;InternalName=Klinik2019;LegalCopyright=Mavi Nokta Bilgi Teknolojileri LTD.ŞTİ.;LegalTrademarks=;OriginalFilename=;ProductName=MediCraft;ProductVersion=4.0.0.0;Comments=</VerInfo_Keys>
+			<VerInfo_Keys>CompanyName=Mavi Nokta Bilgi Teknolojileri;FileDescription=Yeni Nesil Klinik;FileVersion=4.0.5.9;InternalName=Klinik2019;LegalCopyright=Mavi Nokta Bilgi Teknolojileri LTD.ŞTİ.;LegalTrademarks=;OriginalFilename=;ProductName=MediCraft;ProductVersion=4.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
 		<ItemGroup>
 			<DelphiCompile Include="$(MainSource)">

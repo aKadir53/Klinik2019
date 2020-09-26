@@ -575,6 +575,12 @@ object frmHastaListeD: TfrmHastaListeD
         OnClick = cxButtonCClick
       end
     end
+    object H3: TMenuItem
+      Tag = -113
+      Caption = 'Hasta Bak'#305'm Plan'#305
+      ImageIndex = 53
+      OnClick = cxButtonCClick
+    end
     object E2: TMenuItem
       Tag = 9997
       Caption = 'Excele G'#246'nder'

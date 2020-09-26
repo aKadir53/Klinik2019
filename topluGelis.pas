@@ -179,6 +179,7 @@ var
   seansGunleri,seansNo,sutKodu : string;
   ilkS,sonS : string;
   ListTip : integer;
+  kanAlimDate : TdateTime;
 
 implementation
 
@@ -319,7 +320,7 @@ begin
                             '@GIRISYOLU = ' + QuotedStr('') + ',' +
                             '@TakipNo = '   + QuotedStr(takipNo) + ',' +
                             '@basvuruNo = ' + QuotedStr(basvuruNo) + ',' +
-                            '@kanAlimTarihi = ' + tarih(kanAlimTarihi) ;
+                            '@kanAlimTarihi = ' + QuotedStr(FormatDateTime('YYYY-MM-DD HH:MM', StrToDateTime(kanAlimTarihi))) ;
 
                        datalar.QuerySelect(sqlRun,sql);
                        gelis := sqlRun.fieldbyname('Gelis').AsString;
@@ -407,7 +408,11 @@ begin
                   ' update hareketler set kanalindimi = 1 ' +
             			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tarih = ' + QuotedStr(tarih(kanAlimTarihi)) + ' and Tip = ''S'' '
                   +
-                  ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(tarih(kanAlimTarihi)) +
+                  ' update hasta_gelisler set KanAlimZamani =  ' +
+                  ' from hasta_gelisler g ' +
+                  ' join hastakart hk on hk.dosyaNO = g.dosyaNo ' +
+                  ' dbo.KanAlimTarihi(hk.SeansGunleri,' + txtSeansNo.Text + ',' + QuotedStr(tarih(kanAlimTarihi))  + ',hk.seans)' +
+
             			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
 
 
@@ -473,6 +478,7 @@ begin
    AD := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('ADSOYAD').Index));
    provizyonTarihi := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('provizyonTarihi').Index));
    kanAlimTarihi := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('KanAlimTarihi').Index));
+//   kanAlimDate := varTStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('KanAlimTarihi').Index))
    brans := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('brans').Index));
    seansGunleri := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('SeansGunleri').Index));
    mNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('makinaNo').Index));
@@ -537,14 +543,14 @@ begin
            haksahibiBosalt(x);
          // haksahibi(x);
 
-           kurum := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('kurumTip').Index);
-           sigortaliTuru := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Durum').Index);
+           kurum := varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('kurumTip').Index));
+           sigortaliTuru := varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Durum').Index));
            TC := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('TCKIMLIKNO').Index);
            Brans := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Brans').Index);
-           Tel := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('EV_TEL1').Index);
+           Tel := varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('EV_TEL1').Index));
            Tel := trim(StringReplace(StringReplace(StringReplace(Tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
 
-           Adres := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('EV_ADRES').Index);
+           Adres := varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('EV_ADRES').Index));
            provizyonTarihi := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('provizyonTarihi').Index);
 
           sql := 'select * from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and isnull(TakipNO,'''') = ' + QuotedStr('');
@@ -797,9 +803,10 @@ begin
               ' and gelisNo = ' + gelisNo + ' and Tip = ''L''';
                if datalar.QuerySelect(sql).Eof
                Then begin
+
                   sql := 'exec sp_hastaLabIsle @dosyaNo = ' + QuotedStr(dosyaNo) + ',' +
                                               ' @gelisNo = ' + gelisNo + ',' +
-                                              ' @tarih = ' + QuotedStr(tarih(kanAlimTarihi));
+                                              ' @tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD',(strToDateTime(kanAlimTarihi))));
                   datalar.QueryExec(sql);
                end;
 

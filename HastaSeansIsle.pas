@@ -458,6 +458,8 @@ begin
 
        if  talepSira = ''
        then begin
+           if datalar.MakineNoKontrol = 'Evet'
+           then
              if makineNo <> ''
              then begin
                Hst := SeansKontrol(seans,makineNo,RTarih,_DosyaNo_);
@@ -541,6 +543,13 @@ begin
        Application.ProcessMessages;
        if  talep = ''
        then begin
+
+                 if tarihyap(_provizyonTarihi_) > strToDate(Datalar.SeansBilgi.islemTarihi)
+                 Then begin
+                   ShowMessageSkin('Provizyon Tarihi , Seans Tarihinden Büyük Olamaz','','','info');
+                   exit;
+                 end;
+
 
                  if datalar.SeansBilgi.KanAlimi = 1
                  then begin
@@ -860,17 +869,24 @@ begin
 
    satir := ListeS.Controller.SelectedRows[0].RecordIndex;
    sirano := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('islemRefNo').Index);
-   talep := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('islemSiraNo').Index);
+   talep := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('islemSiraNo').Index));
    durum := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('durum').Index);
-   takip := ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('TakipNo').Index);
+   takip := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('TakipNo').Index));
    islemRefNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('islemRefNo').Index));
    HastaneRefNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('HastaneRefNo').Index));
    sysTakipNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('sysTakipNo').Index));
 
+
+   if talep = '' then exit;
+
+
    DurumGoster(True);
    setlength(datalar.islemSiralari,1);
    datalar.islemSiralari[0] :=  talep;
+
+
    try
+
      if mrYes = ShowMessageSkin('Hizmet Ýptal Edilecek Emin misiniz ?','','','msg')
      then begin
         datalar.HizmetKayitWS.GirisSil.saglikTesisKodu := datalar._kurumKod;
@@ -1456,6 +1472,8 @@ begin
 
              if  talepSira = ''
              then begin
+                 if datalar.MakineNoKontrol = 'Evet'
+                 then
                    if makineNo <> ''
                    then begin
                      Hst := SeansKontrol(seans,makineNo,RTarih,_DosyaNo_);

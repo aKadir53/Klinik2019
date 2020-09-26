@@ -95,6 +95,9 @@ procedure sonucyaz(Cvp : C_GeneralResult);
   var
     x,j,m  : integer;
   begin
+
+         if not Assigned(Cvp.Result_) then exit;
+
          for j := 0 to length(Cvp.Result_) - 1 do
          begin
            if Cvp.Result_[j].Appointment_Type = '5'

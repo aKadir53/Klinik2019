@@ -993,7 +993,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
         'select *,d.TalepOnayDurumu,d.YazilimGereksinimleri from sorunlar' +
         ' s'
       'join SorunTalepTalepDegerlendirme d on s.sorunId = d.TalepId')
-    Left = 424
+    Left = 440
     Top = 120
   end
   object DataSource1: TDataSource
@@ -1008,7 +1008,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     Parameters = <>
     SQL.Strings = (
       'select * from sorunCozumSureci')
-    Left = 432
+    Left = 440
     Top = 208
   end
   object PopupMenu1: TPopupMenu

@@ -177,7 +177,7 @@ begin
     'select SR.ID, DenetimiYapanKullanici, DenetimTarihi, SR.Date_Create, GozetimDefterNo, FirmaKodu, '#13#10+
     '  cast (case when Image Is NULL then 0 else 1 end as bit) ImageVar, '#13#10+
     '  SR.GozlemGrup, SGR.Tanimi GozlemGrupTanim, '#13#10+
-    '  DenetimOnaylamaTarihi,DenetimiPlanlayan,BirSonrakiGozetimTarihi , DosyaTip , Image ' +
+    '  DenetimOnaylamaTarihi,DenetimiPlanlayan,BirSonrakiGozetimTarihi , DosyaTip , Image,DenetimOnaylayan ' +
     'from SahaGozlemRaporlari SR'#13#10+
     'inner join SahaGozlemSoruGrup SGR on SGR.GozlemGrup = SR.GozlemGrup'#13#10+
     'left outer join SIRKETLER_TNM sst on sst.SirketKod = SR.FirmaKodu'#13#10+
@@ -348,6 +348,12 @@ begin
            dof.SSGFaliyetPlan := ADOQuery1.FieldByName('Oneriler').AsString;
            DOFOlustur(ADO_SahaGozetim.FieldByName('ID').AsString,dof);
         end;
+
+  -51 : begin
+
+
+
+        end;
   -60 : begin
           DurumGoster(True,False,'Dosya Yükleniyor , Lütfen Bekleyiniz');
           dosya := TOpenDialog.Create(nil);
@@ -434,6 +440,7 @@ begin
         aSahaDenetimVeri.BirSonrakiDenetimTarihi := '';
         aSahaDenetimVeri.DenetimiPlanlayan := '';
         aSahaDenetimVeri.DenetimOnaylamaTarihi := '';
+        aSahaDenetimVeri.DenetimiOnaylayan := '';
       end
       else begin
         aSahaDenetimVeri.KullaniciAdi := ADO_SahaGozetim.FieldByName('DenetimiYapanKullanici').AsString;
@@ -443,6 +450,7 @@ begin
         aSahaDenetimVeri.BirSonrakiDenetimTarihi := ADO_SahaGozetim.FieldByName('BirSonrakiGozetimTarihi').AsString;
         aSahaDenetimVeri.DenetimiPlanlayan := ADO_SahaGozetim.FieldByName('DenetimiPlanlayan').AsString;
         aSahaDenetimVeri.DenetimOnaylamaTarihi := ADO_SahaGozetim.FieldByName('DenetimOnaylamaTarihi').AsString;
+        aSahaDenetimVeri.DenetimiOnaylayan := ADO_SahaGozetim.FieldByName('DenetimOnaylayan').AsString;
 
         aSahaDenetimVeri.DenetimDefterNo := ADO_SahaGozetim.FieldByName('GozetimDefterNo').AsString;
         aSahaDenetimVeri.GozlemGrubu := ADO_SahaGozetim.FieldByName('GozlemGrup').AsString;
@@ -467,6 +475,7 @@ begin
             ADO_SahaGozetim.FieldByName('GozlemGrup').AsString := _SahaDenetimVeri_.GozlemGrubu;
             ADO_SahaGozetim.FieldByName('DenetimiPlanlayan').AsString := _SahaDenetimVeri_.DenetimiPlanlayan;
             ADO_SahaGozetim.FieldByName('DenetimOnaylamaTarihi').AsString := _SahaDenetimVeri_.DenetimOnaylamaTarihi;
+            ADO_SahaGozetim.FieldByName('DenetimOnaylayan').AsString := _SahaDenetimVeri_.DenetimiOnaylayan;
 
             ADO_SahaGozetim.Post;
             bBasarili := True;
@@ -494,6 +503,9 @@ begin
 
     datalar.QuerySelect(ado, sql);
     TopluDataset.Dataset0 := ado;
+    TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
+    TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
+
     TopluDataset.Dataset0.Name := 'SahaSaglikGozetimRaporu';
 
     PrintYap('007','Saha Saðlýk Gözetim Raporu','',TopluDataset,pTNone)

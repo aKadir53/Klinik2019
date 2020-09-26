@@ -25,7 +25,7 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
     Height = 658
     Align = alClient
     TabOrder = 0
-    Properties.ActivePage = page_list
+    Properties.ActivePage = cxTabSheet3
     OnChange = cxPageControl1Change
     ClientRectBottom = 651
     ClientRectLeft = 3
@@ -1212,7 +1212,12 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
         PopupForm = False
         object GridTakipList: TcxGridDBTableView
           DataController.Summary.DefaultGroupSummaryItems = <>
-          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <
+            item
+              Format = 'Kay'#305't Say'#305's'#305' : ###'
+              Kind = skCount
+              Column = GridTakipListsysTakipNo
+            end>
           DataController.Summary.SummaryGroups = <>
           OptionsData.Deleting = False
           OptionsData.Editing = False
@@ -1275,8 +1280,8 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
     OnPopup = PopupMenu1Popup
-    Left = 432
-    Top = 280
+    Left = 304
+    Top = 240
     object G1: TMenuItem
       Tag = -2
       Caption = 'G'#246'nder'
@@ -1373,8 +1378,8 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
     end
   end
   object XMLDocument1: TXMLDocument
-    Left = 536
-    Top = 136
+    Left = 368
+    Top = 240
     DOMVendorDesc = 'MSXML'
   end
   object HTTPRIO1: THTTPRIO

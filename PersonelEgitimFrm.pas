@@ -81,6 +81,12 @@ type
     EgitimGridSatirlarColumn4: TcxGridDBBandedColumn;
     EgitimGridSatirlarColumn5: TcxGridDBBandedColumn;
     GridListColumn4: TcxGridDBBandedColumn;
+    EitimeKatlanPersonelListesi1: TMenuItem;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    e1: TMenuItem;
+    e2: TMenuItem;
+    e3: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
@@ -101,6 +107,8 @@ type
     procedure BeforePost(DataSet: TDataSet);
     function EgitimImzala(pin,egitim,cardType : string): string;
     procedure EgitimPersonelResize(Sender: TObject);
+
+    procedure PersonelEgitimDegerlendirme;
   private
     { Private declarations }
   protected
@@ -406,6 +414,29 @@ begin
   EgitimAltDetayGrid.Dataset.SQL.Text := 'select * from EgitimAltDetay where egitimID = ' +
                                          ifThen(vartostr(TcxButtonEditKadir(FindComponent('id')).EditValue) = '','0',vartostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
   EgitimAltDetayGrid.Dataset.Active := True;
+
+end;
+
+procedure TfrmPersonelEgitim.PersonelEgitimDegerlendirme;
+begin
+ // datalar.PersonelEgitimDegerlendirme.SiraNo := EgitimPersonel.Dataset.FieldByName('id').AsString;
+  datalar.PersonelEgitimDegerlendirme.GozlemTarihi := EgitimPersonel.Dataset.FieldByName('degerlendirmeGozlemTarihi').AsString;
+  datalar.PersonelEgitimDegerlendirme.Sorumlu := EgitimPersonel.Dataset.FieldByName('degerlendirecekSorumlu').AsString;
+  datalar.PersonelEgitimDegerlendirme.GozlemNotlari := EgitimPersonel.Dataset.FieldByName('sahadakiGozlemNot').AsString;
+  datalar.PersonelEgitimDegerlendirme.BirimSorumluDegerlendirme := EgitimPersonel.Dataset.FieldByName('birimSorumluDegerlendirmesi').AsString;
+  datalar.PersonelEgitimDegerlendirme.YonetimDegerlendirme := EgitimPersonel.Dataset.FieldByName('yonetimGorusu').AsString;
+
+  if mrYes = ShowPopupForm('Gözlem ve Deðerlendirme Formu',PersonelEgitimDegerlendirmeFormu)
+  then begin
+     EgitimPersonel.Dataset.Edit;
+     EgitimPersonel.Dataset.FieldByName('degerlendirmeGozlemTarihi').AsDateTime := strToDate(datalar.PersonelEgitimDegerlendirme.GozlemTarihi);
+     EgitimPersonel.Dataset.FieldByName('degerlendirecekSorumlu').AsString:= datalar.PersonelEgitimDegerlendirme.Sorumlu;
+     EgitimPersonel.Dataset.FieldByName('sahadakiGozlemNot').AsString := datalar.PersonelEgitimDegerlendirme.GozlemNotlari;
+     EgitimPersonel.Dataset.FieldByName('birimSorumluDegerlendirmesi').AsString := datalar.PersonelEgitimDegerlendirme.BirimSorumluDegerlendirme;
+     EgitimPersonel.Dataset.FieldByName('yonetimGorusu').AsString := datalar.PersonelEgitimDegerlendirme.YonetimDegerlendirme;
+     EgitimPersonel.Dataset.Post;
+  end;
+
 
 end;
 
@@ -768,14 +799,22 @@ begin
       if i > 0 then EgitimPersonel.Dataset.RecNo := i;
     end;
 
+  end
+  else
+  if TcxButtonKadir (Sender).ButtonName = 'btnPersonelDeg' then
+  begin
+    PersonelEgitimDegerlendirme;
+
   end;
+
 end;
 
 procedure TfrmPersonelEgitim.cxButtonCClick(Sender: TObject);
 var
-  Ado,ado1 : TADOQuery;
-  sql : string;
+  Ado,ado1 , TaranmisEvrak : TADOQuery;
+  sql , id , FormTag : string;
   TopluDataset : TDataSetKadir;
+  DosyaAc : TOpenDialog;
 begin
   inherited;
   if IsNull (TcxButtonEditKadir (FindComponent('id')).Text) then
@@ -810,8 +849,61 @@ begin
       datalar.QuerySelect(ado1, sql);
       TopluDataset.Dataset1 := ado1;
       *)
+      if TMenuItem (Sender).Tag = -6667
+      then begin
+          id := TcxButtonEditKadir (FindComponent('id')).Text;
+          sql := 'update TaranmisEvraklar set Dosya = NULL' +
+                 ' where ReferansID = ' + id  + ' and ReferansTip = ''PersonelEgitimKatilimForm''';
+          datalar.QueryExec(sql);
+      end
+      else
+      if TMenuItem (Sender).Tag = -6667
+      then begin
+        id := TcxButtonEditKadir (FindComponent('id')).Text;
+        sql := ' select * from TaranmisEvraklar where ReferansID = ' + id  + ' and ReferansTip = ''PersonelEgitimKatilimForm''';
+        TaranmisEvrak := datalar.QuerySelect(sql);
+        DurumGoster(True,False);
+        try
+          DokumanAc(TaranmisEvrak,'dosya','Temp_PersonelEgitimKatilimForm_' + id,True,'PDF');
+        finally
+          DurumGoster(False,False);
+          TaranmisEvrak.Free;
+        end;
+      end
+      else
+      if TMenuItem (Sender).Tag = -6666
+      then begin
+        id := TcxButtonEditKadir (FindComponent('id')).Text;
+        sql := 'if not exists(select * from TaranmisEvraklar where ReferansID = ' +  id + ' and ReferansTip = ''PersonelEgitimKatilimForm'') ' +
+               ' begin ' +
+                  'insert into TaranmisEvraklar (ReferansID,ReferansTip) ' +
+                  ' values(' + id + ',''PersonelEgitimKatilimForm'')' +
+               ' end ' +
+               ' select * from TaranmisEvraklar where ReferansID = ' + id  + ' and ReferansTip = ''PersonelEgitimKatilimForm''';
+
+        dosyaAc := TOpenDialog.Create(nil);
+        DosyaAc.Filter := 'Sadece PDF|*.PDF';
+        TaranmisEvrak := datalar.QuerySelect(sql);
+        DurumGoster(True,False);
+        try
+          DosyaAc.Execute;
+          DokumanYuklePDF(TaranmisEvrak,'dosya',dosyaAc.FileName);
+        finally
+          DurumGoster(False,False);
+          dosyaAc.free;
+          TaranmisEvrak.Free;
+        end;
+
+      end
+      else
       if TMenuItem (Sender).Tag = -30 then
         PrintYap('004','Eðitime Katýlan Personel Listesi','',TopluDataset,pTNone)
+      else
+      if TMenuItem (Sender).Tag = -31 then
+        PrintYap('004D','Eðitime Katýlan Personel Listesi','',TopluDataset,pTNone)
+       else
+      if TMenuItem (Sender).Tag = -32 then
+        PrintYap('004DG','Çalýþan Eðitimi Deðerlendirmeleri','',TopluDataset,pTNone)
        else
         PrintYap('005','Personel Eðitimi Sertifikasý','',TopluDataset,pTNone);
     finally
@@ -826,7 +918,7 @@ procedure TfrmPersonelEgitim.cxButtonEditPropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);
 var
   obje : TComponent;
-    where : string;
+  id,sql,where : string;
 begin
 
   inherited;
@@ -836,14 +928,34 @@ begin
     EgitimGrid.Enabled := True;
     FormInputZorunluKontrolPaint(self,$00FCDDD1);
 
-  if datalar.CSGBImza = 'Imzager' then
-  begin
-   btnEgitimGonderTekImzager.Enabled := False;
-  end;
+    TMenuItem(FindComponent('e1')).Enabled := True;
+
+    if datalar.CSGBImza = 'Imzager' then
+    begin
+     btnEgitimGonderTekImzager.Enabled := False;
+    end;
 
   end;
   //if TcxButtonEditKadir(FindComponent('id')).Text = '' then exit;
   ResetDetayDataset;
+
+  id := TcxButtonEditKadir (FindComponent('id')).Text;
+
+
+  sql := ' select case when dosya is null then 0 else 1 end dosyaVar from TaranmisEvraklar where ReferansID = ' + id  + ' and ReferansTip = ''PersonelEgitimKatilimForm''';
+  if datalar.QuerySelect(sql).FieldByName('dosyaVar').AsInteger = 1
+  Then
+  begin
+    TMenuItem(FindComponent('e2')).Enabled := True;
+    TMenuItem(FindComponent('e3')).Enabled := True;
+  end
+  Else
+  begin
+    TMenuItem(FindComponent('e2')).Enabled := False;
+    TMenuItem(FindComponent('e3')).Enabled := False;
+  end;
+  PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+
 end;
 
 procedure TfrmPersonelEgitim.cxEditEnter(Sender: TObject);
@@ -1095,6 +1207,8 @@ begin
 
   setDataStringCurr(self,'EgitimBasariPuan','Baþarý Puan',Kolon1,'',100,'0',0);
 
+  (*
+
   setDataString(self,'EgitimUcreti','Eðitim Ücreti',Kolon1,'ecr',100);
   setDataString(self,'EgitimUcretParaBirimi','Para Birimi',Kolon1,'ecr',50);
 
@@ -1129,6 +1243,9 @@ begin
  // setDataStringBLabel(self,'bosSatir2',kolon3,'',500,'Eðitime Katýlan Personeller');
   addButton(self,nil,'btnPersonelEkle','','Personel Getir',Kolon3,'PERS',120,ButtonClick);
   addButton(self,nil,'btnPersonelSil','','Seçili Personeli Sil',Kolon3,'PERS',120,ButtonClick);
+  addButton(self,nil,'btnPersonelDeg','','Çalýþan Eðitim Deðerlendirme',Kolon3,'PERS',150,ButtonClick);
+
+
 
   setDataStringKontrol(self,EgitimPersonel,'EgitimPersonel','',Kolon3,'',500,300,alNone);
   GridList.Bands [0].Width := EgitimPersonel.Width-5;

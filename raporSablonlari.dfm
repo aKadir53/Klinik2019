@@ -23,7 +23,6 @@ object frmRaporSablon: TfrmRaporSablon
     Height = 677
     Align = alLeft
     TabOrder = 0
-    ExplicitHeight = 545
     object DBGridEh3: TDBGridEh
       Left = 2
       Top = 425
@@ -72,7 +71,6 @@ object frmRaporSablon: TfrmRaporSablon
       Height = 675
       Align = alClient
       TabOrder = 1
-      ExplicitHeight = 543
       object cxGridHastaGelis: TcxGridDBTableView
         Navigator.Buttons.First.Visible = False
         Navigator.Buttons.PriorPage.Visible = False
@@ -122,7 +120,6 @@ object frmRaporSablon: TfrmRaporSablon
     Height = 677
     Align = alClient
     TabOrder = 1
-    ExplicitHeight = 545
     object cxGroupBox1: TcxGroupBox
       Left = 1
       Top = 1
@@ -141,7 +138,7 @@ object frmRaporSablon: TfrmRaporSablon
         ExplicitLeft = 2
         ExplicitTop = -2
         ExplicitWidth = 632
-        ExplicitHeight = 256
+        ExplicitHeight = 241
         object cxGridDBTableView1: TcxGridDBTableView
           DataController.DataModeController.GridMode = True
           DataController.DataSource = DataSource2
@@ -226,7 +223,7 @@ object frmRaporSablon: TfrmRaporSablon
         TabOrder = 1
         ExplicitLeft = 634
         ExplicitTop = -2
-        ExplicitHeight = 256
+        ExplicitHeight = 241
         Height = 216
         Width = 45
         object BtnIlacEkle: TcxButtonKadir
@@ -261,8 +258,6 @@ object frmRaporSablon: TfrmRaporSablon
       Align = alClient
       Caption = 'A'#231#305'klama'
       TabOrder = 1
-      ExplicitTop = 387
-      ExplicitHeight = 157
       Height = 203
       Width = 681
       object cxDBMemo1: TcxDBMemo
@@ -272,7 +267,6 @@ object frmRaporSablon: TfrmRaporSablon
         DataBinding.DataField = 'Aciklama'
         DataBinding.DataSource = DataSource3
         TabOrder = 0
-        ExplicitHeight = 132
         Height = 178
         Width = 630
       end
@@ -282,7 +276,6 @@ object frmRaporSablon: TfrmRaporSablon
         Align = alRight
         PanelStyle.Active = True
         TabOrder = 1
-        ExplicitHeight = 132
         Height = 178
         Width = 45
         object btnAckKaydet: TcxButton
@@ -303,7 +296,6 @@ object frmRaporSablon: TfrmRaporSablon
       Align = alTop
       Caption = 'Te'#351'hi'#351
       TabOrder = 2
-      ExplicitTop = 257
       Height = 130
       Width = 681
       object cxGrid5: TcxGrid
@@ -400,8 +392,10 @@ object frmRaporSablon: TfrmRaporSablon
         Height = 76
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 937
-        ExplicitHeight = 105
+        ExplicitLeft = 2
+        ExplicitTop = -2
+        ExplicitWidth = 632
+        ExplicitHeight = 101
         object cxGridDBTableView2: TcxGridDBTableView
           DataController.DataModeController.GridMode = True
           DataController.DataSource = DataSource4
@@ -433,8 +427,9 @@ object frmRaporSablon: TfrmRaporSablon
         Align = alRight
         PanelStyle.Active = True
         TabOrder = 1
-        ExplicitLeft = 940
-        ExplicitHeight = 105
+        ExplicitLeft = 634
+        ExplicitTop = -2
+        ExplicitHeight = 101
         Height = 76
         Width = 45
         object cxButtonKadirTetkikEkle: TcxButtonKadir

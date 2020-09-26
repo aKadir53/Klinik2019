@@ -94,6 +94,7 @@ type
     cxGridDBColumn4: TcxGridDBColumn;
     cxGridLevel3: TcxGridLevel;
     cxSplitter2: TcxSplitter;
+    A1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure IlacTedavi(_dosyaNo , gelisNo,_Tarih : string ; islem : integer = 99999);
     procedure ItemClick(Sender: TObject);
@@ -109,10 +110,12 @@ type
     procedure SmsGonder;
     procedure TetkikSonucGridKolonGizle;
     procedure Listele;
+    procedure FormShow(Sender: TObject);
 
   private
     { Private declarations }
   public
+      receteForm : TGirisForm;
   function Init(Sender : TObject) : Boolean; override;
     { Public declarations }
   end;
@@ -191,92 +194,100 @@ var
 begin
    for x := 0 to cxGridIlacTedaviPlani.Controller.SelectedRowCount - 1 do
    begin
-       Application.ProcessMessages;
-       ilac := cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,2);
+             Application.ProcessMessages;
+             ilac := cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('ilac').Index);
 
-       ilacadi := trimleft(cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,14));
+             ilacadi := trimleft(cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('ilacname').Index));
 
-       doz := cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,6);
+             doz := cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('doz').Index);
 
-       miktar := cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,8);
+             miktar := cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('miktar').Index);
 
-       peryot := cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,7);
+             peryot := cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('peryot').Index);
 
-       adet := cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,8);
+             gelisno := cxGridIlacTedaviPlani.DataController.GetValue(cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('gelisNo').Index);
 
-       gelisno := cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,12);
+             kyol := cxGridIlacTedaviPlani.DataController.GetValue(cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                           cxGridIlacTedaviPlani.DataController.GetItemByFieldName('kyol').Index);
 
-       kyol := cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,15);
-
-       kutuAdet := cxGridIlacTedaviPlani.DataController.GetValue(
-                                      cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,16);
-
-       if frmHastaRecete.ADO_RECETE_DETAY.Locate('ilacKodu;receteId',VarArrayOf([ilac,frmHastaRecete.ADO_Recete.fieldbyname('id').AsString]),[]) = false
-       Then Begin
-         frmHastaRecete.ADO_RECETE_DETAY.Append;
-         frmHastaRecete.ADO_RECETE_DETAY.FieldByName('ilacKodu').AsString := ilac;
-         frmHastaRecete.ADO_RECETE_DETAY.FieldByName('ilacAdi').AsString := ilacadi;
-         frmHastaRecete.ADO_RECETE_DETAY.FieldByName('adet').AsString := kutuadet;
-         frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimYolu').AsString := ifThen(kyol = '' ,'1',kyol);
-         frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := '1';
-         frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString := doz;
-      try
-         unite := IlacKoduToUnite(ilac,_dosyaNo_,_gelisNo_,peryot,miktar) * strtofloat(adet);
-         frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString := peryot;
-      //   ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := miktar;
-      except
-      end;
-        frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimAdet2').AsString := floattostr(unite);
-        frmHastaRecete.ADO_RECETE_DETAY.Post;
-       End;
-
-      ack := IlacReceteAciklama(_dosyaNo_,_gelisNo_,ilac,
-                                  floattostr(strtoint(doz)*strtofloat(adet)));
+             kutuAdet := '1';
 
 
-       ado := TADOQuery.Create(nil);
-       ado.Connection := datalar.ADOConnection2;
 
-       sql := 'delete from ReceteIlacAciklama where receteDetayId = ' + frmHastaRecete.ADO_RECETE_DETAY.fieldbyname('id').AsString;
-       datalar.QueryExec(ado,sql);
-       ado.Free;
-       frmHastaRecete.ADO_ReceteIlacAciklama.Active := false;
-       frmHastaRecete.ADO_ReceteIlacAciklama.Active := true;
+           if Assigned(receteForm)
+           then begin
+             if TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.Locate('ilacKodu;receteId',VarArrayOf([ilac,TfrmHastaRecete(receteForm).ADO_Recete.fieldbyname('id').AsString]),[]) = false
+             Then Begin
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.Append;
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('ilacKodu').AsString := ilac;
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('ilacAdi').AsString := ilacadi;
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString := peryot;
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := '1';
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('adet').AsString := kutuadet;
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('kullanimAdet2').ASstring := miktar;
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString := doz;
+                TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('kullanimYolu').AsString := ifThen(kyol = '' ,'1',kyol);
 
-      for j := 0 to ack.Count-1 do
-      begin
-          frmHastaRecete.ADO_ReceteIlacAciklama.Append;
-          frmHastaRecete.ADO_ReceteIlacAciklama.FieldByName('aciklama').AsString := copy(ack[j],3,500);
-          frmHastaRecete.ADO_ReceteIlacAciklama.FieldByName('aciklamaTip').AsString := trim(copy(ack[j],1,2));
-          frmHastaRecete.ADO_ReceteIlacAciklama.Post;
-          if copy(frmHastaRecete.ADO_ReceteIlacAciklama.FieldByName('aciklama').AsString,1,4) = 'Hata'
-          Then ShowMessageSkin('Dikkat , Doz Bilgisini Kontrol Ediniz','','','info');
-      end;
+                try
+                   unite := IlacKoduToUnite(ilac,_dosyaNo_,_gelisNo_,peryot,miktar) * strtofloat(kutuadet);
+                   TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString := peryot;
+                //   ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := miktar;
+                except
+                end;
+                  TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString := floattostr(unite);
+                  TfrmHastaRecete(receteForm).ADO_RECETE_DETAY.Post;
 
-      _tani_ := IlacReceteTaniEkle(ilac);
-      y := pos(';',_tani_)-1;
-      keys := copy(_tani_,1,y);
-      if copy(_tani_,1,y) <> ''
-      Then Begin
-       if frmHastaRecete.ADO_receteTani.Locate('taniKodu;receteId',VarArrayOf([keys,frmHastaRecete.ADO_Recete.fieldbyname('id').AsString]) ,[]) = False
-       Then Begin
-         frmHastaRecete.ADO_receteTani.Append;
-         frmHastaRecete.ADO_receteTani.fieldbyname('taniKodu').AsString := copy(_tani_,1,pos(';',_tani_)-1);
-         frmHastaRecete.ADO_receteTani.fieldbyname('tani').AsString := copy(_tani_,pos(';',_tani_)+1,100);
 
-         frmHastaRecete.ADO_receteTani.Post;
-       End;
-      End;
-   end;
-end;
+                ack := IlacReceteAciklama(_dosyaNo_,_gelisNo_,ilac,
+                                        floattostr(unite*strtofloat(kutuadet)));
+
+
+                 sql := 'delete from ReceteIlacAciklama where receteDetayId = ' + frmHastaRecete.ADO_RECETE_DETAY.fieldbyname('id').AsString;
+                 datalar.QueryExec(sql);
+
+                 TfrmHastaRecete(receteForm).ADO_ReceteIlacAciklama.Active := false;
+                 TfrmHastaRecete(receteForm).ADO_ReceteIlacAciklama.Active := true;
+
+                 for j := 0 to ack.Count-1 do
+                 begin
+                    TfrmHastaRecete(receteForm).ADO_ReceteIlacAciklama.Append;
+                    TfrmHastaRecete(receteForm).ADO_ReceteIlacAciklama.FieldByName('aciklama').AsString := copy(ack[j],3,500);
+                    TfrmHastaRecete(receteForm).ADO_ReceteIlacAciklama.FieldByName('aciklamaTip').AsString := trim(copy(ack[j],1,2));
+                    TfrmHastaRecete(receteForm).ADO_ReceteIlacAciklama.Post;
+                    if copy(TfrmHastaRecete(receteForm).ADO_ReceteIlacAciklama.FieldByName('aciklama').AsString,1,4) = 'Hata'
+                    Then ShowMessageSkin('Dikkat , Doz Bilgisini Kontrol Ediniz','','','info');
+                 end;
+
+                 _tani_ := IlacReceteTaniEkle(ilac);
+                 y := pos(';',_tani_)-1;
+                 keys := copy(_tani_,1,y);
+                 if copy(_tani_,1,y) <> ''
+                 Then Begin
+                   if TfrmHastaRecete(receteForm).ADO_receteTani.Locate('taniKodu;receteId',VarArrayOf([keys,TfrmHastaRecete(receteForm).ADO_Recete.fieldbyname('id').AsString]) ,[]) = False
+                   Then Begin
+                     TfrmHastaRecete(receteForm).ADO_receteTani.Append;
+                     TfrmHastaRecete(receteForm).ADO_receteTani.fieldbyname('taniKodu').AsString := copy(_tani_,1,pos(';',_tani_)-1);
+                     TfrmHastaRecete(receteForm).ADO_receteTani.fieldbyname('tani').AsString := copy(_tani_,pos(';',_tani_)+1,100);
+                     TfrmHastaRecete(receteForm).ADO_receteTani.Post;
+                   End;
+                 End;
+             End; //locate end
+           End; // Assigned end
+   End; // for end
+End;
+
+
 
 procedure TfrmHastaIlacTedavi.SmsGonder;
 var
@@ -543,6 +554,18 @@ begin
 
        end;
 
+ -100 : begin
+         DurumGoster(True);
+         try
+          datalar.QueryExec('exec sp_HastaIlacTedaviAktar @dosyaNO = ' + QuotedStr(_dosyaNO_) +
+                            ',@gelisNo = ' + _gelisNo_);
+          ADO_GecmisIlacTedavi.Requery();
+          ShowMessageSkin('Tedavi Kartý Aktarýldý','','','info');
+         finally
+           DurumGoster(False);
+         end;
+        end;
+
 
     end;
 
@@ -577,6 +600,14 @@ begin
   Result := False;
   if not inherited Init(Sender) then exit;
   _HastaBilgileriniCaptionGoster_ := True;
+
+
+ // if Assigned(receteForm) then r1.Visible := true else r1.Visible := False;
+  SayfaCaption('Tedavi','Tetkik Sonuc','','','');
+  Olustur(self,_TableName_,'Ýlaç Tedavi',23);
+  //Menu := PopupMenu1;
+
+
   yukle;
   Listele;
   Result := True;
@@ -604,15 +635,21 @@ begin
 
  //setDataStringKontrol(self,cxGrid15,'cxGrid15','',Kolon1,'',150,100,alClient,'',clLeft);
 
+  //if Assigned(receteForm) then r1.Visible := true else r1.Visible := False;
+  //SayfaCaption('Tedavi','Tetkik Sonuc','','','');
+  //Olustur(self,_TableName_,'Ýlaç Tedavi',23);
+ // Menu := PopupMenu1;
 
 
 
-  SayfaCaption('Tedavi','Tetkik Sonuc','','','');
-  Olustur(self,_TableName_,'Ýlaç Tedavi',23);
+end;
+
+procedure TfrmHastaIlacTedavi.FormShow(Sender: TObject);
+begin
+  if Assigned(receteForm) then r1.Visible := true else r1.Visible := False;
   Menu := PopupMenu1;
 
-
-
+  inherited;
 end;
 
 procedure TfrmHastaIlacTedavi.ilacEkle(islem: integer);

@@ -144,6 +144,7 @@ type
     cxLabel15: TcxLabel;
     txtDevredilenKurum: TcxImageComboKadir;
     txtTel: TcxMaskEdit;
+    cxLabel16: TcxLabel;
     procedure txtBranslarPropertiesChange(Sender: TObject);
     procedure btnKabulClick(Sender: TObject);
     procedure btnAraClick(Sender: TObject);
@@ -556,6 +557,7 @@ begin
           _gelisNo := ado.Fieldbyname('Gelis').AsString;
           error := ado.Fieldbyname('error').AsString;
 
+          txtHata.Lines.Add(error);
 
 
    if memDataRaporlar.fieldbyname('raporNo').AsString <> ''

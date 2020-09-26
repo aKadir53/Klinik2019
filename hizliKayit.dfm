@@ -928,6 +928,13 @@ object frmHizliKayit: TfrmHizliKayit
             FilterSet = fsDevKurum
             Width = 196
           end
+          object cxLabel16: TcxLabel
+            Left = 0
+            Top = 254
+            Align = alBottom
+            Caption = #304#351'lem Yapmadan '#199#305'k'#305#351' '#304#231'in < ESC > tu'#351'una bas'#305'n...'
+            Style.TextColor = clRed
+          end
         end
         object cxTabSheet2: TcxTabSheet
           Caption = 'Log'

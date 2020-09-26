@@ -432,11 +432,11 @@ object frmSorgulamalar: TfrmSorgulamalar
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        PopupMenu = PopupMenu1
         TabOrder = 0
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
         object cxGrid3DBBandedTableView1: TcxGridDBBandedTableView
-          PopupMenu = PopupMenu1
           DataController.DataSource = DataSource1
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
@@ -584,8 +584,9 @@ object frmSorgulamalar: TfrmSorgulamalar
       Caption = '-'
     end
     object E3: TMenuItem
+      Tag = 9
       Caption = 'Excel'
-      OnClick = E3Click
+      OnClick = O1Click
     end
   end
   object ToolMenu: TPopupMenu

@@ -79,6 +79,7 @@ type
     gridIlacSarfColumn9: TcxGridDBColumn;
     EklenenlerEtkenMaddeKodu: TStringField;
     gridIlacSarfColumn10: TcxGridDBColumn;
+    chkDozAsimiDikkateAlma: TcxCheckBox;
     procedure txtHizmetGruplariCheckListItemToText(sender: TObject;
       var aText: String);
     procedure btnSendClick(Sender: TObject);
@@ -154,7 +155,7 @@ begin
 
   if Tag = TagfrmIlacEtkenMadde then
   begin
-            sql := 'select I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi from OSGB_MASTER.DBO.ilacListesi I ' +
+            sql := 'select I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,isnull(D.adet,I.adet) SIKAdet from OSGB_MASTER.DBO.ilacListesi I ' +
                    ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
                    ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
                    ' where drTC = ' + QuotedStr(datalar.doktorTC) +
@@ -194,7 +195,7 @@ begin
           DurumGoster(True,False,'Ýlaç Listesi Yükleniyor...Lütfen Bekleyiniz...',0);
           if not chkSIK.Checked
           then begin
-             sql := 'select I.*,ICD TANI,kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,''1x1'' SIKDoz,''3'' SIKPeryot,'  +
+             sql := 'select I.*,ICD TANI,kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,''1x1'' SIKDoz,''3'' SIKPeryot, ''1'' SIKAdet ,'  +
                     'case when ITU.dosyaNO is null then 0 else 1 end AlerjiVar' +
                     ' from OSGB_MASTER.DBO.ilacListesi I' +
                     ' left join OSGB_MASTER.DBO.ATC_Kodlari ATC on ATC.kod = I.EtkenMadde ' +
@@ -203,7 +204,7 @@ begin
           end
           else
           begin
-            sql := 'select I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,D.Doz SIKDoz,D.peryot SIKPeryot,' +
+            sql := 'select I.*,D.*,D.ICD TANI,D.kulYOL YOL,ATC.Tanimi EtkenMaddeAdi,D.Doz SIKDoz,D.peryot SIKPeryot, isnull(D.adet,I.adet) SIKAdet,' +
                    'case when ITU.dosyaNO is null then 0 else 1 end AlerjiVar' +
                    ' from OSGB_MASTER.DBO.ilacListesi I ' +
                    ' join OSGB_MASTER.DBO.doktorSIKKullanim D on D.barkod = I.barkod' +
@@ -237,7 +238,10 @@ begin
      txtDetay.Lines :=
      IlacReceteAciklama(_dosyaNo_,_gelisNo_,
                     FADO_ILACSARF.FieldByName('barkod').AsString,
-                    inttostr(FADO_ILACSARF.FieldByName('UNITE').AsInteger));
+                    inttostr(FADO_ILACSARF.FieldByName('UNITE').AsInteger),
+                    ifThen(chkDozAsimiDikkateAlma.Checked,'1','0')
+
+                    );
     except
     end
   else
@@ -315,7 +319,9 @@ try
 
                  ack := IlacReceteAciklama(_dosyaNo_,_gelisNo_,Eklenenler.fieldbyname('ETKENMADDE').AsString,
                                             inttostr(frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimAdet2').AsInteger *
-                                                     frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsInteger)
+                                                     frmHastaRecete.ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsInteger) ,
+                                                     ifThen(chkDozAsimiDikkateAlma.Checked,'1','0')
+
                                             );
                  sql := 'delete from ReceteIlacAciklama where receteDetayId = ' + frmHastaRecete.ADO_RECETE_DETAY.fieldbyname('id').AsString;
                  datalar.QueryExec(ado,sql);
@@ -441,19 +447,21 @@ try
                         ' and  ' +
                         ' barkod = ' + QuotedStr(Eklenenler.fieldbyname('ETKENMADDE').AsString)+ ')' +
                         ' begin ' +
-                          'insert into OSGB_MASTER.dbo.doktorSIKKullanim (drTC,barkod,drKod,tip,ICD) ' +
+                          'insert into OSGB_MASTER.dbo.doktorSIKKullanim (drTC,barkod,drKod,tip,ICD,adet) ' +
                           'values(' + QuotedStr(datalar.doktorTC) + ',' +
                                       QuotedStr(Eklenenler.fieldbyname('ETKENMADDE').AsString) + ',' +
                                       QuotedStr(datalar.doktorKodu) + ',' +
                                       QuotedStr('ILAC') + ',' +
-                                      QuotedStr(Eklenenler.fieldbyname('tani').AsString) +
+                                      QuotedStr(Eklenenler.fieldbyname('tani').AsString) + ',' +
+                                      QuotedStr(Eklenenler.fieldbyname('adet').AsString) +
                                  ')' +
                         ' end ' +
                         ' else ' +
                         ' begin ' +
                          ' update OSGB_MASTER.dbo.doktorSIKKullanim ' +
                          ' set ICD = ' + QuotedStr(Eklenenler.fieldbyname('tani').AsString) + ',' +
-                         ' kulYol = ' + QuotedStr(Eklenenler.fieldbyname('Kyolu').AsString) +
+                         ' kulYol = ' + QuotedStr(Eklenenler.fieldbyname('Kyolu').AsString) + ',' +
+                         ' adet = ' + QuotedStr(Eklenenler.fieldbyname('adet').AsString) +
                          ' where drTC = ' + QuotedStr(datalar.doktorTC) +
                          ' and barkod = ' + QuotedStr(Eklenenler.fieldbyname('ETKENMADDE').AsString) +
                         ' end';
@@ -710,7 +718,7 @@ begin
               Eklenenler.FieldByName('KYolu').AsString := FADO_ILACSARF.fieldbyname('YOL').AsString;
               Eklenenler.FieldByName('tani').AsString := FADO_ILACSARF.fieldbyname('TANI').AsString;
               Eklenenler.FieldByName('doz').AsString := FADO_ILACSARF.fieldbyname('SIKdoz').AsString;
-              Eklenenler.FieldByName('adet').AsString := FADO_ILACSARF.fieldbyname('adet').AsString;
+              Eklenenler.FieldByName('adet').AsString := FADO_ILACSARF.fieldbyname('SIKAdet').AsString;
               Eklenenler.FieldByName('peryot').AsString := FADO_ILACSARF.fieldbyname('SIKperyot').AsString;
               Eklenenler.FieldByName('EtkenMaddeKodu').AsString := FADO_ILACSARF.fieldbyname('EtkenMadde').AsString;
 
@@ -799,7 +807,8 @@ begin
              ' set ICD = ' + QuotedStr(Eklenenler.fieldbyname('tani').AsString) + ',' +
              ' kulYol = ' + QuotedStr(Eklenenler.fieldbyname('Kyolu').AsString) + ',' +
              ' doz = ' +  QuotedStr(Eklenenler.fieldbyname('doz').AsString) + ',' +
-             ' peryot = ' +  QuotedStr(Eklenenler.fieldbyname('peryot').AsString) +
+             ' peryot = ' +  QuotedStr(Eklenenler.fieldbyname('peryot').AsString) + ',' +
+             ' adet = ' + QuotedStr(Eklenenler.fieldbyname('adet').AsString) +
              ' where drTC = ' + QuotedStr(datalar.doktorTC) +
              ' and barkod = ' + QuotedStr(Eklenenler.fieldbyname('ETKENMADDE').AsString) +
             ' end';

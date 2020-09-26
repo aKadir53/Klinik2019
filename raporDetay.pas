@@ -79,6 +79,8 @@ type
     ListeRaporlarColumn10: TcxGridDBColumn;
     ListeRaporlarColumn11: TcxGridDBColumn;
     ListeRaporlarColumn12: TcxGridDBColumn;
+    N6: TMenuItem;
+    T2: TMenuItem;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
@@ -171,6 +173,7 @@ type
       ANewItemRecordFocusingChanged: Boolean);
     procedure N5Click(Sender: TObject);
     procedure SablonKaydet;
+    procedure T2Click(Sender: TObject);
   private
     { Private declarations }
    function findMethod(dllHandle: Cardinal; methodName: string): FARPROC;
@@ -1523,6 +1526,15 @@ var
 begin
   inherited;
 
+     datalar.RaporBilgisi.raporNo := RaporGrid.Dataset.FieldByName('raporNo').AsString;
+     datalar.RaporBilgisi.raporTarihi := RaporGrid.Dataset.FieldByName('RaporTarihi').AsString;
+     datalar.RaporBilgisi.verenTesisKodu := RaporGrid.Dataset.FieldByName('verenTesisKodu').AsString;
+     datalar.RaporBilgisi.Turu := RaporGrid.Dataset.FieldByName('turu').AsString;
+     datalar.RaporBilgisi.raporTakipNo := RaporGrid.Dataset.FieldByName('raporTakipNo').AsString;
+     datalar.RaporBilgisi.baslangicTarihi := RaporGrid.Dataset.FieldByName('baslangicTarihi').AsString;
+     datalar.RaporBilgisi.bitisTarihi := RaporGrid.Dataset.FieldByName('bitisTarihi').AsString;
+
+
   case TMenuItem(sender).Tag of
    0 : begin
         GirisFormRecord.F_ResourceID_ := '';
@@ -1656,6 +1668,8 @@ begin
      datalar.RaporBilgisi.verenTesisKodu := RaporGrid.Dataset.FieldByName('verenTesisKodu').AsString;
      datalar.RaporBilgisi.Turu := RaporGrid.Dataset.FieldByName('turu').AsString;
      datalar.RaporBilgisi.raporTakipNo := RaporGrid.Dataset.FieldByName('raporTakipNo').AsString;
+     datalar.RaporBilgisi.baslangicTarihi := RaporGrid.Dataset.FieldByName('baslangicTarihi').AsString;
+     datalar.RaporBilgisi.bitisTarihi := RaporGrid.Dataset.FieldByName('bitisTarihi').AsString;
 end;
 
 procedure TfrmRaporDetay.DoktorKaydet(raporID : string ; var _rapor : RaporDVO);
@@ -1898,6 +1912,22 @@ begin
    End;
 
 //   L.Free;
+end;
+
+procedure TfrmRaporDetay.T2Click(Sender: TObject);
+begin
+  inherited;
+      datalar.YardimciIslemWS.SaglikTesisAraGiris.saglikTesisKodu := datalar._kurumKod;
+      datalar.YardimciIslemWS.SaglikTesisAraGiris.tesisKodu := RaporGrid.Dataset.FieldByName('verenTesisKodu').AsString;
+      datalar.YardimciIslemWS.TesisSorgula;
+      if datalar.YardimciIslemWS.SaglikTesisAraCvp.sonucKodu = '0000'
+      Then Begin
+        ShowMessageSkin(datalar.YardimciIslemWS.SaglikTesisAraCvp.tesisler[0].tesisAdi,'','','info'
+
+        )
+      End;
+
+
 end;
 
 procedure TfrmRaporDetay.TaniKaydet(raporID : string ; var _rapor : RaporDVO);

@@ -138,6 +138,10 @@ type
     U1: TMenuItem;
     S3: TMenuItem;
     S4: TMenuItem;
+    ListeColumn19: TcxGridDBColumn;
+    ListeColumn20: TcxGridDBColumn;
+    ListeColumn21: TcxGridDBColumn;
+    ListeColumn22: TcxGridDBColumn;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -363,10 +367,19 @@ INTERKOMLAB : begin
                 end;
               end;
 
+ DERENLAB : begin
+                DurumGoster(True,True);
+                try
+                    LiosDEREN.TestEkle(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+
  ERBILLAB : begin
                 DurumGoster(True,True);
                 try
-                    TestEkle(Liste,txtLog,pBar);
+                    LiosERBIL.TestEkle(Liste,txtLog,pBar);
                 finally
                   DurumGoster(False);
                 end;

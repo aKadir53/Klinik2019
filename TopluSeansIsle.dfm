@@ -946,6 +946,10 @@
       object SeanslarPage: TcxTabSheet
         Caption = 'Seanslar'
         ImageIndex = 125
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object gridHastalar: TAdvStringGrid
           Tag = 200
           Left = -6
@@ -2443,6 +2447,10 @@
           object MalzemeTab: TcxTabSheet
             Caption = 'Malzemeler'
             ImageIndex = 1
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object cxGrid6: TcxGrid
               Left = 0
               Top = 0
@@ -2978,6 +2986,10 @@
       object LogPage: TcxTabSheet
         Caption = 'Log'
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object txtLog: TcxMemo
           Left = 0
           Top = 0

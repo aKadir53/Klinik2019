@@ -55,32 +55,9 @@ type
     ADO_receteTani_: TADOTable;
     DataSource4: TDataSource;
     ADO_Recete: TADOQuery;
-    cxGrid4: TcxGrid;
-    gridIlaclar: TcxGridDBTableView;
-    gridIlaclarilacKodu: TcxGridDBColumn;
-    gridIlaclarilacAdi: TcxGridDBColumn;
-    gridIlaclarColumn2: TcxGridDBColumn;
-    gridIlaclarkullanZamanUnit: TcxGridDBColumn;
-    gridIlaclarkullanimZaman: TcxGridDBColumn;
-    gridIlaclarColumn1: TcxGridDBColumn;
-    gridIlaclarkullanimAdet: TcxGridDBColumn;
-    gridIlaclarkullanimSekli: TcxGridDBColumn;
-    gridIlaclarkullanimYolu: TcxGridDBColumn;
-    cxGridLevel4: TcxGridLevel;
-    cxGrid8: TcxGrid;
-    cxGridReceteIlacAciklama: TcxGridDBTableView;
-    cxGridDBColumn8: TcxGridDBColumn;
-    cxGridDBColumn9: TcxGridDBColumn;
-    cxGridDBColumn10: TcxGridDBColumn;
-    cxGridLevel8: TcxGridLevel;
-    cxPanelReceteBaslik: TcxGroupBox;
     PopupMenuEkleSil: TPopupMenu;
     E1: TMenuItem;
     S1: TMenuItem;
-    cxRecetePanel: TcxGroupBox;
-    cxPanelReceteDetay: TcxGroupBox;
-    cxButtonKadirIlacAckSil: TcxButtonKadir;
-    cxButtonKadirIlacAckEkle: TcxButtonKadir;
     GridIlaclarPopup: TPopupMenu;
     N3: TMenuItem;
     N4: TMenuItem;
@@ -98,36 +75,43 @@ type
     ilacR2: TMenuItem;
     TaniR3: TMenuItem;
     TaniR4: TMenuItem;
-    pnlIlacAck: TcxGroupBox;
+    ilacR3: TMenuItem;
+    R2: TMenuItem;
+    M1: TMenuItem;
+    ADO_RECETE_DETAY: TADOQuery;
+    ADO_receteTani: TADOQuery;
+    ADO_ReceteIlacAciklama: TADOQuery;
+    O1: TMenuItem;
+    O2: TMenuItem;
+    N2: TMenuItem;
+    Recete_PageControl: TcxPageControl;
+    Recete_Recete: TcxTabSheet;
+    Recete_TedaviOrder: TcxTabSheet;
+    cxRecetePanel: TcxGroupBox;
+    cxRecete: TcxGroupBox;
+    cxPanelReceteBaslik: TcxGroupBox;
+    chkTum: TcxCheckBox;
+    cxPanelReceteDetay: TcxGroupBox;
+    cxGrid4: TcxGrid;
+    gridIlaclar: TcxGridDBTableView;
+    gridIlaclarilacKodu: TcxGridDBColumn;
+    gridIlaclarilacAdi: TcxGridDBColumn;
+    gridIlaclarColumn2: TcxGridDBColumn;
+    gridIlaclarkullanZamanUnit: TcxGridDBColumn;
+    gridIlaclarkullanimZaman: TcxGridDBColumn;
+    gridIlaclarColumn1: TcxGridDBColumn;
+    gridIlaclarkullanimAdet: TcxGridDBColumn;
+    gridIlaclarkullanimSekli: TcxGridDBColumn;
+    gridIlaclarkullanimYolu: TcxGridDBColumn;
+    cxGridLevel4: TcxGridLevel;
     pnlReceteDetaySag: TcxGroupBox;
     btnIlacSil: TcxButtonKadir;
     btnIlacEkle: TcxButtonKadir;
-    pnlReceteIlacAckSag: TcxGroupBox;
-    ilacR3: TMenuItem;
-    cxPanelReceteTanilar: TcxGroupBox;
-    cxGrid11: TcxGrid;
-    cxGridReceteTani: TcxGridDBTableView;
-    cxGridDBColumn20: TcxGridDBColumn;
-    cxGridDBColumn21: TcxGridDBColumn;
-    cxGridLevel11: TcxGridLevel;
-    cxButtonKadirTaniEkle: TcxButtonKadir;
-    cxButtonKadirTaniSil: TcxButtonKadir;
-    cxChkSIK: TcxCheckBox;
-    cxPanelReceteAciklama: TcxGroupBox;
-    cxGrid9: TcxGrid;
-    cxGridReceteAciklama: TcxGridDBTableView;
-    cxGridDBColumn11: TcxGridDBColumn;
-    cxGridDBColumn12: TcxGridDBColumn;
-    cxGridDBColumn13: TcxGridDBColumn;
-    cxGridLevel9: TcxGridLevel;
-    pnlRaceAckSag: TcxGroupBox;
-    cxButtonKadirAckEkle: TcxButtonKadir;
-    cxButtonKadirAckSil: TcxButtonKadir;
-    chkTum: TcxCheckBox;
-    cxRecete: TcxGroupBox;
-    cxTaniBaslikPanel: TcxGroupBox;
-    cxSplitter3: TcxSplitter;
-    cxSplitter4: TcxSplitter;
+    ilacList: TcxImageComboKadir;
+    chkSIK: TcxCheckBox;
+    atc_kod_Tur: TcxImageComboKadir;
+    btnEkle: TcxButtonKadir;
+    chkEnson: TcxCheckBox;
     cxGrid10: TcxGrid;
     cxGridRecete: TcxGridDBTableView;
     cxGridDBColumn14: TcxGridDBColumn;
@@ -138,21 +122,113 @@ type
     cxGridDBColumn18: TcxGridDBColumn;
     cxGridReceteColumn3: TcxGridDBColumn;
     cxGridDBColumn19: TcxGridDBColumn;
+    cxGridReceteColumn4: TcxGridDBColumn;
     cxGridLevel10: TcxGridLevel;
     cxSplitter1: TcxSplitter;
-    cxGridReceteColumn4: TcxGridDBColumn;
-    R2: TMenuItem;
-    M1: TMenuItem;
-    ADO_RECETE_DETAY: TADOQuery;
-    ilacList: TcxImageComboKadir;
-    chkSIK: TcxCheckBox;
-    atc_kod_Tur: TcxImageComboKadir;
-    btnEkle: TcxButtonKadir;
-    ADO_receteTani: TADOQuery;
-    chkEnson: TcxCheckBox;
-    ADO_ReceteIlacAciklama: TADOQuery;
-    O1: TMenuItem;
-    O2: TMenuItem;
+    cxPanelReceteTanilar: TcxGroupBox;
+    cxGrid11: TcxGrid;
+    cxGridReceteTani: TcxGridDBTableView;
+    cxGridDBColumn20: TcxGridDBColumn;
+    cxGridDBColumn21: TcxGridDBColumn;
+    cxGridLevel11: TcxGridLevel;
+    cxTaniBaslikPanel: TcxGroupBox;
+    cxChkSIK: TcxCheckBox;
+    cxButtonKadirTaniEkle: TcxButtonKadir;
+    cxButtonKadirTaniSil: TcxButtonKadir;
+    cxPanelReceteAciklama: TcxGroupBox;
+    cxGrid9: TcxGrid;
+    cxGridReceteAciklama: TcxGridDBTableView;
+    cxGridDBColumn11: TcxGridDBColumn;
+    cxGridDBColumn12: TcxGridDBColumn;
+    cxGridDBColumn13: TcxGridDBColumn;
+    cxGridLevel9: TcxGridLevel;
+    pnlRaceAckSag: TcxGroupBox;
+    cxButtonKadirAckEkle: TcxButtonKadir;
+    cxButtonKadirAckSil: TcxButtonKadir;
+    cxSplitter3: TcxSplitter;
+    pnlIlacAck: TcxGroupBox;
+    cxGrid8: TcxGrid;
+    cxGridReceteIlacAciklama: TcxGridDBTableView;
+    cxGridDBColumn8: TcxGridDBColumn;
+    cxGridDBColumn9: TcxGridDBColumn;
+    cxGridDBColumn10: TcxGridDBColumn;
+    cxGridLevel8: TcxGridLevel;
+    pnlReceteIlacAckSag: TcxGroupBox;
+    cxButtonKadirIlacAckEkle: TcxButtonKadir;
+    cxButtonKadirIlacAckSil: TcxButtonKadir;
+    cxSplitter4: TcxSplitter;
+    DataSource6: TDataSource;
+    ADO_GecmisIlacTedavi: TADOQuery;
+    DataSource8: TDataSource;
+    ADO_IlacTedavi: TADOQuery;
+    DataSource7: TDataSource;
+    ADO_IlacGelis: TADOQuery;
+    DataSource15: TDataSource;
+    ADO_Tetkikler: TADOQuery;
+    frmHastaIlacTedavi_cxPageControl1: TcxPageControl;
+    cxTabSheet1: TcxTabSheet;
+    cxGrid15: TcxGrid;
+    cxGridIlacTedaviPlani: TcxGridDBTableView;
+    cxGridIlacTedaviPlanigk: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniust: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniilac: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniname1: TcxGridDBColumn;
+    cxGridIlacTedaviPlanigrup: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniname2: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniperyot: TcxGridDBColumn;
+    cxGridIlacTedaviPlanimiktar: TcxGridDBColumn;
+    cxGridIlacTedaviPlanidoz: TcxGridDBColumn;
+    cxGridIlacTedaviPlanidozperyotmiktar: TcxGridDBColumn;
+    cxGridIlacTedaviPlanidonem: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniid: TcxGridDBColumn;
+    cxGridIlacTedaviPlanigelisNo: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn1: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn2: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn3: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn4: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn5: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn6: TcxGridDBColumn;
+    cxGridIlacTedaviPlaniColumn7: TcxGridDBColumn;
+    cxGridLevel15: TcxGridLevel;
+    cxGrid3: TcxGrid;
+    gridTetkikList: TcxGridDBTableView;
+    cxGridDBColumn2: TcxGridDBColumn;
+    cxGridDBColumn3: TcxGridDBColumn;
+    ARALIK: TcxGridDBColumn;
+    KASIM: TcxGridDBColumn;
+    EKIM: TcxGridDBColumn;
+    EYLUL: TcxGridDBColumn;
+    AGUSTOS: TcxGridDBColumn;
+    TEMMUZ: TcxGridDBColumn;
+    HAZIRAN: TcxGridDBColumn;
+    MAYIS: TcxGridDBColumn;
+    NISAN: TcxGridDBColumn;
+    MART: TcxGridDBColumn;
+    SUBAT: TcxGridDBColumn;
+    OCAK: TcxGridDBColumn;
+    cxGridDBColumn4: TcxGridDBColumn;
+    cxGridLevel3: TcxGridLevel;
+    cxSplitter2: TcxSplitter;
+    Tetkik: TcxTabSheet;
+    cxStyleRepository1: TcxStyleRepository;
+    cxStyle1: TcxStyle;
+    cxStyle2: TcxStyle;
+    K: TcxStyle;
+    Yesil_siyah: TcxStyle;
+    Sari_Siyah: TcxStyle;
+    PopupMenu3: TPopupMenu;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    y1: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    Son6AylikTetkikSonu1: TMenuItem;
+    MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
+    D1: TMenuItem;
+    MenuItem9: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Yukle;override;
     procedure ReceteGetir(_dosyaNo , gelisNo : string);
@@ -188,6 +264,10 @@ type
     function ReceteImzalaSil : string;
     function ReceteImzalaOnay(tip : string = 'ReceteImzalaOnay') : string;
     function ReceteSil : string;
+    procedure Listele;
+    procedure ReceteyeEkle;
+    procedure TetkikSonucGridKolonGizle;
+    procedure TedaviYukle;
     procedure btnIlacEkleClick(Sender: TObject);
     procedure btnIlacSilClick(Sender: TObject);
     procedure Duzenle;
@@ -212,6 +292,16 @@ type
       APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
     procedure ADO_ReceteIlacAciklamaNewRecord(DataSet: TDataSet);
+    procedure Recete_PageControlPageChanging(Sender: TObject;
+      NewPage: TcxTabSheet; var AllowChange: Boolean);
+    procedure cxGridIlacTedaviPlaniStylesGetContentStyle(
+      Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+      AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+    procedure gridTetkikListStylesGetContentStyle(
+      Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+      AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+    procedure MenuItem3Click(Sender: TObject);
+    procedure Recete_PageControlChange(Sender: TObject);
   private
     { Private declarations }
     FReg : TRegistry;
@@ -223,8 +313,6 @@ type
     function Init(Sender: TObject) : Boolean; override;
     { Public declarations }
   end;
-
-
 
 
 const
@@ -251,7 +339,8 @@ var
 
 implementation
 
-uses Data_Modul,AnaUnit,Rapor,receteSablonlari,IlacSarfListesi, TransUtils , MedEczane;
+uses Data_Modul,AnaUnit,Rapor,receteSablonlari,IlacSarfListesi, TransUtils ,
+     MedEczane,HastaiLacTedavi;
 {$R *.dfm}
 
 function TfrmHastaRecete.findMethod(dllHandle: Cardinal;  methodName: string): FARPROC;
@@ -312,6 +401,109 @@ begin
     FreeLibrary(dllHandle);
   end;
 end;
+
+procedure TfrmHastaRecete.ReceteyeEkle;
+var
+ x ,j,y : integer;
+ barkod ,ilac, ilacadi,peryot,adet,peryotadet,doz,kyol,kutuAdet,miktar : string;
+ gelisNo,id ,sql,_tani_,keys: string;
+ unite : real;
+ ack : TStringList;
+ ado : TADOQuery;
+begin
+   for x := 0 to cxGridIlacTedaviPlani.Controller.SelectedRowCount - 1 do
+   begin
+             Application.ProcessMessages;
+             ilac := cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('ilac').Index);
+
+             ilacadi := trimleft(cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('ilacname').Index));
+
+             doz := cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('doz').Index);
+
+             miktar := cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('miktar').Index);
+
+             peryot := cxGridIlacTedaviPlani.DataController.GetValue(
+                                            cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('peryot').Index);
+
+             gelisno := cxGridIlacTedaviPlani.DataController.GetValue(cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                                            cxGridIlacTedaviPlani.DataController.GetItemByFieldName('gelisNo').Index);
+
+             kyol := cxGridIlacTedaviPlani.DataController.GetValue(cxGridIlacTedaviPlani.Controller.SelectedRows[x].RecordIndex,
+                           cxGridIlacTedaviPlani.DataController.GetItemByFieldName('kyol').Index);
+
+             kutuAdet := '1';
+
+
+
+             if ADO_RECETE_DETAY.Locate('ilacKodu;receteId',VarArrayOf([ilac,ADO_Recete.fieldbyname('id').AsString]),[]) = false
+             Then Begin
+                ADO_RECETE_DETAY.Append;
+                ADO_RECETE_DETAY.FieldByName('ilacKodu').AsString := ilac;
+                ADO_RECETE_DETAY.FieldByName('ilacAdi').AsString := ilacadi;
+                ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString := peryot;
+                ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := '1';
+                ADO_RECETE_DETAY.FieldByName('adet').AsString := kutuadet;
+                ADO_RECETE_DETAY.FieldByName('kullanimAdet2').ASstring := miktar;
+                ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString := doz;
+                ADO_RECETE_DETAY.FieldByName('kullanimYolu').AsString := ifThen(kyol = '' ,'1',kyol);
+
+                try
+                   unite := IlacKoduToUnite(ilac,_dosyaNo_,_gelisNo_,peryot,miktar) * strtofloat(kutuadet);
+                   ADO_RECETE_DETAY.FieldByName('kullanZamanUnit').AsString := peryot;
+                //   ADO_RECETE_DETAY.FieldByName('kullanimZaman').AsString := miktar;
+                except
+                end;
+                  ADO_RECETE_DETAY.FieldByName('kullanimAdet').AsString := floattostr(unite);
+                  ADO_RECETE_DETAY.Post;
+
+
+                ack := IlacReceteAciklama(_dosyaNo_,_gelisNo_,ilac,
+                                        floattostr(unite*strtofloat(kutuadet)));
+
+
+                 sql := 'delete from ReceteIlacAciklama where receteDetayId = ' + frmHastaRecete.ADO_RECETE_DETAY.fieldbyname('id').AsString;
+                 datalar.QueryExec(sql);
+
+                 ADO_ReceteIlacAciklama.Active := false;
+                 ADO_ReceteIlacAciklama.Active := true;
+
+                 for j := 0 to ack.Count-1 do
+                 begin
+                    ADO_ReceteIlacAciklama.Append;
+                    ADO_ReceteIlacAciklama.FieldByName('aciklama').AsString := copy(ack[j],3,500);
+                    ADO_ReceteIlacAciklama.FieldByName('aciklamaTip').AsString := trim(copy(ack[j],1,2));
+                    ADO_ReceteIlacAciklama.Post;
+                    if copy(ADO_ReceteIlacAciklama.FieldByName('aciklama').AsString,1,4) = 'Hata'
+                    Then ShowMessageSkin('Dikkat , Doz Bilgisini Kontrol Ediniz','','','info');
+                 end;
+
+                 _tani_ := IlacReceteTaniEkle(ilac);
+                 y := pos(';',_tani_)-1;
+                 keys := copy(_tani_,1,y);
+                 if copy(_tani_,1,y) <> ''
+                 Then Begin
+                   if ADO_receteTani.Locate('taniKodu;receteId',VarArrayOf([keys,ADO_Recete.fieldbyname('id').AsString]) ,[]) = False
+                   Then Begin
+                     ADO_receteTani.Append;
+                     ADO_receteTani.fieldbyname('taniKodu').AsString := copy(_tani_,1,pos(';',_tani_)-1);
+                     ADO_receteTani.fieldbyname('tani').AsString := copy(_tani_,pos(';',_tani_)+1,100);
+                     ADO_receteTani.Post;
+                   End;
+                 End;
+             End; //locate end
+
+   End; // for end
+End;
+
 
 
 
@@ -788,6 +980,87 @@ begin
 end;
 
 
+procedure TfrmHastaRecete.Listele;
+var
+  sql ,_Tarih: string;
+  i : integer;
+  ado : TADOQuery;
+begin
+  _Tarih := NoktasizTarih(_provizyonTarihi_);
+  try
+    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '1,''H'',' + QuotedStr(datalar.AktifSirket);
+    datalar.QuerySelect(ADO_Tetkikler,sql);
+
+    TetkikSonucGridKolonGizle;
+
+    sql := 'exec sp_HastaTetkikTakipPIVOT ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(_Tarih) + ',' + '0,''H'',' + QuotedStr(datalar.AktifSirket);
+    ado := TADOQuery.Create(nil);
+    try
+      datalar.QuerySelect(ado,sql);
+
+      while not ado.Eof do
+      begin
+        i := gridTetkikList.GetColumnByFieldName(ado.fieldbyname('ad').AsString).Index;
+        gridTetkikList.Columns[i].Visible := True;
+        gridTetkikList.Columns[i].Width := 50;
+        gridTetkikList.Columns[i].Index := ado.RecNo + 2;
+        ado.Next;
+      end;
+    finally
+      ado.Free;
+    end;
+  except
+  end;
+end;
+
+
+
+
+procedure TfrmHastaRecete.Recete_PageControlChange(Sender: TObject);
+var
+  Form : TGirisForm;
+  GirisFormRecord : TGirisFormRecord;
+  msj , tokenParams ,path , jsonText : string;
+begin
+
+  if Recete_PageControl.ActivePage = Recete_TedaviOrder
+  then
+  begin
+   if ADO_GecmisIlacTedavi.Active = False
+   then begin
+    TedaviYukle;
+    Listele;
+   end;
+  end;
+end;
+
+procedure TfrmHastaRecete.Recete_PageControlPageChanging(Sender: TObject;
+  NewPage: TcxTabSheet; var AllowChange: Boolean);
+
+begin
+
+
+
+(*
+  datalar.KontrolUserSet := False;
+  inherited;
+  if datalar.KontrolUserSet = True then exit;
+
+  GirisFormRecord.F_dosyaNO_ := _dosyaNO_;
+  GirisFormRecord.F_gelisNo_ := _gelisNo_;
+
+  GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
+  GirisFormRecord.F_dosyaNO_ := _dosyaNO_;
+  GirisFormRecord.F_ResourceID_ := ADO_Recete.FieldByName('id').AsString;
+  Form := FormINIT(TagfrmHastaIlacTedavi,GirisFormRecord,ikEvet,'');
+  TfrmHastaIlacTedavi(Form).receteForm := self;
+  Form._foto_ := _foto_;
+  if Form <> nil then Form.ShowModal;
+  *)
+
+
+end;
+
 procedure TfrmHastaRecete.SablondanYeniRecete;
 var
   sql : string;
@@ -804,6 +1077,7 @@ begin
        try
          sql := 'select * from ReceteDetaySablon where ReceteSablonId = ' + L[0].kolon1;
          datalar.QuerySelect(ado,sql);
+
          while not ado.Eof do
          begin
            if not ADO_RECETE_DETAY.Locate('ilacKodu',ado.FieldByName('ilacKodu').AsString,[])
@@ -829,13 +1103,13 @@ begin
                  ADO_ReceteIlacAciklama.post;
                  adod.Next;
                end;
-               ado.Next;
+               //ado.Next;
              end;
 
              sql := 'select * from ReceteTaniSablon where ReceteSablonId = ' + L[0].kolon1;
-             datalar.QuerySelect(ado,sql);
-             ado.First;
-             while not ado.Eof do
+             datalar.QuerySelect(adod,sql);
+
+             while not adod.Eof do
              begin
                try
                  ADO_receteTani.Append;
@@ -845,21 +1119,22 @@ begin
                except
                   ADO_receteTani.Cancel;
                end;
-               ado.Next;
+               adod.Next;
              end;
 
 
              sql := 'select * from ReceteAciklamaSablon where ReceteSablonId = ' + L[0].kolon1;
-             datalar.QuerySelect(ado,sql);
-             while not ado.Eof do
+             datalar.QuerySelect(adod,sql);
+             while not adod.Eof do
              begin
                  ADO_receteAcikla.Append;
                  ADO_receteAcikla.FieldByName('aciklamaTip').AsString := ado.FieldByName('aciklamaTip').AsString;
                  ADO_receteAcikla.FieldByName('aciklama').AsString := ado.FieldByName('aciklama').AsString;
                  ADO_receteAcikla.post;
-                 ado.Next;
+                 adod.Next;
              end;
-          end;
+             ado.Next;
+         end;
        finally
          adod.Free;
        end;
@@ -1146,6 +1421,12 @@ begin
 
 end;
 
+procedure TfrmHastaRecete.MenuItem3Click(Sender: TObject);
+begin
+  inherited;
+   ReceteyeEkle;
+end;
+
 procedure TfrmHastaRecete.ReceteIptal;
 var
   sql , Sil : string;
@@ -1417,13 +1698,14 @@ begin
 
           if Tip = ''
           then begin
-           sql := ' select R.*,D.*,g.*,I.*,H.*,dr.tanimi doktorAdi,S.tanimi from Recete R ' +
+           sql := ' select R.*,D.*,g.*,I.*,H.*,dr.tanimi doktorAdi,S.tanimi,rky.tanimi KulllanimyolTanimi from Recete R ' +
                     'left join receteDetay D on R.id = D.ReceteId ' +
                     'left join hasta_gelisler g on g.dosyaNO = R.dosyaNo and g.gelisNo = R.gelisNo ' +
                     'left join OSGB_MASTER.DBO.ilacListesi I on I.barkod = D.ilacKodu ' +
                     'left join HastaKart H on H.dosyaNo = R.dosyaNo ' +
                     'left join SIRKETLER_TNM S on S.sirketKod = H.sirketKod ' +
                     'left join doktorlarT dr on dr.kod = r.doktor ' +
+                    'left join ReceteKullanimYol rky on rky.kod = d.kullanimYolu ' +
                     'where R.id = ' + id +
                     ' order by R.id';
 
@@ -1542,6 +1824,34 @@ begin
 
 
 
+end;
+
+procedure TfrmHastaRecete.TedaviYukle;
+begin
+    sql :=  ' exec sp_GecmisDonemIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' +QuotedStr(NoktasizTarih(_provizyonTarihi_));
+   datalar.QuerySelect(ADO_GecmisIlacTedavi,sql);
+  // GecmisIlacTree.FullExpand;
+
+   Listele;
+
+ //  sql :=  ' exec sp_GecmisDonemIlacTedavi ' + QuotedStr(_dosyaNo_) + ',' +QuotedStr(NoktasizTarih(_provizyonTarihi_)) + ',0';
+ //  datalar.QuerySelect(ADO_IlacGelis,sql);
+end;
+
+procedure TfrmHastaRecete.TetkikSonucGridKolonGizle;
+begin
+  OCAK.Visible := False;
+  SUBAt.Visible := False;
+  MART.Visible := False;
+  NISAN.Visible := False;
+  MAYIS.Visible := False;
+  HAZIRAN.Visible := False;
+  TEMMUZ.Visible := False;
+  AGUSTOS.Visible := False;
+  EYLUL.Visible := False;
+  EKIM.Visible := False;
+  KASIM.Visible := False;
+  ARALIK.Visible := False;
 end;
 
 procedure TfrmHastaRecete.AckEkle(islem : integer);
@@ -1740,6 +2050,9 @@ begin
     ADO_receteTani.Open;
     ADO_receteAcikla.Open;
     ADO_ReceteIlacAciklama.Open;
+
+    ADO_GecmisIlacTedavi.Active := False;
+    ADO_Tetkikler.Active := False;
 
     ilacList.EditValue := Null;
 
@@ -2092,6 +2405,16 @@ begin
   -3 : begin
          ReceteIptal;
        end;
+
+  -52 : begin
+            GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
+            GirisFormRecord.F_dosyaNO_ := _dosyaNO_;
+            GirisFormRecord.F_ResourceID_ := ADO_Recete.FieldByName('id').AsString;
+            Form := FormINIT(TagfrmHastaIlacTedavi,GirisFormRecord,ikEvet,'');
+            TfrmHastaIlacTedavi(Form).receteForm := self;
+            Form._foto_ := _foto_;
+            if Form <> nil then Form.ShowModal;
+        end;
   -9,-40,-50,-60 :
        begin
             if ADO_Recete.FieldByName('receteTur').AsString[1] in ['2','3','4','5']
@@ -2247,6 +2570,27 @@ begin
     end;
     ADO_receteTani.Active := False;
     ADO_receteTani.Active := True;
+end;
+
+procedure TfrmHastaRecete.cxGridIlacTedaviPlaniStylesGetContentStyle(
+  Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+  AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+begin
+  inherited;
+   if (ARecord.Values[1] = '0')
+   Then begin
+    AStyle := K;
+   end;
+
+   if (ARecord.Values[13] = '0')
+   Then begin
+    AStyle := Sari_Siyah;
+   end;
+
+   if (ARecord.Values[13] = '1')
+   Then begin
+    AStyle := Yesil_Siyah;
+   end;
 end;
 
 procedure TfrmHastaRecete.cxGridReceteAciklamaDblClick(Sender: TObject);
@@ -2626,7 +2970,7 @@ begin
   TableName := _TableName_;
   cxPanel.Visible := false;
   cxTab.Width := 200;
-  SayfaCaption('Reçete','','','','');
+
   Olustur(self,_TableName_,'Reçete',23);
   Menu := PopupMenu1;
 
@@ -2660,9 +3004,12 @@ begin
 
 
   _HastaBilgileriniCaptionGoster_ := True;
+
+//  setDataStringKontrol(self,cxRecetePanel, 'cxRecetePanel','',Kolon1,'',1090,696);
+
  // cxGridReceteTani.PopupMenu := PopupMenuEkleSil;
  // cxGridReceteAciklama.PopupMenu := PopupMenuEkleSil;
-
+    SayfaCaption('Reçete','','','','');
 end;
 
 procedure TfrmHastaRecete.gridIlaclarDblClick(Sender: TObject);
@@ -2711,6 +3058,25 @@ begin
   inherited;
    datalar.QuerySelect(ADO_ReceteIlacAciklama,'select * from ReceteIlacAciklama where receteDetayId = ' + QuotedStr(ADO_RECETE_DETAY.FieldByName('id').AsString));
 
+end;
+
+procedure TfrmHastaRecete.gridTetkikListStylesGetContentStyle(
+  Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+  AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+begin
+  inherited;
+   if ((upperCase(ARecord.Values[1]) = 'HGB') or
+      (ARecord.Values[1] = 'CaxP') or
+      (ARecord.Values[1] = 'Ca') or
+      (ARecord.Values[1] = 'P') or
+      (ARecord.Values[1] = 'PTH') or
+      (ARecord.Values[1] = 'KTV') or
+      (ARecord.Values[1] = 'URR') or
+      (ARecord.Values[1] = 'Albumin') or
+      (ARecord.Values[1] = 'Ferritin') or
+      (ARecord.Values[1] = 'Transferrin Sat.'))
+
+   Then AStyle := cxStyle2;
 end;
 
 end.

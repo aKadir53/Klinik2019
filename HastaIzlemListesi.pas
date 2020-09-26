@@ -401,6 +401,7 @@ begin
     datalar.DYOB.URL := DyopURL; //'https://dyob.saglik.gov.tr/DYOBWS/DIYALIZWS.asmx';
      //
 
+
    stop := 0;
    for x := 0 to gridHastalar.Controller.SelectedRowCount - 1 do
    begin
@@ -1074,6 +1075,14 @@ var
 begin
     datalar.DYOB.URL := DyopURL;
     DyobKodlar.Active := True;
+
+
+    if not DirectoryExists('C:\NoktaV3\DYOB')
+    then MkDir('C:\NoktaV3\DYOB');
+
+
+    datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\DYOB\LOADHASTALIST';
+
     try
      List := (datalar.DYOB as KRIZMA_DIS_TREATMENTSERVICESoap).LOADHASTALIST(datalar._DyobKurumKodu_,datalar._DyobSifre_,datalar._DyobServiceKodu_);
      //'8DCC2CC82FF34396A9859014E7350A3E','C7865A18D8244AF88122468808EE1397','4BC01A01CDA14EF2ABCD98728B05FB9A');

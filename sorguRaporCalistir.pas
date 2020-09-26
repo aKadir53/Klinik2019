@@ -9,7 +9,7 @@ uses
   kadirLabel,kadirType,GirisUnit,cxImageComboBox,cxMaskEdit,cxTextEdit,cxRichEdit,
   cxEdit, cxDBData, cxGridLevel, cxClasses, cxControls,cxCheckBox,cxButtonEdit,
   cxGridCustomView, cxGridCustomTableView, cxGridTableView, cxGridDBTableView,
-  cxGrid, cxLookAndFeels, cxLookAndFeelPainters, DBTables, AdvObj, Menus,
+  cxGrid, cxLookAndFeels, cxLookAndFeelPainters, DBTables, AdvObj, Menus,DateUtils,
   dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
   dxSkinMoneyTwins, dxSkinsDefaultPainters, cxButtons, cxStyles,
@@ -176,6 +176,7 @@ begin
           Grid.Align := alClient;
           Grid.ExceleGonder := True;
           Grid.ExcelFileName := frmSorgulamalar.ADO_SQL1.fieldbyname('raporAdi').AsString;
+          Grid.PopupMenu := frmSorgulamalar.PopupMenu1;
         except on e : exception do
           begin
             ShowMessageSkin(e.Message,'','','info');
@@ -195,6 +196,8 @@ begin
        frmSorgulamalar.cxGrid3DBBandedTableView1.DataController.CreateAllItems(true);
        frmSorgulamalar.cxGrid3DBBandedTableView1.OptionsView.ColumnAutoWidth := true;
        frmSorgulamalar.Sonuclar_Page.ActivePageIndex := 1;
+
+       frmSorgulamalar.cxGrid3.PopupMenu := frmSorgulamalar.PopupMenu1;
 
        TopluDataset.Dataset0 := datalar.Ado_Sorgulamalar;
        PrintYap(_kod,sp_name,'',TopluDataset,pTNone);
@@ -303,6 +306,11 @@ begin
          begin
          end;
 
+        if SameText (Tips[i], 'yil')
+        then begin
+          setDataStringC(self,prm,prmAd,Kolon1,'',150,ComboYil(YearOf(date())));
+        end;
+
 
         if SameText (Tips[i], 'IC')
         then begin
@@ -345,6 +353,21 @@ begin
              end;
 
         end;
+
+
+        if SameText (Tips[i], 'AP')
+        then begin
+              IC := TcxImageComboKadir.Create(self);
+              field1 := '1|Aktif-0|Pasif-2|Misafir-3|Tümü';
+              field1 := StringReplace(field1,'|',';', [rfReplaceAll]);  // | to ;
+              field1 := StringReplace(field1,'-',',', [rfReplaceAll]);  // - to ,
+              IC.Conn := nil;
+              IC.ItemList := field1;
+              IC.Filter := '';
+              OrtakEventAta(IC);
+             setDataStringKontrol(self,IC,prm,prmAd,kolon1,'',150);
+        end;
+
 
        end; // for end
 

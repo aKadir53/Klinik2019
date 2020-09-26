@@ -276,7 +276,7 @@ procedure ImzaFoyleriYaz;
 procedure MenuIDRun(MenuId : integer);
 function sureKontrol: Boolean;
 function RaporGecerlimi(_dosyaNo: string): double;
-function IlacReceteAciklama(_dosyaNo, GelisNo, kod, doz: string): tstringlist;
+function IlacReceteAciklama(_dosyaNo, GelisNo, kod, doz: string ; dozAsimiDikkateAlma : string = '0'): tstringlist;
 function IlacReceteTaniEkle(kod: string): String;
 function IlacKoduToUnite(code, dosya, gelis: string;
   var peryot, peryotAdet: string): real;
@@ -416,6 +416,7 @@ procedure DestekTalep;
 function IsNull (const s: String): Boolean;
 procedure LisansUzat;
 function SahaSaglikGozlemSil(const GozlemID: integer): Boolean;
+function KaliteYonetimPlanSil(const GozlemID: integer): Boolean;
 function AnketSil(const ID: integer): Boolean;
 function VeritabaniAlaninaFotografYukle(const sTableName, sKeyField, sImageField, sKeyValue: String): Boolean;
 function VeritabaniAlanindanFotografYukle(const sTableName, sKeyField, sImageField, sKeyValue: String; var aImage: TcxImage): Boolean;
@@ -496,8 +497,8 @@ function Download(URL, User, Pass, FileName :  string ; FullURL : string = '443'
 procedure DatasetRefresh(DataSet : TDataset ; BookMark : Boolean = False);
 procedure RevOnay(item : string ; Dataset : TDataset);
 
-function CreateGrid(name : string; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil ; DataEditing : Boolean = True  ; CreatAllCol : Boolean = False)  : TcxGridKadir; overload;
-function CreateGrid(name: string ; Parent : TWinControl ; DS : TDataSource ; GroupFooter : Boolean = False): TcxGridKadir; overload;
+function CreateGrid(name : string; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil ; DataEditing : Boolean = True  ; CreatAllCol : Boolean = False ; PopupMenu : TPopupMenu = nil)  : TcxGridKadir; overload;
+function CreateGrid(name: string ; Parent : TWinControl ; DS : TDataSource ; GroupFooter : Boolean = False ; PopupMenu : TPopupMenu = nil): TcxGridKadir; overload;
 procedure SetGrid(cxGrid : TcxGrid ; Colums,ColumnsPropertiesClassName,
                   ColumsCaption,ColumnsWidth,ColumsPropertiesItems,ColumsReadOnly : String ; ColumsMaskItems : String = '');
 function SGKHizmetSorgulama(kullaniciAdi,sifre,sysTakipNo,islemReferansNo,uygulamaKodu : string) : String;
@@ -2530,7 +2531,7 @@ begin
   FreeLibrary(dllHandle);
 
 
-  StrToFile('UssServisMethodTakipListele.txt',_sonuc_);
+  //StrToFile('UssServisMethodTakipListele.txt',pchar(_sonuc_));
 
 
     try
@@ -2551,7 +2552,7 @@ begin
              sonuc := Jarr.O[r];
 
              sql := 'insert into KurumsysTakipNoList(SIRANO,sysTakipNo,islemTarihi) ' +
-                    'values(' + QuotedStr(sonuc.S['hastaneReferansNumarasi']) + ',' +
+                    'values(' + sonuc.A['hastaneReferansNumarasi'].S[0] + ',' +
                                 QuotedStr(sonuc.S['sysTakipNo']) + ',' +
                                 QuotedStr(Tarih) + ')';
              datalar.QueryExec(sql);
@@ -2564,7 +2565,7 @@ end;
 
 
 
-function CreateGrid(name: string ; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil  ; DataEditing : Boolean = True ; CreatAllCol : Boolean = False): TcxGridKadir;
+function CreateGrid(name: string ; Form : TForm ; NavigatorButtons : Boolean = True ; DS : TDataSource = nil  ; DataEditing : Boolean = True ; CreatAllCol : Boolean = False ; PopupMenu : TPopupMenu = nil): TcxGridKadir;
 var
   Grid: TcxGridKadir;
   Level: TcxGridLevel;
@@ -2581,7 +2582,9 @@ begin
   View.OptionsData.Editing := DataEditing;
   View.OptionsData.Deleting := DataEditing;
   View.OptionsData.Inserting := DataEditing;
+  View.OptionsView.Footer := True;
 
+  if Assigned(PopupMenu) then View.PopupMenu := PopupMenu;
 
   View.DataController.DataSource := DS;
   if CreatAllCol
@@ -2616,7 +2619,7 @@ begin
 end;
 
 
-function CreateGrid(name: string ; Parent : TWinControl ; DS: TDataSource ; GroupFooter : Boolean = False): TcxGridKadir;
+function CreateGrid(name: string ; Parent : TWinControl ; DS: TDataSource ; GroupFooter : Boolean = False ; PopupMenu : TPopupMenu = nil): TcxGridKadir;
 var
   Grid: TcxGridKadir;
   Level: TcxGridLevel;
@@ -2640,6 +2643,7 @@ begin
   View.OptionsData.Appending := False;
   View.OptionsData.Deleting := False;
   View.OptionsView.Indicator := True;
+  View.OptionsView.Footer := True;
 
   View.FilterRow.Visible := True;
   View.FilterRow.InfoText := 'Filitre Satýrý';
@@ -2647,6 +2651,8 @@ begin
   View.OptionsCustomize.ColumnHiding := True;
   View.OptionsCustomize.ColumnFiltering := True;
   View.OptionsCustomize.ColumnsQuickCustomization := True;
+
+  if Assigned(PopupMenu) then View.PopupMenu := PopupMenu;
 
   Level.GridView := View;
 
@@ -3851,7 +3857,8 @@ begin
                        ifThen(cek = 'E','2',ifThen(AlacakHesap = '1','5','3')) + ',' +
                        QuotedStr(evrakNo) + ',' +
                        QuotedStr(cekdurum) + ',' +
-                       QuotedStr(cekId);
+                       QuotedStr(cekId) + ',' +
+                       QuotedStr(datalar.AktifSirket);
 
      datalar.QueryExec('set nocount on ' +  Sql + ' set nocount off ');
 
@@ -4381,15 +4388,21 @@ end;
 function WebErisimBilgiFirma(slk,slb : string) : string;
 begin
    WebErisimBilgiFirma := '';
-   Datalar.ServisErisimBilgileriFirma.Locate('slk;slb',VarArrayOf([slk,slb]),[]);
-   WebErisimBilgiFirma := Datalar.ServisErisimBilgileriFirma.Fieldbyname('Value').AsString;
+   if Datalar.ServisErisimBilgileriFirma.Locate('slk;slb',VarArrayOf([slk,slb]),[]) = True
+   Then
+     WebErisimBilgiFirma := Datalar.ServisErisimBilgileriFirma.Fieldbyname('Value').AsString
+   Else
+     WebErisimBilgiFirma := '';
 end;
 
 function WebErisimBilgi(slk,slb : string) : string;
 begin
    WebErisimBilgi := '';
-   Datalar.ServisErisimBilgileri.Locate('slk;slb',VarArrayOf([slk,slb]),[]);
-   WebErisimBilgi := Datalar.ServisErisimBilgileri.Fieldbyname('Value').AsString;
+   if Datalar.ServisErisimBilgileri.Locate('slk;slb',VarArrayOf([slk,slb]),[]) = True
+   Then
+     WebErisimBilgi := Datalar.ServisErisimBilgileri.Fieldbyname('Value').AsString
+   Else
+     WebErisimBilgi := '';
 end;
 
 function WebErisimBilgiOrtak(slk,slb : string) : string;
@@ -7713,7 +7726,7 @@ begin
   end;
 end;
 
-function IlacReceteAciklama(_dosyaNo, GelisNo, kod, doz: string): tstringlist;
+function IlacReceteAciklama(_dosyaNo, GelisNo, kod, doz: string ; dozAsimiDikkateAlma : string = '0'): tstringlist;
 var
   ado: TADOQuery;
   sql, s, d: string;
@@ -7725,7 +7738,7 @@ begin
     Result := tstringlist.Create;
     try
       sql := 'select dbo.IlackoduToReceteBilgisi(' + QuotedStr(kod)
-        + ',' + QuotedStr(_dosyaNo) + ',' + GelisNo + ',' + doz + ')';
+        + ',' + QuotedStr(_dosyaNo) + ',' + GelisNo + ',' + doz + ',' +  dozAsimiDikkateAlma + ')';
       datalar.QuerySelect(ado, sql);
 
       if ado.Fields[0].AsString <> '' then
@@ -7952,6 +7965,8 @@ var
   printT : TprintTip;
   TopluDataset : TDataSetKadir;
 begin
+
+  TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
 
   sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Baslýk')
     + ',' + GelisNo;
@@ -13183,6 +13198,32 @@ begin
     ado.Free;
   end;
 end;
+
+
+
+function KaliteYonetimPlanSil(const GozlemID: integer): Boolean;
+var
+  ado : TADOQuery;
+begin
+  ado := TADOQuery.Create(nil);
+  try
+    Result := False;
+    BeginTrans (DATALAR.ADOConnection2);
+    try
+      datalar.QueryExec (ado, 'delete from KaliteYonetimPlanDetay where planid = ' + IntToStr (GozlemID));
+      datalar.QueryExec (ado, 'delete from KaliteYonetimPlan where id = ' + IntToStr (GozlemID));
+      Result := True;
+    finally
+      if Result then
+        CommitTrans (DATALAR.ADOConnection2)
+       else
+        RollbackTrans (DATALAR.ADOConnection2);
+    end;
+  finally
+    ado.Free;
+  end;
+end;
+
 
 function AnketSil(const ID: integer): Boolean;
 var

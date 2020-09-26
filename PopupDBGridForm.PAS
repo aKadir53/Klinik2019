@@ -798,6 +798,13 @@ begin
              // DBgrid.Columns[i].Width := DBgrid.Columns[i].BestFitMaxWidth;
              DBgrid.Columns[i].Width := 40;
              end;
+             if SameText (Tips[i], 'tarih') then
+             begin
+              DBgrid.Columns[i].PropertiesClassName := 'TcxDateEditProperties';
+              DBgrid.Columns[i].Properties.Alignment.Horz := taCenter;
+              DBgrid.Columns[i].Width := 80;
+             end;
+
             if SameText (Tips[i], 'string') then
              begin
               DBgrid.Columns[i].PropertiesClassName := 'TcxTextEditProperties';
@@ -1078,11 +1085,11 @@ begin
   then begin
     TableName := 'SahaGozlemSoruAltGrup';
     indexFieldName := ' GozlemGrup = ' + QuotedStr(varToStr(txtAltTable.EditValue));
-    _fields_ := 'GozlemGrup,GozlemAltGrup,Tanimi,Sira';
-    _fieldBaslik_ := 'Grup,Alt Grup Kodu,Tanimi,Sira';
-    _fieldTips_ := 'IC,int,string,int';
+    _fields_ := 'GozlemGrup,GozlemAltGrup,Tanimi,Sira,aktif';
+    _fieldBaslik_ := 'Grup,Alt Grup Kodu,Tanimi,Sira,Aktif';
+    _fieldTips_ := 'IC,int,string,int,Check';
     _ICParams_ :=  'SahaGozlemSoruGrup,GozlemGrup,Tanimi;0;0;0';
-    _fieldReadOnly_  := '0,1,1,1';
+    _fieldReadOnly_  := '0,1,1,1,1';
   end;
 
    if txtTable.EditValue = '11'

@@ -539,22 +539,24 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       ExplicitWidth = 796
       ExplicitHeight = 229
       object gridGG: TcxGridDBTableView
+        OnDblClick = gridGGDblClick
         Navigator.Buttons.First.Visible = False
         Navigator.Buttons.PriorPage.Visible = False
         Navigator.Buttons.Prior.Visible = False
         Navigator.Buttons.Next.Visible = False
         Navigator.Buttons.NextPage.Visible = False
         Navigator.Buttons.Last.Visible = False
-        Navigator.Buttons.Insert.Visible = True
+        Navigator.Buttons.Insert.Visible = False
         Navigator.Buttons.Append.Visible = False
         Navigator.Buttons.Delete.Visible = True
-        Navigator.Buttons.Edit.Visible = True
+        Navigator.Buttons.Edit.Visible = False
         Navigator.Buttons.Post.Visible = True
         Navigator.Buttons.Cancel.Visible = True
         Navigator.Buttons.Refresh.Visible = True
         Navigator.Buttons.SaveBookmark.Visible = False
         Navigator.Buttons.GotoBookmark.Visible = False
         Navigator.Buttons.Filter.Visible = False
+        Navigator.Visible = True
         FilterBox.CustomizeDialog = False
         DataController.DetailKeyFieldNames = 'Kod'
         DataController.Filter.Active = True
@@ -585,8 +587,6 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
         OptionsCustomize.ColumnGrouping = False
         OptionsCustomize.ColumnHidingOnGrouping = False
         OptionsCustomize.ColumnsQuickCustomization = True
-        OptionsData.Deleting = False
-        OptionsData.DeletingConfirmation = False
         OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
         OptionsView.ColumnAutoWidth = True
         OptionsView.GroupByBox = False
@@ -605,33 +605,43 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
           Caption = 'ID'
           DataBinding.FieldName = 'id'
           HeaderAlignmentHorz = taCenter
-          Width = 61
+          Width = 67
         end
         object gridGGdate_create: TcxGridDBColumn
           Caption = #304#351'lem Tarihi'
           DataBinding.FieldName = 'date_create'
           HeaderAlignmentHorz = taCenter
           Options.Editing = False
-          Width = 106
+          Width = 117
         end
         object gridGGColumn1: TcxGridDBColumn
           Caption = 'G'#246'zden Ge'#231'irme Tarihi'
           DataBinding.FieldName = 'ggTarihi'
           Options.Editing = False
-          Width = 123
+          Width = 117
         end
         object gridGGSggTarihi: TcxGridDBColumn
           Caption = 'Sonraki G'#246'zden Ge'#231'irme Tarihi'
           DataBinding.FieldName = 'SggTarihi'
           HeaderAlignmentHorz = taCenter
-          Width = 153
+          Width = 117
         end
         object gridGGggUser: TcxGridDBColumn
           Caption = #304#351'lemi Yapan'
           DataBinding.FieldName = 'ggUser'
           HeaderAlignmentHorz = taCenter
           Options.Editing = False
-          Width = 213
+          Width = 121
+        end
+        object gridGGColumn2: TcxGridDBColumn
+          Caption = 'A'#231#305'klama'
+          DataBinding.FieldName = 'aciklama'
+          PropertiesClassName = 'TcxTextEditProperties'
+          Properties.Alignment.Vert = taVCenter
+          GroupSummaryAlignment = taCenter
+          HeaderAlignmentHorz = taCenter
+          HeaderAlignmentVert = vaCenter
+          Width = 184
         end
       end
       object cxGridDBBandedTableView9: TcxGridDBBandedTableView
@@ -1196,6 +1206,7 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
         Tag = -2
         Caption = 'G'#246'zden Ge'#231'irme '#304'ptal'
         ImageIndex = 84
+        Visible = False
         OnClick = cxButtonCClick
       end
       object G1: TMenuItem

@@ -17,8 +17,8 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
   PixelsPerInch = 96
   TextHeight = 13
   object YillikEgitimPlanGrid: TcxGridKadir
-    Left = 8
-    Top = 40
+    Left = 248
+    Top = 216
     Width = 1161
     Height = 297
     TabOrder = 0

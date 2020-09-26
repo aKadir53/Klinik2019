@@ -224,8 +224,10 @@ begin
   if tag = -1
   then
     sql := 'delete from hareketler ' +
-          ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
-          ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'' and isnull(islemSiraNo,'''') = '''''
+          ' where ' +
+          //substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
+         // ' and
+          ' dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and (Tip in (''L'',''R'')) and isnull(gd,0) = 0 and isnull(islemSiraNo,'''') = '''''
   else
   if tag = -31
   then
@@ -249,8 +251,6 @@ begin
 
 
    datalar.QueryExec(sql);
-
-
 
    ADO_Tetkikler.Requery;
   except on e : Exception do
@@ -368,10 +368,13 @@ begin
          end;
 
     -2 : begin
-            if cxGridTetkikler.Controller.SelectedRowCount > 0
-            Then begin
-               TetkikSil(-1);
-            end;
+          //  if cxGridTetkikler.Controller.SelectedRowCount > 0
+         //   Then begin
+             if mrYes = ShowMessageSkin('Tetkikler Silinecek','','','msg') then
+             begin
+                 TetkikSil(-1);
+             end;
+          //  end;
          end;
     -4 : begin
            Kantetkikleri(_dosyaNO_,datalar.HastaBil.Tarih);
@@ -701,13 +704,21 @@ begin
 
     if mrYes = ShowPopupForm('Tetkik Doktor Bilgisi Deðiþtir',SeansDoktorUpdate)
     Then Begin
+            datalar.QueryExec('update hareketler set doktor = ' + QuotedStr(datalar.SeansBilgi.doktor) +
+                                      ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L'''
+
+                    );
+                    ADO_Tetkikler.Requery;
+
+
+       (*
         for x := 0 to cxGridTetkikler.Controller.SelectedRowCount - 1 do
         begin
            Application.ProcessMessages;
            satir := cxGridTetkikler.Controller.SelectedRows[x].RecordIndex;
            cxGridTetkikler.DataController.FocusedRecordIndex := satir;
          //  sirano := cxGridTetkikler.DataController.GetValue(satir,cxGridTetkikler.DataController.GetItemByFieldName('islemRefNo').Index);
-           talepSira := cxGridTetkikler.DataController.GetValue(satir,cxGridTetkikler.DataController.GetItemByFieldName('islemSiraNo').Index);
+           talepSira := varToStr(cxGridTetkikler.DataController.GetValue(satir,cxGridTetkikler.DataController.GetItemByFieldName('islemSiraNo').Index));
 
            if  talepSira = ''
            then begin
@@ -716,6 +727,8 @@ begin
            end;
 
         end; // for end
+        *)
+
     End;
 
 end;

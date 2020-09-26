@@ -179,8 +179,11 @@ begin
         satir := GridList.Controller.SelectedRows[i].RecordIndex;
         dosyaNo := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('dosyaNo').Index);
         gelisNo := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('gelisNo').Index);
-        sql := 'sp_KtvHesapla ' + QuotedStr(dosyaNo) + ',' + gelisNo + ',' + QuotedStr(HesapTipi);
-        datalar.QueryExec(sql);
+        try
+          sql := 'sp_KtvHesapla ' + QuotedStr(dosyaNo) + ',' + gelisNo + ',' + QuotedStr(HesapTipi);
+          datalar.QueryExec(sql);
+        except
+        end;
         pBar.Position := pBar.Position + 1;
      end;
      TopPanelButonClick(self);

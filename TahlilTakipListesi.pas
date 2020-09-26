@@ -156,6 +156,7 @@ type
     chkBand: TcxCheckGroup;
     cxSplitter1: TcxSplitter;
     E1: TMenuItem;
+    chkDegerlendirme: TcxCheckBox;
     procedure cxButtonCClick(Sender: TObject);
     procedure Tarih;
     procedure T1Click(Sender: TObject);
@@ -594,7 +595,8 @@ begin
              QuotedStr(tarihal(tarih1.Date)) + ',' + QuotedStr(tarihal(tarih2.Date)) +
              ',@tip = ' + QuotedStr(DiyalizTip.EditValue) +
              ',@apm = ' + QuotedStr(apm) +
-             ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
+             ',@sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+             ',@tedaviUyariVar = ' + ifThen(chkDegerlendirme.Checked,'1','0');
       datalar.QuerySelect(ADO_TetkiklerHastaList,sql);
     finally
       DurumGoster(False);

@@ -121,7 +121,7 @@ var
   Istekcvp : IslemSonuc;
   I ,x : integer;
   t : Boolean;
-  dosyaNo,gelisNo ,sm ,tip ,sql , barkod,id,kayitTip,ornekNo : string;
+  dosyaNo,gelisNo ,sm ,tip ,sql , barkod,id,kayitTip,ornekNo,kanAlimTarihi : string;
   ado : TADOQuery;
 begin
 
@@ -134,6 +134,11 @@ begin
   datalar.Lab.URL  := datalar._laburl;
   IstekGon.ISTEM_TARIHI := datetostr(date);
   IstekGon.SERVIS_KODU := datalar.kontrolKod;
+
+          if not DirectoryExists('C:\NoktaV3\ALIS')
+          then
+           MkDir('C:\NoktaV3\ALIS');
+
 
    for I := 0 to gridAktif.Controller.SelectedRowCount - 1 do
    begin
@@ -155,11 +160,20 @@ begin
            ornekNo := varToStr(gridAktif.DataController.GetValue(
                       gridAktif.Controller.SelectedRows[I].RecordIndex,gridAktif.DataController.GetItemByFieldName('ornekNo').Index));
 
-          barkod := ifThen(ornekNo= '',dosyaNo + gelisNo,ornekNo);
+           kanAlimTarihi := varToStr(gridAktif.DataController.GetValue(
+                      gridAktif.Controller.SelectedRows[I].RecordIndex,gridAktif.DataController.GetItemByFieldName('KanAlimZamani').Index));
+
+
+          barkod := id ;//ifThen(ornekNo= '',dosyaNo + gelisNo,ornekNo);
           HastabilgileriDoldurVentura(IstekGon,dosyaNo,gelisNo);
 
           IstekGon.ORNEKNO := strtoint(barkod);
+          IstekGon.ISTEM_TARIHI := kanAlimTarihi;
+          IstekGon.KANALMA_TARIHI := kanAlimTarihi;
           IstekGon.TETKIKLER := HastaIstekBilgileriVentura(dosyaNo,gelisNo,tip);
+
+          datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\ALIS\ALIS_HastaKaydet_' + dosyaNo + '_' + gelisNo + '.XML';
+
 
         try
          Istekcvp := (datalar.Lab as AlisWSSoap).ALISKayitEkleAdv(IstekGon);
@@ -306,6 +320,9 @@ begin
    progres.Properties.Max := gridAktif.Controller.SelectedRowCount;
    progres.Position := 0;
 
+          if not DirectoryExists('C:\NoktaV3\ALIS')
+          then
+           MkDir('C:\NoktaV3\ALIS');
 
    for I := 0 to gridAktif.Controller.SelectedRowCount - 1 do
    begin
@@ -335,9 +352,7 @@ begin
            co := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[I].RecordIndex,gridAktif.DataController.GetItemByFieldName('CikisOrnekNo').Index);
 
-          if not DirectoryExists('C:\NoktaV3\ALIS')
-          then
-           MkDir('C:\NoktaV3\ALIS');
+
           datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\ALIS\ALIS_SonucAl_' + dosyaNo + '_' + gelisNo + '.XML';
 
 

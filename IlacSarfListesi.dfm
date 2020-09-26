@@ -22,7 +22,7 @@ object frmIlacSarf: TfrmIlacSarf
     Left = 0
     Top = 18
     Width = 654
-    Height = 35
+    Height = 45
     Align = alTop
     Color = clBackground
     Font.Charset = TURKISH_CHARSET
@@ -63,7 +63,7 @@ object frmIlacSarf: TfrmIlacSarf
       Style.Font.Style = []
       Style.IsFontAssigned = True
       TabOrder = 1
-      Height = 33
+      Height = 43
       Width = 652
     end
   end
@@ -113,6 +113,22 @@ object frmIlacSarf: TfrmIlacSarf
       Transparent = True
       OnClick = chkSIKClick
       Width = 163
+    end
+    object chkDozAsimiDikkateAlma: TcxCheckBox
+      Left = 464
+      Top = 0
+      Caption = 'Doz A'#351#305'm'#305' Dikkate Alma'
+      ParentFont = False
+      Style.Font.Charset = TURKISH_CHARSET
+      Style.Font.Color = clBlack
+      Style.Font.Height = -13
+      Style.Font.Name = 'Tahoma'
+      Style.Font.Style = [fsBold]
+      Style.IsFontAssigned = True
+      TabOrder = 2
+      Transparent = True
+      OnClick = chkDozClick
+      Width = 186
     end
   end
   object pnlOnay: TPanel
@@ -214,9 +230,9 @@ object frmIlacSarf: TfrmIlacSarf
   end
   object GroupBox2: TGroupBox
     Left = 0
-    Top = 53
+    Top = 63
     Width = 654
-    Height = 609
+    Height = 599
     Align = alClient
     Caption = #304'la'#231'lar  '
     Font.Charset = DEFAULT_CHARSET
@@ -430,7 +446,7 @@ object frmIlacSarf: TfrmIlacSarf
     end
     object DBNavigator1: TDBNavigator
       Left = 2
-      Top = 589
+      Top = 579
       Width = 650
       Height = 18
       DataSource = DataSource2
@@ -444,7 +460,7 @@ object frmIlacSarf: TfrmIlacSarf
       Left = 2
       Top = 366
       Width = 650
-      Height = 223
+      Height = 213
       Align = alClient
       TabOrder = 4
       object Eklenen: TcxGridDBTableView
@@ -607,14 +623,14 @@ object frmIlacSarf: TfrmIlacSarf
   end
   object DataSource2: TDataSource
     DataSet = Eklenenler
-    Left = 12
+    Left = 28
     Top = 465
   end
   object Eklenenler: TdxMemData
     Active = True
     Indexes = <>
     SortOptions = []
-    Left = 48
+    Left = 80
     Top = 467
     object EklenenlerETKENMADDE: TStringField
       DisplayWidth = 50

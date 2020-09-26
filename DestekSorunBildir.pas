@@ -180,15 +180,20 @@ begin
   ado := TADOQuery.Create(nil);
   try
     ado.Connection := datalar.ADOConnection1;
-    try
-      sql := 'update sorunCozumSureci ' +
-             ' set durum = 9 ' +
-             ' where id = ' + ado_CVP.FieldByName('id').AsString;
-      datalar.QueryExec(ado,sql);
-    except on e : Exception do
-     begin
-      ShowMessageSkin(e.Message,'','','info');
-     end;
+    ADO_CVP.First;
+    while not ADO_CVP.Eof do
+    begin
+        try
+          sql := 'update sorunCozumSureci ' +
+                 ' set durum = 9 ' +
+                 ' where id = ' + ado_CVP.FieldByName('id').AsString;
+          datalar.QueryExec(ado,sql);
+        except on e : Exception do
+         begin
+          ShowMessageSkin(e.Message,'','','info');
+         end;
+        end;
+        ADO_CVP.Next;
     end;
   finally
     ado.Free;

@@ -581,9 +581,9 @@ object frmTakipKontrol: TfrmTakipKontrol
       end
     end
     object cxPageControl1: TcxPageControl
-      Left = 674
+      Left = 676
       Top = 1
-      Width = 617
+      Width = 615
       Height = 641
       Align = alClient
       Color = 16315635
@@ -593,7 +593,7 @@ object frmTakipKontrol: TfrmTakipKontrol
       Properties.ActivePage = cxTabSheetMedula
       ClientRectBottom = 634
       ClientRectLeft = 3
-      ClientRectRight = 610
+      ClientRectRight = 608
       ClientRectTop = 26
       object cxTabSheetMedula: TcxTabSheet
         Caption = 'Medula'
@@ -612,11 +612,11 @@ object frmTakipKontrol: TfrmTakipKontrol
           Style.IsFontAssigned = True
           TabOrder = 0
           Height = 608
-          Width = 607
+          Width = 605
           object cxGrid8: TcxGrid
             Left = 3
             Top = 15
-            Width = 601
+            Width = 599
             Height = 583
             Align = alClient
             Font.Charset = TURKISH_CHARSET
@@ -632,7 +632,7 @@ object frmTakipKontrol: TfrmTakipKontrol
             LookAndFeel.NativeStyle = False
             ExplicitLeft = 2
             ExplicitTop = -2
-            ExplicitWidth = 603
+            ExplicitWidth = 601
             ExplicitHeight = 608
             object GridHizmetler: TcxGridDBTableView
               PopupMenu = PopupMenu2
@@ -816,6 +816,13 @@ object frmTakipKontrol: TfrmTakipKontrol
                 HeaderAlignmentHorz = taCenter
                 HeaderAlignmentVert = vaCenter
                 Width = 69
+              end
+              object GridHizmetlerColumn2: TcxGridDBColumn
+                Caption = 'RaporNo'
+                DataBinding.FieldName = 'raporNo'
+                HeaderAlignmentHorz = taCenter
+                HeaderAlignmentVert = vaCenter
+                Width = 49
               end
               object GridHizmetlerhizmetSunucuRefNo: TcxGridDBColumn
                 Caption = 'HizmetSunucu RefNo'
@@ -1039,7 +1046,7 @@ object frmTakipKontrol: TfrmTakipKontrol
     object cxSplitter1: TcxSplitter
       Left = 668
       Top = 1
-      Width = 6
+      Width = 8
       Height = 641
       Control = cxPageControl2
     end

@@ -227,6 +227,9 @@ begin
               TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('aciklama').AsString := datalar.HastaYatis.Aciklama;
               TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('TaniKodu').AsString := datalar.HastaYatis.TaniKodu;
               TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tani').AsString := datalar.HastaYatis.Tani;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Brans').AsString := datalar.HastaYatis.Brans;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tesis').AsString := datalar.HastaYatis.Tesis;
+
               TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.Post;
               ADone := True;
             End;
@@ -239,6 +242,8 @@ begin
               datalar.HastaYatis.Aciklama := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('aciklama').AsString;
               datalar.HastaYatis.TaniKodu := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('TaniKodu').AsString;
               datalar.HastaYatis.Tani := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tani').AsString;
+              datalar.HastaYatis.Tesis := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tesis').AsString;
+              datalar.HastaYatis.Brans := TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Brans').AsString;
 
             if mrYes = ShowPopupForm('Hasta Yatýþ',hastaYatisDuzenle)
             Then Begin
@@ -250,6 +255,8 @@ begin
               TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('aciklama').AsString := datalar.HastaYatis.Aciklama;
               TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('TaniKodu').AsString := datalar.HastaYatis.TaniKodu;
               TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tani').AsString := datalar.HastaYatis.Tani;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Brans').AsString := datalar.HastaYatis.Brans;
+              TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.FieldByName('Tesis').AsString := datalar.HastaYatis.Tesis;
               TcxGridKadir(FindComponent('cxGridHastaYatis')).Dataset.Post;
               ADone := True;
             End;
@@ -311,19 +318,32 @@ var
   Ado : TADOQuery;
   sql : string;
 begin
+  inherited;
+
   case TcxButtonKadir(sender).Tag of
-    550 : TopluPasifYap (True);
-    555 : TopluPasifYap (False);
+   // 550 : TopluPasifYap (True);
+   // 555 : TopluPasifYap (False);
+     20 : begin
+            try
+             TcxCurrencyEdit(FindComponent('VKI')).EditValue :=
+              TcxCurrencyEdit(FindComponent('IdealKilo')).EditValue /
+              (sqr((TcxCurrencyEdit(FindComponent('boy')).EditValue/100)));
+            except
+              TcxCurrencyEdit(FindComponent('VKI')).EditValue := 0;
+            end;
+          end;
     -50 : begin
 
-         end;
-         else
-         begin
+          end;
+          else
+          begin
+           (*
             F := FormINIT(TcxButtonKadir(sender).Tag,GirisRecord,ikHayir,'');
             if F <> nil then F.ShowModal;
             TcxImageComboKadir(FindComponent('bolum')).Filter := '';
             TcxImageComboKadir(FindComponent('birim')).Filter := '';
-         end;
+           *)
+          end;
   end;
 
 
@@ -487,9 +507,10 @@ begin
                                     ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_).FieldByName('Tarih').AsDateTime;
 
 
-       if Tarih > datalar.GelisDuzenleRecordK.GirisTarihi
+       if datalar.GelisDuzenleRecordK.GirisTarihi > Tarih
        then begin
-         ShowMessageSkin('Geliþ Tarihi Ýlk Seans Tarihinden Büyük Olamaz','','','info');
+         ShowMessageSkin('Geliþ Tarihi : ' + dateTostr(datalar.GelisDuzenleRecordK.GirisTarihi) + ' Ýlk Sens Tarihi : ' + dateToStr(Tarih),
+            'Geliþ Tarihi Ýlk Seans Tarihinden Büyük Olamaz','','info');
          exit;
        end
        else
@@ -1006,7 +1027,7 @@ begin
           image := TcxImage.Create(nil);
           try
             image.Picture.LoadFromFile(filename);
-            StretchImage(image,stHerDurumdaStretch,110,220);
+            StretchImage(image,stHerDurumdaStretch,160,240);
             Foto.Picture := image.Picture;
             //Foto.Picture.LoadFromFile(filename);
             jp := TJpegimage.Create;
@@ -1617,6 +1638,9 @@ begin
 
   setDataStringCurr(self,'idealKilo','Kilo(Kg)',sayfa2_Kolon1,'kilo',50,'0.00', 1);
   setDataStringCurr(self,'boy','Boy(Cm)',sayfa2_Kolon1,'kilo',50,'0', 1);
+  setDataStringCurr(self,'VKI','VKI',sayfa2_Kolon1,'vkig',50,'0.00', 1);
+  addButton(self,nil,'btnVKI','','VKI Hesapla',Kolon1,'vkig',80,ButtonClick,20);
+
 
   setDataStringC(self,'seans','Seans',Sayfa2_Kolon2,'_s_',50,'1,2,3,4,5');
   setDataString(self,'seansSuresi','Seans Süre',Sayfa2_Kolon2,'_s_',30);
@@ -1651,7 +1675,7 @@ begin
 
   setDataStringMemo(self,'Alerji','Alerji Diðer',sayfa3_Kolon1,'',630,40);
 
-
+  setDataStringMemo(self,'BesinAlerji','Besin Alerji',sayfa3_Kolon1,'',630,40);
 
   setDataStringBLabel(self,'BosSatir2',sayfa3_Kolon1,'',700,'');
 

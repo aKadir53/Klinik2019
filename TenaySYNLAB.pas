@@ -215,13 +215,18 @@ begin
 
             Progres.Position := Progres.Position + 1;
 
-
-
+       (*
+            if (HTSOTCCvp.SonucKodu <> '')
+            Then begin
+               txtLog.Lines.Add(HTSOTCCvp.SonucMesaji);
+               exit;
+            end;
+         *)
             if ss <> 'Hata'
             Then Begin
                 if (HTSOTCCvp.Sonuclar[0] = nil) and (length(HTSOTCCvp.Sonuclar) = 1)
                 then  begin
-                   txtLog.Lines.Add(inttostr(HTSOTC.TC) + ' - Sonuç Bulunamadý');
+                   txtLog.Lines.Add(inttostr(HTSOTC.TC) + ' - Sonuç Bulunamadý' + ' ' + HTSOTCCvp.SonucMesaji);
                    Continue;
                 end;
 

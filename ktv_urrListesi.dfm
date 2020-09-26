@@ -35,7 +35,6 @@ object frmKtvListesi: TfrmKtvListesi
     ExcelFileName = 'KtvUrrListesi'
     ExceleGonder = True
     PopupForm = False
-    ExplicitWidth = 750
     object GridList: TcxGridDBTableView
       Navigator.Buttons.First.Visible = True
       Navigator.Buttons.PriorPage.Visible = True

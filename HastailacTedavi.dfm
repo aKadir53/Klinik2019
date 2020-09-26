@@ -13,6 +13,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object cxIlacTedaviPanel: TcxGroupBox
@@ -49,7 +50,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
           object cxGrid15: TcxGrid
             Left = 0
             Top = 0
-            Width = 681
+            Width = 606
             Height = 530
             Align = alLeft
             Font.Charset = TURKISH_CHARSET
@@ -129,7 +130,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
                 DataBinding.FieldName = 'ilacName'
                 HeaderAlignmentHorz = taCenter
                 Options.Editing = False
-                Width = 265
+                Width = 221
               end
               object cxGridIlacTedaviPlanigrup: TcxGridDBColumn
                 DataBinding.FieldName = 'grup'
@@ -293,9 +294,9 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
             end
           end
           object cxGrid3: TcxGrid
-            Left = 689
+            Left = 614
             Top = 0
-            Width = 485
+            Width = 560
             Height = 530
             Align = alClient
             Font.Charset = TURKISH_CHARSET
@@ -509,7 +510,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
             end
           end
           object cxSplitter2: TcxSplitter
-            Left = 681
+            Left = 606
             Top = 0
             Width = 8
             Height = 530
@@ -550,7 +551,6 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       Tag = -5
       Caption = 'Re'#231'eteye Ekle'
       ImageIndex = 97
-      Visible = False
       OnClick = cxButtonCClick
     end
     object y1: TMenuItem
@@ -594,13 +594,17 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       Tag = 81
       Caption = 'D'#252'zenle'
       ImageIndex = 35
-      Visible = False
       OnClick = cxButtonCClick
     end
     object S2: TMenuItem
       Tag = 82
       Caption = 'Sil'
       ImageIndex = 43
+      OnClick = cxButtonCClick
+    end
+    object A1: TMenuItem
+      Tag = -100
+      Caption = 'Se'#231'ili Tedaviyi Son Tedaviye Aktar'
       OnClick = cxButtonCClick
     end
   end

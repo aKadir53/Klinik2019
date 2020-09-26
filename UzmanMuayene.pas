@@ -481,7 +481,7 @@ begin
                        'left join Diyaliz_DamarGiris DG on DG.kod = ug.GIRISYOLU ' +
                        ' WHERE ug.dosyaNo = ' + QuotedStr(_dosyaNo_) + ' AND gelisNo = ' + _gelisNo_ +
                        ' order by Tarih desc ';
-                Datasets.Dataset0 := datalar.QuerySelect(sql);
+                Datasets.Dataset2 := datalar.QuerySelect(sql);
 
 
 
@@ -493,6 +493,8 @@ begin
                        ' JOIN Sistemsorgulari s ON cast(s.kod AS VARCHAR) = DataValue ' +
                        ' WHERE isnull(DataValue,'''') <> '''' ';
                 Datasets.Dataset1 := datalar.QuerySelect(sql);
+                Datasets.Dataset3 := datalar.ADO_AktifSirket;
+                Datasets.Dataset4 := datalar.ADO_aktifSirketLogo;
 
                 PrintYap('210','Uzman Muayene Form','',Datasets,pTNone,frmUzmanMuayene);
 

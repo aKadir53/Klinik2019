@@ -635,6 +635,7 @@ begin
             FaturaList.Controller.SelectedRows[x].RecordIndex,FaturaList.DataController.GetItemByFieldName('MedulaEpikriz').Index))
            = ''
           Then begin
+             txtLog.Lines.Add(_tn_  + ' : ' + 'Fatura Epikriz Açýklamasý Boþ');
              if mrNo = ShowMessageSkin('Fatura Epikriz Boþ','Devam Etmek Ýstiyor musunuz?','','msg')
              Then begin
                 M1.Click;
@@ -650,6 +651,9 @@ begin
          Else
          if _Tag_ = -2  // Tutar Oku
          Then Begin
+            if HizmetDetay(BasvuruNo,'')[0].aciklama = ''
+            Then
+             txtLog.Lines.Add(_tn_  + ' : ' + 'Fatura Epikriz Açýklamasý Boþ');
              msj := FaturaTutarOku(basvuruNo,datetostr(txtTopPanelTarih2.Date),'')
          End
          Else
@@ -1485,11 +1489,11 @@ begin
   inherited;
    if AFocusedRecord = nil then exit;
 
-   ado_detay.Close;
-   ADO_Detay.Parameters[0].Value := varToStr(FaturaList.DataController.GetValue(
-                                         AFocusedRecord.RecordIndex,FaturaList.DataController.GetItemByFieldName('takipNo').Index));
-   ADO_Detay.Open;
 
+     ado_detay.Close;
+     ADO_Detay.Parameters[0].Value := varToStr(FaturaList.DataController.GetValue(
+                                           AFocusedRecord.RecordIndex,FaturaList.DataController.GetItemByFieldName('takipNo').Index));
+     ADO_Detay.Open;
 
 
    txtFaturaEpikriz.Text :=

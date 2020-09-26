@@ -167,7 +167,7 @@ begin
 
   if not FileExists('C:\RTF\' +dokumanNo + '.rtf')
   then begin
-   ShowMessageSkin('C:\RTF\' +dokumanNo + '.rtf','Dosya Bulunamadý','','info');
+   ShowMessageSkin('C:\RTF\' +dokumanNo + '.rtf','Ýçerik Alýnacak Dosya Bulunamadý','','info');
    exit;
   end;
   
@@ -212,6 +212,7 @@ begin
          Dataset.FieldByName('raporAdi').AsString := d;
          (Dataset.FieldByName('rapor') as TBlobField).LoadFromStream(Stream);
          Dataset.Post;
+         ShowMessageSkin('Ýçerik Alýndý','','','info');
       finally
         Dataset.EnableControls;
       end;
@@ -412,8 +413,6 @@ begin
   AdoRapor := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod) +
                                   ' and sirketKod = ' + QuotedStr(datalar.AktifSirket));
 
-
-
   if AdoRapor.Eof
   Then begin
       AdoRapor.Append;
@@ -431,7 +430,12 @@ begin
           template := Table.CreateBlobStream(Table.FieldByName('Rapor'), bmRead);
           IcerikAl(template,kod,'Icerik',AdoRapor);
       end;
-
+      Table.close;
+  end
+  else
+  begin
+      template := AdoRapor.CreateBlobStream(AdoRapor.FieldByName('Rapor'), bmRead);
+      IcerikAl(template,kod,'Icerik',AdoRapor);
   end;
 
 end;
@@ -440,7 +444,7 @@ end;
 procedure TfrmRapor.raporDataDokuman(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '' ; SayfaGizle : string = '');
 var
   template : TStream;
-  Table : TADOQuery;
+  Table , Table1 : TADOQuery;
 begin
 
 
@@ -449,8 +453,8 @@ begin
 
 
   datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod));
-
-  if not datalar.QuerySelect('select * from SKS_Dokumanlar where dokumanNo = ' + QuotedStr(kod)).Eof
+  Table1 := datalar.QuerySelect('select * from SKS_Dokumanlar where dokumanNo = ' + QuotedStr(kod));
+  if not Table1.Eof
   then begin
       if datalar.ADO_RAPORLAR_Q.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
       Then begin
@@ -463,8 +467,10 @@ begin
           datalar.ADO_RAPORLAR_Q.FieldByName('sirketKod').AsString := datalar.AktifSirket;
           datalar.ADO_RAPORLAR_Q.FieldByName('rapor').AsString :=
           ifThen(Table.FieldByName('rapor').AsString = '','<?xml version="1.0" encoding="utf-8"?>',Table.FieldByName('rapor').AsString);
+          datalar.ADO_RAPORLAR_Q.FieldByName('Tip').AsString := Table1.FieldByName('dokumanTip').AsString;
+          datalar.ADO_RAPORLAR_Q.FieldByName('SKS_formID').AsString := Table1.FieldByName('id').AsString;
           datalar.ADO_RAPORLAR_Q.Post;
-
+          Table.close;
         //  datalar.ADO_RAPORLAR_Q.Edit;
          (*
           Table := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ''BOS''');
@@ -481,6 +487,7 @@ begin
 
       end;
 
+      Table1.close;
   end;
 
 //   datalar.ADO_RAPORLAR_Q.Locate('raporkodu',kod,[]);
@@ -507,6 +514,7 @@ begin
     frxDBDataset12.DataSet := dataset.Dataset12;
   finally
     template.Free;
+
   end;
 
   frxReport1.ReportOptions.Name := frmRapor.Caption;
@@ -565,6 +573,13 @@ begin
   end
   else
   begin
+     if datalar.ADO_RAPORLAR_Q.FieldByName('SKS_formID').AsString  <> ''
+     then begin
+        dataset.Dataset0 := datalar.QuerySelect(
+           'sp_Dokuman ' + QuotedStr(datalar.AktifSirket) + ',' +
+           datalar.ADO_RAPORLAR_Q.FieldByName('SKS_formID').AsString);
+
+     end;
 
   end;
 

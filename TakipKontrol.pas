@@ -163,6 +163,7 @@ type
     GridHizmetlerColumn1: TcxGridDBColumn;
     TakiplerColumnEpikriz: TcxGridDBColumn;
     H3: TMenuItem;
+    GridHizmetlerColumn2: TcxGridDBColumn;
     procedure cxButtonCClick(Sender: TObject);
     procedure mnSe1Click(Sender: TObject);
     procedure mptal1Click(Sender: TObject);
@@ -369,7 +370,7 @@ begin
     begin
       if Dataset.Name = 'RxDigerIslem'
       then begin
-        datalar.QueryExec('insert into gssTakipOkuDiger(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo,raporTakipno) ' +
+        datalar.QueryExec('insert into gssTakipOkuDiger(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo,raporTakipno,raporNo) ' +
                           'values(' + QuotedStr(dataset.FieldByName('takipNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('sutKodu').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('islemTarihi').AsString) + ',' +
@@ -377,7 +378,9 @@ begin
                                       QuotedStr(dataset.FieldByName('hizmetSunucuRefNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('islemSiraNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('drTescilNo').AsString) + ',' +
-                                      QuotedStr(dataset.FieldByName('raporTakipNo').AsString) + ')');
+                                      QuotedStr(dataset.FieldByName('raporTakipNo').AsString) + ',' +
+                                      QuotedStr(dataset.FieldByName('raporNo').AsString) +
+                                      ')');
       end
       else
       if Dataset.Name = 'RxTahlilIslem'
@@ -610,7 +613,7 @@ begin
                                                txtTopPanelTarih2.GetSQLValue + ',' +
                                                QuotedStr(datalar.AktifSirket) + ',' +
                                                QuotedStr(ifThen(chkList.EditValue = '1','H','E')) + ',' +
-                                               QuotedStr(ifThen(varToStr(txtDonemTopPanel.EditValue)='','1000'))
+                                               QuotedStr(ifThen(varToStr(KurumTipTopPanel.EditValue)='','1000',varToStr(KurumTipTopPanel.EditValue)))
                                                ;
         datalar.QuerySelect(ADO_SQL, sql);
        (*
@@ -1634,12 +1637,18 @@ begin
   ado.Connection := datalar.ADOConnection2;
   DurumGoster(True,False,'Kayýtlarýnýz Faturaya, Atýlýyor...');
 
+  if varToStr(KurumTipTopPanel.EditValue) = ''
+  Then begin
+    KurumTipTopPanel.ItemIndex := 0;
+  end;
+
   try
     for r := 0 to Takipler.Controller.SelectedRowCount - 1 do
     begin
       takip := Takipler.DataController.GetValue(Takipler.Controller.SelectedRows[r].RecordIndex, Takipler.DataController.GetItemByFieldName('TakipNo').Index);
       sql := 'exec sp_kurumFaturaIsle_M3 ' + #39 + takip + #39 + ',' + #39 +
-              txtTopPanelTarih1.GetValue + #39 + ',' + #39 + txtTopPanelTarih2.GetValue + #39;
+              txtTopPanelTarih1.GetValue + #39 + ',' + #39 + txtTopPanelTarih2.GetValue + #39 + ',' +
+              QuotedStr(varToStr(KurumTipTopPanel.EditValue));
 
       datalar.QuerySelect(ado, sql);
 

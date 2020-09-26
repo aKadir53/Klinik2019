@@ -241,6 +241,9 @@ begin
     if SaveDialog1.Execute = True
     Then
       ExportGridToExcel(SaveDialog1.FileName,cxGrid3 ,False,True);
+
+
+
 end;
 
 procedure TfrmSorgulamalar.FormCreate(Sender: TObject);
@@ -273,9 +276,14 @@ var
   ic : integer;
   fieldTip : TFieldType;
   _Kind : TcxSummaryKind;
+  GridV : TcxGridDBBandedTableView;
+  Grid : TcxGrid;
+  comp : TComponent;
+  n : string;
+  Dosya : TSaveDialog;
 begin
   inherited;
-  _Kind := skNone;
+
   if TMenuItem(sender).Tag = 0
   Then
    _Kind := skSum
@@ -290,27 +298,46 @@ begin
   Else
   if TMenuItem(sender).Tag = 3
   Then
-   _Kind := skMin;
+   _Kind := skMin
+   else   _Kind := skNone;
 
 
-     for ic := 0 to cxGrid3DBBandedTableView1.DataController.ItemCount - 1 do
+  comp := ((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent;
+  GridV := TcxGridDBBandedTableView(TcxGrid(comp).Views[0]);
+
+  if TMenuItem(sender).Tag = 9
+  then begin
+    Dosya := TSaveDialog.Create(nil);
+    try
+
+      Dosya.Execute;
+      ExportGridToExcel(Dosya.FileName+'.XLS',TcxGrid(comp),True,True);
+    finally
+      Dosya.Free;
+    end;
+  end
+  else
+  begin
+     //if
+     GridV.DataController.Summary.FooterSummaryItems.Clear; //Count > 0
+   //  then
+    //   GridV.DataController.Summary.FooterSummaryItems.Delete(0);
+
+    // cxGrid3DBBandedTableView1.DataController.ItemCount
+     for ic := 0 to GridV.DataController.ItemCount - 1 do
      begin
-          // frmIstatistik.cxGrid3DBBandedTableView1.Columns[ic].
-           fieldTip := frmSorgulamalar.cxGrid3DBBandedTableView1.Columns[ic].DataBinding.Field.DataType;
+           fieldTip := GridV.Columns[ic].DataBinding.Field.DataType;
            if (fieldTip in [ftFloat,ftInteger,ftCurrency])
            Then begin
-           with cxGrid3DBBandedTableView1.DataController.Summary.FooterSummaryItems[ic] as
-           TcxGridDBTableSummaryItem do
-           begin
-            // Column := cxGrid3DBBandedTableView1.Columns[ic];
-            // FieldName := cxGrid3DBBandedTableView1.Columns[ic].DataBinding.FieldName;
-             Kind := _Kind;
-           end; // with
-           end; // if
+                GridV.DataController.Summary.FooterSummaryItems.Add(GridV.Columns[ic], spFooter, _Kind,'');
+           end;
+           GridV.DataController.Summary.FooterSummaryItems.Add(GridV.Columns[0], spFooter, skCount,'');
+
      end;
 
-  cxGrid3DBBandedTableView1.DataController.Refresh;
+     GridV.DataController.Refresh;
 
+  end;
 end;
 
 procedure TfrmSorgulamalar.Raporlar;

@@ -81,6 +81,7 @@ type
     H2: TMenuItem;
     T2: TMenuItem;
     T3: TMenuItem;
+    H3: TMenuItem;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -158,7 +159,7 @@ var
  F : TGirisForm;
  Datasets : TDataSetKadir;
  x , satir : integer;
- dosyaNo , dosyaNos ,sql : string;
+ dosyaNo , dosyaNos ,sql,_dosyaNos_ : string;
 
  ado,ado0,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
  m : string;
@@ -213,6 +214,7 @@ begin
 
  -7 : begin
            DurumGoster(True,False,'Hastanýn Reçeteleri Yükleniyor...');
+
           try
             F := FormINIT(TagfrmHastaRecete,GirisFormRecord,ikEvet);
             F._foto_ := _foto_;
@@ -220,6 +222,12 @@ begin
           finally
             DurumGoster(False,False);
           end;
+
+
+
+
+
+
 
        // ReceteForm(ado_BransKodlari.FieldByName('dosyaNo').AsString,ado_BransKodlari.FieldByName('gelisNo').AsString);
       end;
@@ -313,6 +321,32 @@ begin
            if F <> nil then F.ShowModal;
        end;
 
+-113 : begin
+          DurumGoster(True);
+
+          try
+            for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+            begin
+               Application.ProcessMessages;
+               satir := Liste.Controller.SelectedRows[x].RecordIndex;
+               dosyaNo := varToSTr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+               dosyaNos := dosyaNos + ifthen(dosyaNos = '','',',') + dosyaNo;
+            end;
+
+              sql := 'select h.* from hastakart h ' +
+                     'where h.dosyaNo in (select datavalue from dbo.strTotable(' + QuotedStr(dosyaNos) + ','',''))' ;
+
+              Datasets.Dataset1 := datalar.QuerySelect(sql);
+
+              Datasets.Dataset2 := datalar.ADO_AktifSirket;
+              Datasets.Dataset3 := datalar.ADO_aktifSirketLogo;
+              PrintYap('HBP','Hasta Bakým Planý','',Datasets,kadirType.pTNone);
+
+          finally
+            DurumGoster(False);
+          end;
+       end;
+
 -100 : begin
               if DirectoryExists('C:\NoktaV3\QR') = False
               then
@@ -367,9 +401,18 @@ begin
              else begin
 
               DurumGoster(True);
+
+               for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+               begin
+                   satir := Liste.Controller.SelectedRows[x].RecordIndex;
+                   _dosyaNos_ := ifThen(_dosyaNos_='',_dosyaNos_+'',_dosyaNos_+',') +
+                     varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+               end;
+
+
               try
               ado := TADOQuery.Create(nil);
-              sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = ' + QuotedStr(dosyaNo) + ' , @yil = ' + QuotedStr(ay1) +
+              sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = ' + QuotedStr(_dosyaNos_) + ' , @yil = ' + QuotedStr(ay1) +
                             ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket) +
                             ',@seans = ' + QuotedStr(txtSeansTopPanel.text);
               datalar.QuerySelect(ado,sql);

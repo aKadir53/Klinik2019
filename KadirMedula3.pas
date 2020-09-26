@@ -3230,6 +3230,8 @@ Begin
 
       datalar.FaturaKayitWS.FaturaGiris.hizmetDetaylari := HizmetDetay(BasvuruNo,HizmetDetayi);
 
+
+
       datalar.FaturaKayitWS.FaturaGiris.faturaRefNo := Tarihal(strtodate(Tarih));
       datalar.FaturaKayitWS.FaturaGiris.yesilKartSevkEdilenBransKodu := '';
       datalar.FaturaKayitWS.FaturaGiris.yesilKartSevkEdilenTesisKodu := 0;

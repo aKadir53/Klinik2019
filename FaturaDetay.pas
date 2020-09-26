@@ -23,7 +23,7 @@ uses
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
   cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxImage,
-  cxImageComboBox, cxButtonEdit;
+  cxImageComboBox, cxButtonEdit,dxLayoutControl,dxLayoutContainer;
 
 type
   TfrmFaturaDetay = class(TGirisForm)
@@ -170,6 +170,14 @@ var
   faturaId , id , sql : string;
 begin
   //SirketKodx.Text := datalar.AktifSirket; giriþ formuna eklendi.
+
+  if Length(TcxTextEdit(FindComponent('GIBFaturaNo')).Text) <> 13
+  Then begin
+    ShowMessageSkin('Fatura GÝB No Hatalý','Örnek , ABC0123456789 Formatýnda 13 karakter Olmalý','','info');
+    TcxTextEdit(FindComponent('GIBFaturaNo')).SetFocus;
+    exit;
+  end;
+
   inherited;
 
   case TControl(sender).Tag  of
@@ -249,6 +257,31 @@ begin
  Then begin
    faturaNoDegisti := True;
  end;
+
+ if TcxTextEdit(Sender).name = 'OzelKod'
+ Then begin
+    if varToStr(TcxImageComboKadir(FindComponent('OzelKod')).EditValue) = '1'
+    then begin
+        TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := true;
+        TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := true;
+        TdxLayoutGroup(FindComponent('dxLaHastaDosyaNo')).Visible := False;
+    end
+    else
+    if varToStr(TcxImageComboKadir(FindComponent('OzelKod')).EditValue) = '2'
+    then
+    begin
+        TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := false;
+        TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := false;
+        TdxLayoutGroup(FindComponent('dxLaHastaDosyaNo')).Visible := True;
+    end
+    else
+    begin
+        TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := false;
+        TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := false;
+        TdxLayoutGroup(FindComponent('dxLaHastaDosyaNo')).Visible := false;
+    end;
+ end;
+
 
 end;
 
@@ -420,7 +453,7 @@ begin
   FaturaTip.DisplayField := 'tanimi';
   FaturaTip.Filter := '';
   FaturaTip.BosOlamaz := True;
-  setDataStringKontrol(self,FaturaTip,'FaturaTip','Fatura Tipi',Kolon1,'FT',100);
+  setDataStringKontrol(self,FaturaTip,'FaturaTip','Fatura Tipi',Kolon1,'FT',81);
   OrtakEventAta(FaturaTip);
 
 
@@ -431,7 +464,7 @@ begin
   FaturaOzelKodlari.DisplayField := 'tanimi';
   FaturaOzelKodlari.Filter := '';
   FaturaOzelKodlari.BosOlamaz := True;
-  setDataStringKontrol(self,FaturaOzelKodlari,'OzelKod','Fatura Özel Kod',Kolon1,'FT',100);
+  setDataStringKontrol(self,FaturaOzelKodlari,'OzelKod','Fatura Özel Kod',Kolon1,'FT',82);
   OrtakEventAta(FaturaOzelKodlari);
 
 
@@ -445,6 +478,46 @@ begin
   OrtakEventAta(FaturaTip);
 
   setDataString(self,'evrakRefNo','',Kolon1,'sgk',100,False,'');
+
+
+  FaturaOzelKodlari := TcxImageComboKadir.Create(self);
+  FaturaOzelKodlari.Conn := datalar.ADOConnection2;
+  FaturaOzelKodlari.TableName := '(select dosyaNo HastaDosyaNo,HASTAADI+'' ''+HASTASOYADI tanimi from HastaKart) t';
+  FaturaOzelKodlari.ValueField := 'HastaDosyaNo';
+  FaturaOzelKodlari.DisplayField := 'tanimi';
+  FaturaOzelKodlari.Filter := '';
+  //FaturaOzelKodlari.Tag := ;
+  setDataStringKontrol(self,FaturaOzelKodlari,'HastaDosyaNo','Hasta',Kolon1,'DosyaNo',250);
+  TcxImageComboKadir(FindComponent('HastaDosyaNo')).Properties.ReadOnly := True;
+
+//  setDataString(self,'HastaDosyaNo','Hasta DosyaNo',Kolon1,'DosyaNo',100,False,'');
+
+  (*
+  if varToStr(TcxImageComboKadir(FindComponent('OzelKod')).EditValue) = '1'
+  then begin
+      TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := true;
+      TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := true;
+      TdxLayoutGroup(FindComponent('dxLaDosyaNo')).Visible := False;
+  end
+  else
+  if varToStr(TcxImageComboKadir(FindComponent('OzelKod')).EditValue) = '2'
+  then
+  begin
+      TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := false;
+      TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := false;
+      TdxLayoutGroup(FindComponent('dxLaDosyaNo')).Visible := True;
+  end
+  else
+  begin
+      TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := false;
+      TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := false;
+      TdxLayoutGroup(FindComponent('dxLaDosyaNo')).Visible := false;
+  end;
+   *)
+
+
+
+
 
 
   setDataStringBLabel(self,'bosSatir',kolon1,'',750,'Fatura Mal ve Hizmetleri');
@@ -461,6 +534,8 @@ begin
   setDataStringBLabel(self,'bosSatirkdvTop',kolon1,'kdvTop',538,'');
   setDataStringKontrol(self,kdvToplam,'kdv','Kdv Tutarý',Kolon1,'kdvTop',100);
   setDataStringBLabel(self,'bosSatirGTop',kolon1,'GTop',538,'');
+ // setDataStringKontrol(self,'aciklama','aciklama','',Kolon1,'Gtop',538);
+
   setDataStringKontrol(self,SatirToplam,'faturaGenelTutar','Fatura Genl Toplam',Kolon1,'Gtop',100);
 
 

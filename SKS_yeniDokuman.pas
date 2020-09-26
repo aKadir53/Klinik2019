@@ -119,6 +119,7 @@ type
     S1: TMenuItem;
     N4: TMenuItem;
     M1: TMenuItem;
+    gridGGColumn2: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure PropertiesEditValueChanged(Sender: TObject);override;
     procedure cxButtonEditPropertiesButtonClick(Sender: TObject;
@@ -140,6 +141,7 @@ type
     procedure ButtonClick(Sender: TObject);
     procedure SayfalarChange(Sender: TObject);
     procedure gridRevDblClick(Sender: TObject);
+    procedure gridGGDblClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -237,6 +239,8 @@ begin
                   cxGrid3.Dataset.FieldByName('ggUser').AsString := datalar.username;
                   cxGrid3.Dataset.FieldByName('ggTarihi').AsDateTime := datalar.DokumanGG.ggTarihi;
                   cxGrid3.Dataset.FieldByName('SggTarihi').AsDateTime := IncMonth(datalar.DokumanGG.ggTarihi,TcxImageComboKadir(FindComponent('gozdenGecirmePeryot')).EditValue);
+                  cxGrid3.Dataset.FieldByName('aciklama').AsString := datalar.DokumanGG.aciklama;
+
                   cxGrid3.Dataset.Post;
 
 
@@ -247,6 +251,9 @@ begin
 
 
              end;
+         end;
+    -2 : begin
+
          end;
 
     -3 : begin
@@ -314,8 +321,11 @@ begin
                     then begin
                       if TcxTextEdit(FindComponent('dokumanNo')).Text <> OldDokumanNo
                       then begin
-                         datalar.QueryExec('update RaporlarDizayn set raporKodu = ' + QuotedStr(TcxTextEdit(FindComponent('dokumanNo')).Text) +
-                                           ' where raporKodu = ' + QuotedStr(OldDokumanNo));
+                         datalar.QueryExec(
+
+                          'update RaporlarDizayn ' +
+                          ' set raporKodu = replace(raporkodu,' + QuotedStr(OldDokumanNo) + ',' + QuotedStr(TcxTextEdit(FindComponent('dokumanNo')).Text) + ')' +
+                          ' where raporKodu like ' + QuotedStr('%'+OldDokumanNo+'%'));
 
                       end;
                     end;
@@ -333,7 +343,8 @@ begin
 
     case TControl(sender).Tag  of
        Yeni : begin
-         TcxImageComboKadir(FindComponent('sirketKod')).EditValue := datalar.AktifSirket;
+                 TcxImageComboKadir(FindComponent('sirketKod')).EditValue := datalar.AktifSirket;
+
        end;
 
        Kaydet : begin
@@ -348,7 +359,9 @@ begin
                     else
                     TopluDataset.Dataset2 := datalar.QuerySelect('select *,'''' rev,'''' revTarihi, '''' aciklama from SKS_DOkumanlar where id = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text));
 
-                    datalar.QueryExec('exec sp_DokmanRaporDizaynOlustur ' + QuotedStr(TcxTextEdit(FindComponent('dokumanNo')).Text ) +
+                    if TcxImageComboKadir(FindComponent('id')).EditValue = -1
+                    then
+                      datalar.QueryExec('exec sp_DokmanRaporDizaynOlustur ' + QuotedStr(TcxTextEdit(FindComponent('dokumanNo')).Text ) +
                                       ',' + QuotedStr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue));
 
 
@@ -502,6 +515,33 @@ begin
 
 end;
 
+procedure TfrmSKS_YeniDokuman.gridGGDblClick(Sender: TObject);
+begin
+
+    datalar.DokumanGG.aciklama := cxGrid3.Dataset.FieldByName('aciklama').AsString;
+    datalar.DokumanGG.ggTarihi := cxGrid3.Dataset.FieldByName('ggTarihi').AsDateTime;
+    datalar.DokumanGG.SggTarihi := cxGrid3.Dataset.FieldByName('SggTarihi').AsDateTime;
+
+
+    if mrYes = ShowPopupForm('Gözden Geçirme Ekle',GGDuzenle)
+     then begin
+          cxGrid3.Dataset.Edit;
+          cxGrid3.Dataset.FieldByName('date_Create').AsDateTime := date;
+          cxGrid3.Dataset.FieldByName('ggUser').AsString := datalar.username;
+          cxGrid3.Dataset.FieldByName('ggTarihi').AsDateTime := datalar.DokumanGG.ggTarihi;
+          cxGrid3.Dataset.FieldByName('SggTarihi').AsDateTime := IncMonth(datalar.DokumanGG.ggTarihi,TcxImageComboKadir(FindComponent('gozdenGecirmePeryot')).EditValue);
+          cxGrid3.Dataset.FieldByName('aciklama').AsString := datalar.DokumanGG.aciklama;
+          cxGrid3.Dataset.Post;
+
+          TcxDateEdit(FindComponent('sonrakiGGTarihi')).EditValue := IncMonth(datalar.DokumanGG.ggTarihi,TcxImageComboKadir(FindComponent('gozdenGecirmePeryot')).EditValue);
+
+          datalar.QueryExec('update SKS_Dokumanlar set sonrakiGGTarihi = ' + TcxDateEditKadir(FindComponent('sonrakiGGTarihi')).GetSQLValue +
+                            ' where id = ' + QuotedStr(TcxButtonEdit(FindComponent('id')).Text));
+
+      end;
+
+end;
+
 procedure TfrmSKS_YeniDokuman.gridRevDblClick(Sender: TObject);
 var
  sql : string;
@@ -548,9 +588,19 @@ end;
 
 procedure TfrmSKS_YeniDokuman.PropertiesEditValueChanged(Sender: TObject);
 var
-  kapsamV,turV,siraV : string;
+  kapsamV,turV,siraV  , maxSira : string;
 begin
   inherited;
+
+
+  if TcxImageComboKadir(Sender).name = 'tur'
+  Then begin
+    maxSira := datalar.QuerySelect(
+        'select max(sira)+1 sira from SKS_Dokumanlar ' +
+        ' where Kapsam = ' + QuotedStr(varTostr(TcxImageComboKadir(FindComponent('kapsam')).EditValue)) +
+        ' and tur = ' +  QuotedStr(varTostr(TcxImageComboKadir(FindComponent('tur')).EditValue))).FieldByName('sira').AsString;
+    TcxCurrencyEdit(FindComponent('sira')).Text := maxSira;
+  end;
 
   if TcxImageComboKadir(Sender).name = 'dokumanTip'
   Then begin

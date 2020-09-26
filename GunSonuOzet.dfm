@@ -110,6 +110,7 @@ object frmGunSonuOzet: TfrmGunSonuOzet
       Align = alLeft
       Caption = 'Sorgula'
       TabOrder = 5
+      Visible = False
       OnClick = btnGonderClick
     end
     object chkTumAy: TcxCheckBox

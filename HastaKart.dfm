@@ -113,7 +113,7 @@ object frmHastaKart: TfrmHastaKart
   end
   object VatandasTip: TcxImageComboKadir
     Left = 296
-    Top = 53
+    Top = 35
     Properties.ClearKey = 46
     Properties.Items = <>
     TabOrder = 3

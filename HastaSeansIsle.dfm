@@ -34,6 +34,10 @@ object frmHastaSeans: TfrmHastaSeans
     object Seanslar_Sayfa: TcxTabSheet
       Caption = 'Seanslar'
       ImageIndex = 0
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object PageControl_Sayfa_Panel: TcxGroupBox
         Left = 0
         Top = 0
@@ -920,6 +924,7 @@ object frmHastaSeans: TfrmHastaSeans
             Align = alLeft
             Caption = 'Tahlil G'#246'nder'
             TabOrder = 0
+            ExplicitHeight = 0
             Width = 119
           end
           object chkMesai: TcxCheckBox
@@ -928,6 +933,7 @@ object frmHastaSeans: TfrmHastaSeans
             Align = alClient
             Caption = 'Doktor Mesai Kontol Yapma'
             TabOrder = 1
+            ExplicitHeight = 0
             Width = 763
           end
         end
@@ -998,6 +1004,10 @@ object frmHastaSeans: TfrmHastaSeans
     object TabMalzeme: TcxTabSheet
       Caption = 'Malzeme'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object MalzemeList: TcxGridKadir
         Left = 0
         Top = 0
@@ -1368,6 +1378,10 @@ object frmHastaSeans: TfrmHastaSeans
     object Sayfa_Log: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object txtLog: TcxMemo
         Left = 0
         Top = 0

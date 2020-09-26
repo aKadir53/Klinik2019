@@ -121,7 +121,7 @@ uses
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 4051;
+  AppalicationVer : integer = 4060;
   yvKversiyon : integer = 3;
   NoktaURL : string = 'https://www.noktayazilim.net';
   VersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019Versiyon.txt';

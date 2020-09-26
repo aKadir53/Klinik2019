@@ -42,6 +42,7 @@ var
  t : boolean;
  TC,dosyaNo,gelisNo,ornekNo ,CikisornekNo,OrnekNo_Plazma,OrnekNo_Serum,OrnekNo_TamKan ,Hasta ,id: string;
  DatasetKadir : TDataSetKadir;
+ KanAlimZamani : TDateTime;
 begin
    memData.Active := false;
    memData.EmptyTable;
@@ -73,6 +74,8 @@ begin
       id := Liste.DataController.GetValue(
                                   Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('SIRANO').Index);
 
+      KanAlimZamani := Liste.DataController.GetValue(
+                                  Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('KanAlimZamani').Index);
 
       memData.Append;
       memData.FieldByName('dosyaNo').AsString := dosyaNo;
@@ -87,6 +90,7 @@ begin
       memData.FieldByName('OrnekNo_Plazma').AsString := OrnekNo_Plazma;
       memData.FieldByName('OrnekNo_Serum').AsString := OrnekNo_Serum;
       memData.FieldByName('OrnekNo_TamKan').AsString := OrnekNo_TamKan;
+      memData.FieldByName('KanAlimZamani').Value := KanAlimZamani;
       memData.Post
 
   End;

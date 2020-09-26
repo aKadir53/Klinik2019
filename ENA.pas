@@ -532,6 +532,9 @@ begin
    progres.Properties.Max := gridAktif.Controller.SelectedRowCount;
    progres.Position := 0;
 
+   if not DirectoryExists('C:\NoktaV3\ENA')
+   then
+    MkDir('C:\NoktaV3\ENA');
 
    for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do
    begin

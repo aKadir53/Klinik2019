@@ -374,7 +374,7 @@ object frmPersonelEgitim: TfrmPersonelEgitim
   end
   object EgitimAltDetayGrid: TcxGridKadir
     Left = 16
-    Top = 305
+    Top = 308
     Width = 370
     Height = 130
     TabOrder = 3
@@ -484,12 +484,13 @@ object frmPersonelEgitim: TfrmPersonelEgitim
     Width = 49
   end
   object btnEgitimGonderTek: TcxButtonKadir
-    Left = 503
-    Top = 355
+    Left = 584
+    Top = 299
     Width = 75
     Height = 25
     Caption = 'E'#287'itim G'#246'nder'
     TabOrder = 6
+    Visible = False
     NewButtonVisible = False
   end
   object btnEgitimGonderTekImzager: TcxButtonKadir
@@ -552,6 +553,40 @@ object frmPersonelEgitim: TfrmPersonelEgitim
       object miEgitimBilgisiniIBYSyeGonder: TMenuItem
         Tag = -40
         Caption = 'E'#287'itim Bilgisini '#304'BYS'#39'ye G'#246'nder'
+        Visible = False
+        OnClick = cxButtonCClick
+      end
+      object EitimeKatlanPersonelListesi1: TMenuItem
+        Tag = -31
+        Caption = 'E'#287'itim Duyuru Formu'
+        OnClick = cxButtonCClick
+      end
+      object N1: TMenuItem
+        Tag = -32
+        Caption = #199'al'#305#351'an E'#287'itimi De'#287'erlendirme Formlar'#305
+        OnClick = cxButtonCClick
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object e1: TMenuItem
+        Tag = -6666
+        Caption = 'E'#287'itime Kat'#305'lan Personel Listesi '#304'mzal'#305' Taranm'#305#351' Belgeyi Y'#252'kle'
+        Enabled = False
+        ImageIndex = 9
+        OnClick = cxButtonCClick
+      end
+      object e2: TMenuItem
+        Tag = -6667
+        Caption = 'E'#287'itime Kat'#305'lan Personel Listesi '#304'mzal'#305' Taranm'#305#351' Belgeyi A'#231
+        Enabled = False
+        ImageIndex = 110
+        OnClick = cxButtonCClick
+      end
+      object e3: TMenuItem
+        Tag = -6668
+        Caption = 'E'#287'itime Kat'#305'lan Personel Listesi '#304'mzal'#305' Taranm'#305#351' Belgeyi  Sil'
+        Enabled = False
         OnClick = cxButtonCClick
       end
     end

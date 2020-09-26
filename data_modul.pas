@@ -457,6 +457,8 @@ type
    KKD : TKKDREcord;
    SeansOlusturPrm : TSeansOlusturPrm;
    TeleEkg : TTeleEKG;
+   Beslenme : TBeslenmeDegerlendirme;
+   Nutrisyon : TNutrisyonDegerlendirme;
    FirmaSubeBilgi : TFirmaBilgi;
    CariHareket : TCariHareket;
    Cek : TCek;
@@ -486,6 +488,9 @@ type
    DonemSonlandir :string;
    ButtonEditSecimlist : ArrayListeSecimler;
    aSahaDenetimVeri : TSahaDenetimler;
+   aTatbikat : TTatbikat;
+   KaliteYonetimPlan : TKaliteYonetimPlan;
+   Tahsilat : TTahsilat;
    eFaturaUrl : string;
    portalUrl : string;
    efaturaUsername : string;
@@ -513,6 +518,7 @@ type
    KimlikDogrulamaOlmadanSeansOnayla : string;
    KurumBransi : string;
    eNabizKayit : string;
+   MakineNoKontrol : string;
    MedulayaGidenKaydiKitle : String;
    IlacTedavisi : TIlacTedavi;
    DokumanRev : TDokumanRevDetay;
@@ -524,8 +530,12 @@ type
    MedEczaneIlac : TReceteIlacBilgisi;
    AppalicationVer ,yvKversiyon : integer;
    RaporSablon : TRaporSablon;
+   ElHijyen : TeLHijyen;
+   ElHijyenDetay : TeLHijyenDetay;
    TetkikTarihi : String;
    HastaYatis : THospitalizasyon;
+   PersonelEgitimDegerlendirme :TPersonelEgitimDegerlendirme;
+   MaviKod : TMaviKod;
    messaboxAcik : Boolean;
    EtkinMaddeTeshisKoduSelect : string;
    EtkinMaddeKoduSelect : string;
@@ -815,14 +825,20 @@ begin
         SMSHesapFrom := WebErisimBilgi('SMS','02');
           *)
 
+        (*
         if not UpdateThermo (17, iThermo, 'Alpemix 1') then Exit;
         sql := 'select SLX from parametreler where slk = ''00'' and SLB = ''UD''';
         datalar.QuerySelect(ado,sql);
         AlpemixRun := ado.fieldbyname('SLX').AsString;
+          *)
 
         //sql := 'select SLXX from parametreler where slk = ''00'' and SLB = ''IS''';
         //datalar.QuerySelect(ado,sql);
         //ImajFTPServer := ado.fieldbyname('SLXX').AsString;
+
+
+        if not UpdateThermo (17, iThermo, 'Alpemix grup adý') then Exit;
+        AlpemixGrupAdi := WebErisimBilgi('UD','03');
 
         if not UpdateThermo (18, iThermo, 'Alpemix grup adý') then Exit;
         AlpemixGrupAdi := WebErisimBilgi('UD','00');

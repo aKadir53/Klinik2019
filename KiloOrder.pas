@@ -233,6 +233,8 @@ end;
 
 procedure TfrmKiloOrder.GridEkstreEditValueChanged(
   Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem);
+var
+ sql : string;
 begin
   inherited;
   Sender.Controller.EditingController.Edit.PostEditValue;
@@ -249,6 +251,20 @@ begin
                          ' where dosyaNO = ' + QuotedStr(ado.FieldByName('dosyaNo').AsString) +
                          ' and gelisNo = ' + ado.FieldByName('gelisNo').AsString +
                          ' and durum = 0 and Tip = ''S'''  );
+
+
+        sql :=
+        //   ' if (select Tarih from UzmanGozlem where dosyaNo = ' + QuotedStr(ado.FieldByName('dosyaNo').AsString) + ' and gelisNO = ' + ado.FieldByName('gelisNo').AsString + ') >= ' +  QuotedStr(FormatDateTime('YYYYMMDD',ado.FieldByName('Tarih').AsDateTime)) +
+        //   ' begin ' +
+             ' update UzmanGozlem ' +
+             ' set kurukilo = ' + ado.FieldByName('IdealKilo').AsString +
+             ' where dosyano = ' + QuotedStr(ado.FieldByName('dosyaNo').AsString) +
+             '  and gelisNO = ' + ado.FieldByName('gelisNo').AsString;
+       //    ' end';
+
+          datalar.QueryExec(sql);
+
+
        ado.Requery();
      end;
 

@@ -505,6 +505,8 @@ begin
 
               if (talepSira = '')
               then begin
+                   if datalar.MakineNoKontrol = 'Evet'
+                   then
                    if makineNo <> ''
                    then begin
                      Hst := SeansKontrol(seans,makineNo,RTarih,d);

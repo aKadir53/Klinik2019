@@ -90,6 +90,7 @@ begin
        datalar.IndikatorTanim.formul := Grid_Sks_Tanim.Dataset.FieldByName('formul').AsString;
        datalar.IndikatorTanim.altGosterge := Grid_Sks_Tanim.Dataset.FieldByName('altGosterge').AsString;
        datalar.IndikatorTanim.peryot := Grid_Sks_Tanim.Dataset.FieldByName('peryot').AsString;
+       datalar.IndikatorTanim.veriKaynak := Grid_Sks_Tanim.Dataset.FieldByName('veriKaynak').AsString;
        datalar.IndikatorTanim.sorumlular := Grid_Sks_Tanim.Dataset.FieldByName('sorumlular').AsString;
        datalar.IndikatorTanim.paylasilacakKisiler := Grid_Sks_Tanim.Dataset.FieldByName('paylasilacakKisiler').AsString;
        datalar.IndikatorTanim.dikkatedilecekhususlar := Grid_Sks_Tanim.Dataset.FieldByName('dikkatedilecekhususlar').AsString;
@@ -107,6 +108,7 @@ begin
                              ',sorumlular = ' +  QuotedStr(datalar.IndikatorTanim.sorumlular) +
                              ',paylasilacakKisiler = ' + QuotedStr(datalar.IndikatorTanim.paylasilacakKisiler) +
                              ',dikkatedilecekhususlar = ' + QuotedStr(datalar.IndikatorTanim.dikkatedilecekhususlar) +
+                             ',veriKaynak = ' + QuotedStr(datalar.IndikatorTanim.veriKaynak) +
                              ' where sira = ' + Grid_Sks_Tanim.Dataset.FieldByName('sira').AsString);
           Grid_Sks_Tanim.Dataset.Requery();
 

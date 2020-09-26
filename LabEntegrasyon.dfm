@@ -194,7 +194,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
               Options.Editing = False
-              Width = 42
+              Width = 30
             end
             object HastaSoyadi: TcxGridDBColumn
               Caption = 'Hasta'
@@ -246,7 +246,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Width = 80
+              Width = 60
             end
             object Kilo: TcxGridDBColumn
               Caption = 'Serum '#199#305'k'#305#351
@@ -256,7 +256,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Width = 80
+              Width = 60
             end
             object ListeColumn13: TcxGridDBColumn
               Caption = 'OrnekNo TamKan'
@@ -266,7 +266,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Width = 80
+              Width = 60
             end
             object ListeColumn7: TcxGridDBColumn
               Caption = 'OrnekNo Plazma'
@@ -276,7 +276,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Width = 80
+              Width = 60
             end
             object ListeColumn2: TcxGridDBColumn
               Caption = 'Serum (Anaerob)'
@@ -286,7 +286,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Alignment.Vert = taVCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
-              Width = 80
+              Width = 60
             end
             object ListeColumn5: TcxGridDBColumn
               Caption = #214'rnek Durum'
@@ -342,6 +342,48 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Kind = ckDateTime
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+            end
+            object ListeColumn19: TcxGridDBColumn
+              DataBinding.FieldName = 'HbsAg'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 36
+            end
+            object ListeColumn20: TcxGridDBColumn
+              Caption = 'Anti Hbs'
+              DataBinding.FieldName = 'AntiHbs'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 36
+            end
+            object ListeColumn21: TcxGridDBColumn
+              Caption = 'Anti HCV'
+              DataBinding.FieldName = 'AntiHCV'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 36
+            end
+            object ListeColumn22: TcxGridDBColumn
+              DataBinding.FieldName = 'Diabet'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+              Options.Editing = False
+              Width = 36
             end
             object ListeColumn14: TcxGridDBColumn
               Caption = 'Lab Kabul Durum'
@@ -792,10 +834,6 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
       object sayfa_log: TcxTabSheet
         Caption = #304#351'lem Loglar'#305
         ImageIndex = 1
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object txtLog: TcxMemo
           Left = 0
           Top = 0
@@ -1157,6 +1195,10 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
         Name = 'OrnekNo_TamKan'
         DataType = ftString
         Size = 20
+      end
+      item
+        Name = 'KanAlimZamani'
+        DataType = ftDateTime
       end>
     TableName = 'Table828602379_1400'
     Exclusive = False

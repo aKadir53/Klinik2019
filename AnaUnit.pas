@@ -539,6 +539,7 @@ begin
        datalar._LabBarkodBasim := _LabDataset_.FieldByName('BarkodBasim').AsString;
 
        datalar.eNabizKayit := WebErisimBilgi('PRM','03');
+       datalar.MakineNoKontrol := WebErisimBilgi('PRM','06');
        datalar.DefaultTedaviTuru := WebErisimBilgi('98','12');
        datalar.DefaultTedaviTipi := WebErisimBilgi('98','13');
 

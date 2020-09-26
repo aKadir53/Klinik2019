@@ -366,6 +366,8 @@ object frmTahliltakip: TfrmTahliltakip
           Style.TransparentBorder = True
           TabOrder = 3
           Transparent = True
+          ExplicitLeft = 842
+          ExplicitTop = -2
           Width = 144
         end
         object btnList: TcxButton
@@ -408,6 +410,16 @@ object frmTahliltakip: TfrmTahliltakip
           TabOrder = 5
           Height = 29
           Width = 320
+        end
+        object chkDegerlendirme: TcxCheckBox
+          Left = 1064
+          Top = 2
+          Align = alLeft
+          Caption = 'De'#287'erlendirme Sonucu Olanlar'
+          Style.TransparentBorder = True
+          TabOrder = 6
+          Transparent = True
+          Width = 193
         end
       end
       object cxGridKadir1: TcxGridKadir

@@ -317,8 +317,8 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
   end
   object DataSource1: TDataSource
     DataSet = ADO_SahaGozetim
-    Left = 136
-    Top = 226
+    Left = 184
+    Top = 242
   end
   object ADO_SahaGozetim: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -440,7 +440,7 @@ object frmSahaSaglikGozetim: TfrmSahaSaglikGozetim
     object miGozetimSil: TMenuItem
       Tag = -18
       Caption = 'G'#246'zetim Sil'
-      ImageIndex = 43
+      ImageIndex = 42
       OnClick = cxButtonCClick
     end
     object miGozetimYazdir: TMenuItem

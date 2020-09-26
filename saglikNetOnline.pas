@@ -21,7 +21,7 @@ uses
   dxSkinsForm, cxPC,kadir,cxMemo, cxRadioGroup, cxCheckBox, acPNG,
   cxImage, cxLabel, cxHyperLinkEdit, cxRichEdit, cxDBRichEdit, AdvMemo, Advmxml,
   DBAdvMemo, xmldom, XMLIntf, msxmldom, XMLDoc, cxImageComboBox, ExtCtrls,
-  cxDBEdit, OleCtrls, SHDocVw, Soap.InvokeRegistry, Soap.Rio,
+  cxDBEdit, OleCtrls, SHDocVw, Soap.InvokeRegistry, Soap.Rio, strUtils,
   Soap.SOAPHTTPClient,GirisUnit,KadirType,GetFormClass,kadirLabel;
 
 type
@@ -114,7 +114,7 @@ type
     procedure btnVazgecClick(Sender: TObject);
 
     function SYSOnlineCvpDBDurumYaz(SiraNo,SysTakipNo,MesajTipi,SONUCKODU,SONUCMESAJ,user : string) : integer;
-    procedure MesajGonder(mesaj , islemTipi , HastaneRefNo: string);
+    procedure MesajGonder(mesaj , islemTipi , HastaneRefNo: string ; SysyTakipNo : String = '' ; BrowserAc : Boolean = True);
     function SendMesajGonder(m,t : PWideChar ; var sonuc : PWideChar ; HastaneRefNo : string) : integer;
     procedure cxButton6Click(Sender: TObject);
     procedure cxPageControl1Change(Sender: TObject);
@@ -206,9 +206,10 @@ end;
 procedure TfrmSaglikNetOnline.cxKaydetClick(Sender: TObject);
 var
   Form : TGirisForm;
-  r : integer;
+  r , x : integer;
   dosyaNo,ad,soyad,sysTakipNo,HastaneRefNo : string;
   GirisFormRecord : TGirisFormRecord;
+  BrowserOpen : Boolean;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -276,11 +277,34 @@ begin
          end;
 
   -22 : begin
-          msg := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('SYSTakipNoSorgu').Index);
-          sysTakipNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('SysTakipNo').Index);
-          HastaneRefNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[0].RecordIndex,gridListe.GetColumnByFieldName('SIRANO').Index);
-          MesajGonder(msg,'SysTakipNoSorgula',HastaneRefNo);
-          Application.ProcessMessages;
+            BrowserOpen := True;
+            if gridListe.Controller.SelectedRowCount > 1
+            Then begin
+              BrowserOpen := False;
+            end;
+
+            DurumGoster(True,True,ad + ' ' + soyad,0,gridListe.Controller.SelectedRowCount);
+            try
+            for x := 0 to gridListe.Controller.SelectedRowCount - 1 do
+              begin
+                msg := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[x].RecordIndex,gridListe.GetColumnByFieldName('SYSTakipNoSorgu').Index);
+                sysTakipNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[x].RecordIndex,gridListe.GetColumnByFieldName('SysTakipNo').Index);
+                HastaneRefNo := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[x].RecordIndex,gridListe.GetColumnByFieldName('SIRANO').Index);
+                MesajGonder(msg,'SysTakipNoSorgula',HastaneRefNo,sysTakipNo,BrowserOpen
+                                 );
+
+                ad := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[x].RecordIndex,gridListe.GetColumnByFieldName('HASTAADI').Index);
+                soyad := gridListe.DataController.GetValue(gridListe.Controller.SelectedRows[x].RecordIndex,gridListe.GetColumnByFieldName('HASTASOYADI').Index);
+
+                pnlDurumDurum.Caption := ad + ' ' + soyad;
+                pBar.Position := pBar.Position + 1;
+                Application.ProcessMessages;
+            end;
+
+
+            finally
+              DurumGoster(False);
+            end;
         end;
 
   -23 : begin
@@ -454,7 +478,7 @@ end;
 
 
 
-procedure TfrmSaglikNetOnline.MesajGonder(mesaj , islemTipi , HastaneRefNo: string);
+procedure TfrmSaglikNetOnline.MesajGonder(mesaj , islemTipi , HastaneRefNo: string ;SysyTakipNo : String = '' ; BrowserAc : Boolean = True);
 var
   msg,sql : string;
   sonuc : pwidechar;
@@ -490,14 +514,14 @@ var
              if pos('Sorgula TakipNoListeleme',islemTipi) > 0 then
              begin
                sql := 'update KurumsysTakipNoList set sorguCvp = ' + QuotedStr(sonuc) +
-                      ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo;
+                      ' where SIRANO = ' + HastaneRefNo;
                datalar.QueryExec(sql);
                exit;
              end;
              if pos('Sil TakipNoListeleme',islemTipi) > 0 then
              begin
                sql := 'update KurumsysTakipNoList set silCvp = ' + QuotedStr(sonuc) +
-                      ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo;
+                      ' where SIRANO = ' + HastaneRefNo;
                datalar.QueryExec(sql);
                //exit;
              end;
@@ -600,17 +624,21 @@ begin
        TMesaj.LoadFromFile('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay.xml');
        if pos('<HASTANE_REFERANS_NUMARASI value="'+HastaneRefNo,TMesaj.Text) = 0
        then begin
-         if mrYes = ShowMessageSkin('Sorgulanan SysTakipNo Dokumaný Ýçindeki Hastane Referans Numarasý',
-                         'Satýrdaki HstRefNo ile Uyuþmuyor',
-                         'sysTakipNo Satýrdan Kaldýrýlsýn mý?','msg')
-         Then begin
+
+           txtLog.Lines.Add('Sorgulanan ' + SysyTakipNo + ' SysTakipNo Dokumaný Ýçindeki Hastane Referans Numarasý Satýrdaki HstRefNo ile Uyuþmuyor SysTakipNo Satýrdan Kaldýrýldý');
+
            datalar.QueryExec('update Hasta_Gelisler ' +
                              ' set sysTakipNo = '''' ' +
                              ' where isnull(Eski_SIRANO,SIRANO) = ' + HastaneRefNo
                              );
-         end;
+
        end;
-       xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay');
+
+       if BrowserAc = True
+       then
+         xmlGoster('C:\NoktaV3\Message\' +  islemTipi + 'CvpDetay');
+
+
      finally
       TMesaj.free;
      end;
@@ -804,16 +832,20 @@ begin
        sysTakipNo := GridTakipList.DataController.GetValue(GridTakipList.Controller.SelectedRows[_row_].RecordIndex,1);
 
        if pos('Sil',Tip) > 0
-       then
-         msg := GridTakipList.DataController.GetValue(GridTakipList.Controller.SelectedRows[_row_].RecordIndex,9)
+       then begin
+         msg := GridTakipList.DataController.GetValue(GridTakipList.Controller.SelectedRows[_row_].RecordIndex,9);
+         MesajGonder(msg,Tip,HastaneRefNo);
+       end
        else
+       begin
          msg := GridTakipList.DataController.GetValue(GridTakipList.Controller.SelectedRows[_row_].RecordIndex,10);
-
+         MesajGonder(msg,'SysTakipNoSorgula',HastaneRefNo,sysTakipNo,True);
+       end;
 
        pnlDurumDurum.Caption := sysTakipNo + ' ' + Tip + ' Ýþlemi Yapýlýyor...';
        Application.ProcessMessages;
 
-       MesajGonder(msg,Tip,HastaneRefNo);
+
 
      end;
    except on e : Exception do

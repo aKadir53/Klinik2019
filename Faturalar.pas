@@ -151,6 +151,12 @@ var
  sql ,faturaId,sonucStr : string;
  Sonuc : TStringList;
 begin
+   if datalar.efaturaTaslak = 'Hayýr'
+   then begin
+     if mrNo = ShowMessageSkin('Fatura Gönderim Taslak Deðil','Direk Gönderilecek','Emin misiniz?','msg')
+      Then exit;
+   end;
+
    sonucStr := '';
    if mrYes = ShowMessageSkin('Seçili Faturalar  Gönderilecek',
                                '','','msg')
@@ -177,6 +183,11 @@ begin
                      'Guid = ' + QuotedStr(Sonuc[1]) +
                      ',GIBFaturaNo = ' + QuotedStr(Sonuc[2]) +
                      ' where sira = ' + faturaId;
+              datalar.QueryExec(sql);
+
+              sql := 'update KurumFatura set ' +
+                     'FaturaGuid = ' +  QuotedStr(Sonuc[1]) +
+                     ' where id = (select KurumFaturaID from faturalar where sira = ' + faturaId +') and KurumFaturaID is not null';
               datalar.QueryExec(sql);
 
               EArsivDurumSorgula(Sonuc[1]);
@@ -441,7 +452,11 @@ begin
    FaturaTahsilatEkle :
                    begin
                        fID := GridCellToString(GridFaturalar,'sirketKod',0);
-                       datalar.CariHareket.tutar := GridCellToDouble(GridFaturalar,'faturaGenelTutar',0);
+                       datalar.Tahsilat.sirketKod := fID;
+                       datalar.Tahsilat.DiyalizSirketKod := QuotedStr(datalar.AktifSirket);
+                       datalar.Tahsilat.tutar := GridCellToDouble(GridFaturalar,'faturaGenelTutar',0);
+                       datalar.Tahsilat.aciklama := GridCellToString(GridFaturalar,'GIBFaturaNo',0) + ' Nolu Fatura Tahsilatý';
+
                        if mrYEs = ShowPopupForm('Fatura Tahsilat Ekle',FaturaTahsilatEkle,fID)
                        then begin
 

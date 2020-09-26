@@ -220,6 +220,8 @@ type
     F_kod_ : string;
     F_sube_ : string;
     F_SahaDenetimVeri_ : TSahaDenetimler;
+    F_KaliteYonetimPlan_ : TKaliteYonetimPlan;
+    F_Tatbikat_ : TTatbikat;
     F_MuayeneProtokolNo_ : string;
     F_cxKaydetResult : Boolean;
     F_Tarih1_ : string;
@@ -359,6 +361,9 @@ type
     property _kod_ : string read F_kod_ write F_kod_;
     property _sube_ : string read F_sube_ write F_sube_;
     property _SahaDenetimVeri_ : TSahaDenetimler read F_SahaDenetimVeri_ write F_SahaDenetimVeri_;
+    property _KaliteYonetimPlan_ : TKaliteYonetimPlan read F_KaliteYonetimPlan_ write F_KaliteYonetimPlan_;
+    property _Tatbikat_ : TTatbikat read F_Tatbikat_ write F_Tatbikat_;
+
     property _MuayeneProtokolNo_ : string read F_MuayeneProtokolNo_ write F_MuayeneProtokolNo_;
     property cxKaydetResult : boolean read F_cxKaydetResult;
     property _Tarih1_ : string read F_Tarih1_ write F_Tarih1_;
@@ -662,7 +667,8 @@ begin
            begin
              sql := 'exec sp_KasaDefteri ' +      txtTopPanelTarih1.GetSQLValue + ',' +
                                                   txtTopPanelTarih2.GetSQLValue + ',' +
-                                                  QuotedStr(datalar.AktifSirket);
+                                                  QuotedStr(datalar.AktifSirket) + ',' +
+                                                  QuotedStr(varToStr(KurumTipTopPanel.EditValue)) ;
            end;
 
 
@@ -817,11 +823,28 @@ begin
   pnlDurum.left := (width div 2) - pnlDurum.width div 2;
   pnlDurum.Top := (Height div 2) - pnlDurum.Height div 2;
 
-  KurumTipTopPanel.Conn := datalar.ADOConnection2;
-  KurumTipTopPanel.TableName := 'Kurumlar';
-  KurumTipTopPanel.DisplayField := 'ADI1';
-  KurumTipTopPanel.ValueField := 'Kurum';
-  KurumTipTopPanel.Filter := '';
+  case Tag of
+   TagfrmMedulaFatura,TagfrmTakipKontrol  : begin
+      KurumTipTopPanel.Conn := datalar.ADOConnection2;
+      KurumTipTopPanel.TableName := 'Kurumlar_TNM';
+      KurumTipTopPanel.DisplayField := 'Tanimi';
+      KurumTipTopPanel.ValueField := 'KurumKod';
+      KurumTipTopPanel.Filter := ' KurumTip = 1';
+   end;
+
+   TagfrmKurumFatura,TagfrmKurumFaturaHazirlik : begin
+     KurumTipTopPanel.Conn := datalar.ADOConnection2;
+     KurumTipTopPanel.TableName := 'Kurumlar_TNM';
+     KurumTipTopPanel.DisplayField := 'Tanimi';
+     KurumTipTopPanel.ValueField := 'KurumKod';
+     KurumTipTopPanel.Filter := ' KurumTip = 98';
+
+   end;
+
+
+  end;
+
+
 
   Result := True;
 end;
@@ -2521,6 +2544,7 @@ begin
      (obje.ClassName = 'TcxGridKadir') or
      (obje.ClassName = 'TcxPageControl') or
      (obje.ClassName = 'TcxGroupBox') or
+     (obje.ClassName = 'TcxRadioGroup') or
      (obje.ClassName = 'TcxCheckListBox') or
      (obje.ClassName = 'TcxDBVerticalGrid')
   then

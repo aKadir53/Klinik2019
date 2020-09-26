@@ -77,6 +77,15 @@ type
                          var durum : integer;
                          uygulamaKodu : pwidechar);stdCall;
 
+  TGunSonuList = Procedure(kullaniciAdi : pwidechar;
+                         sifre : pwidechar;
+                         skrs : pwidechar;
+                         Tanim : pwidechar;
+                         Tarih : pwidechar;
+                         var sonucMesaj : pwidechar;
+                         var durum : integer;
+                         uygulamaKodu : pwidechar);stdCall;
+
   TReceteImzala = procedure(Id : integer;
                       recete : PWideChar;
                       doktorkullanici : PWideChar;
@@ -577,6 +586,8 @@ type
      TaniKodu : string;
      Tani : string;
      Aciklama : string;
+     Brans : string;
+     Tesis : string;
    end;
 
 type
@@ -770,6 +781,43 @@ type
   End;
 
 type
+  TBeslenmeDegerlendirme = Record
+    id : string;
+    Tarih : Tdate;
+    ack : string;
+  End;
+
+type
+  TNutrisyonDegerlendirme = Record
+    Hbd_id : string;
+    id : string;
+    Tarih : Tdate;
+    VKI205kucuk : integer;
+    kiloKaybi : integer;
+    gidaAlim : integer;
+    albumin : integer;
+    kronik : integer;
+    kronikDetay : string;
+    baskaBirim : string;
+    vki : double;
+    hekimNot : string;
+    diyetisyenNot : string;
+  End;
+
+type
+  TMaviKod = Record
+    id : string;
+    dosyaNo : string;
+    adi : string;
+    Tarih : Tdate;
+    AnonsuYaptiran : integer;
+    KodVerilisNedeni : string;
+    KodVerilisSaati : string;
+    EkibininOlayYerineGelisSaati : string;
+  End;
+
+
+type
  TPersonelTetkikler = Record
    Tetkik : String;
  End;
@@ -961,6 +1009,7 @@ type
     BirSonrakiDenetimTarihi : String;
     DenetimiPlanlayan : String;
     DenetimOnaylamaTarihi : String;
+    DenetimiOnaylayan : String;
   end;
 
   ArrayOfString = array of string;
@@ -975,6 +1024,7 @@ type
     dokumanid : String;
     ggTarihi : TDate;
     SggTarihi : TDate;
+    aciklama : String;
   end;
 
   TDokumanRevDetay = record
@@ -1001,6 +1051,16 @@ type
     YapilanIslem : string;
     TamamlanmaTarihi : TDate;
     Tamam : integer;
+  end;
+
+
+  TPersonelEgitimDegerlendirme = record
+    SiraNo : integer;
+    GozlemTarihi : string;
+    Sorumlu : string;
+    GozlemNotlari : string;
+    BirimSorumluDegerlendirme : string;
+    YonetimDegerlendirme : string;
   end;
 
   THemsireTalimat = record
@@ -1052,6 +1112,42 @@ type
     tutar : double;
   end;
 
+  TeLHijyen = record
+    id : string;
+    Tarih : Tdate;
+    sirketKod : string;
+    gozlemci : string;
+  end;
+
+  TeLHijyenDetay = record
+    id : string;
+    salon : string;
+    vardiya : string;
+    meslek : integer;
+    cinsiyet : integer;
+    TO_Firsat : integer;
+    TO_Yikama : integer;
+    TO_Ovma : integer;
+    TO_Yok : integer;
+    TS_Firsat : integer;
+    TS_Yikama : integer;
+    TS_Ovma : integer;
+    TS_Yok : integer;
+    AIO_Firsat : integer;
+    AIO_Yikama : integer;
+    AIO_Ovma : integer;
+    AIO_Yok : integer;
+    VS_Firsat : integer;
+    VS_Yikama : integer;
+    VS_Ovma : integer;
+    VS_Yok : integer;
+    HCTS_Firsat : integer;
+    HCTS_Yikama : integer;
+    HCTS_Ovma : integer;
+    HCTS_Yok : integer;
+  end;
+
+
   TCek = record
     evrakNo : string;
     tutar : double;
@@ -1095,9 +1191,35 @@ type
       altGosterge : string;
       HedefTanimi : string;
       peryot : string;
+      veriKaynak : string;
       sorumlular : string;
       paylasilacakKisiler : string;
       dikkatedilecekhususlar : string;
+  end;
+
+
+  TKaliteYonetimPlan = record
+      Yil : string;
+      hazirlayan : string;
+      kontrolEden : string;
+      Onaylayan : string;
+      hazirlamaTarihi : string;
+      onaylamaTarihi : string;
+      sirketKod : string;
+      id : string;
+  end;
+
+
+  TTatbikat= record
+      turu : string;
+      hazirlayan : string;
+      Onaylayan : string;
+      Tarih : string;
+      yer : string;
+      sirketKod : string;
+      id : string;
+      Aciklama : string;
+      Mataryel : string;
   end;
 
   TAnket = record
@@ -1113,6 +1235,17 @@ type
     sablonAdi : string;
     sirketKod : string;
     doktor : string;
+  end;
+
+  TTahsilat = record
+    evrakNo : string;
+    evrakID : string;
+    evrakTip : string;
+    tutar : string;
+    DiyalizSirketKod : string;
+    sirketKod : string;
+    Kasa : string;
+    aciklama : string;
   end;
 
   TIntegerArray = array of Integer;
@@ -1168,6 +1301,7 @@ Const
   TagfrmTakipKontrol = 340;
   TagfrmHastaDiyalizIzlem = 350;
   TagfrmHastaDiyalizIzlemListesi = 351;
+  TagfrmBesinDegerlendirme = 352;
   TagfrmTopluGelis = 360;
   TagfrmDamarIzi = 370;
   TagfrmKurumBilgi = 380;
@@ -1204,6 +1338,8 @@ Const
   TagfrmCihazKontrol = 635;
   TagfrmFirmaKontrol = 636;
   TagfrmIGU = 640;
+  TagfrmKaliteYonetimPlan = 641;
+  TagfrmElHijyen = 642;
   TagFirmaCalismalari = 650;
   TagfrmPersonelTetkikIstem = 660;
   TagfrmFirmaBolumTetkikIstemSablon = 670;
@@ -1256,6 +1392,10 @@ Const
   TagfrmCalisanGeriBildirimAnket = 2000;
   TagfrmCalisanGeriBildirimAnketSoruTanim = 2001;
   TagfrmMadulaEpiktizTanim = 2002;
+  TagfrmTatbikat = 2003;
+  TagfrmFaaliyetDurumBildirim = 2004;
+  TagfrmMaviKodBildirimListesi = 2005;
+
 
   TagfrmHastaKart = 5001;
   TagfrmTopluSeans = 5003;
@@ -1267,6 +1407,7 @@ Const
   TagfrmAylikSeansToplamlari = 5008;
   TagfrmGunSonuOzet = 5009;
   TagfrmTopluEpikriz = 5010;
+  TagfrmKurumFatura = 5021;
   TagfrmIlacEtkenMaddeSutKural = 5020;
   TagfrmUzmanMuayene = 5030;
   TagfrmLabEntegrasyon = 5040;
@@ -1282,6 +1423,7 @@ Const
 
   TagfrmITS = 6000;
   TagfrmITSPaket = 6001;
+  TagfrmKurumFaturaHazirlik = 6002;
 
 
 
@@ -1403,6 +1545,7 @@ Const
   yeniCek = 67;
   GGEkle = 68;
   GGSil = 69;
+  GGDuzenle = -68;
   yeniMadde = 70;
   meddeSil = 71;
   MaddeDuzenle = 72;
@@ -1445,6 +1588,23 @@ Const
   UzmanMuayeneDoktorTarihDuzenle = 109;
 
   TibbiDenetimSorgu = 110;
+  PersonelEgitimDegerlendirmeFormu = 111;
+  KaliteYonetimPlanYeni = 112;
+  KaliteYonetimPlanDuzenle = 113;
+  TatbikatYeni = 114;
+  TatbikatDuzenle = 115;
+
+  BeslenmeYeni = 120;
+  BeslenmeDuzenle = 121;
+  NutrisyonYeni = 122;
+  NutrisyonDuzenle = 123;
+  MaviKodYeni = 124;
+  MaviKodDuzenle = 125;
+  ElHijyenYeni = 126;
+  ElHijyenDuzenle = 127;
+  ElHijyenDetayYeni = 128;
+  ElHijyenDetayDuzenle = 129;
+
 
   PortaldenFaturaOku = 200;
   MobilUygulamaLinki = 300;

@@ -646,12 +646,13 @@ begin
          end;
 
     -11 : begin
-           DurumGoster(True,False,'Döküman  Yükleniyor , Lütfen Bekleyiniz');
+           DurumGoster(True,False,'Ýçerik  Yükleniyor , Lütfen Bekleyiniz');
            try
               PrintIcerik(gridDokumanlar.DataController.DataSource.dataset.FieldByName('dokumanNo').AsString +
               ifThen(gridDokumanlar.DataController.DataSource.dataset.FieldByName('rev').AsString <> '',
               '_' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('rev').AsString,'')
               );
+
            finally
               DurumGoster(False,False,'Döküman  Yükleniyor , Lütfen Bekleyiniz');
            end;
