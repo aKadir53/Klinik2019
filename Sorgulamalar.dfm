@@ -23,7 +23,7 @@ object frmSorgulamalar: TfrmSorgulamalar
     Height = 620
     Align = alClient
     TabOrder = 0
-    Properties.ActivePage = SorgularTab
+    Properties.ActivePage = TabSonuc
     Properties.CloseButtonMode = cbmActiveTab
     LookAndFeel.NativeStyle = False
     OnCanCloseEx = Sonuclar_PageCanCloseEx

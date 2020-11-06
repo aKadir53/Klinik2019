@@ -576,8 +576,8 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 288
-    Top = 320
+    Left = 328
+    Top = 88
     object T1: TMenuItem
       Tag = 1
       Caption = 'T'#252'm K'#305'r'#305'l'#305'mlar'#305' A'#231
@@ -678,7 +678,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       object R3: TMenuItem
         Tag = -13
         Caption = 'RTF Dosya Yukle'
-        ImageIndex = 110
+        ImageIndex = 113
         OnClick = cxButtonCClick
       end
     end
@@ -689,6 +689,12 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       Tag = 9997
       Caption = 'Listeyi Excele At'
       ImageIndex = 75
+      OnClick = cxButtonCClick
+    end
+    object D4: TMenuItem
+      Tag = -50
+      Caption = 'Dok'#252'man Listesini Yazd'#305'r'
+      ImageIndex = 28
       OnClick = cxButtonCClick
     end
   end

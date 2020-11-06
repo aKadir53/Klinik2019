@@ -23,7 +23,7 @@ uses
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
   cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxCheckGroup,
-  cxSplitter;
+  cxSplitter, cxImageComboBox;
 
 type
   TfrmTahliltakip = class(TGirisForm)
@@ -157,6 +157,8 @@ type
     cxSplitter1: TcxSplitter;
     E1: TMenuItem;
     chkDegerlendirme: TcxCheckBox;
+    ListeColumn6: TcxGridDBBandedColumn;
+    T8: TMenuItem;
     procedure cxButtonCClick(Sender: TObject);
     procedure Tarih;
     procedure T1Click(Sender: TObject);
@@ -271,6 +273,12 @@ inherited;
       -18 : begin
              S3.Click;
             end;
+     -32 : begin
+              F := FormINIT(TagfrmHastaTetkikEkle,GirisRecord);
+            //  F._Foto_ := foto;
+              if F <> nil then F.ShowModal;
+             // TetkikEkle(dosyaNo.Text,_gelisNo_,datalar.HastaBil.Tarih);
+           end;
 
       end;
   end;

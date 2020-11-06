@@ -67,6 +67,7 @@ type
     kdvToplam: TcxCurrencyEdit;
     H1: TMenuItem;
     H2: TMenuItem;
+    FaturaSatirlarColumnLot: TcxGridDBColumn;
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -171,9 +172,9 @@ var
 begin
   //SirketKodx.Text := datalar.AktifSirket; giriþ formuna eklendi.
 
-  if Length(TcxTextEdit(FindComponent('GIBFaturaNo')).Text) <> 13
+  if Length(TcxTextEdit(FindComponent('GIBFaturaNo')).Text) <> 16
   Then begin
-    ShowMessageSkin('Fatura GÝB No Hatalý','Örnek , ABC0123456789 Formatýnda 13 karakter Olmalý','','info');
+    ShowMessageSkin('Fatura GÝB No Hatalý','Örnek , ABC0123456789 Formatýnda 16 karakter Olmalý','','info');
     TcxTextEdit(FindComponent('GIBFaturaNo')).SetFocus;
     exit;
   end;
@@ -258,6 +259,15 @@ begin
    faturaNoDegisti := True;
  end;
 
+ (*
+ if TcxTextEdit(Sender).name = 'FaturaTip'
+ Then begin
+    if varToStr(TcxImageComboKadir(FindComponent('FaturaTip')).EditValue) = '3'
+    then begin
+
+    end;
+ end
+ else *)
  if TcxTextEdit(Sender).name = 'OzelKod'
  Then begin
     if varToStr(TcxImageComboKadir(FindComponent('OzelKod')).EditValue) = '1'
@@ -265,6 +275,7 @@ begin
         TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := true;
         TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := true;
         TdxLayoutGroup(FindComponent('dxLaHastaDosyaNo')).Visible := False;
+        FaturaSatirlarColumnLot.Visible := False;
     end
     else
     if varToStr(TcxImageComboKadir(FindComponent('OzelKod')).EditValue) = '2'
@@ -273,12 +284,15 @@ begin
         TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := false;
         TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := false;
         TdxLayoutGroup(FindComponent('dxLaHastaDosyaNo')).Visible := True;
+        FaturaSatirlarColumnLot.Visible := False;
     end
     else
     begin
         TdxLayoutGroup(FindComponent('dxLailaveFaturaTip')).Visible := false;
         TdxLayoutGroup(FindComponent('dxLaevrakRefNo')).Visible := false;
         TdxLayoutGroup(FindComponent('dxLaHastaDosyaNo')).Visible := false;
+
+        FaturaSatirlarColumnLot.Visible := True;
     end;
  end;
 

@@ -411,6 +411,7 @@ function GridCellToBoolean(Grid : TcxGridDBTableView; ColonName : string ; Row :
 procedure GridCellSetValue(Grid : TcxGridDBTableView; ColonName : string ; Row : integer ; Value : Variant);
 function SQLSelectToDataSet(Columns,Table,Where : string) : TADOQuery;
 procedure ExceldenPersonelYukle;
+procedure ExceldenUTSAlmaBildirimYukle;
 procedure OnlineDestekOpen;
 procedure DestekTalep;
 function IsNull (const s: String): Boolean;
@@ -578,6 +579,8 @@ procedure ExceldenLabSonucYukle(t1,t2 : String ; progres : TcxProgressBar ; txtL
 
 function ComboYil(yil : integer = 2020 ; index : integer = 10) : TStringList;
 
+procedure MemoBosSatirSil(Memo : TcxMemo);
+
 const
 //  LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
  // NoktaDll = 'D:\Projeler\VS\c#\ListeDLL_Cades\ListeDLL\bin\x86\Debug\NoktaDLL.dll';
@@ -666,6 +669,20 @@ begin
  Result := GetProcAddress(dllHandle,pchar(methodname));
 end;
 
+procedure MemoBosSatirSil(Memo : TcxMemo);
+var
+ x : integer;
+begin
+    for x := 0 to Memo.Lines.Count - 1
+     do begin
+          Memo.Lines[x] :=
+           StringReplace(Memo.Lines[x],#13#10,'',[rfReplaceAll]);
+          if
+           TrimRight(Memo.Lines[x]) = ''
+          Then
+            Memo.Lines.Delete(x);
+     end;
+end;
 
 
 function ComboYil(yil : integer = 2020 ; index : integer = 10) : TStringList;
@@ -3970,6 +3987,7 @@ end;
 procedure StretchImage(var Image1: TcxImage; StretchType: Byte; NewWidth, NewHeight: Word);
 var
   CompressedImage: TImage;
+  CompressedcxImage : TcxImage;
   Oran, OranW, OranH: Real;
 begin
   if Image1.Picture.Graphic<>nil then
@@ -3978,6 +3996,7 @@ begin
     begin
     //    ShowMessage('Geniþlik: '+IntToStr(Image1.Picture.Graphic.Width)+'  Yükseklik: '+IntToStr(Image1.Picture.Graphic.Height));
       CompressedImage := TImage.Create(nil);
+
       try
         if StretchType = stBuyukseKucult then
         begin
@@ -4027,6 +4046,22 @@ begin
         CompressedImage.Free;
       end;
       // ShowMessage('Küçültüldü Geniþlik: '+IntToStr(Image1.Picture.Bitmap.Width)+'  Yükseklik: '+IntToStr(Image1.Picture.Bitmap.Height));
+    end
+    else
+    begin
+             CompressedImage := TImage.Create(nil);
+             try
+                OranW:=NewWidth/Image1.Picture.Graphic.Width;
+                OranH:=NewHeight/Image1.Picture.Graphic.Height;
+                if OranW>OranH then Oran:=OranH else Oran:=OranW;
+                Stretch(Round(Image1.Picture.Graphic.Width*Oran),
+                        Round(Image1.Picture.Graphic.Height*Oran),
+                        rfBell, 1, Image1.Picture.Graphic, CompressedImage.Picture.Bitmap);
+                Image1.Picture.Bitmap.Assign(CompressedImage.Picture.Bitmap);
+              finally
+                CompressedImage.Free;
+              end
+
     end;
   end;
 end;
@@ -4585,6 +4620,65 @@ begin
 
 
 end;
+
+
+
+procedure ExceldenUTSAlmaBildirimYukle;
+var
+  openD : TOpenDialog;
+  dosya : string;
+  sonsatir , x : integer;
+begin
+  openD := TOpenDialog.Create(nil);
+  try
+    if not openD.execute then Exit;
+    dosya := openD.filename;
+  finally
+    openD.Free;
+  end;
+
+  v := CreateOleObject('Excel.Application');
+  try
+    v.Workbooks.Open(dosya);
+    v.visible := true;//Exceli acip verileri goster
+    sayfa := v.workbooks[1].worksheets[1];
+  except
+    v.DisplayAlerts := False;  //Excel mesajlarýný görünteleme
+    v.Quit;
+    v := Unassigned;
+  end;
+
+  sonsatir := v.Range[Char(96 + 1) + IntToStr(65536)].end[3].Rows.Row;
+   (*
+  for x := 2 to sonsatir do
+  begin
+
+      sql := sql + ' ' + #13 + Format(_insertPersonel_,
+                                       [datalar.AktifSirket,
+                                       sayfa.cells[x,1],
+                                       sayfa.cells[x,2],
+                                       sayfa.cells[x,3],
+                                       sayfa.cells[x,4],
+                                       sayfa.cells[x,5],
+                                       sayfa.cells[x,6],
+                                       sayfa.cells[x,7],
+                                       sayfa.cells[x,8],
+                                       sayfa.cells[x,9],
+                                       sayfa.cells[x,10],
+                                       sayfa.cells[x,11],
+                                       sayfa.cells[x,12],
+                                       sayfa.cells[x,13],
+                                       sayfa.cells[x,15],
+                                       sayfa.cells[x,16],
+                                       datalar.username,
+                                       sayfa.cells[x,14]]);
+
+
+  end;
+
+  *)
+end;
+
 
 
 procedure ExceldenPersonelYukle;
@@ -5214,6 +5308,16 @@ begin
   Application.CreateForm(TfrmRapor, frmRapor);
   try
     frmRapor.raporDataIcerikYukle(raporKodu);
+  finally
+    FreeAndNil(frmRapor);
+  end;
+end;
+
+procedure PrintIcerikFontDegis(raporKodu : string);
+begin
+  Application.CreateForm(TfrmRapor, frmRapor);
+  try
+    frmRapor.raporDataIcerikFontDegistir(raporKodu);
   finally
     FreeAndNil(frmRapor);
   end;
@@ -8810,8 +8914,8 @@ begin
       sql := 'select tanimi from LabTestler where yeniButKodu = ' + QuotedStr
         (siraNo)
     Else
-      sql := 'select LT.tanimi+' + QuotedStr (' - ') + '+T.tanimi from LabTestler T ' +
-        ' join LabTestler LT on substring(T.butkodu,1,6) = LT.yeniButKodu ' +
+      sql := 'select (select Tanimi from LabTestler where butkodu = substring(T.butkodu,1,6)) + ''-''+T.tanimi from LabTestler T ' +
+      //  ' join LabTestler LT on substring(T.butkodu,1,6) = LT.yeniButKodu ' +
         ' where T.sgkTip = ' + QuotedStr(Tip);
 
     datalar.QuerySelect(ado, sql);

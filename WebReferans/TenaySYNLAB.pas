@@ -362,7 +362,7 @@ begin
   HastaTenay.DogumTarihi := DTarih;
 
 
-    sql := 'select * from gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
+    sql := 'select * from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
     datalar.QuerySelect(ado,sql);
 
     HastaTenay.OrnekNo := strtoint(ifthen(ado.fieldbyname('OrnekNo').AsString = '',

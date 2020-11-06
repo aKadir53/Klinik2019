@@ -136,6 +136,14 @@ object frmFaturaDetay: TfrmFaturaDetay
         Width = 84
         OnCustomDrawFooterCell = FaturaSatirTutarCustomDrawFooterCell
       end
+      object FaturaSatirlarColumnLot: TcxGridDBColumn
+        DataBinding.FieldName = 'Lot'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+      end
     end
     object FaturaGridLevel1: TcxGridLevel
       GridView = FaturaSatirlar

@@ -366,8 +366,6 @@ object frmTahliltakip: TfrmTahliltakip
           Style.TransparentBorder = True
           TabOrder = 3
           Transparent = True
-          ExplicitLeft = 842
-          ExplicitTop = -2
           Width = 144
         end
         object btnList: TcxButton
@@ -1224,6 +1222,15 @@ object frmTahliltakip: TfrmTahliltakip
             Position.ColIndex = 9
             Position.RowIndex = 0
           end
+          object ListeColumn6: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'UzmanOnay'
+            PropertiesClassName = 'TcxImageComboBoxProperties'
+            Properties.Items = <>
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 10
+            Position.RowIndex = 0
+          end
         end
         object cxGridKadir1Level1: TcxGridLevel
           GridView = Liste
@@ -1268,8 +1275,8 @@ object frmTahliltakip: TfrmTahliltakip
       
         'exec sp_hastaTahlilSonuclari '#39'20150301'#39','#39'20150330'#39',@tip = '#39'0'#39',@a' +
         'pm = '#39'0,1,2'#39)
-    Left = 128
-    Top = 312
+    Left = 136
+    Top = 304
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 8
@@ -1447,6 +1454,12 @@ object frmTahliltakip: TfrmTahliltakip
       Caption = 'Tetkik Sonu'#231' De'#287'erlendir'
       ImageIndex = 102
       Visible = False
+      OnClick = cxButtonCClick
+    end
+    object T8: TMenuItem
+      Tag = -32
+      Caption = 'Tetkik Tedavi Kart'#305
+      ImageIndex = 45
       OnClick = cxButtonCClick
     end
     object E1: TMenuItem

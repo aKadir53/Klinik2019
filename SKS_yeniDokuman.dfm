@@ -1155,8 +1155,8 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 304
-    Top = 16
+    Left = 328
+    Top = 8
     object M1: TMenuItem
       Caption = 'Men'#252
       ImageIndex = 79

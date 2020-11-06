@@ -1825,6 +1825,9 @@ begin
   ADO_TahlillSQL.close;
   ADO_TahlillSQL.Parameters[0].Value := varTostr(Takipler.DataController.GetValue(AFocusedRecord.RecordIndex,
                            Takipler.DataController.GetItemByFieldName('takipNo').Index));
+  ADO_TahlillSQL.Parameters[1].Value := '';
+  ADO_TahlillSQL.Parameters[2].Value := datalar.AktifSirket;
+
   ADO_TahlillSQL.Open;
 
  // ADO_DigerSistem.close;

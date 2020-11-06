@@ -1421,6 +1421,15 @@ begin
                   Cursor := crNone;
                 End;
               end;
+
+       (*
+        5011 : begin
+                    if mrYes = ShowPopupForm('Aþý Takip Listesi',AsiTakipListesi)
+                    Then Begin
+
+                    End;
+               end;
+         *)
           6 : begin
                  tc := InputBox('Personel Ara','Tc Kimlik No','');
                  if IsNull (TC) then Exit;

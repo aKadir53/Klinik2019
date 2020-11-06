@@ -898,6 +898,7 @@ var
  Fr : Double;
  W,H : Double;
 begin
+(*
  // W := ScreenWidth;
  // H := ScreenWidth;
 
@@ -908,6 +909,7 @@ begin
  // pnlDurum.Left := round((Self.Width/2) - (pnlDurum.Width/2));
  // pnlDurum.Top := round((Self.ClientHeight/2) - (pnlDurum.Height/2));
   sayfalar.ScaleBy(Trunc(FR*100),100);
+  *)
 end;
 
 end.

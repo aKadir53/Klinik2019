@@ -103,7 +103,7 @@ var
   sql : string;
 begin
   Result := False;
-  sql := 'select L.butKodu,L.tanimi,L.uygulamaSuresi,L.uygulamaAdet,L.tip,L.sira,L.minD,L.maxD,L.SGKTip,L.birim, ' +
+  sql := 'select L.butKodu,L.tanimi,L.uygulamaSuresi,L.uygulamaAdet,L.tip,L.sira,L.minD,L.maxD,L.SGKTip,F.birim, ' +
          'L.hepatitMarker,L.SonucTip,L.grupKodu,L.grupKodu_Centro,L.Loinc,L.ref_aciklama,F.islemKodu,F.islemKoduC,L.yeniButKodu ' +
          'from LabTestler L ' +
          'left join LabTestler_Firma F on F.butKodu = L.butKodu and F.Tip = L.UygulamaAdet ' +

@@ -13,7 +13,7 @@ uses
   cxDataStorage, cxDBData, cxCurrencyEdit, cxGridLevel, cxGridCustomTableView,
   cxGridTableView, cxGridBandedTableView, cxGridDBBandedTableView, cxClasses,
   cxGridCustomView, cxGridDBTableView, cxGrid, cxCheckGroup, cxDropDownEdit,
-  cxImageComboBox;
+  cxImageComboBox,dxLayoutControl,dxLayoutContainer;
 
 
 
@@ -475,6 +475,9 @@ end;
 
 procedure TfrmDoktorlar.cxButtonEditPropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);
+var
+  sirketKods , kod : string;
+  Dataset : TDataset;
 begin
   inherited;
   if length(datalar.ButtonEditSecimlist) > 0 then
@@ -485,6 +488,32 @@ begin
           GridFirmalar.Dataset.SQL.Text := CalismaBilgileriSQL(TcxButtonEditKadir(FindComponent('kod')).EditValue,PersonelTip);
           GridFirmalar.Dataset.Active := True;
         //  DBGrid.DataController.CreateAllItems(True);
+
+        sirketKods := '';
+        kod := '';
+        Dataset:= datalar.QuerySelect('select kod,sirketKods from DoktorlarT where tcKimlikNo = ' + QuotedStr(TcxTextEdit(FindComponent('tcKimlikNo')).Text) + ' and sirketKods <> ''''');
+        if not Dataset.Eof
+        then begin
+          sirketKods := Dataset.FieldByName('sirketKods').AsString;
+          kod := Dataset.FieldByName('kod').AsString;
+        end
+        else
+        begin
+          Dataset := datalar.QuerySelect('select kod,sirketKods from DoktorlarT where tescilNo = ' + QuotedStr(TcxTextEdit(FindComponent('tescilNo')).Text) + ' and sirketKods <> ''''');
+          if not Dataset.Eof
+          then begin
+            sirketKods := Dataset.FieldByName('sirketKods').AsString;
+            kod := Dataset.FieldByName('kod').AsString;
+          end;
+
+        end;
+
+        if (sirketKods <> '') and (kod <> TcxButtonEditKadir(FindComponent('kod')).EditValue)
+        then
+          TdxLayoutGroup(FindComponent('dxLasirketKods')).Visible := False
+        else
+          TdxLayoutGroup(FindComponent('dxLasirketKods')).Visible := True;
+
   end;
 end;
 

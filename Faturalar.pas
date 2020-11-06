@@ -187,7 +187,7 @@ begin
 
               sql := 'update KurumFatura set ' +
                      'FaturaGuid = ' +  QuotedStr(Sonuc[1]) +
-                     ' where id = (select KurumFaturaID from faturalar where sira = ' + faturaId +') and KurumFaturaID is not null';
+                     ' where id = (select KurumFaturaID from faturalar where sira = ' + faturaId + ' and KurumFaturaID is not null)';
               datalar.QueryExec(sql);
 
               EArsivDurumSorgula(Sonuc[1]);

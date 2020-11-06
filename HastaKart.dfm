@@ -880,6 +880,11 @@ object frmHastaKart: TfrmHastaKart
     object N1: TMenuItem
       Caption = '-'
     end
+    object S1: TMenuItem
+      Caption = 'SKS Formlar'#305
+      ImageIndex = 137
+      OnClick = cxButtonSKSCClick
+    end
     object T4: TMenuItem
       Tag = -100
       Caption = 'Hasta Tan'#305'm Kart'#305' Yazd'#305'r'
@@ -887,10 +892,28 @@ object frmHastaKart: TfrmHastaKart
       OnClick = cxButtonCClick
     end
     object D1: TMenuItem
-      Tag = -101
+      Tag = 101
       Caption = 'D'#305#351'ardan Gelen Belge'
       ImageIndex = 9
       OnClick = cxButtonCClick
+      object Y1: TMenuItem
+        Tag = -103
+        Caption = 'Y'#252'kle'
+        ImageIndex = 113
+        OnClick = cxButtonCClick
+      end
+      object G3: TMenuItem
+        Tag = -101
+        Caption = 'G'#246'ster'
+        ImageIndex = 101
+        OnClick = cxButtonCClick
+      end
+      object S2: TMenuItem
+        Tag = -104
+        Caption = 'Sil'
+        ImageIndex = 43
+        OnClick = cxButtonCClick
+      end
     end
     object SmsGnder1: TMenuItem
       Tag = -28

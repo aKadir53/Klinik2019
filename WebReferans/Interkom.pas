@@ -263,6 +263,7 @@ begin
               except on e : Exception do
                begin
                  sm := e.Message;
+                 txtLog.Lines.Add(sm);
                end;
               end;
 
@@ -282,6 +283,7 @@ begin
                 except on e : Exception do
                  begin
                    sm := e.Message;
+                   txtLog.Lines.Add(sm);
                  end;
                 end;
 

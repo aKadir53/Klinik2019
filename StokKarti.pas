@@ -8,9 +8,10 @@ uses
   cxContainer, cxEdit, Menus, StdCtrls, cxButtons, cxGroupBox, DB, ADODB,
   cxTextEdit, cxMaskEdit, cxButtonEdit, cxDBEdit,kadirType,KadirLabel,Kadir,
   GirisUnit,Data_Modul, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
-  dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
+  dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, cxCustomData,
   dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters, cxCheckBox, cxLabel,
-  cxStyles, cxVGrid, cxDBVGrid, cxInplaceContainer,dxLayoutContainer,cxDropDownEdit;
+  cxStyles, cxVGrid, cxDBVGrid, cxInplaceContainer,dxLayoutContainer,cxDropDownEdit,
+  cxGridTableView, cxGridBandedTableView, cxGridDBBandedTableView, cxGrid,cxGridDBTableView;
 
 
 
@@ -141,7 +142,7 @@ procedure TfrmStokKarti.FormCreate(Sender: TObject);
 var
   IC : TcxImageComboKadir;
   Tarih,KTarih,TaniTarih : TcxDateEditKadir;
-
+  GridV : TcxGridDBBandedTableView;
 begin
   ClientHeight := formYukseklik;
   ClientWidth := formGenislik;
@@ -180,6 +181,8 @@ begin
 
   setDataStringCurr(self,'MinMiktar','Min Miktar',Kolon1,'',80,'0',1);
 
+  setDataString(self,'AktifLot','Aktif Lot',Kolon1,'lot',100);
+  setDataStringCurr(self,'AktifLotAdet','Lot Adet',Kolon1,'lot',50,'0',1);
 
 
   SetGrid(CreateGrid('cxGridStokAlis',self,False),'faturaTarihi,tanimi,fiyat,adet,birim',
@@ -202,6 +205,11 @@ begin
                );
 
   setDataStringKontrol(self,TcxGridKadir(FindComponent('cxGridStokKullanim')) ,'cxGridStokKullanim','Ürün Kullanýmlarý',Kolon2,'',450,200);
+
+
+  GRidV := TcxGridDBBandedTableView(TcxGridKadir(FindComponent('cxGridStokKullanim')).Views[0]);
+  GridV.DataController.Summary.FooterSummaryItems.Clear;
+  GRidV.DataController.Summary.FooterSummaryItems.Add(GRidV.Columns[3], spFooter, skSum,'');
 
 
 // TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridTeshis')).Levels[0].GridView).NavigatorButtons.OnButtonClick := NavigatorButtonsButtonClick;
@@ -260,6 +268,8 @@ begin
             TcxCustomEdit(FindComponent('mevcut')).free;
             TcxCustomEdit(FindComponent('alisToplam')).free;
             TcxCustomEdit(FindComponent('satisToplam')).free;
+         //   TcxCustomEdit(FindComponent('AktifLot')).free;
+         //   TcxCustomEdit(FindComponent('AktifLotAdet')).free;
        end;
 
    IC_Params := TStringList.Create;
@@ -361,6 +371,10 @@ begin
                 TcxTextEdit(FindComponent('alisToplam')).Properties.ReadOnly := True;
                 TcxTextEdit(FindComponent('satisToplam')).Properties.ReadOnly := True;
                 TcxTextEdit(FindComponent('mevcut')).Properties.ReadOnly := True;
+
+              //  setDataString(self,'AktifLot','Aktif Lot',Kolon1,'',80);
+              //  setDataStringCurr(self,'AktifLotAdet','Lot Adet',Kolon1,'',80,'0',1);
+
 
            end;
 

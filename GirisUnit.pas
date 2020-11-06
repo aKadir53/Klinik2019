@@ -1925,13 +1925,16 @@ begin
   cxButton.ButtonName := Name;
   cxButton.Caption := captionButton;
   cxButton.Tag := Tag;
+  cxButton.Width := uzunluk;
   dxLa := TdxLayoutGroup(parent).CreateItemForControl(cxButton);
   dxLa.Name := 'dxLaB'+Name;
   dxLa.AlignHorz := ahLeft;
-  dxLa.Width := uzunluk;
+  dxLa.Width := TdxLayoutGroup(parent).Width;
   dxLa.Height := yukseklik;
   dxLa.Caption := captionItem;
   dxLa.Visible := not cxButton.NewButtonVisible;
+
+
   if grup = '' then
     dxLa.Parent := parent
     else begin
@@ -1940,11 +1943,15 @@ begin
          dxLaG := TdxLayoutGroup.Create(self);
          dxLaG.Name := grup;
          dxLaG.LayoutDirection := ldHorizontal;
+         dxLaG.AlignHorz := ahLeft;
          dxLaG.Parent := parent;
          dxLag.ShowBorder := false;
+         dxLaG.Width := uzunluk;
+        // dxLaG.Caption := captionItem;
         end ;
 
       dxLa.Parent := TdxLayoutGroup(Self.findcomponent(grup));
+      TdxLayoutGroup(Self.findcomponent(grup)).Width := TdxLayoutGroup(parent).Width;
  //     SpaceItem.Parent := TdxLayoutGroup(findcomponent(grup));
     end;
   cxButton.OnClick := Event;
@@ -2700,7 +2707,7 @@ begin
           Then begin
             jp := TJpegimage.Create;
             try
-              jp.Assign(TcxImage(self.Components[i]).Picture);
+              jp.Assign(TcxImage(self.Components[i]).Picture.Bitmap);
               sqlRun.FieldByName(_Obje_.Name).Assign(jp);
             finally
               jp.Free;

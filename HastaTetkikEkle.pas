@@ -135,6 +135,10 @@ type
     procedure cxBtnHesapKaydetClick(Sender: TObject);
     procedure cxBtnDegerlendirClick(Sender: TObject);
     procedure gridTetkikDegerlendirDblClick(Sender: TObject);
+    procedure cxGridTetkiklerFocusedRecordChanged(
+      Sender: TcxCustomGridTableView; APrevFocusedRecord,
+      AFocusedRecord: TcxCustomGridRecord;
+      ANewItemRecordFocusingChanged: Boolean);
   private
     { Private declarations }
   public
@@ -223,30 +227,40 @@ begin
 
   if tag = -1
   then
-    sql := 'delete from hareketler ' +
-          ' where ' +
-          //substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
-         // ' and
-          ' dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and (Tip in (''L'',''R'')) and isnull(gd,0) = 0 and isnull(islemSiraNo,'''') = '''''
+    sql := 'exec sp_TetkikSil @dosyaNo = ' + QuotedStr(_dosyaNo_) +
+           ',@gelisNo = ' + _gelisNO_
+
+//    sql := 'delete from hareketler ' +
+//          ' where ' +
+//         ' dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and (Tip in (''L'',''R'')) and isnull(gd,0) = 0 and isnull(islemSiraNo,'''') = '''''
   else
   if tag = -31
   then
-    sql := 'update hareketler ' +
-           ' set onay  = 0 ' +
-           ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
-           ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'' and isnull(islemSiraNo,'''') = '''''
+    sql := 'exec sp_TetkikSil @dosyaNo = ' + QuotedStr(_dosyaNo_) +
+           ',@gelisNo = ' + _gelisNO_ +
+           ',@onay = 0 '
+//    sql := 'update hareketler ' +
+//           ' set onay  = 0 ' +
+//           ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
+//           ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'' and isnull(islemSiraNo,'''') = '''''
 
   else
   if tag = -32
   then
-    sql := 'update hareketler ' +
-           ' set onay  = 1 ' +
-           ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
-           ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'' and isnull(islemSiraNo,'''') = '''''
+    sql := 'exec sp_TetkikSil @dosyaNo = ' + QuotedStr(_dosyaNo_) +
+           ',@gelisNo = ' + _gelisNO_ +
+           ',@onay = 1 '
+//    sql := 'update hareketler ' +
+//           ' set onay  = 1 ' +
+//           ' where substring(code,1,6) = ' + copy(ADO_Tetkikler.FieldByName('code').AsString,1,6) +
+//           ' and dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNo = ' + _gelisNO_ + ' and Tip = ''L'' and isnull(islemSiraNo,'''') = '''''
 
   else
-    sql := 'delete from hareketler ' +
-           'where sirano = ' + inttostr(tag) + ' and isnull(islemSiraNo,'''') = ''''';
+    sql := 'exec sp_TetkikSil @dosyaNo = ' + QuotedStr(_dosyaNo_) +
+           ',@gelisNo = ' + _gelisNO_ +
+           ',@sirano =  ' + inttostr(tag);
+//    sql := 'delete from hareketler ' +
+//           'where sirano = ' + inttostr(tag) + ' and isnull(islemSiraNo,'''') = ''''';
 
 
 
@@ -262,10 +276,11 @@ end;
 
 procedure TfrmHastaTetkikEkle.TetkikEkle;
 var
-  sql : string;
+  sql , uzmanDoktor , doktor : string;
   ado : TADOQuery;
   List : ArrayListeSecimler;
 begin
+
    if cxTabTetkik.TabIndex = 0
     then
        Tetkikler.Filter := '%2%'
@@ -276,23 +291,38 @@ begin
    Tetkikler.where := ' charindex(''.'',butKodu) = 0  and uygulamaAdet = ''G''';
    List := Tetkikler.ListeGetir;
 
+   if List[0].kolon1 = '908170'
+   then begin
+      uzmanDoktor :=
+       datalar.QuerySelect('select kod from doktorlarT where durum = ''Aktif'' and uzman = ''Evet'' and sirketKod = ' + QuotedStr(datalar.AktifSirket)).FieldByName('kod').AsString;
+       doktor := uzmanDoktor;
+   end
+     else
+       doktor := _Doktor_;
+
+
+
    try
      if length(List) > 0 then
      begin
        ado := datalar.QuerySelect('select butKodu,tanimi,uygulamaAdet from labtestler where substring(butKodu,1,6) = ' + QuotedStr(List[0].kolon1));
        while not ado.Eof do
        begin
-           sql := 'insert into hareketler (dosyaNo,gelisNo,gelisSIRANO,Tarih,Doktor,adet,code,name1,tip,tip1) ' +
+
+           sql := 'if not exists(select * from hareketlerLab where dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNo_ + ' and code = ' + QuotedStr(ado.FieldByName('butKodu').AsString) + ' ) ' +
+                  ' begin ' +
+                  ' insert into hareketler (dosyaNo,gelisNo,gelisSIRANO,Tarih,Doktor,adet,code,name1,tip,tip1) ' +
                   'values(' + QuotedStr(_dosyaNO_) + ',' +
                               _gelisNo_ + ',' +
                              _gelisSiraNo_ + ',' +
                              QuotedStr(NoktasizTarih(_provizyonTarihi_))  + ',' +
-                             QuotedStr(_Doktor_) + ',' +
+                             QuotedStr(doktor) + ',' +
                              '1' + ',' +
                              QuotedStr(ado.FieldByName('butKodu').AsString) + ',' +
                              QuotedStr(ado.FieldByName('tanimi').AsString) + ',' +
                              QuotedStr('L') + ',' +
-                             QuotedStr(ado.FieldByName('uygulamaAdet').AsString) + ')';
+                             QuotedStr(ado.FieldByName('uygulamaAdet').AsString) + ') ' +
+                  ' end ';
            datalar.QueryExec(sql);
            ado.Next;
        end;
@@ -400,9 +430,15 @@ begin
            //TetkikTarihDegistir;
             datalar.QueryExec('if exists(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
                               'begin ' +
-                              'update hareketler set Tarih = ' +
-                              '(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
-                              ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L''' +
+
+                            //  'update hareketler set Tarih = ' +
+                            //  '(select Tarih from hareketler where Tip = ''S'' and dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and KanAlindimi = 1 ) ' +
+                            //  ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L''' +
+
+                                  'exec sp_TetkikTarihDoktorDegistir ' +
+                                          '@dosyaNo = ' + QuotedStr(_dosyaNO_) + ',' +
+                                          '@gelisNo = ' + _gelisNO_ + ',' +
+                                          '@tarih = ' + QuotedStr('KA') +
                               ' end '
 
                               );
@@ -429,10 +465,10 @@ begin
                   end
                   else
                   begin
-                    datalar.QueryExec('update hareketler set Tarih = ' + QuotedStr(datalar.TetkikTarihi) +
-                                      ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L'''
-
-                    );
+                    datalar.QueryExec('exec sp_TetkikTarihDoktorDegistir ' +
+                                      '@dosyaNo = ' + QuotedStr(_dosyaNO_) + ',' +
+                                      '@gelisNo = ' + _gelisNO_ + ',' +
+                                      '@tarih = ' + QuotedStr(datalar.TetkikTarihi) );
                     ADO_Tetkikler.Requery;
                   end;
           end;
@@ -487,7 +523,7 @@ var
 begin
 
 
-    sql := 'sp_KtvHesapla ' + QuotedStr(_dosyaNo_) + ',' + _gelisNo_ + ',' + QuotedStr('D');
+    sql := 'sp_KtvHesapla ' + QuotedStr(_dosyaNo_) + ',' + _gelisNo_ + ',' + QuotedStr('D') + ',' + QuotedStr(datalar._labID);;
     Ado := datalar.QuerySelect(sql);
     try
     txtTS.EditValue := ado.FieldByName('TS').AsString;
@@ -572,7 +608,7 @@ begin
     kilofark := SonSeansGCKilo(_dosyaNo_,_gelisNo_ , g,c);
 
 
-    sql := 'sp_KtvHesapla ' + QuotedStr(_dosyaNo_) + ',' + _gelisNo_ + ',' + QuotedStr('D2');
+    sql := 'sp_KtvHesapla ' + QuotedStr(_dosyaNo_) + ',' + _gelisNo_ + ',' + QuotedStr('D2') + ',' + QuotedStr(datalar._labID);
     Ado := datalar.QuerySelect(sql);
 
     try
@@ -694,6 +730,16 @@ begin
 end;
 
 
+procedure TfrmHastaTetkikEkle.cxGridTetkiklerFocusedRecordChanged(
+  Sender: TcxCustomGridTableView; APrevFocusedRecord,
+  AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
+begin
+  inherited;
+   if ADO_Tetkikler.FieldByName('islemSiraNo').AsString <> ''
+   then Sender.OptionsData.Editing := False
+   else Sender.OptionsData.Editing := True;
+end;
+
 procedure TfrmHastaTetkikEkle.DoktorBilgisiDegis;
 var
    x ,sirano , satir , durum : integer;
@@ -704,10 +750,11 @@ begin
 
     if mrYes = ShowPopupForm('Tetkik Doktor Bilgisi Deðiþtir',SeansDoktorUpdate)
     Then Begin
-            datalar.QueryExec('update hareketler set doktor = ' + QuotedStr(datalar.SeansBilgi.doktor) +
-                                      ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_ + ' and tip = ''L'''
+                    datalar.QueryExec('exec sp_TetkikTarihDoktorDegistir ' +
+                                      '@dosyaNo = ' + QuotedStr(_dosyaNO_) + ',' +
+                                      '@gelisNo = ' + _gelisNO_ + ',' +
+                                      '@doktor = ' + QuotedStr(datalar.SeansBilgi.doktor) );
 
-                    );
                     ADO_Tetkikler.Requery;
 
 

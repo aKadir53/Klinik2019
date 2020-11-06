@@ -430,7 +430,7 @@ begin
                       pwidechar(''), nil, SW_SHOWNORMAL);
 
             p := DesktopPath;
-            CreateLink('C:\NoktaV3\' + exeFile,'','', p+'\Klinik2019.lnk');
+            CreateLink('C:\NoktaV3\' + exeFile,'','C:\NoktaV3', p+'\Klinik2019.lnk');
 
             halt;
    end

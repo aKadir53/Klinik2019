@@ -136,6 +136,7 @@ begin
        _r_ := c[r];
        _r_ := StringReplace(_r_,'A','10',[rfReplaceAll]);
        _r_ := StringReplace(_r_,'B','11',[rfReplaceAll]);
+       _r_ := StringReplace(_r_,'C','12',[rfReplaceAll]);
        cL.Items[strtoint(_r_)].Checked := True;
     end;
 
@@ -155,6 +156,7 @@ begin
           0..9 : begin _r_ := inttostr(r); end;
           10 : begin _r_ := 'A'; end;
           11 : begin _r_ := 'B'; end;
+          12 : begin _r_ := 'C'; end;
           else _r_ := '';
        end;
 

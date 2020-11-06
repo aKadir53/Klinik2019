@@ -121,6 +121,8 @@ type
     cxStyle1: TcxStyle;
     txtDoktor: TcxImageComboKadir;
     cxLabel4: TcxLabel;
+    LaboratuvarTetkikleriniEkle1: TMenuItem;
+    Tetkikler: TListeAc;
     procedure gridAktifCheckBoxClick(Sender: TObject; ACol, ARow: Integer;
       State: Boolean);
     procedure mnSe1Click(Sender: TObject);
@@ -147,7 +149,7 @@ type
     procedure KartTalepClick(Sender: TObject);
     procedure H1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure LabHizmetEkle;
+    procedure LabHizmetEkle(code : string = '');
     procedure cxButtonCClick(Sender: TObject);
     procedure txtProvizyonTarihiPropertiesChange(Sender: TObject);
     procedure Listele(Tag : integer);
@@ -198,12 +200,33 @@ begin
 end;
 
 procedure TfrmTopluGelis.cxButtonCClick(Sender: TObject);
+var
+  sql , uzmanDoktor , doktor : string;
+  ado : TADOQuery;
+  List : ArrayListeSecimler;
 begin
+
 inherited;
   case Tcontrol(sender).Tag of
-  -4 : begin
-          LabHizmetEkle;
-       end;
+  -4,4 : begin
+           if Tcontrol(sender).Tag = -4
+           then
+             LabHizmetEkle
+           else
+           begin
+                 Tetkikler.SkinName := AnaForm.dxSkinController1.SkinName;
+                 Tetkikler.where := ' charindex(''.'',butKodu) = 0  and uygulamaAdet = ''G''';
+                 List := Tetkikler.ListeGetir;
+                 if length(List) > 0 then
+                 begin
+                   if mrYes = ShowMessageSkin(List[0].kolon1,' Hizmet Seçili Hastalara Ýþlenecek','','msg')
+                   then
+                    LabHizmetEkle(List[0].kolon1);
+                 end;
+
+           end;
+         end;
+
   -5 : begin
          TakipAl;
        end;
@@ -405,13 +428,18 @@ begin
            sql := 'update hareketler set kanalindimi = 0 ' +
             			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tip = ''S'' '
                   +
-                  ' update hareketler set kanalindimi = 1 ' +
-            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tarih = ' + QuotedStr(tarih(kanAlimTarihi)) + ' and Tip = ''S'' '
+
+                 // ' update hareketler set kanalindimi = 1 ' +
+            	 //		' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD', strTodatetime(kanAlimTarihi))) + ' and Tip = ''S'' '
+                  ' exec sp_TetkikTarihDoktorDegistir ' +
+                  '@dosyaNo = ' + QuotedStr(dosyaNo) + ',' +
+                  '@gelisNo = ' + gelisNo + ',' +
+                  '@tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD', strTodatetime(kanAlimTarihi)))
                   +
-                  ' update hasta_gelisler set KanAlimZamani =  ' +
-                  ' from hasta_gelisler g ' +
-                  ' join hastakart hk on hk.dosyaNO = g.dosyaNo ' +
-                  ' dbo.KanAlimTarihi(hk.SeansGunleri,' + txtSeansNo.Text + ',' + QuotedStr(tarih(kanAlimTarihi))  + ',hk.seans)' +
+                  ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(FormatDateTime('YYYYMMDD HH:NN', strTodatetime(kanAlimTarihi))) +
+               //   ' from hasta_gelisler g ' +
+               //   ' join hastakart hk on hk.dosyaNO = g.dosyaNo ' +
+              //    ' dbo.KanAlimTarihi(hk.SeansGunleri,' + txtSeansNo.Text + ',' + QuotedStr(tarih(kanAlimTarihi))  + ',hk.seans)' +
 
             			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
 
@@ -779,12 +807,11 @@ begin
 
 end;
 
-procedure TfrmTopluGelis.LabHizmetEkle;
+procedure TfrmTopluGelis.LabHizmetEkle(code : string);
 var
   sql : string;
   ado : TADOQuery;
   x : integer;
-
 begin
    DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
    try
@@ -800,13 +827,14 @@ begin
            setData(x);
 
               sql := 'select * from hareketler where dosyaNo = ' + QuotedStr(dosyaNo) +
-              ' and gelisNo = ' + gelisNo + ' and Tip = ''L''';
+              ' and gelisNo = ' + gelisNo + ' and Tip = ''L'' and isnull(gd,0) <> 0';
                if datalar.QuerySelect(sql).Eof
                Then begin
 
                   sql := 'exec sp_hastaLabIsle @dosyaNo = ' + QuotedStr(dosyaNo) + ',' +
                                               ' @gelisNo = ' + gelisNo + ',' +
-                                              ' @tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD',(strToDateTime(kanAlimTarihi))));
+                                              ' @tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD',(strToDateTime(kanAlimTarihi)))) + ',' +
+                                              ' @code = ' + QuotedStr(code);
                   datalar.QueryExec(sql);
                end;
 

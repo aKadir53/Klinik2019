@@ -42,7 +42,7 @@ object frmCariHesapBorcAlacakToplam: TfrmCariHesapBorcAlacakToplam
           Column = GridListBK
         end>
       DataController.Summary.SummaryGroups = <>
-      OptionsCustomize.ColumnFiltering = False
+      Filtering.ColumnFilteredItemsList = True
       OptionsCustomize.ColumnGrouping = False
       OptionsCustomize.ColumnSorting = False
       OptionsData.Deleting = False

@@ -1091,8 +1091,14 @@ object frmTopluGelis: TfrmTopluGelis
     end
     object L1: TMenuItem
       Tag = -4
-      Caption = 'Laboratuvar Tetkiklerini Ekle'
+      Caption = 'Laboratuvar Tetkiklerini Ekle (Grup)'
       ImageIndex = 99
+      OnClick = cxButtonCClick
+    end
+    object LaboratuvarTetkikleriniEkle1: TMenuItem
+      Tag = 4
+      Caption = 'Laboratuvar Tetkik Ekle'
+      ImageIndex = 47
       OnClick = cxButtonCClick
     end
     object T1: TMenuItem
@@ -1140,5 +1146,32 @@ object frmTopluGelis: TfrmTopluGelis
       AssignedValues = [svColor]
       Color = 10329599
     end
+  end
+  object Tetkikler: TListeAc
+    ListeBaslik = 'Tetkik Listesi'
+    TColcount = 4
+    TColsW = '50,350,50,50'
+    Table = 'labtestler'
+    Conn = DATALAR.ADOConnection2
+    Filtercol = 2
+    BaslikRenk = clBackground
+    DipRenk = clBackground
+    ButtonImajIndex = 132
+    Kolonlar.Strings = (
+      'butKodu'
+      'tanimi'
+      'Tip'
+      'uygulamaAdet')
+    KolonBasliklari.Strings = (
+      'But Kodu'
+      'Tanimi'
+      'Tip'
+      'T'#252'r')
+    Calistir = fgEvet
+    BiriktirmeliSecim = False
+    Grup = False
+    GrupCol = 0
+    Left = 216
+    Top = 237
   end
 end

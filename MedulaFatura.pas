@@ -327,6 +327,19 @@ begin
    onayTip := copy(varTostr(chkList.EditValue),2,1);
    SgkBildir := copy(varTostr(chkList.EditValue),3,1);
 
+
+   if SgkBildir = '1'
+   then begin
+     t4.Enabled := False;
+     utarOnayTm1.Enabled := False;
+   end
+   else
+   begin
+     t4.Enabled := True;
+     utarOnayTm1.Enabled := True;
+   end;
+
+
    if islemTip = '1'
    then begin
      if chkList.Properties.Items.Count = 3

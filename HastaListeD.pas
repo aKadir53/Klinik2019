@@ -243,7 +243,7 @@ begin
         //
               DurumGoster(True,False,'Ýmza Föyleri Yükleniyor, Lütfen Bekleyiniz');
               try
-                Datasets.Dataset0 := datalar.ADO_aktifSirketLogo;
+                Datasets.Dataset3 := datalar.ADO_aktifSirketLogo;
                 Datasets.Dataset2 := datalar.ADO_AktifSirket;
 
                 if Tcontrol(sender).tag = -21
@@ -417,9 +417,9 @@ begin
                             ',@seans = ' + QuotedStr(txtSeansTopPanel.text);
               datalar.QuerySelect(ado,sql);
 
-              Datasets.Dataset0 := ado;
-              Datasets.Dataset1 := datalar.ADO_AktifSirket;
-              Datasets.Dataset2 := datalar.ADO_aktifSirketLogo;
+              Datasets.Dataset1 := ado;
+              Datasets.Dataset2 := datalar.ADO_AktifSirket;
+              Datasets.Dataset3 := datalar.ADO_aktifSirketLogo;
               PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),Datasets);
               finally
                 DurumGoster(False);

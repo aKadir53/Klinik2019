@@ -313,6 +313,8 @@ type
     GridListColumn12: TcxGridDBBandedColumn;
     P3: TMenuItem;
     T6: TMenuItem;
+    U2: TMenuItem;
+    T7: TMenuItem;
     procedure hastalar(durum : string);
     procedure btnListClick(Sender: TObject);
     procedure btnYazdirClick(Sender: TObject);
@@ -422,6 +424,9 @@ type
     procedure ListeDoktorKodPropertiesPopup(Sender: TObject);
     procedure ListeFocusedItemChanged(Sender: TcxCustomGridTableView;
       APrevFocusedItem, AFocusedItem: TcxCustomGridTableItem);
+    procedure GridTetkiklerFocusedRecordChanged(Sender: TcxCustomGridTableView;
+      APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
+      ANewItemRecordFocusingChanged: Boolean);
 
   private
     { Private declarations }
@@ -661,6 +666,7 @@ begin
   DamarIziKontrol := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('DamarIziKontrol').Index);
    _yas_ := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Yas').Index);
 
+  datalar.SeansBilgi.islemSiraNo := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('islemSiraNo').Index);
 
   case TControl(sender).Tag of
   -1 : begin
@@ -729,6 +735,8 @@ begin
                else
                 ShowMessageSkin('Seans Onaylarýný Doktor ve Hemþire Seansý Kapatarak Yapmalýdýr','','','info');
           end;
+
+
  -50 : begin
          SeansKapat(yeniSiraNo,'doktorImza');
        end;
@@ -738,8 +746,14 @@ begin
 
  100 : begin
         protokolDefteri;
+       end;
+-300 : begin
+          datalar.GirisFormRecord.F_Tarih1_ := txtTopPanelTarih1.GetValue;
+          datalar.GirisFormRecord.F_Tarih2_ := txtTopPanelTarih2.GetValue;
 
-
+          if mrYes = ShowPopupForm('UTS Kullaným Bildirim Tablosu',UTSKullanimiBildirimTablosu,datalar.AktifSirket,self.Name)
+          Then Begin
+          End;
        end;
 
  -704234,-704230 : begin
@@ -992,6 +1006,16 @@ begin
     AStyle := cxStyle5;
 end;
 
+procedure TfrmTopluSeans.GridTetkiklerFocusedRecordChanged(
+  Sender: TcxCustomGridTableView; APrevFocusedRecord,
+  AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
+begin
+  inherited;
+   if ADO_Tetkikler.FieldByName('islemSiraNo').AsString <> ''
+   then Sender.OptionsData.Editing := False
+   else Sender.OptionsData.Editing := True;
+end;
+
 procedure TfrmTopluSeans.GununTarihi;
 begin
    //txtDonem.Date := date();
@@ -1125,12 +1149,13 @@ begin
    TcxImageComboBoxProperties(ListeDevKurum.Properties).Items :=
    DevKurum.Properties.Items;
 
-
+   (*
    setDataStringIC(self,'DoktorCombo','DoktorCombo',Kolon1,'BB',150,'DoktorlarT','Kod','Tanimi',DoktorlarFilter);
    TdxLayoutGroup(FindComponent('dxLaDoktorCombo')).Visible := false;
+
    TcxImageComboBoxProperties(ListeDoktorKod.Properties).Items :=
    TcxImageComboKadir(FindComponent('DoktorCombo')).Properties.Items;
-
+   *)
 
    TopPanel.Visible := True;
    TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False);
@@ -1215,14 +1240,17 @@ begin
 
 
 
-         frmRapor.topluset.Dataset0 := ado0;
+        // frmRapor.topluset.Dataset0 := ado0;
          frmRapor.topluset.Dataset1 := ado1;
          frmRapor.topluset.Dataset2 := ado2;
          frmRapor.topluset.Dataset3 := ado3;
          frmRapor.topluset.Dataset4 := ado4;
+         frmRapor.topluset.Dataset5 := ado0;
+         frmRapor.topluset.Dataset6 := datalar.ADO_aktifSirket;
+         frmRapor.topluset.Dataset7 := datalar.ADO_aktifSirketLogo;
 
-
-         frmRapor.raporData1(frmRapor.topluset ,'054','\Seans Izlem');
+       //  frmRapor.raporData1(frmRapor.topluset ,'054','\Seans Izlem');
+         PrintYap('054','\Seans Izlem',intTostr(TagfrmTopluSeans),frmRapor.topluset);
         (*
          if chkSor.Checked
          then
@@ -1669,7 +1697,7 @@ var
       fark : double;
    satirlar : integer;
    takipNo,BasvuruNo : string;
-   sysTakipNo,islemRefNo,mesajTipi,HastaneRefNo,eNabizSonuc,yeniSiraNo : string;
+   sysTakipNo,islemRefNo,mesajTipi,HastaneRefNo,eNabizSonuc,yeniSiraNo,raporTakipNo : string;
 
 begin
 
@@ -1690,6 +1718,7 @@ begin
        for x := 0 to Liste.Controller.SelectedRowCount - 1 do
        begin
            Application.ProcessMessages;
+
            satir := Liste.Controller.SelectedRows[x].RecordIndex;
            pnlDurumDurum.Caption := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('hastaAdi').Index)) ;
            durum := Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('Durum').Index);
@@ -1700,8 +1729,16 @@ begin
            yeniSiraNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('yeniSiraNo').Index));
 
            HastaneRefNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('HastaneRefNo').Index));
+           raporTakipNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('raporTakipNo').Index));
+
            pBar.Position := pBar.Position + 1;
 
+
+           if raporTakipNo = ''
+           then begin
+              txtLog.Lines.Add(takipno + ' : RaporTakipNo Boþ Olamaz');
+           end
+           else
            if durum = 1
            then begin
             if datalar.eNabizKayit = 'Evet'
@@ -2163,7 +2200,13 @@ begin
   HastaneRefNo := varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('HastaneRefNo').Index));
   sysTakipNo :=  varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('SYSTakipNo').Index));
 
+  _HastaAdSoyad_ :=
+    varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('HASTAADI').Index)) + ' ' +
+    varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('HASTASOYADI').Index));
   GirisFormRecord.F_TakipNo_ := varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('TakipNo').Index));
+  GirisFormRecord.F_dosyaNO_ := varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('dosyaNo').Index));
+  GirisFormRecord.F_gelisNO_ := varToStr(GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('gelisNo').Index));
+  GirisFormRecord.F_HastaAdSoyad_ := _HastaAdSoyad_;
 
   if TmenuItem(sender).Tag = -9
   then begin
@@ -2270,6 +2313,13 @@ begin
        end;
 
    end;
+
+ -32 : begin
+          F := FormINIT(TagfrmHastaTetkikEkle,GirisFormRecord);
+         // F._Foto_ := foto;
+          if F <> nil then F.ShowModal;
+         // TetkikEkle(dosyaNo.Text,_gelisNo_,datalar.HastaBil.Tarih);
+       end;
 
   end;
 
@@ -3271,7 +3321,7 @@ var
 begin
   inherited;
 
-   if AFocusedItem = ListeDoktorKod
+   if 1=2//AFocusedItem = ListeDoktorKod
    then begin
      Doktorlar := TcxImageComboKadir.Create(nil);
      try
@@ -3447,11 +3497,16 @@ begin
            sql := 'exec sp_SeansIzlemFormu ' + QuotedStr(_dosyaNo_) + ',' + yeniSiraNo + ',' + QuotedStr('X2');
            datalar.QuerySelect(ado4,sql);
 
-           TopluDataset.Dataset0 := ado0;
+      //     TopluDataset.Dataset0 := ado0;
            TopluDataset.Dataset1 := ado1;
            TopluDataset.Dataset2 := ado2;
            TopluDataset.Dataset3 := ado3;
            TopluDataset.Dataset4 := ado4;
+
+           TopluDataset.Dataset5 := ado0;
+           TopluDataset.Dataset6 := datalar.ADO_AktifSirket;
+           TopluDataset.Dataset7 := datalar.ADO_aktifSirketLogo;
+
 
            if Liste.Controller.SelectedRowCount = 1
            then
@@ -3471,6 +3526,7 @@ begin
     ado2.free;
     ado3.free;
     ado4.free;
+
   end;
 
 

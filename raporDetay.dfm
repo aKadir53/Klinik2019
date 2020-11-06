@@ -420,6 +420,11 @@ object frmRaporDetay: TfrmRaporDetay
         Caption = 'Tesis Sorgula'
         OnClick = T2Click
       end
+      object T3: TMenuItem
+        Caption = 'Te'#351'his Listesini Sorgula'
+        Visible = False
+        OnClick = T3Click
+      end
     end
   end
   object cxGridPopupMenu1: TcxGridPopupMenu

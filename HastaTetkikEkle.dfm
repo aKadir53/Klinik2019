@@ -83,6 +83,7 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               Navigator.Buttons.Filter.Visible = False
               Navigator.Visible = True
               FilterBox.CustomizeDialog = False
+              OnFocusedRecordChanged = cxGridTetkiklerFocusedRecordChanged
               DataController.DataModeController.DetailInSQLMode = True
               DataController.DataSource = DataSource8
               DataController.Filter.Options = [fcoCaseInsensitive]

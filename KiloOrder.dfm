@@ -413,6 +413,13 @@ object frmKiloOrder: TfrmKiloOrder
         Position.ColIndex = 13
         Position.RowIndex = 0
       end
+      object GridEkstreColumn4: TcxGridDBBandedColumn
+        DataBinding.FieldName = 'islemSiraNo'
+        Visible = False
+        Position.BandIndex = 0
+        Position.ColIndex = 14
+        Position.RowIndex = 0
+      end
     end
     object cxGridLevel1: TcxGridLevel
       Caption = 'Hastalar'
@@ -424,6 +431,7 @@ object frmKiloOrder: TfrmKiloOrder
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
     AfterPost = adoAfterPost
+    AfterScroll = adoAfterScroll
     Parameters = <>
     Prepared = True
     SQL.Strings = (

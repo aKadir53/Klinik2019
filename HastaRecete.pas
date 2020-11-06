@@ -1503,7 +1503,7 @@ var
     ado , adoD : TADOQuery;
     receteNo , songel : string;
     ack : TStringList;
-    j : integer;
+    j , rc : integer;
 begin
     datalar.YeniRecete.doktor := datalar.doktorKodu;
     datalar.YeniRecete.doktorAdi := doktorAdi(datalar.doktorKodu);
@@ -1512,50 +1512,59 @@ begin
     datalar.YeniRecete.ReceteTuru := '1';
     datalar.YeniRecete.ReceteAltTuru := '1';
 
+    rc := datalar.QuerySelect('select dosyaNo from kurumFatura where dosyaNo = ' + QuotedStr(_dosyaNO_) +
+                             ' and gelisNo = ' + _gelisNo_).RecordCount;
+
     if islem = ReceteYeni
     then
-    if datalar.QuerySelect('select dosyaNo from kurumFatura where dosyaNo = ' + QuotedStr(_dosyaNO_) +
-                             ' and gelisNo = ' + _gelisNo_).Eof
+
+    if (rc > 0) and (self.Tag = TagfrmHastaRecete)
     Then begin
-      if mrYes = ShowPopupForm('Yeni Reçete',islem)
-      then begin
-         if islem = ReceteYeni
-         then begin
-               ADO_Recete.Append;
-               try
-                 ADO_Recete.FieldByName('dosyaNo').AsString := _dosyaNO_;
-                 ADO_Recete.FieldByName('gelisNo').AsString := _gelisNo_;
-                 ADO_Recete.FieldByName('gelisNo').AsString := AdoHastaGelis.FieldByName('gelisNo').AsString;
-                 ADO_Recete.FieldByName('tarih').AsString := datalar.YeniRecete.Tarih;
-                 ADO_Recete.FieldByName('ReceteTur').AsString := datalar.YeniRecete.ReceteTuru;
-                 ADO_Recete.FieldByName('ReceteAltTur').AsString := datalar.YeniRecete.ReceteAltTuru;
-                 ADO_Recete.FieldByName('doktor').AsString := datalar.YeniRecete.doktor;//+'-'+datalar.YeniRecete.doktorAdi;
-                 ADO_Recete.FieldByName('ProtokolNo').AsString := datalar.YeniRecete.protokolNo;
-                 ADO_Recete.FieldByName('ereceteNo').AsString := '0000';
-                 ADO_Recete.FieldByName('WanIP').AsString := datalar.WanIp;
-                 ADO_Recete.Post;
+         ShowMessageSkin('Faturadaki Döneme Reçete Düzenlenemez','','','info');
+         exit;
+    End
+    else
+    begin
+          if mrYes = ShowPopupForm('Yeni Reçete',islem)
+          then begin
+             if islem = ReceteYeni
+             then begin
+                   ADO_Recete.Append;
+                   try
+                     ADO_Recete.FieldByName('dosyaNo').AsString := _dosyaNO_;
+                     ADO_Recete.FieldByName('gelisNo').AsString := _gelisNo_;
+                     ADO_Recete.FieldByName('gelisNo').AsString := AdoHastaGelis.FieldByName('gelisNo').AsString;
+                     ADO_Recete.FieldByName('tarih').AsString := datalar.YeniRecete.Tarih;
+                     ADO_Recete.FieldByName('ReceteTur').AsString := datalar.YeniRecete.ReceteTuru;
+                     ADO_Recete.FieldByName('ReceteAltTur').AsString := datalar.YeniRecete.ReceteAltTuru;
+                     ADO_Recete.FieldByName('doktor').AsString := datalar.YeniRecete.doktor;//+'-'+datalar.YeniRecete.doktorAdi;
+                     ADO_Recete.FieldByName('ProtokolNo').AsString := datalar.YeniRecete.protokolNo;
+                     ADO_Recete.FieldByName('ereceteNo').AsString := '0000';
+                     ADO_Recete.FieldByName('WanIP').AsString := datalar.WanIp;
+                     ADO_Recete.Post;
 
-                 if self.Tag = TagfrmHastaRecete
-                 Then
-                 if ADO_receteTani.Locate('taniKodu','N18',[loCaseInsensitive]) = False
-                 then begin
-                   ADO_receteTani.Append;
-                   ADO_ReceteTani.FieldByName('taniKodu').AsString := 'N18';
-                   ADO_Recetetani.FieldByName('tani').AsString := 'Kronik Böbrek Yetmezliði';
-                   ADO_receteTani.Post;
-                 end;
+                     if self.Tag = TagfrmHastaRecete
+                     Then
+                     if ADO_receteTani.Locate('taniKodu','N18',[loCaseInsensitive]) = False
+                     then begin
+                       ADO_receteTani.Append;
+                       ADO_ReceteTani.FieldByName('taniKodu').AsString := 'N18';
+                       ADO_Recetetani.FieldByName('tani').AsString := 'Kronik Böbrek Yetmezliði';
+                       ADO_receteTani.Post;
+                     end;
 
-               except
-                 ADO_Recete.Cancel;
-                 raise;
-               end;
-               ADO_receteAcikla.Close;
-               ADO_receteAcikla.Open;
-           end
-      end;
-    end
-   else
-      ShowMessageSkin('Faturadaki Döneme Reçete Düzenlenemez','','','info');
+                   except
+                     ADO_Recete.Cancel;
+                     raise;
+                   end;
+                   ADO_receteAcikla.Close;
+                   ADO_receteAcikla.Open;
+               end
+          end;
+
+
+    end;
+
 
 
     if islem = ReceteYeniRecete

@@ -122,9 +122,14 @@ type
     K1: TMenuItem;
     GridGelislerColumn1: TcxGridDBBandedColumn;
     H3: TMenuItem;
+    S1: TMenuItem;
+    Y1: TMenuItem;
+    G3: TMenuItem;
+    S2: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxButtonCClick(Sender: TObject);
+    procedure cxButtonSKSCClick(Sender: TObject);
     procedure cxTextEditKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure cxTextEditBKeyDown(Sender: TObject; var Key: Word;
@@ -325,9 +330,13 @@ begin
    // 555 : TopluPasifYap (False);
      20 : begin
             try
-             TcxCurrencyEdit(FindComponent('VKI')).EditValue :=
-              TcxCurrencyEdit(FindComponent('IdealKilo')).EditValue /
-              (sqr((TcxCurrencyEdit(FindComponent('boy')).EditValue/100)));
+             if TcxCurrencyEdit(FindComponent('boy')).EditValue > 0
+             then
+               TcxCurrencyEdit(FindComponent('VKI')).EditValue :=
+                TcxCurrencyEdit(FindComponent('IdealKilo')).EditValue /
+                (sqr((TcxCurrencyEdit(FindComponent('boy')).EditValue/100)))
+             else
+                TcxCurrencyEdit(FindComponent('VKI')).EditValue := 0;
             except
               TcxCurrencyEdit(FindComponent('VKI')).EditValue := 0;
             end;
@@ -507,7 +516,8 @@ begin
                                     ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_).FieldByName('Tarih').AsDateTime;
 
 
-       if datalar.GelisDuzenleRecordK.GirisTarihi > Tarih
+       if (datalar.GelisDuzenleRecordK.GirisTarihi > Tarih) and
+          (FormatDateTime('YYYY-MM-DD', Tarih) <> '1899-12-31')
        then begin
          ShowMessageSkin('Geliþ Tarihi : ' + dateTostr(datalar.GelisDuzenleRecordK.GirisTarihi) + ' Ýlk Sens Tarihi : ' + dateToStr(Tarih),
             'Geliþ Tarihi Ýlk Seans Tarihinden Büyük Olamaz','','info');
@@ -561,30 +571,9 @@ begin
        bSucc := False;
        BeginTrans (ado.Connection);
        try
-         sql := 'Delete from hareketler where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
-                ' and gelisNo = ' + _gelisNo_;
+         sql := 'exec sp_HastaGelisSil @dosyaNo = ' + QuotedStr (DosyaNo.Text) +
+                                                  ',@gelisNo = ' + _gelisNo_;
          datalar.QueryExec(ado, sql);
-
-         sql := 'Delete from labsonucdegerlendirme where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
-                ' and gelisNo = ' + _gelisNo_;
-         datalar.QueryExec(ado, sql);
-
-         sql := 'Delete from UzmanGozlem where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
-                ' and gelisNo = ' + _gelisNo_;
-         datalar.QueryExec(ado, sql);
-
-         sql := 'Delete from HastaIlacTedaviUygulama where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
-                ' and gelisNo = ' + _gelisNo_;
-         datalar.QueryExec(ado, sql);
-
-         sql := 'Delete from HastaIlacTedavi where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
-                ' and gelisNo = ' + _gelisNo_;
-         datalar.QueryExec(ado, sql);
-
-         sql := 'Delete from Hasta_Gelisler where dosyaNo = ' + QuotedStr (DosyaNo.Text) +
-                ' and gelisNo = ' + _gelisNo_;
-         datalar.QueryExec(ado, sql);
-
          bSucc := True;
        finally
          if bSucc then CommitTrans(ado.Connection)
@@ -1173,6 +1162,32 @@ begin
     PopupMenuEnabled(Self,PopupMenu1,True);
     PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
   end;
+
+
+end;
+
+procedure TfrmHastaKart.cxButtonSKSCClick(Sender: TObject);
+var
+ List : TListeAc;
+ _L_ : ArrayListeSecimler;
+ _name_, tel,msj,sysTakipNo,eNabizSonuc : string;
+ F : TGirisForm;
+ GirisFormRecord : TGirisFormRecord;
+ TopluDataset : TDataSetKadir;
+begin
+
+
+    if mrYes = ShowPopupForm('SKS Hasta Formlarý',SKS_HastaForm)
+    Then Begin
+             TopluDataset.Dataset1 := datalar.QuerySelect(
+                                      'exec sp_HastaTanimBilgileri ' +
+                                      ' @dosyaNO = ' + QuotedStr(dosyaNo.EditText));
+             TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
+             TopluDataset.Dataset3 := datalar.ADO_AktifSirket;
+
+             PrintYap(datalar.SKSForm.raporKodu,datalar.SKSForm.raporKodu,'',TopluDataset,kadirType.pTNone);
+
+    End;
 
 
 end;
@@ -2285,6 +2300,34 @@ begin
                                   ' where h.dosyaNO = ' + QuotedStr(dosyaNo.EditText) +
                                   ' order by g.gelisNo ');
          PrintYap('DEV','Dýþ Evraklar','',TopluDataset,kadirType.pTNone);
+
+       end;
+
+-102 : begin
+         TopluDataset.Dataset1 := datalar.QuerySelect(
+                                  'select * from HastaKart ' +
+                                  ' where dosyaNO = ' + QuotedStr(dosyaNo.EditText));
+         TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
+         TopluDataset.Dataset3 := datalar.ADO_AktifSirket;
+
+
+         PrintYap('HOF','Hasta Onam Formu','',TopluDataset,kadirType.pTNone);
+
+       end;
+-103 : begin
+         GirisFormRecord.F_GelisSIRANO := cxGridGelis.Dataset.FieldByName('SIRANO').AsString;
+         datalar.GelisDuzenleRecordK.SIRANO := cxGridGelis.Dataset.FieldByName('SIRANO').AsString;
+         if mrYes = ShowPopupForm('Evrak Yükle',DisardenGelenEvrakYukle,GirisFormRecord.F_GelisSIRANO,self.Name)
+         Then Begin
+         End;
+
+       end;
+-104 : begin
+         GirisFormRecord.F_dosyaNO_ := dosyaNo.Text;
+         datalar.GelisDuzenleRecordK.SIRANO := cxGridGelis.Dataset.FieldByName('SIRANO').AsString;
+         if mrYes = ShowPopupForm('Evrak Sil',DisardenGelenEvrakSil,GirisFormRecord.F_dosyaNO_,self.Name)
+         Then Begin
+         End;
 
        end;
 

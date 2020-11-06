@@ -242,6 +242,15 @@ Begin
                  Field := 'OrnekNo';
                  HTIMNT := OrderENA(dosyaNo,gelisNo,Field);
 
+                 if datalar._LabBarkodBasim = 'E'
+                 Then begin
+                    if HTIMNT.Gelis.ReferansNo = ''
+                    then begin
+                       txtLog.Lines.Add(HTIMNT.Adi+' '+HTIMNT.Soyadi + ' - ' + HTIMNT.Gelis.ReferansNo + ' - ' + ' Referans Deðeri Boþ Olamaz');
+                       Continue;
+                    end;
+                 end;
+
                  if HTIMNT <> nil
                  Then begin
                      KurumMNT := TenayENA.KurumBilgileri.Create;
@@ -781,7 +790,7 @@ begin
          // TTarih.Month := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,5,2));
          // TTarih.Day := strtoint(copy(ado.fieldbyname('BHDAT').Asstring,7,2));
 
-          GelisMNT.Tarih := TTarih;
+          GelisMNT.Tarih := TTarih;    // +30 dakika ena buna ekleme yapýyor
 
 
           if Field = '' then Field := 'OrnekNo';

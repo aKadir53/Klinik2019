@@ -28,7 +28,7 @@ var
 begin
 
    sql := 'update Hasta_gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
-          ifThen(durum = 'Sonuc Alýndý',
+          ifThen(durum = 'Gönderildi',
           ',ornekNo = ' + QuotedStr(barkod) +
           ',CikisOrnekNo = ' + QuotedStr(barkodC),'') +
           ',LabRefId = ' + QuotedStr(refId) +
@@ -45,18 +45,17 @@ var
 begin
   ado :=
   datalar.QuerySelect(
-  'select l.islemKoduC' +
-  'from hareketlerLab h ' +
-  'join labtestler l on l.butkodu = h.code ' +
-  'where dosyano = ' + QuotedStr(dosyaNo) + ' and gelisno = ' + gelisNo  + ' and onay = 1 and charindex(''.'',code) = 0  '  //and uygulamaAdet = 'C'
-   );
+                 'select h.name1,h.Tarih,l.islemKodu from hareketlerLab h ' +
+                 ' join labtestler_firma l on l.butKodu = h.code and h.tip1 = l.tip and l.LabID = ' + QuotedStr(datalar._labID) +
+                 ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo +
+                 ' and charindex(''.'',h.code) = 0 and h.tip1 = l.tip and h.onay = 1');
 
    SetLength(testler,ado.RecordCount);
    ado.First;
    i := 0;
    while not ado.Eof do
    begin
-      testler[i] := ado.FieldByName('islemKoduC').AsInteger;
+      testler[i] := ado.FieldByName('islemKodu').AsInteger;
       inc(i);
       ado.Next;
    end;
@@ -87,15 +86,17 @@ begin
      // if c = 4 then _F_ := 'G';
     //  if c = 5 then _F_ := 'C';
 
+
       for x := 0 to length(sonuclar) - 1 do
       begin
         //  kod2 := ifthen(Sonuclar[x].TETKIK_KODU2 = '0','' ,Sonuclar[x].TETKIK_KODU2);
           _F_ := '';
 
           if (sonuclar[x].TestGrupAdi = 'HEMATOLOJÝ') or
-             (sonuclar[x].TestGrupAdi = 'Hematoloji')
+             (sonuclar[x].TestGrupAdi = 'Hematoloji') or
+             (sonuclar[x].SutKodu = '901450')
           then
-             testKod := KodEslestirNormalDeger(sonuclar[x].TestID+sonuclar[x].TestParametreAdi,'',min,max, _F_)
+             testKod := KodEslestirNormalDeger(sonuclar[x].TestID+sonuclar[x].TestAltParametreLabKodu,'',min,max, _F_)
           else
              testKod := KodEslestirNormalDeger(sonuclar[x].TestID,'',min,max, _F_);
 
@@ -180,7 +181,7 @@ begin
           gelisNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
           id := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('GELISID').Index);
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
 
           _Tc_ := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('TCKIMLIKNO').Index));
@@ -194,7 +195,7 @@ begin
 
 
           try
-           Sonuclar1 := (datalar.Lab as LabServiceSoap).DiyalizSonucDurum(username,password,ornekNo,tarih1,tarih2,Tc);
+           Sonuclar1 := (datalar.Lab as LabServiceSoap).DiyalizSonucDurum(username,password,ornekNo,tarih1,tarih2,_Tc_);
           except on e : Exception do
            begin
              sm := e.Message;
@@ -204,11 +205,15 @@ begin
           end;
 
           if Sonuclar1[0].Hata = ''
-          Then Begin
-            SonucYaz(Sonuclar1[0].TestSonuclariGenel[0].TestSonuclari ,4);
-            ornekdurumyaz('Sonuç Alýndý',id,'','','');
-          End
-          else
+          Then
+            if Assigned(Sonuclar1[0].TestSonuclariGenel[0].TestSonuclari)
+            Then Begin
+              SonucYaz(Sonuclar1[0].TestSonuclariGenel[0].TestSonuclari ,4);
+              ornekdurumyaz('Sonuç Alýndý',id,'','','');
+            End
+            else
+             txtLog.Lines.Add('TestSonuclari Verisi Bulunamadý')
+          Else
            txtLog.Lines.Add(Sonuclar1[0].Hata);
         End;
 
@@ -223,12 +228,13 @@ var
   t : boolean;
   sonuclar1 : ArrayOfHastaSonucToplu;
   Tc,id,dosyaNo,gelisNo : string;
-  sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,_tc_ ,kayitTip,ornekNo,AD,SOYAD : string;
+  sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,_tc_ ,kayitTip,ornekNo,AD,SOYAD ,Cins: string;
   username,password : string;
   DT : TXSDatetime;
   _DT_ : TDateTime;
   Testler : ArrayOfInt;
   Cvp : ArrayOfHastaTestEklemeSonucu;
+  CvpSTR : String;
 begin
 
    username := datalar._labusername;
@@ -250,20 +256,27 @@ begin
        kayitTip := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('LabornekDurum').Index));
 
-        if  (kayitTip = 'Gönderildi')
+        if  (kayitTip = 'ONAY')
         Then Begin
           dosyaNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('dosyaNo').Index);
           gelisNo := gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('gelisNo').Index);
           id := gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('GELISID').Index);
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('SIRANO').Index);
 
           _Tc_ := varToStr(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('TCKIMLIKNO').Index));
 
           AD := varToStr(gridAktif.DataController.GetValue(
-                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('ADSOYAD').Index));
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('HASTAADI').Index));
+
+          SOYAD := varToStr(gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('HASTASOYADI').Index));
+
+          Cins := varToStr(gridAktif.DataController.GetValue(
+                                      gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('CINSIYETI').Index));
+
 
           _DT_ := VarToDateTime(gridAktif.DataController.GetValue(
                                       gridAktif.Controller.SelectedRows[x].RecordIndex,gridAktif.DataController.GetItemByFieldName('DOGUMTARIHI').Index));
@@ -274,27 +287,65 @@ begin
 
           datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\ERBIL\HastaKaydet_' + dosyaNo + '_' + gelisNo + '.XML';
 
-
+          DT := TXSDateTime.Create;
           DateToXsdateTime(DT,_DT_);
           Testler := Order(dosyaNo , gelisNo);
 
-          try
-           Cvp := (datalar.Lab as LabServiceSoap).TestEkle(username,password,ornekNo,
-                                                           _Tc_,AD,'','',DT,'','',id,Testler);
-          except on e : Exception do
-           begin
-             sm := e.Message;
-             txtLog.Lines.Add('Tc : ' + Tc + ' - ' + sm);
-             exit;
-           end;
+          progres.Position :=    progres.Position + 1;
+
+          if ornekNo <> ''
+          then begin
+            (*
+             try
+               CvpSTR := (datalar.Lab as LabServiceSoap).TestGuncelle(username,password,ornekNo,Testler);
+
+              except on e : Exception do
+               begin
+                 sm := e.Message;
+                 txtLog.Lines.Add('Tc : ' + Tc + ' - ' + sm);
+                 exit;
+               end;
+              end;
+
+              if Cvp[0].Sonuc = 'Baþarýlý'
+              Then Begin
+                ornekdurumyaz('Gönderildi',id,'',ornekNo,'');
+              End
+              else
+               txtLog.Lines.Add(Sonuclar1[0].Hata);
+              *)
+
+            txtLog.Lines.Add('Tc : ' + Tc + ' - ' + 'Gönderim Barkodu Olan Kayýt Tekrar Gönderilemez');
+            txtLog.Lines.Add('Kaydý Erbil Ekranýndan Silip , Kaydý YeniKayýt(Onay) a alýp Barkodu Silip Tekrar Gönderebilirsiniz');
+            Continue;
+
+
+          end
+          else
+          begin
+
+              try
+               Cvp := (datalar.Lab as LabServiceSoap).TestEkle(username,password,ornekNo,
+                                                               _Tc_,AD,SOYAD,
+                                                               ifThen(Cins='0','Erkek','Kadýn'),
+                                                               DT,'','',id,Testler);
+              except on e : Exception do
+               begin
+                 sm := e.Message;
+                 txtLog.Lines.Add('Tc : ' + Tc + ' - ' + sm);
+                 exit;
+               end;
+              end;
+
+              if Cvp[0].Sonuc = 'Baþarýlý'
+              Then Begin
+                ornekdurumyaz('Gönderildi',id,'',Cvp[0].ORNEKNO,'');
+              End
+              else
+               txtLog.Lines.Add(Sonuclar1[0].Hata);
+
           end;
 
-          if Cvp[0].Sonuc = ''
-          Then Begin
-            ornekdurumyaz('Gönderildi',id,'',Cvp[0].ORNEKNO,'');
-          End
-          else
-           txtLog.Lines.Add(Sonuclar1[0].Hata);
         End;
 
    End; // for end

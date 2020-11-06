@@ -536,6 +536,7 @@ type
    HastaYatis : THospitalizasyon;
    PersonelEgitimDegerlendirme :TPersonelEgitimDegerlendirme;
    MaviKod : TMaviKod;
+   SKSForm : TSKSForm;
    messaboxAcik : Boolean;
    EtkinMaddeTeshisKoduSelect : string;
    EtkinMaddeKoduSelect : string;

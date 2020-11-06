@@ -90,6 +90,7 @@ type
     Y2: TMenuItem;
     R2: TMenuItem;
     R3: TMenuItem;
+    D4: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnListClick(Sender: TObject);
@@ -510,6 +511,9 @@ begin
   if datalar.KontrolUserSet = True then exit;
 begin
 
+  if Ado_Dokumanlar.Eof then exit;
+  
+
   case TControl(sender).Tag  of
     -1 : begin
             F := FormINIT(TagfrmSKS_YeniDokuman,GirisFormRecord,ikHayir,'');
@@ -704,6 +708,21 @@ begin
            PrintYapDokuman('BOS',
                     gridDokumanlar.DataController.DataSource.dataset.FieldByName('adi').AsString ,
                     inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset,pTDizayn);
+          end;
+
+    -50 : begin
+             TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+             TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
+             sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
+                  ' join SKS_DokumanKapsamlari DK on DK.kod = D.Kapsam ' +
+                  ' join SKS_DokumanTurleri DT on DT.kod = D.tur ' +
+                  ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id' +
+                  ' where kapsam <> ''15504'' order by D.kapsam,D.tur';
+             TopluDataset.Dataset2 := datalar.QuerySelect(sql);
+             PrintYap('DLY','Doküman Listesi',
+                      inttoStr(TagfrmSKS_YeniDokuman) ,TopluDataset);
+
+
           end;
 
   end;

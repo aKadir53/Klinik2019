@@ -212,6 +212,15 @@ object frmKtvListesi: TfrmKtvListesi
         Options.Editing = False
         Width = 79
       end
+      object GridListColumn11: TcxGridDBColumn
+        DataBinding.FieldName = 'IdealKilo'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        Options.Editing = False
+        Width = 50
+      end
       object GridListColumn10: TcxGridDBColumn
         Caption = 'Hata A'#231#305'klamas'#305
         DataBinding.FieldName = 'Hata'

@@ -34,10 +34,6 @@ object frmHastaSeans: TfrmHastaSeans
     object Seanslar_Sayfa: TcxTabSheet
       Caption = 'Seanslar'
       ImageIndex = 0
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PageControl_Sayfa_Panel: TcxGroupBox
         Left = 0
         Top = 0
@@ -329,6 +325,8 @@ object frmHastaSeans: TfrmHastaSeans
               Caption = 'Rapor Takip'
               DataBinding.FieldName = 'raporTakipNo'
               PropertiesClassName = 'TcxButtonEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               Properties.Buttons = <
                 item
                   Default = True
@@ -924,7 +922,6 @@ object frmHastaSeans: TfrmHastaSeans
             Align = alLeft
             Caption = 'Tahlil G'#246'nder'
             TabOrder = 0
-            ExplicitHeight = 0
             Width = 119
           end
           object chkMesai: TcxCheckBox
@@ -933,7 +930,6 @@ object frmHastaSeans: TfrmHastaSeans
             Align = alClient
             Caption = 'Doktor Mesai Kontol Yapma'
             TabOrder = 1
-            ExplicitHeight = 0
             Width = 763
           end
         end
@@ -1004,10 +1000,6 @@ object frmHastaSeans: TfrmHastaSeans
     object TabMalzeme: TcxTabSheet
       Caption = 'Malzeme'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object MalzemeList: TcxGridKadir
         Left = 0
         Top = 0
@@ -1378,10 +1370,6 @@ object frmHastaSeans: TfrmHastaSeans
     object Sayfa_Log: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object txtLog: TcxMemo
         Left = 0
         Top = 0
@@ -1635,26 +1623,26 @@ object frmHastaSeans: TfrmHastaSeans
   end
   object MalzemeAc: TListeAc
     ListeBaslik = 'Malzemeler'
-    TColcount = 6
-    TColsW = '65,65,150,65,50,50'
-    Table = 
-      '(select code,UBBCODE,SAG.tanimi grup,NAME1,TOPGIR,TOPCIK from IL' +
-      'ACSARF I join Stok_Ana_Grup SAG on SAG.kod = I.GRUP) tt   '
+    TColcount = 7
+    TColsW = '100,65,150,80,65,50,50'
+    Table = 'StokKart_MevcutListView'
     Conn = DATALAR.ADOConnection2
     Filtercol = 0
     BaslikRenk = clBlack
     DipRenk = clBlack
     Kolonlar.Strings = (
       'Code'
-      'UBBCODE'
+      'Lot'
       'NAME1'
+      'ubb'
       'Grup'
       'TOPGIR'
       'TOPCIK')
     KolonBasliklari.Strings = (
       'Malzeme Kodu'
-      'Barkodu(UBB)'
+      'Lot'
       'Urun Ad'#305
+      'UBB'
       'Grubu'
       'Top.Giren'
       'Top.'#199#305'kan')

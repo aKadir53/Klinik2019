@@ -1106,6 +1106,15 @@ type
     konu2 : integer;
   end;
 
+  TSKSForm = record
+    raporKodu : string;
+    raporAdi : string;
+    SKS_FormID : string;
+    Tip : string;
+    id : string;
+    dosyaNo : string;
+    gelisNo : string;
+  end;
 
   TCariHareket = record
     hareketTipi : string;
@@ -1118,6 +1127,8 @@ type
     sirketKod : string;
     gozlemci : string;
   end;
+
+
 
   TeLHijyenDetay = record
     id : string;
@@ -1415,6 +1426,7 @@ Const
   TagfrmTopluHastaTedaviListesi = 5060;
   TagfrmHastaKonsultasyon = 5070;
   TagfrmTIKriter = 5011;
+  TagfrmAsiTakipListesi = 5012;
 
   TagfrmMedEczane = 5080;
   TagfrmMedula = 5081;
@@ -1593,6 +1605,7 @@ Const
   KaliteYonetimPlanDuzenle = 113;
   TatbikatYeni = 114;
   TatbikatDuzenle = 115;
+  AsiTakipListesi = 116;
 
   BeslenmeYeni = 120;
   BeslenmeDuzenle = 121;
@@ -1604,12 +1617,16 @@ Const
   ElHijyenDuzenle = 127;
   ElHijyenDetayYeni = 128;
   ElHijyenDetayDuzenle = 129;
+  SKS_HastaForm = 130;
+  RaporAciklamaEkle = 131;
 
 
   PortaldenFaturaOku = 200;
   MobilUygulamaLinki = 300;
   TetkikTarihDuzenle = 301;
-
+  DisardenGelenEvrakYukle = 302;
+  DisardenGelenEvrakSil = 303;
+  UTSKullanimiBildirimTablosu = 304;
 
   NelerYeni = 333;
 

@@ -630,7 +630,7 @@ begin
       HastaTenay.DogumTarihi := DTarih;
 
 
-      sql := 'select BHDAT,ornekNo,KanAlimZamani from gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
+      sql := 'select BHDAT,ornekNo,KanAlimZamani from Hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
       datalar.QuerySelect(ado,sql);
 
       KanAlimZamani := ado.fieldbyname('KanAlimZamani').AsDateTime;

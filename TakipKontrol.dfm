@@ -1326,10 +1326,28 @@ object frmTakipKontrol: TfrmTakipKontrol
         Precision = 255
         Size = 10
         Value = '31UC15N'
+      end
+      item
+        Name = '@tip'
+        Attributes = [paNullable]
+        DataType = ftString
+        NumericScale = 255
+        Precision = 255
+        Size = 20
+        Value = Null
+      end
+      item
+        Name = '@sirkodKod'
+        Attributes = [paNullable]
+        DataType = ftString
+        NumericScale = 255
+        Precision = 255
+        Size = 6
+        Value = Null
       end>
     Prepared = True
     SQL.Strings = (
-      'sp_TakipKontrolTakipNoDetay :@tn')
+      'sp_TakipKontrolTakipNoDetay :@tn , :@tip , :@sirkodKod')
     Left = 352
     Top = 136
   end

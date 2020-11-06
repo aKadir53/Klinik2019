@@ -160,7 +160,8 @@ uses
     FaaliyetDurumBildirim,
     HastaBesinDegerlendirme,
     MaviKodBildirim,
-    ElHijyenGozlem;
+    ElHijyenGozlem,
+    AsiTakipListesi;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -369,6 +370,7 @@ begin
    TagfrmSirketSahaGozetim : Result := TfrmSirketSahaGozetim;
    TagfrmKaliteYonetimPlan: Result := TfrmKaliteYonetimPlan;
    TagfrmElHijyen: Result := TfrmElHijyen;
+   TagfrmAsiTakipListesi : Result := TfrmAsiTakipListesi;
 
    TagfrmSirketSahaDenetim : Result := TfrmSirketSahaDenetim;
    TagfrmISGKurulToplanti : Result := TfrmISGKurulToplanti;
@@ -474,6 +476,7 @@ begin
    TagfrmAbout : Result := frmAbout;
    TagfrmPersonelEgitim : Result := frmPersonelEgitim;
    TagfrmTestAyarlari : Result := frmTestAyarlari;
+   TagfrmAsiTakipListesi : Result := frmAsiTakipListesi;
 
    TagfrmElHijyen: Result := frmElHijyen;
    TagfrmIlaclar,TagfrmIlacAnaGrup,TagfrmIlacEtkenMadde  : Result := frmIlaclar;
@@ -609,7 +612,7 @@ begin
      TagfrmCihazKontrol : frmCihazKontrol := TfrmCihazKontrol.Create(Tab);
      TagfrmFirmaKontrol : frmFirmaKontrol := TfrmFirmaKontrol.Create(Tab);
      TagfrmElHijyen : frmElHijyen := TfrmElHijyen.Create(Tab);
-
+     TagfrmAsiTakipListesi : frmAsiTakipListesi  := TfrmAsiTakipListesi.Create(Tab);
 
 
      TagfrmMaviKodBildirimListesi : frmMaviKodBildirimListesi  := TfrmMaviKodBildirimListesi .Create(Tab);
@@ -857,6 +860,8 @@ begin
      TagfrmCihazKontrolListesi : frmCihazKontrolListesi := TfrmCihazKontrolListesi.Create(Tab);
      TagfrmPersonelEgitim : frmPersonelEgitim := TfrmPersonelEgitim.Create(Tab);
      TagfrmFirmaPersonelEgitimList : frmPersonelFirmaEgitimListe:= TfrmPersonelFirmaEgitimListe.Create(Tab);
+
+     TagfrmAsiTakipListesi : frmAsiTakipListesi  := TfrmAsiTakipListesi.Create(Tab);
 
      TagfrmSKS_Dokumanlar : frmSKS_Dokumanlar := TfrmSKS_Dokumanlar.Create(Tab);
      TagfrmSKS_YeniDokuman : frmSKS_YeniDokuman := TfrmSKS_YeniDokuman.Create(Tab);

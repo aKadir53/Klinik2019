@@ -63,6 +63,7 @@ type
     cxStyle1: TcxStyle;
     GridEkstreDoktor: TcxGridDBBandedColumn;
     GridEkstreHemsire: TcxGridDBBandedColumn;
+    GridEkstreColumn4: TcxGridDBBandedColumn;
     procedure K1Click(Sender: TObject);
     procedure B1Click(Sender: TObject);
     procedure adoAfterPost(DataSet: TDataSet);
@@ -76,6 +77,7 @@ type
       Shift: TShiftState);
     procedure GridEkstreEditValueChanged(Sender: TcxCustomGridTableView;
       AItem: TcxCustomGridTableItem);
+    procedure adoAfterScroll(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -112,6 +114,19 @@ begin
   end;
 
   *)
+end;
+
+procedure TfrmKiloOrder.adoAfterScroll(DataSet: TDataSet);
+begin
+  inherited;
+
+  if ado.FieldByName('islemSiraNo').AsString = ''
+  then
+    GridEkstreDoktor.Options.Editing := True
+  else
+    GridEkstreDoktor.Options.Editing := False;
+
+
 end;
 
 procedure TfrmKiloOrder.B1Click(Sender: TObject);
@@ -338,7 +353,7 @@ begin
 
   sql :='select h.dosyaNo,h.gelisNo, h.sirano,HK.TCKIMLIKNO, hk.HASTAADI+'' ''+hk.HASTASOYADI HastaAdi ,Tarih,' +
         ' h.IdealKilo,GIRISKILO,CIKISKILO ,h.verilecekSivi,h.makinaNo,dbo.fn_yas(HK.dogumTARIHI) Yas, CINSIYETI cins,' +
-        ' tanG,Tanc,NabizG,NabizC,TanGK,TanCK,KanAlindimi,h.durum,h.Ates,h.hemsire,h.doktor ' +
+        ' tanG,Tanc,NabizG,NabizC,TanGK,TanCK,KanAlindimi,h.durum,h.Ates,h.hemsire,h.doktor,h.islemSiraNo ' +
         ' from hareketler h ' +
         ' join hastakart hk on hk.dosyaNo = h.dosyaNo ' +
         ' where Tarih between ' + txtTopPanelTarih1.GetSQLValue('YYYY-MM-DD') + ' and ' + txtTopPanelTarih2.GetSQLValue('YYYY-MM-DD') +

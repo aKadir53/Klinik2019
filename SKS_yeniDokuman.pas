@@ -470,7 +470,7 @@ begin
   sonrakiGGTarihi.ValueTip := tvDate;
   setDataStringKontrol(self,sonrakiGGTarihi, 'sonrakiGGTarihi','Sonraki Gözden Geçirme Tarihi ',Kolon1,'yt',100);
 
-
+   (*
   _IC_ := TcxImageComboKadir.Create(self);
   _IC_.Conn := Datalar.ADOConnection2;
   _IC_.TableName := 'Users';
@@ -480,8 +480,9 @@ begin
   _IC_.Filter := ' SKSPersonel = 1';
   setDataStringKontrol(self,_IC_,'denetci','Denetçi',kolon1,'',100);
   OrtakEventAta(_IC_);
-
-
+     *)
+    setDataString(self,'kullanan','Hazýrlayan',Kolon1,'hh',100);
+    setDataString(self,'denetci','Denetçi',Kolon1,'hh',100);
 
 
   _IC_ := TcxImageComboKadir.Create(self);
@@ -636,6 +637,13 @@ var
   filename : string;
   TopluDataset : TDataSetKadir;
 begin
+
+     if UserRight('Raporlar', 'Dizayn Modu') = False
+     then begin
+         ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !','','','info');
+         exit;
+     end;
+
         Cursor := crSQLWait;
         DurumGoster(True,False,'Döküman  Yükleniyor , Lütfen Bekleyiniz');
      try

@@ -936,7 +936,7 @@
       Height = 570
       Align = alClient
       TabOrder = 0
-      Properties.ActivePage = TetkiklerPage
+      Properties.ActivePage = SeanslarPage
       Properties.Style = 11
       OnPageChanging = HizmetPagePageChanging
       ClientRectBottom = 563
@@ -946,10 +946,6 @@
       object SeanslarPage: TcxTabSheet
         Caption = 'Seanslar'
         ImageIndex = 125
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object gridHastalar: TAdvStringGrid
           Tag = 200
           Left = -6
@@ -1342,6 +1338,7 @@
               GroupSummaryAlignment = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Options.Sorting = False
               Styles.Content = cxStyle5
               Width = 104
@@ -2166,6 +2163,7 @@
               TabOrder = 0
               object GridTetkikler: TcxGridDBBandedTableView
                 PopupMenu = PopupMenu3
+                OnFocusedRecordChanged = GridTetkiklerFocusedRecordChanged
                 DataController.DataModeController.SmartRefresh = True
                 DataController.DataSource = DataSource2
                 DataController.Summary.DefaultGroupSummaryItems = <>
@@ -2447,10 +2445,6 @@
           object MalzemeTab: TcxTabSheet
             Caption = 'Malzemeler'
             ImageIndex = 1
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object cxGrid6: TcxGrid
               Left = 0
               Top = 0
@@ -2986,10 +2980,6 @@
       object LogPage: TcxTabSheet
         Caption = 'Log'
         ImageIndex = 1
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object txtLog: TcxMemo
           Left = 0
           Top = 0
@@ -3217,6 +3207,12 @@
       Tag = 100
       Caption = 'Protokol Defteri'
       ImageIndex = 120
+      OnClick = cxButtonCClick
+    end
+    object U2: TMenuItem
+      Tag = -300
+      Caption = 'UTS Kullan'#305'm Tablosu'
+      ImageIndex = 138
       OnClick = cxButtonCClick
     end
   end
@@ -3453,7 +3449,7 @@
     Top = 400
   end
   object PopupMenu4: TPopupMenu
-    Left = 896
+    Left = 968
     Top = 152
     object MenuItem1: TMenuItem
       Tag = 9
@@ -3477,8 +3473,8 @@
   end
   object DataSource2: TDataSource
     DataSet = ADO_Tetkikler
-    Left = 552
-    Top = 242
+    Left = 608
+    Top = 258
   end
   object ADO_Tetkikler: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -3486,8 +3482,8 @@
     Parameters = <>
     SQL.Strings = (
       'exec sp_TopluTetkikGetir '#39'20180401'#39','#39'20190430'#39',1')
-    Left = 504
-    Top = 242
+    Left = 608
+    Top = 202
   end
   object PopupMenu3: TPopupMenu
     Left = 832
@@ -3581,6 +3577,12 @@
       end
       object T6: TMenuItem
       end
+    end
+    object T7: TMenuItem
+      Tag = -32
+      Caption = 'Tetkik Kart'#305
+      ImageIndex = 47
+      OnClick = T2Click
     end
   end
 end

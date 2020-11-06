@@ -83,7 +83,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
       object Sayfa_Liste: TcxTabSheet
         Caption = #304#351' Listesi'
         ImageIndex = 0
-        object cxGrid2: TcxGridKadir
+        object GridListe: TcxGridKadir
           Left = 0
           Top = 0
           Width = 817
@@ -342,6 +342,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
               Properties.Kind = ckDateTime
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Width = 80
             end
             object ListeColumn19: TcxGridDBColumn
               DataBinding.FieldName = 'HbsAg'
@@ -828,7 +829,7 @@ object frmLabEntegrasyon: TfrmLabEntegrasyon
           Top = 0
           Width = 8
           Height = 453
-          Control = cxGrid2
+          Control = GridListe
         end
       end
       object sayfa_log: TcxTabSheet

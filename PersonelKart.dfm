@@ -158,6 +158,7 @@ object frmPersonelKart: TfrmPersonelKart
       Top = 15
       Align = alClient
       Properties.ClearKey = 46
+      Properties.GraphicClassName = 'TJPEGImage'
       Properties.PopupMenuLayout.MenuItems = []
       Properties.Stretch = True
       TabOrder = 0

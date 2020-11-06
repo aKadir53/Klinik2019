@@ -429,6 +429,10 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
           item
             Tag = 11
             Text = 'Makina No'
+          end
+          item
+            Tag = 12
+            Text = 'Kronik Hastal'#305'k'
           end>
         ParentFont = False
         Style.Font.Charset = TURKISH_CHARSET

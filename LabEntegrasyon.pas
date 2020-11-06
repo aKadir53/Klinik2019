@@ -53,7 +53,7 @@ type
     cxPageControl1: TcxPageControl;
     Sayfa_Liste: TcxTabSheet;
     sayfa_log: TcxTabSheet;
-    cxGrid2: TcxGridKadir;
+    GridListe: TcxGridKadir;
     Liste: TcxGridDBTableView;
     dosyaNo: TcxGridDBColumn;
     ListeColumndosyaNo: TcxGridDBColumn;
@@ -162,6 +162,9 @@ type
     procedure S1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
 
+    procedure AfterScroll(DataSet: TDataSet);
+    procedure BeforePost(DataSet : TDataset);
+    procedure AfterPost(DataSet : TDataset);
     procedure IslemItemSub1Click(Sender: TObject);
     procedure IslemItemSub2Click(Sender: TObject);
     procedure IslemItemSub3Click(Sender: TObject);
@@ -189,6 +192,9 @@ const formGenislik = 700;
 var
   frmLabEntegrasyon: TfrmLabEntegrasyon;
   ay1 , ay2  , donemYil ,_Tarih_: string;
+  DataSetOpen : Boolean;
+  BookMark : TBookmark;
+  dsSt : TDataSetState;
 
 implementation
   uses
@@ -224,6 +230,9 @@ implementation
 
 function TfrmLabEntegrasyon.Init(Sender : TObject) : Boolean;
 begin
+   GridListe.Dataset.AfterScroll := AfterScroll;
+   GridListe.Dataset.BeforePost := BeforePost;
+   GridListe.Dataset.AfterPost := AfterPost;
    ChangeButtonListClick := True;
    Result := True;
 end;
@@ -551,7 +560,7 @@ begin
        ELAB : begin
                 DurumGoster(True,True);
                 try
-                  ELABUnit.SonucAl(txtTopPanelTarih1.GetTXSDateTime,txtTopPanelTarih2.GetTXSDateTime,_Dataset,txtLog,pBar);
+                  ELABUnit.SonucAl(txtTopPanelTarih1.GetTXSDateTime,txtTopPanelTarih2.GetTXSDateTime,GridListe.Dataset,txtLog,pBar);
                 finally
                   DurumGoster(False);
                 end;
@@ -655,6 +664,75 @@ begin
 end;
    *)
 
+procedure TfrmLabEntegrasyon.BeforePost(DataSet: TDataset);
+begin
+  DataSetOpen := False;
+  GridListe.Dataset.DisableControls;
+end;
+
+
+procedure TfrmLabEntegrasyon.AfterPost(DataSet: TDataset);
+begin
+  DatasetOpen := True;
+  GridListe.Dataset. EnableControls;
+end;
+
+procedure TfrmLabEntegrasyon.AfterScroll(DataSet: TDataSet);
+var
+  Hadi,HSadi,HTc , SIRANO , hemogramAlt : string;
+  index : integer;
+  id , i : integer;
+  gun : integer;
+
+begin
+ ///xx
+(*
+  //index := AFocusedRecord.Index;
+  Hadi := _Dataset.FieldByName('HASTAADI').AsString; //Liste.DataController.GetValue(index,HastaAdi.Index);
+  HSadi := _Dataset.FieldByName('HASTASOYADI').AsString;//Liste.DataController.GetValue(index,HastaSoyadi.Index);
+  HTc := _Dataset.FieldByName('TCKIMLIKNO').AsString;//Liste.DataController.GetValue(index,TC.Index);
+  HastaBilgiRecordSet(Hadi,HSadi,HTc,'');
+  *)
+
+ // if Liste.Controller.SelectedRowCount = 0 then exit;
+ // index :=  AFocusedRecord.RecordIndex;
+
+
+   if not GridListe.DataSet.ControlsDisabled then
+     begin
+
+        if (DataSetOpen) or (GridListe.Dataset.RecordCount = 1)
+        then begin
+            _dosyaNO_ := GridListe.Dataset.FieldByName('dosyaNo').AsString; //varToStr(Liste.DataController.GetValue(index,dosyaNo.Index));
+            _gelisNO_ := GridListe.Dataset.FieldByName('HAstaAdi').AsString;//varToStr(Liste.DataController.GetValue(index,HastaAdi.Index));
+            _gelisSiraNo_ := GridListe.Dataset.FieldByName('SIRANO').AsString;//varToStr(Liste.DataController.GetValue(index,ListeColumn3.Index));
+            _provizyonTarihi_ := GridListe.Dataset.FieldByName('KanAlimZamani').AsString;//varToStr(Liste.DataController.GetValue(index,ListeColumn11.Index));
+
+
+            if RdGroup.EditingValue = 'Sonuç Alýndý'
+            then
+              hemogramAlt :=  ''
+            else
+             hemogramAlt := ' and charindex(''.'',code) = 0 ';
+
+
+           // SIRANO := varToStr(Liste.DataController.GetValue(index,ListeColumn3.Index));
+           // if _provizyonTarihi_ <> ''
+           // then
+              datalar.QuerySelect(GridHizmet.Dataset,
+                                  'select * from hareketlerLab h ' +
+                                  ' join LabTestler l on l.butKodu = h.CODE and h.tip1 = l.uygulamaAdet ' +
+                                  ' where gelisSIRANO = ' + QuotedStr(_gelisSiraNo_) +
+                                  hemogramAlt +
+                                  ' order by l.sira'
+                                  );
+
+        end;
+     end;
+
+end;
+
+
 procedure TfrmLabEntegrasyon.btnVazgecClick(Sender: TObject);
 begin
   close;
@@ -688,16 +766,16 @@ begin
   inherited;
   if datalar.KontrolUserSet = True then exit;
 
-  if _Dataset.State = dsInactive then exit;
-  if _Dataset.RecordCount = 0  then exit;
+  if GridListe.Dataset.State = dsInactive then exit;
+  if GridListe.Dataset.RecordCount = 0  then exit;
 
 
   try
-    GirisFormRecord.F_dosyaNo_ := _Dataset.FieldByName('dosyaNo').AsString;
-    GirisFormRecord.F_gelisNO_ := _Dataset.FieldByName('gelisNo').AsString;
-    GirisFormRecord.F_HastaAdSoyad_ := _Dataset.FieldByName('ADSOYAD').AsString;
-    GirisFormRecord.F_TC_ := _Dataset.FieldByName('TCKIMLIKNO').AsString;
-    GirisFormRecord.F_provizyonTarihi_ := _Dataset.FieldByName('BHDAT').AsString;
+    GirisFormRecord.F_dosyaNo_ := GridListe.Dataset.FieldByName('dosyaNo').AsString;
+    GirisFormRecord.F_gelisNO_ := GridListe.Dataset.FieldByName('gelisNo').AsString;
+    GirisFormRecord.F_HastaAdSoyad_ := GridListe.Dataset.FieldByName('ADSOYAD').AsString;
+    GirisFormRecord.F_TC_ := GridListe.Dataset.FieldByName('TCKIMLIKNO').AsString;
+    GirisFormRecord.F_provizyonTarihi_ := GridListe.Dataset.FieldByName('BHDAT').AsString;
   except
   end;
 
@@ -739,6 +817,7 @@ begin
               RenTekPas.BarkodOlustur(Liste,txtLog,pBar)
             Else
               ENA.BarkodOlustur(Liste,txtLog,pBar);
+              GridListe.Dataset.Requery();
           finally
             DurumGoster(False);
           end;
@@ -779,7 +858,9 @@ begin
                                 ',@seans = ''''';
                   datalar.QuerySelect(ado,sql);
 
-                  topluset.Dataset0 := ado;
+                  topluset.Dataset1 := ado;
+                  topluset.Dataset2 := datalar.ADO_AktifSirket;
+                  topluset.Dataset3 := datalar.ADO_aktifSirketLogo;
                   PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),topluset);
               finally
                 DurumGoster(False);
@@ -858,9 +939,44 @@ begin
 
                  sql := 'set nocount on update Hasta_Gelisler set UzmanOnayZamani = ' + QuotedStr(datalar.TetkikTarihi) +
                                    ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','','')) ' +
-                                   ' set nocount off';
+
+                     //   ' update hareketler set LabSonucMerkezOnayi = 1 where Tip = ''L'' and gelisSIRANO in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','','')) ' +
+
+
+                        ' set nocount off';
                  datalar.QueryExec(sql);
-                _Dataset.Requery();
+                GridListe.Dataset.Requery();
+             end;
+
+            finally
+              DurumGoster(False);
+            end;
+          End;
+       end;
+ 121 : begin
+          if mrYes = ShowMessageSkin('Doktor Onayý Ýptal Ediliyor , Emin misiniz?','','','msg')
+          Then Begin
+            DurumGoster(True);
+            try
+             ids := '';
+             if Liste.Controller.SelectedRowCount > 0
+             then begin
+                 for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+                 begin
+                     Application.ProcessMessages;
+                     ids := ids + ifThen(ids <> '', ',','') + varToStr(Liste.DataController.GetValue(
+                     Liste.Controller.SelectedRows[x].RecordIndex,Liste.DataController.GetItemByFieldName('SIRANO').Index));
+                 end;
+
+                 sql := 'set nocount on update Hasta_Gelisler set UzmanOnayZamani = NULL' +
+                                   ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','','')) ' +
+
+                       // ' update hareketler set LabSonucMerkezOnayi = 0 where Tip = ''L'' and gelisSIRANO in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','','')) ' +
+
+
+                        ' set nocount off';
+                 datalar.QueryExec(sql);
+                GridListe.Dataset.Requery();
              end;
 
             finally
@@ -892,7 +1008,11 @@ begin
   RdGroup.Width := 250;
 
 
-  Liste.DataController.DataSource := DataSource;
+
+
+ // Liste.DataController.DataSource.DataSet.AfterScroll := AfterScroll;
+
+ // Liste.DataController.DataSource := DataSource;
 
  // AktifPasifTopPanel.EditValue := '0';
 
@@ -1107,14 +1227,14 @@ begin
  Then begin
    Form := TGirisForm(FormClassType(TagfrmHastaKart));
    TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
-   TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := _Dataset.FieldByName('dosyaNo').AsString;
+   TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := GridListe.Dataset.FieldByName('dosyaNo').AsString;
    TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
  end
  Else begin
   bTamam := False;
   aTabSheet := NewTab(AnaForm.sayfalar,TagfrmHastaKart);
   try
-    Form := FormINIT(TagfrmHastaKart,self,_Dataset.FieldByName('dosyaNo').AsString,aTabSheet,ikEvet,'','');
+    Form := FormINIT(TagfrmHastaKart,self,GridListe.Dataset.FieldByName('dosyaNo').AsString,aTabSheet,ikEvet,'','');
     bTamam := Form <> nil;
     if bTamam then Form.show;
   finally
@@ -1129,20 +1249,13 @@ procedure TfrmLabEntegrasyon.ListeFocusedRecordChanged(
   Sender: TcxCustomGridTableView; APrevFocusedRecord,
   AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
 var
-  Hadi,HSadi,HTc , SIRANO : string;
+  Hadi,HSadi,HTc , SIRANO , hemogramAlt : string;
   index : integer;
   id , i : integer;
   gun : integer;
 begin
-  inherited;
+//  inherited;
 (*
-  //index := AFocusedRecord.Index;
-  Hadi := _Dataset.FieldByName('HASTAADI').AsString; //Liste.DataController.GetValue(index,HastaAdi.Index);
-  HSadi := _Dataset.FieldByName('HASTASOYADI').AsString;//Liste.DataController.GetValue(index,HastaSoyadi.Index);
-  HTc := _Dataset.FieldByName('TCKIMLIKNO').AsString;//Liste.DataController.GetValue(index,TC.Index);
-  HastaBilgiRecordSet(Hadi,HSadi,HTc,'');
-  *)
-
   if Liste.Controller.SelectedRowCount = 0 then exit;
   index :=  AFocusedRecord.RecordIndex;
 
@@ -1151,6 +1264,14 @@ begin
   _gelisSiraNo_ := varToStr(Liste.DataController.GetValue(index,ListeColumn3.Index));
   _provizyonTarihi_ := varToStr(Liste.DataController.GetValue(index,ListeColumn11.Index));
 
+
+  if RdGroup.EditingValue = 'Sonuç Alýndý'
+  then
+    hemogramAlt :=  ''
+  else
+   hemogramAlt := ' and charindex(''.'',code) = 0 ';
+
+
   SIRANO := varToStr(Liste.DataController.GetValue(index,ListeColumn3.Index));
   if SIRANO <> ''
   then
@@ -1158,9 +1279,14 @@ begin
                         'select * from hareketlerLab h ' +
                         ' join LabTestler l on l.butKodu = h.CODE and h.tip1 = l.uygulamaAdet ' +
                         ' where gelisSIRANO = ' + SIRANO +
-                        ' and charindex(''.'',code) = 0 order by l.sira'
-                        );
+                        hemogramAlt +
+                        ' order by l.sira'
+                        )
+  else
+   GridHizmet.Dataset.Close;
 
+
+  *)
 end;
 
 procedure TfrmLabEntegrasyon.ListeStylesGetContentStyle(
@@ -1227,15 +1353,32 @@ begin
                              ' where SIRANo in (select datavalue from dbo.strTotable(' + QuotedStr(ids) + ','','')) ' +
                              ' set nocount off';
            datalar.QueryExec(sql);
-          _Dataset.Requery();
+          GridListe.Dataset.Requery();
 
    end;
 
 end;
 
 procedure TfrmLabEntegrasyon.TopPanelButonClick(Sender: TObject);
+var
+  sql : string;
 begin
+  DataSetOpen := False;
+
   inherited;
+
+   GridHizmet.Dataset.Close;
+   sql := 'exec sp_LabListesi ' + txtTopPanelTarih1.GetSQLValue + ',' +
+                                  txtTopPanelTarih2.GetSQLValue + ',' +
+                                  QuotedStr(datalar.AktifSirket) + ',' +
+                                  QuotedStr(RdGroup.EditValue);
+
+
+   datalar.QuerySelect(GridListe.Dataset,sql);
+
+ //  GridListe.Dataset.AfterScroll := AfterScroll;
+   DataSetOpen := True;
+ //  GridListe.Dataset.First;
 
    if (strToint(datalar._labID) = REFERANSLAB) or
       (strToint(datalar._labID) = BIYOTIP)
@@ -1267,6 +1410,9 @@ begin
    end;
 
         Liste.ViewData.Expand(true);
+
+
+
 end;
 
 procedure TfrmLabEntegrasyon.TopPanelPropertiesChange(Sender: TObject);

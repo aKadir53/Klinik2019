@@ -79,6 +79,8 @@ type
     procedure DesignerOnShow(sender: TObject);
 
     procedure IcerikAl(var template : TStream ; dokumanNo: string ; ObjeName : string = 'Icerik' ; Dataset : TDataset = nil);
+    procedure IcerikFontDegistir(var template : TStream ; dokumanNo: string ; ObjeName : string = 'Icerik' ; Dataset : TDataset = nil);
+
  //   function GenReportPDF(const RepName, Id: string): string;
   private
 
@@ -90,6 +92,7 @@ type
 
        procedure raporData2(dataset : TDataSetKadir ; kod , dosya : string ; SablonLoad : sablonTip = stHayir; Expo : Boolean = True);
        procedure raporDataIcerikYukle(kod : string);
+       procedure raporDataIcerikFontDegistir(kod : string);
     { Public declarations }
   end;
 
@@ -170,7 +173,7 @@ begin
    ShowMessageSkin('C:\RTF\' +dokumanNo + '.rtf','Ýçerik Alýnacak Dosya Bulunamadý','','info');
    exit;
   end;
-  
+
   try
     template.Position := 0;
     frxReport1.LoadFromStream(template);
@@ -228,6 +231,69 @@ begin
 
 
 end;
+
+
+procedure TfrmRapor.IcerikFontDegistir(var template : TStream ; dokumanNo: string ; ObjeName : string = 'Icerik' ; Dataset : TDataset = nil);
+var
+ RichView : TfrxRichView;
+ Stream: TMemoryStream;
+ Str: string;
+begin
+
+  if Dataset = nil then dataset := datalar.ADO_RAPORLAR;
+
+  try
+    template.Position := 0;
+    frxReport1.LoadFromStream(template);
+  finally
+  // template.free;
+  end;
+
+
+ RichView := TfrxRichView(frxReport1.FindObject(ObjeName));
+ if RichView = nil then
+   Exit;
+
+ try
+   try
+     RichView.RichEdit.Font.Name := 'Verdana';
+     RichView.RichEdit.Font.Size := 10;
+   finally // wrap up
+   end;    // try/finally
+ except
+ end;
+
+
+  Stream := TMemoryStream.Create;
+  try
+    Stream.Position := 0;
+    frxReport1.SaveToStream(Stream);
+
+    if Dataset.Active = true
+    Then Begin
+      Dataset.Edit;
+      try
+         Dataset.DisableControls;
+         Dataset.FieldByName('raporAdi').AsString := d;
+         (Dataset.FieldByName('rapor') as TBlobField).LoadFromStream(Stream);
+         Dataset.Post;
+         ShowMessageSkin('Ýçerik Font Deðiþtirildi','','','info');
+      finally
+        Dataset.EnableControls;
+      end;
+    End
+  finally
+    Stream.Free;
+  end;
+
+
+
+ template.Position := 0;
+ frxReport1.SaveToStream(template);
+
+
+end;
+
 
 
 procedure TfrmRapor.raporData(dataset : TADOQuery ; kod , dosya , yazici : string);
@@ -441,10 +507,31 @@ begin
 end;
 
 
+procedure TfrmRapor.raporDataIcerikFontDegistir(kod : string);
+var
+  template : TStream;
+  Table,AdoRapor : TADOQuery;
+begin
+  AdoRapor := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod) +
+                                  ' and sirketKod = ' + QuotedStr(datalar.AktifSirket));
+
+  if AdoRapor.Eof
+  Then begin
+
+  end
+  else
+  begin
+      template := AdoRapor.CreateBlobStream(AdoRapor.FieldByName('Rapor'), bmRead);
+      IcerikFontDegistir(template,kod,'Icerik',AdoRapor);
+  end;
+
+end;
+
 procedure TfrmRapor.raporDataDokuman(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '' ; SayfaGizle : string = '');
 var
   template : TStream;
   Table , Table1 : TADOQuery;
+  RichView : TfrxRichView;
 begin
 
 
@@ -519,6 +606,17 @@ begin
 
   frxReport1.ReportOptions.Name := frmRapor.Caption;
   frxReport1.PrepareReport(True);
+  (*
+  RichView := TfrxRichView(frxReport1.FindObject('Icerik'));
+  if RichView <> nil
+  then begin
+    if RichView.RichEdit.Font.Name <> 'Verdana'
+    Then begin
+      RichView.RichEdit.Font.Name := 'Verdana';
+      RichView.RichEdit.Font.Size := 10;
+    end;
+  end;
+    *)
 
   if SayfaGizle <> ''
   then
@@ -701,10 +799,28 @@ function TfrmRapor.frxDesigner1SaveReport(Report: TfrxReport;
   SaveAs: Boolean): Boolean;
 var
   template : TStream;
+  filename : string;
+  sd : TSaveDialog;
 begin
 
   Result := False;
   if not Result then ;;;
+
+
+  if SaveAs
+  then begin
+     sd := TSaveDialog.Create(nil);
+     try
+       sd.FileName := frmRapor.Caption;
+       sd.Execute;
+       Report.SaveToFile(sd.FileName);
+     finally
+       sd.Free;
+     end;
+     exit;
+  end;
+
+
 
   template := TMemoryStream.Create;
   try
@@ -716,7 +832,7 @@ begin
       datalar.ADO_RAPORLAR_Q.Edit;
       try
          datalar.ADO_RAPORLAR_Q.DisableControls;
-         datalar.ADO_RAPORLAR_Q.FieldByName('raporAdi').AsString := d;
+        // datalar.ADO_RAPORLAR_Q.FieldByName('raporAdi').AsString := d;
          (datalar.ADO_RAPORLAR_Q.FieldByName('rapor') as TBlobField).LoadFromStream(template);
          datalar.ADO_RAPORLAR_Q.Post;
          Result := True;
@@ -729,7 +845,7 @@ begin
       datalar.ADO_RAPORLAR1.Edit;
       try
          datalar.ADO_RAPORLAR1.DisableControls;
-         datalar.ADO_RAPORLAR1.FieldByName('raporAdi').AsString := d;
+        // datalar.ADO_RAPORLAR1.FieldByName('raporAdi').AsString := d;
          (datalar.ADO_RAPORLAR1.FieldByName('rapor') as TBlobField).LoadFromStream(template);
          datalar.ADO_RAPORLAR1.Post;
          Result := True;
@@ -757,9 +873,21 @@ begin
 end;
 
 function TfrmRapor.frxDesigner1LoadReport(Report: TfrxReport): Boolean;
+var
+  od : TOpenDialog;
 begin
 
-    showmessage('y','','','info');
+   // showmessage('y','','','info');
+
+   od := TOpenDialog.Create(nil);
+   try
+     od.Execute();
+     frxReport1.LoadFromFile(od.FileName)
+   finally
+     od.free;
+   end;
+
+
     result := True;
 (*
     template := TMemoryStream.Create;
@@ -810,6 +938,16 @@ begin
           btnOnIzle.Visible := True;
    End Else btnOnIzle.Visible := False;
 
+   (*
+  frxMailExport1.Address := 'a_kadir53@hotmail.com';
+  frxMailExport1.Subject := 'Test';
+  frxMailExport1.SmtpHost := 'webmail.noktayazilim.net';
+  frxMailExport1.Login := 'mavinokta@noktayazilim.net';
+  frxMailExport1.Password := 'bWF2aW5va3Rh';
+  frxMailExport1.FromMail := 'mavinokta@noktayazilim.net';
+  frxMailExport1.FromCompany := 'NOKTA';
+  frxMailExport1.FromName := 'NOKTA';
+     *)
 
 end;
 

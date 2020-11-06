@@ -502,12 +502,12 @@ var
   sql : String;
   TopluDataset : TDataSetKadir;
 begin
-    TopluDataset.Dataset3 := datalar.QuerySelect('select h.*,t.* from MaviKodBildirim  t ' +
+    TopluDataset.Dataset1 := datalar.QuerySelect('select h.*,t.* from MaviKodBildirim  t ' +
                               ' join HastaKart h on h.dosyaNo = t.dosyaNo ' +
                               ' where id = ' + intTostr(GozlemID));
 
-    TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
-    TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
+    TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+    TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
 
     PrintYap('TRM','MAVÝ KOD','',TopluDataset,pTNone)
 

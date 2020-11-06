@@ -58,7 +58,7 @@ begin
    ado := TADOQuery.Create(nil);
    ado.Connection := datalar.ADOConnection2;
 
-   sql := 'update gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
+   sql := 'update Hasta_gelisler set LabOrnekdurum = ' + QuotedStr(durum) +
           ',LabRefId = ' + QuotedStr(refId) +
           ' where SIRANO = ' + id;
    datalar.QueryExec(ado,sql);
@@ -177,7 +177,7 @@ begin
               end;
          end;
       End;
-
+          ornekdurumyaz('Sonuç Alýndý',id,'');
      except on ee : Exception do
       begin
           txtLog.Lines.Add(dataset.FieldByName('HASTATCKNO').AsString + ' ' +
@@ -190,7 +190,7 @@ begin
      end;
       dataset.Next;
     end; // test for end
-    ornekdurumyaz('Sonuç Alýndý',id,'');
+   // ornekdurumyaz('Sonuç Alýndý',id,'');
    // ado.Free;
 end;
 
@@ -218,7 +218,7 @@ begin
   except on e : Exception do
    begin
      sm := e.Message;
-    // txtLog.Lines.Add(e.Message);
+     txtLog.Lines.Add(e.Message);
    end;
   end;
 
@@ -227,7 +227,7 @@ begin
   id := glmref;
   try
     //txtinfo.Caption := 'Sonuçlar Sisteme Yazýlýyor...';
-   Application.ProcessMessages;
+    Application.ProcessMessages;
     SonucYaz(datalar.ClientDataSet1,id);
   except
   end;

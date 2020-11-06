@@ -7,10 +7,10 @@ uses
   Dialogs, StdCtrls, Buttons, ExtCtrls,data_modul, DB, ADODB,
   Grids, DBGridEh, DBCtrls,saglikTesisiRaporIslemleriWSIlac,
   kadir,strutils,RaporIslemleriI,RaporIslemleriWS, kadirType,GetFormClass,
-  InvokeRegistry, Rio, SOAPHTTPClient, cxGraphics, cxMemo,
+  InvokeRegistry, Rio, SOAPHTTPClient, cxGraphics, cxMemo,KadirMedula3,
   cxDBEdit, cxDropDownEdit, cxCalendar, cxControls, cxContainer, cxEdit,
   cxTextEdit, cxMaskEdit, cxButtonEdit, cxPC, cxSpinEdit, cxLookAndFeels,
-  cxLookAndFeelPainters, dxSkinsCore, dxSkinsDefaultPainters, kadirmedula3,
+  cxLookAndFeelPainters, dxSkinsCore, dxSkinsDefaultPainters,
   dxSkinscxPCPainter, cxPCdxBarPopupMenu, Menus, cxButtons, KadirLabel,
   dxSkinBlack, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkinDarkRoom,
   dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans, dxSkiniMaginary, dxSkinLilian,
@@ -81,6 +81,7 @@ type
     ListeRaporlarColumn12: TcxGridDBColumn;
     N6: TMenuItem;
     T2: TMenuItem;
+    T3: TMenuItem;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
@@ -174,6 +175,7 @@ type
     procedure N5Click(Sender: TObject);
     procedure SablonKaydet;
     procedure T2Click(Sender: TObject);
+    procedure T3Click(Sender: TObject);
   private
     { Private declarations }
    function findMethod(dllHandle: Cardinal; methodName: string): FARPROC;
@@ -209,7 +211,7 @@ var
 
 implementation
 
-uses HastaKart, rapor , AnaUnit;
+uses HastaKart, rapor , AnaUnit,saglikTesisiEczaneYardimciIslemleriWS;
    //  TesisList, HastaTakipleri, TeshisListesi,
    //  EtkinMaddeSutKurali, EtkenMaddeListesi,
    //  diyabetTakipFormu,TaniListesi;
@@ -1927,6 +1929,63 @@ begin
         )
       End;
 
+
+end;
+
+procedure TfrmRaporDetay.T3Click(Sender: TObject);
+var
+  ss , kod,receteuser,recetesifre,tc,doktorAdi : string;
+  rt : raporTeshisDVO;
+
+begin
+  inherited;
+
+ // Datalar.MedEczaneYardimciIslemWS.etkinMaddeSutListesiSorguIstekGiris :=
+
+  DurumGoster(True,False,'Teþhis Listesi Sorgulanýyor...');
+  try
+
+     kod := RaporGrid.Dataset.FieldByName('duzenleyenDoktor').AsString;
+
+      doktorKodToReceteUser(kod,
+                            tc,doktorAdi,
+                            receteuser,
+                            recetesifre);
+
+      Datalar.MedEczaneYardimciIslemWS.UserName := receteuser;
+      Datalar.MedEczaneYardimciIslemWS.Password := recetesifre;
+
+      Datalar.MedEczaneYardimciIslemWS.RaporTeshisListesiSorguIstekGiris.tesisKodu := datalar._kurumKod;
+      Datalar.MedEczaneYardimciIslemWS.RaporTeshisListesiSorguIstekGiris.doktorTcKimlikNo := StrToInt64(tc);
+
+      ss := Datalar.MedEczaneYardimciIslemWS.raporTeshisListesiGetir;
+      if ss = '0000'
+      Then begin
+        for rt in Datalar.MedEczaneYardimciIslemWS.RaporTeshisListesiSorguCevap.raporTeshisListesi
+          do begin
+                  (*
+                  try
+                   datalar.QueryExec('insert into OSGB_MASTER.dbo.ilac_Teshis_KodlarýViewTable_EtkinMadde (EtkinMaddeKodu,teshisKodu,aciklama) ' +
+                                     ' values(' + QuotedStr(Datalar.MedEczaneYardimciIslemWS.etkinMaddeSutListesiSorguIstekGiris.etkinMaddeKodu) + ',' +
+                                                  QuotedStr(rt.raporTeshisKodu) + ',' +
+                                                  QuotedStr(rt.aciklama) + ')' );
+                  except on e : exception do
+                    begin
+                       //ShowMessageSkin(e.Message,'','','info');
+                    end;
+
+               end;
+               *)
+          end;
+
+
+      end
+      else
+      ShowMessageSkin(ss,'','','info');
+
+  finally
+      DurumGoster(False,False);
+  end;
 
 end;
 

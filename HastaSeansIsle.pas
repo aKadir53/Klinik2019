@@ -764,11 +764,14 @@ begin
              sql := 'exec sp_SeansIzlemFormu ' + QuotedStr(_dosyaNo_) + ',' + _SiraNo_ + ',' + QuotedStr('X2');
              datalar.QuerySelect(ado4,sql);
 
-             topluset.Dataset0 := ado0;
+           //  topluset.Dataset0 := ado0;
              topluset.Dataset1 := ado1;
              topluset.Dataset2 := ado2;
              topluset.Dataset3 := ado3;
              topluset.Dataset4 := ado4;
+             topluset.Dataset5 := ado0;
+             topluset.Dataset6 := datalar.ADO_aktifSirket;
+             topluset.Dataset7 := datalar.ADO_aktifSirketLogo;
 
              PrintYap('054','\Seans Izlem',intTostr(TagfrmHastaSeans),topluset);
 
@@ -783,6 +786,7 @@ begin
       ado2.free;
       ado3.free;
       ado4.free;
+
    end;
 
 
@@ -838,9 +842,10 @@ begin
             MalzemeList.Dataset.FieldByName('gelisSIRANO').AsString := _gelisSiraNo_;
            // MalzemeList.Dataset.FieldByName('Tip').AsString := 'M';
           //  MalzemeList.Dataset.FieldByName('Tip1').AsString := 'M';
-            MalzemeList.Dataset.FieldByName('ubb').AsString := List[0].kolon2;
+            MalzemeList.Dataset.FieldByName('lot').AsString := List[0].kolon2;
             MalzemeList.Dataset.FieldByName('code').AsString := List[0].kolon1;
             MalzemeList.Dataset.FieldByName('NAME1').AsString := List[0].kolon3;
+            MalzemeList.Dataset.FieldByName('ubb').AsString := List[0].kolon4;
             MalzemeList.Dataset.Post;
             MalzemeList.Dataset.Requery();
           end;
@@ -977,7 +982,7 @@ var
    oncekiTalepBilgisi ,sql , sonuc,talep,TakipNo,BasvuruNo  : string;
    HataliIslem,Hatali : TStringList;
    fark : double;
-   sysTakipNo,islemRefNo,mesajTipi,HastaneRefNo,eNabizSonuc : string;
+   sysTakipNo,islemRefNo,mesajTipi,HastaneRefNo,eNabizSonuc ,raporTakipNo: string;
 begin
 
    if UserRight('MEDULA ÝÞLEMLERÝ', 'Ödeme Yolla') = False
@@ -1011,8 +1016,15 @@ begin
            islemRefNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('islemRefNo').Index));
            HastaneRefNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('HastaneRefNo').Index));
            sysTakipNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('sysTakipNo').Index));
+           raporTakipNo := varTostr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('raporTakipNo').Index));
 
              Application.ProcessMessages;
+
+             if raporTakipNo = ''
+             then begin
+                txtLog.Lines.Add(takipno + ' : RaporTakipNo Boþ Olamaz');
+             end
+             else
              if (durum = 1) and (talep = '')
              then begin
                  if datalar.eNabizKayit = 'Evet'

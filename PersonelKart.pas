@@ -172,7 +172,7 @@ const _TableName_ = 'PersonelKart';
       sqlInsert = 'exec sp_YeniHastaKarti ';//,%s,%s,%s,%s,%s,%s';
       sqlUpdate = 'exec sp_GuncelHastaKarti ';
       sqlDelete = 'delete from HastaKart where dosyaNo = %s';
-      FotoTable = 'select * from PersonelFoto where dosyaNo = %s';
+      FotoTable = 'select * from PersonelFoto where tip = ''P'' and dosyaNo = %s';
 
 var
   frmPersonelKart: TfrmPersonelKart;
@@ -730,7 +730,7 @@ begin
   try
     sql := 'if not exists(select dosyaNo from PersonelFoto where dosyaNo = ' + QuotedStr(dosyaNo) + ')' +
            ' insert into PersonelFoto (dosyaNo,foto,tip) ' +
-           ' values (' + QuotedStr(dosyaNo) + ',NULL,''H'')';
+           ' values (' + QuotedStr(dosyaNo) + ',NULL,''P'')';
     datalar.QueryExec(ado,sql);
   finally
     ado.Free;
@@ -773,7 +773,7 @@ begin
             //Foto.Picture.LoadFromFile(filename);
             jp := TJpegimage.Create;
             try
-              jp.Assign(Foto.Picture);
+              jp.Assign(Foto.Picture.Bitmap);
               datalar.ADO_FOTO.FieldByName('Foto').Assign(jp);
               datalar.ADO_FOTO.Post;
             finally
@@ -844,6 +844,8 @@ begin
 
            datalar.ADO_Foto.SQL.Text := Format(FotoTable,[#39+_dosyaNo_+#39]);
            datalar.ADO_FOTO.Open;
+
+
 
            g := TJpegimage.Create;
            try

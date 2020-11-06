@@ -38,6 +38,7 @@ type
     GridListColumn9: TcxGridDBColumn;
     E2: TMenuItem;
     GridListColumn10: TcxGridDBColumn;
+    GridListColumn11: TcxGridDBColumn;
     procedure DiyalizTipPropertiesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
@@ -180,7 +181,7 @@ begin
         dosyaNo := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('dosyaNo').Index);
         gelisNo := GridList.DataController.GetValue(satir,GridList.DataController.GetItemByFieldName('gelisNo').Index);
         try
-          sql := 'sp_KtvHesapla ' + QuotedStr(dosyaNo) + ',' + gelisNo + ',' + QuotedStr(HesapTipi);
+          sql := 'sp_KtvHesapla ' + QuotedStr(dosyaNo) + ',' + gelisNo + ',' + QuotedStr(HesapTipi) + ',' + QuotedStr(datalar._labID);
           datalar.QueryExec(sql);
         except
         end;
