@@ -8,12 +8,12 @@ uses
   cxControls, cxPC, Buttons, cxGraphics, cxLookAndFeels, cxLookAndFeelPainters,
   dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
-  dxSkinMoneyTwins, dxSkinsDefaultPainters, dxSkinscxPCPainter,
+  dxSkinMoneyTwins, dxSkinsDefaultPainters, dxSkinscxPCPainter,cxCheckGroup,
   cxPCdxBarPopupMenu, AdvObj, GirisUnit,KAdirType, cxStyles, cxCustomData,
   cxFilter, cxData, cxDataStorage, cxEdit, DB, cxDBData, cxProgressBar,
   cxGridCustomTableView, cxGridTableView, cxGridBandedTableView,
   cxGridDBBandedTableView, cxGridLevel, cxClasses, cxGridCustomView, cxGrid,
-  KadirLabel, cxTextEdit;
+  KadirLabel, cxTextEdit, cxCurrencyEdit,StrUtils;
 
 type
   TfrmAylikSeansToplamlari = class(TGirisForm)
@@ -27,9 +27,24 @@ type
     DataSource1: TDataSource;
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
+    ListeSColumn4: TcxGridDBBandedColumn;
+    ListeSColumn5: TcxGridDBBandedColumn;
+    GridYil: TcxGridKadir;
+    ListeYil: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn1: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn2: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn3: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn5: TcxGridDBBandedColumn;
+    cxGridLevel1: TcxGridLevel;
+    ListeYilColumn1: TcxGridDBBandedColumn;
+    ListeYilColumn2: TcxGridDBBandedColumn;
     procedure AysayfalarChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure TopPanelButonClick(Sender: TObject);
     procedure List;
+    procedure ListeYilFocusedRecordChanged(Sender: TcxCustomGridTableView;
+      APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
+      ANewItemRecordFocusingChanged: Boolean);
   private
     { Private declarations }
   public
@@ -39,7 +54,7 @@ type
 
 var
   frmAylikSeansToplamlari: TfrmAylikSeansToplamlari;
-
+  ScrollOk : integer;
 implementation
 uses data_modul;
 {$R *.dfm}
@@ -53,13 +68,29 @@ begin
 end;
 
 procedure TfrmAylikSeansToplamlari.FormCreate(Sender: TObject);
+var
+ chk : TcxCheckGroupItem;
 begin
   Tag := TagfrmAylikSeansToplamlari;
+  ScrollOk := 0;
+  chkList.Width := 150;
+  chkList.Properties.Items.Clear;
+  Chk := chkList.Properties.Items.Add;
+  Chk.Caption := 'Sadece Misafir';
+  Chk.Tag := 2;
 
+  if datalar.UserGroup = '1'
+  then begin
+    chkList.Width := 260;
+    Chk := chkList.Properties.Items.Add;
+    Chk.Caption := 'Tüm Þirketlerim';
+    Chk.Tag := 3;
+  end;
 
   cxPanel.Visible := false;
   Sayfalar.Properties.HideTabs := True;
 
+  KurumTipTopPanel.Filter := '';
 
   SayfaCaption('','','','','');
 
@@ -75,10 +106,12 @@ var
    i , j , toplam : integer;
 begin
      Result := False;
-     sqlRun.close;
-     sql := 'exec sp_YillikSeansGostergesi '''',''T'',' +  QuotedStr(datalar.AktifSirket);
-     datalar.QuerySelect(sqlRun,sql);
 
+     TopPanel.Visible := True;
+     TapPanelElemanVisible(True,false,false,false,False,false,True,false,False,False,False,False,True,False,False);
+
+
+   (*
      Aysayfalar.Properties.Tabs.Clear;
 
      for i := 1 to sqlRun.RecordCount  do
@@ -93,24 +126,64 @@ begin
        List
      else
        ShowMessageSkin('Seans Bulunamadý','','','info');
+     *)
 
      Result := True;
 end;
 
 procedure TfrmAylikSeansToplamlari.List;
 var
-   yil ,sql : string;
+   yil ,sql, ap , sirket  : string;
    i , j , toplam : integer;
 begin
+     DurumGoster(True);
+     try
+       ap := ifThen(copy(chkList.EditValue,1,1) = '1','2','1,2');
+       yil := GridYil.Dataset.FieldByName('yil').AsString;
+       sirket := GridYil.Dataset.FieldByName('Tanimi').AsString;
+       //copy(Aysayfalar.Tabs.Strings[Aysayfalar.tabindex],1,4);
 
+       ListeS.Bands[0].Caption := '[' + sirket + ' ' + yil + ']' + ' Yýlý Aylýk Seans Grafiði ';
 
-     yil := copy(Aysayfalar.Tabs.Strings[Aysayfalar.tabindex],1,4);
+       sqlRun.close;
+       sql := 'exec sp_YillikSeansGostergesi' + QuotedStr(yil) + ',''1'',' + QuotedStr(GridYil.Dataset.FieldByName('sirketKod').AsString) + ',' +
+               QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
+               QuotedStr(ap) ;
+       datalar.QuerySelect(sqlRun,sql);
+       DataSource1.DataSet := sqlRun;
 
-     sqlRun.close;
-     sql := 'exec sp_YillikSeansGostergesi' + QuotedStr(yil) + ',''1'',' + QuotedStr(datalar.AktifSirket) ;
-     datalar.QuerySelect(sqlRun,sql);
-     DataSource1.DataSet := sqlRun;
+     finally
+       DurumGoster(False);
+     end;
+end;
 
+procedure TfrmAylikSeansToplamlari.ListeYilFocusedRecordChanged(
+  Sender: TcxCustomGridTableView; APrevFocusedRecord,
+  AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
+begin
+  if ScrollOk = 1 then
+   List;
+end;
+
+procedure TfrmAylikSeansToplamlari.TopPanelButonClick(Sender: TObject);
+var
+  sql , ap , sirketler : string;
+begin
+
+     DurumGoster(True);
+     try
+       ScrollOk := 0;
+       ap := ifThen(chkList.EditValue = '1','2','1,2');
+       sirketler := ifThen(copy(chkList.EditValue,2,1) = '1','',datalar.AktifSirket);
+       sqlRun.close;
+       sql := 'exec sp_YillikSeansGostergesi '''',''T'',' +  QuotedStr(sirketler) + ',' +
+              QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
+              QuotedStr(ap) ;
+       datalar.QuerySelect(GridYil.Dataset,sql);
+       ScrollOk := 1;
+     finally
+       DurumGoster(False);
+     end;
 end;
 
 end.

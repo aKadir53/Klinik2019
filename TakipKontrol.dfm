@@ -843,6 +843,14 @@ object frmTakipKontrol: TfrmTakipKontrol
                 HeaderAlignmentVert = vaCenter
                 Width = 77
               end
+              object GridHizmetlerColumn3: TcxGridDBColumn
+                Caption = 'A'#231#305'klama'
+                DataBinding.FieldName = 'aciklama'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Vert = taVCenter
+                Options.Editing = False
+                Width = 120
+              end
             end
             object cxGridDBBandedTableView29: TcxGridDBBandedTableView
               DataController.DataModeController.DetailInSQLMode = True
@@ -1076,11 +1084,13 @@ object frmTakipKontrol: TfrmTakipKontrol
     object mnSe1: TMenuItem
       Tag = -1
       Caption = 'T'#252'm'#252'n'#252' Se'#231
+      Visible = False
       OnClick = mnSe1Click
     end
     object mptal1: TMenuItem
       Tag = -2
       Caption = 'T'#252'm'#252' '#304'ptal'
+      Visible = False
       OnClick = mptal1Click
     end
     object N1: TMenuItem

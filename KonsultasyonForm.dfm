@@ -55,7 +55,6 @@ object frmHastaKonsultasyon: TfrmHastaKonsultasyon
       DataController.Filter.Active = True
       DataController.Filter.TranslateBetween = True
       DataController.Filter.TranslateLike = True
-      DataController.KeyFieldNames = 'id'
       DataController.Options = [dcoAnsiSort, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
@@ -71,6 +70,8 @@ object frmHastaKonsultasyon: TfrmHastaKonsultasyon
       OptionsCustomize.ColumnGrouping = False
       OptionsCustomize.ColumnHidingOnGrouping = False
       OptionsCustomize.ColumnsQuickCustomization = True
+      OptionsData.Deleting = False
+      OptionsData.Editing = False
       OptionsData.Inserting = False
       OptionsView.NavigatorOffset = 20
       OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'

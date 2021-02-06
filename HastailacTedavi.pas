@@ -509,6 +509,7 @@ procedure TfrmHastaIlacTedavi.cxButtonCClick(Sender: TObject);
 var
  Form : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
+  Datasets : TDataSetKadir;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -519,6 +520,34 @@ begin
   GirisFormRecord.F_gelisNo_ := _gelisNo_;
 
     case TMenuItem(sender).Tag of
+    -3 : begin
+
+               try
+                 sql := 'select * from HastaKart where dosyaNo = ' + QuotedStr(_dosyaNO_);
+                 datalar.QuerySelect(sql);
+                 Datasets.Dataset0 := datalar.QuerySelect(sql);
+
+
+                 sql := 'select ATC.kod,ATCTur.tanimi,it.*,ii.ilacAdi NAME1  '+
+                        ' from hastaIlactedavi it '+
+                       // ' LEFT JOIN GelisDetayTedaviler gdt ON gdt.stokKodu = it.ilac AND gdt.dosyaNo = it.dosyaNo AND gdt.gelisNo = it.gelisNo ' +
+                        ' left join OSGB_MASTER.dbo.ilacListesi ii on ii.barkod = it.ilac ' +
+                        ' left join OSGB_MASTER.dbo.ATC_Kodlari ATC on ATC.kod = ii.EtkenMadde ' +
+                        ' left join OSGB_MASTER.dbo.ATC_Kodlari_Tur ATCTur on ATCTur.kod = ATC.TurKodu ' +
+                        ' join Hasta_gelisler g on g.dosyaNO = it.dosyaNo and it.gelisno = g.gelisNo ' +
+                        ' where  it.dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and it.gelisNo = ' + _gelisNo_ + ' and it.uygulamaYeri = ''0''';
+
+                 Datasets.Dataset1 := datalar.QuerySelect(sql);
+
+
+
+                 PrintYap('056','Hasta Ýlaç Kullaným',inttostr(TagfrmHastaIlacTedavi),Datasets);
+
+              finally
+                DurumGoster(False);
+              end;
+
+         end;
     -4 : begin
            SmsGonder;
          end;
@@ -610,6 +639,13 @@ begin
 
   yukle;
   Listele;
+
+  if _pasifSebeb_ = '5' then
+  begin
+    cxGridIlacTedaviPlani.OptionsData.Editing := False;
+  end;
+
+
   Result := True;
 end;
 

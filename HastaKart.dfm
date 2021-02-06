@@ -408,6 +408,7 @@ object frmHastaKart: TfrmHastaKart
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      PopupMenu = PopupMenu2
       TabOrder = 0
       ExceleGonder = False
       PopupForm = False
@@ -811,8 +812,9 @@ object frmHastaKart: TfrmHastaKart
     Top = 117
   end
   object PopupMenu2: TPopupMenu
-    Left = 392
-    Top = 232
+    Tag = 1
+    Left = 280
+    Top = 168
   end
   object cxStyleRepository2: TcxStyleRepository
     PixelsPerInch = 96
@@ -868,8 +870,8 @@ object frmHastaKart: TfrmHastaKart
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 472
-    Top = 232
+    Left = 368
+    Top = 176
     object Kapat1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -915,11 +917,22 @@ object frmHastaKart: TfrmHastaKart
         OnClick = cxButtonCClick
       end
     end
-    object SmsGnder1: TMenuItem
-      Tag = -28
-      Caption = 'Sms G'#246'nder'
-      ImageIndex = 94
-      OnClick = cxButtonCClick
+    object M1: TMenuItem
+      Tag = 28
+      Caption = 'Mesaj G'#246'nder'
+      ImageIndex = 144
+      object SmsGnder1: TMenuItem
+        Tag = -28
+        Caption = 'Sms G'#246'nder'
+        ImageIndex = 94
+        OnClick = cxButtonCClick
+      end
+      object W1: TMenuItem
+        Tag = -128
+        Caption = 'Whatsapp'
+        ImageIndex = 143
+        OnClick = cxButtonCClick
+      end
     end
     object K1: TMenuItem
       Tag = 200
@@ -944,11 +957,22 @@ object frmHastaKart: TfrmHastaKart
       Caption = 'Yat'#305#351' Bilgileri'
       ImageIndex = 66
     end
-    object Epikriz1: TMenuItem
-      Tag = -26
+    object E1: TMenuItem
+      Tag = 500
       Caption = 'Epikriz'
       ImageIndex = 90
-      OnClick = cxButtonCClick
+      object Epikriz1: TMenuItem
+        Tag = -26
+        Caption = 'Epikriz'
+        ImageIndex = 90
+        OnClick = cxButtonCClick
+      end
+      object E2: TMenuItem
+        Tag = -500
+        Caption = 'Epikriz QR Kod'
+        ImageIndex = 142
+        OnClick = cxButtonCClick
+      end
     end
     object R1: TMenuItem
       Tag = 130

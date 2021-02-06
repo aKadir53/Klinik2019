@@ -111,6 +111,7 @@ type
     SatirlarHCTS_uygunsuz: TcxGridDBBandedColumn;
     E1: TMenuItem;
     E2: TMenuItem;
+    ElHijyeniGzlemFormu1: TMenuItem;
     procedure TopPanelButonClick(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -268,12 +269,20 @@ var
 begin
   inherited;
 
-               sql := 'select S.tanimi, E.* from EL_HijyenGozlem E ' +
-                      ' join SIRKETLER_TNM S on S.sirketKod = E.sirketKod ' +
-                      ' where E.Tarih between ' + txtTopPanelTarih1.GetSQLValue +
-                      ' and ' + txtTopPanelTarih2.GetSQLValue +
-                      ' and E.sirketKod = ' + QuotedStr(datalar.AktifSirket);
-               datalar.QuerySelect(ADO_SahaGozetim,sql);
+  sql := 'select S.tanimi, E.* from EL_HijyenGozlem E ' +
+         ' join SIRKETLER_TNM S on S.sirketKod = E.sirketKod ' +
+         ' where E.Tarih between ' + txtTopPanelTarih1.GetSQLValue +
+         ' and ' + txtTopPanelTarih2.GetSQLValue +
+         ' and E.sirketKod = ' + QuotedStr(datalar.AktifSirket);
+  datalar.QuerySelect(ADO_SahaGozetim,sql);
+
+  miYeniGozetim.Enabled := True;
+  miGozetimDuzenle.Enabled := True;
+  miGozetimSil.Enabled := True;
+  miGozetimYazdir.Enabled := True;
+
+  PopupMenuEnabled(Self,PopupMenu1,True);
+  PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
   //
 end;
 
@@ -306,6 +315,7 @@ begin
          Gozlem(ElHijyenYeni);
        end;
   -11 : begin
+         if ADO_SahaGozetim.RecordCount > 0 then
          Gozlem(ElHijyenDuzenle);
        end;
   -18 : begin
@@ -313,7 +323,7 @@ begin
           begin
             aModalResult := ShowMessageSkin('Gözetimi silmek istediðinizden emin misiniz ?', '', '', 'conf');
             if aModalResult <> mrYes then Exit;
-            if not KaliteYonetimPlanSil (ADO_SahaGozetim.FieldByName('id').AsInteger) then Exit;
+            if not ElHijyenSil (ADO_SahaGozetim.FieldByName('id').AsInteger) then Exit;
             RefreshSahaGozetimler (False);
           end;
         end;
@@ -323,9 +333,20 @@ begin
           TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
           TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
 
-          PrintYap('EHGF','El Hijyeni Gözlem Formu','',TopluDataset,pTNone)
+          PrintYap('EHGF','El Hijyeni Gözlem Formu(BOÞ)','',TopluDataset,pTNone)
 
       end;
+
+  -22:begin
+          TopluDataset.Dataset3 := ADO_SahaGozetim;
+          TopluDataset.Dataset4 := ADOQuery1;
+          TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
+          TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
+
+          PrintYap('EHGFY','El Hijyeni Gözlem Formu','',TopluDataset,pTNone)
+
+      end;
+
   -21:begin
           TopluDataset.Dataset3 := datalar.QuerySelect('exec sp_ElHijyeniUyumRaporu ' + txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue);
           TopluDataset.Dataset4 := datalar.QuerySelect('sp_ElHijyeniUyumRaporuGrafikDeger ' + txtTopPanelTarih1.GetSQLValue + ',' + txtTopPanelTarih2.GetSQLValue);
@@ -571,6 +592,13 @@ begin
   TcxImageComboBoxProperties(SatirlarHCTS_Yok.Properties).Items := TcxImageComboBoxProperties(SatirlarTO_Firsat.Properties).Items;
 
 
+  miYeniGozetim.Enabled := False;
+  miGozetimDuzenle.Enabled := False;
+  miGozetimSil.Enabled := False;
+  miGozetimYazdir.Enabled := False;
+
+  PopupMenuEnabled(Self,PopupMenu1,False);
+  PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
 
   cxPanel.Visible := false;
   Sayfa3_Kolon3.Width := 0;
@@ -605,8 +633,16 @@ begin
         bBasarili := False;
         ADO_SahaGozetim.DisableControls;
         try
-          if islem = ElHijyenYeni then
-            ADO_SahaGozetim.Append
+          if islem = ElHijyenYeni
+          then begin
+            if ADO_SahaGozetim.Locate('Tarih;sirketKod',VarArrayOf([datalar.ElHijyen.Tarih,datalar.ElHijyen.sirketKod]),[]) = False
+            then
+              ADO_SahaGozetim.Append
+            else begin
+             ShowMessageSkin(dateTostr(datalar.ElHijyen.Tarih) + ' Tarihinde Gözetim Mevcut','','','info');
+             exit;
+            end;
+          end
            else
             ADO_SahaGozetim.Edit;
           try
@@ -620,7 +656,11 @@ begin
           finally
             if not bBasarili then ADO_SahaGozetim.Cancel;
           end;
-          RefreshSahaGozetimler (True);
+          txtTopPanelTarih2.Date := datalar.ElHijyen.Tarih;
+          TopPanelButonClick(Self);
+          //ADO_SahaGozetim.Requery();
+
+          //RefreshSahaGozetimler (True);
         finally
           ADO_SahaGozetim.EnableControls;
         end;

@@ -164,6 +164,7 @@ type
     TakiplerColumnEpikriz: TcxGridDBColumn;
     H3: TMenuItem;
     GridHizmetlerColumn2: TcxGridDBColumn;
+    GridHizmetlerColumn3: TcxGridDBColumn;
     procedure cxButtonCClick(Sender: TObject);
     procedure mnSe1Click(Sender: TObject);
     procedure mptal1Click(Sender: TObject);
@@ -409,7 +410,7 @@ begin
       else
       if Dataset.Name = 'RxRadIslem'
       then begin
-        datalar.QueryExec('insert into gssTakipOkuTetkikvdRadyoloji(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo,sonuc) ' +
+        datalar.QueryExec('insert into gssTakipOkuTetkikvdRadyoloji(takipNo,sutKodu,islemTarihi,bransKodu,hizmetSunucuRefNo,islemSiraNo,drTescilNo,sonuc,aciklama) ' +
                           'values(' + QuotedStr(dataset.FieldByName('takipNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('sutKodu').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('islemTarihi').AsString) + ',' +
@@ -417,7 +418,8 @@ begin
                                       QuotedStr(dataset.FieldByName('hizmetSunucuRefNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('islemSiraNo').AsString) + ',' +
                                       QuotedStr(dataset.FieldByName('drTescilNo').AsString) + ',' +
-                                      QuotedStr(dataset.FieldByName('sonuc').AsString)  +
+                                      QuotedStr(dataset.FieldByName('sonuc').AsString)  +  ',' +
+                                      QuotedStr(dataset.FieldByName('aciklama').AsString)  +
                                       ')');
       end
       else

@@ -14,7 +14,7 @@ uses
   dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky,
   dxSkinLondonLiquidSky, dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters,
   cxPCdxBarPopupMenu, cxRadioGroup, cxPC, cxListBox, Vcl.ExtCtrls, Vcl.Buttons,
-  cxLabel, cxCheckBox, cxSplitter;
+  cxLabel, cxCheckBox, cxSplitter,dxLayoutContainer, dxLayoutControl;
 
 
 
@@ -117,6 +117,8 @@ type
     procedure cxGridMenuSetCOLUMN2PropertiesEditValueChanged(Sender: TObject);
     procedure cxButtonKadirTaniEkleClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure SayfalarChange(Sender: TObject);
+
   private
     { Private declarations }
     FEskiSifre : StrinG;
@@ -136,16 +138,34 @@ uses  cxCalendar, StrUtils, AnaUnit, TransUtils;
 {$R *.dfm}
 const _TableName_ = 'Users';
       formGenislik = 900;
-      formYukseklik = 500;
+      formYukseklik = 550;
       dr = 1;
       ig = 2;
       sirket = 3;
       dsp = 4;
+      ug = 5;
+
+procedure TfrmUsers.SayfalarChange(Sender: TObject);
+begin
+  //
+end;
+
 
 
 procedure TfrmUsers.PropertiesEditValueChanged(Sender: TObject);
 begin
+
+    MenucxYeni.Enabled := False;
+    MenucxKaydet.Enabled := True;
+    MenucxIptal.Enabled := False;
+   // PopupMenuEnabled(Self,PopupMenu1,True);
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+
    case TcxImageComboKadir(Sender).tag of
+     ug : begin
+              TdxLayoutGroup(Self.findcomponent('dxLaB'+'btnYetkileriGruptanAl')).Enabled := False;
+
+          end;
      dr : begin
             if TcxImageComboKadir(FindComponent('doktor')).EditingText <> ''
             Then begin
@@ -196,7 +216,7 @@ begin
 
   cxTab.Tabs[0].ImageIndex := 22;
   cxTab.Tabs[0].Caption := 'Kullanýcý Ýþlemleri';
-  Menu := PopupMenu1;
+//  Menu := PopupMenu1;
   Result := True;
 end;
 
@@ -221,11 +241,16 @@ begin
   then begin
       cxGridUserSet.DataController.DataSource := UserSettings_DataSource;
       cxGridMenuSet.DataController.DataSource := User_Menu_Settings_DataSource;
+      ToolBar1.Visible := True;
   end
   else
   begin
       cxGridUserSet.DataController.DataSource := UserGroupSettings_DataSource;
       cxGridMenuSet.DataController.DataSource := UserGroup_Menu_Settings_DataSource;
+
+      ToolBar1.Visible := False;
+
+
   end;
 end;
 
@@ -265,6 +290,12 @@ begin
 
     cxGridUserSet.DataController.Groups.FullExpand;
 
+    TdxLayoutGroup(Self.findcomponent('dxLaB'+'btnYetkileriGruptanAl')).Enabled := False;
+    MenucxYeni.Enabled := True;
+    MenucxKaydet.Enabled := False;
+    MenucxIptal.Enabled := True;
+   // PopupMenuEnabled(Self,PopupMenu1,True);
+    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
   end;
 end;
 
@@ -318,9 +349,15 @@ begin
   inherited;
   if txtYeniGrup.Text <> '' then
   begin
-     UserGroup.Append;
-     UserGroup.FieldByName('ADI').AsString := txtYeniGrup.EditingValue;
-     UserGroup.Post;
+     if UserGroup.Locate('ADI',txtYeniGrup.Text,[loCaseInsensitive]) = False
+     then begin
+       UserGroup.Append;
+       UserGroup.FieldByName('ADI').AsString := txtYeniGrup.EditingValue;
+       UserGroup.Post;
+     end
+     else
+      ShowMessageSkin('Grup Mevcut','','','info');
+
   end;
 end;
 
@@ -405,6 +442,8 @@ var
   dateEdit:TcxDateEditKadir;
 begin
 
+  Menu := PopupMenu1;
+
 
 
   //Olustur(self,_TableName_,'User Ýþlemleri',22,'','','','kullanici');
@@ -437,6 +476,7 @@ begin
 
   Grup := TcxImageComboKadir.Create(self);
   Grup.Conn := Datalar.ADOConnection2;
+  Grup.Tag := ug;
   Grup.TableName := 'UserGroups';
   Grup.ValueField := 'KODU';
   Grup.DisplayField := 'ADI';
@@ -444,6 +484,7 @@ begin
   Grup.Filter := '';
   setDataStringKontrol(self,Grup,'Grup','Grup',kolon1,'',120);
   OrtakEventAta(Grup);
+  Grup.Properties.OnChange := PropertiesEditValueChanged;
 
 
   sirketler := TcxImageComboKadir.Create(self);
@@ -530,6 +571,8 @@ begin
   pnlUserGrup.Align := alClient;
 //  setDataStringKontrol(self,pnlUserGrup,'pnlUserGrup','',sayfa2_kolon1,'',350,350);
 
+
+
   Grup := TcxImageComboKadir.Create(self);
   Grup.Conn := nil;
   Grup.ItemList := '0;Pasif,1;Aktif';
@@ -555,8 +598,7 @@ begin
 
   addButton(self,nil,'btnYetkileriSil','','Yetkileri Sil',Kolon1,'gr1',120,YetkiAyarButtonsClick);
   addButton(self,nil,'btnYetkileriGruptanAl','','Yetkileri Gruptan Getir',Kolon1,'gr1',120,YetkiAyarButtonsClick);
-  addButton(self,nil,'btnSifreOlustur','','Þifreyi e-mail Gönder ',Kolon1,'pass',120,cxKaydetClick,9);
-
+  addButton(self,nil,'btnSifreOlustur','','Þifreyi Sýfýrla ',Kolon1,'pass',120,cxKaydetClick,9);
 
 
 
@@ -570,6 +612,14 @@ begin
   SayfaCaption('Kullanýcý Ýþlemleri','Grup Ýþlemleri','','','');
 
   Disabled(self,True);
+
+
+  MenucxYeni.Enabled := True;
+  MenucxKaydet.Enabled := False;
+  MenucxIptal.Enabled := False;
+ // PopupMenuEnabled(Self,PopupMenu1,True);
+  PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+
 
  end;
 
@@ -764,7 +814,27 @@ var
 begin
 
   DurumGoster(True,False);
+
+
+
   try
+
+    case TcxButton(sender).Tag  of
+    Kaydet :  begin
+                if not cxYeni.Enabled
+                then
+                    if not datalar.QuerySelect('select * from Users where Kullanici = ' + QuotedStr(TcxImageComboKadir(FindComponent('Kullanici')).Text)).Eof
+                    then begin
+                      ShowMessageSkin('Kullanýcý Adý Sistemde Mevcut','','','info');
+                      TcxImageComboKadir(FindComponent('Kullanici')).SetFocus;
+                      exit;
+                    end;
+            end;
+      Sil : begin
+            end;
+
+      end;
+
 
     if (TcxImageComboKadir(FindComponent('Grup')).EditValue = '2')
        and (TcxButton(sender).Tag = Kaydet)
@@ -794,19 +864,25 @@ begin
 
   if TcxButton(sender).Tag = 9
   then begin
+   if mrYes  = ShowMessageSkin('Þifreniz sýfýrlanýp , yeni þifreniz mail adresine gönderilecek','Emin misiniz?','','msg')
+   then begin
      c := chr(Random(65)+20);
      if c in ['A'..'Z'] then b := c else b := '1';
 
      p := b + inttostr(Random(15000));
-     sql := 'update Users set password = ' + SQLValue(p) +
-            ', SifreDegisiklikTarihi = getdate () - 1000, Dogrulama = 0 where kullanici = ' +
-            QuotedStr(TcxTextEditKadir(FindComponent('kullanici')).Text);
-     datalar.QueryExec(sql);
+
 
      if mailGonder (TcxTextEditKadir(FindComponent('email')).Text , 'Þifre Onaylama' , 'Þifreniz : ' + p)
         = '0000'
-      then ShowMessageSkin('Þifreniz Mail adresinize Gönderildi','','','info')
-      else ShowMessageSkin('Gönderilemedi','','','info');
+      then begin
+       sql := 'update Users set password = ' + SQLValue(p) +
+              ', SifreDegisiklikTarihi = getdate () - 1000, Dogrulama = 0 where kullanici = ' +
+              QuotedStr(TcxTextEditKadir(FindComponent('kullanici')).Text);
+       datalar.QueryExec(sql);
+       ShowMessageSkin('Þifre Mail adresini Gönderildi','','','info');
+      end
+      else ShowMessageSkin('Þifre Sýfýrlanamadý','Þifre Mail adresine gönderilemedi','Mail Bilgisini Kontrol Ediniz','info');
+    end;
     exit;
   end;
 
@@ -834,6 +910,9 @@ begin
     else
     if TcxButton(sender).Tag = 0 then
     begin
+
+
+
       //þifre deðiþtirilmiþ
       if FEskiSifre <> TcxTextEditKadir (FindComponent ('password')).Text then
       begin
@@ -860,15 +939,30 @@ begin
     if not cxKaydetResult then Exit;
 
     case TcxButton(sender).Tag  of
-  Yeni : begin
-             IslemveMenuGorunumSetEkle(ugUser);
+      Kaydet : begin
+                  TdxLayoutGroup(Self.findcomponent('dxLaB'+'btnYetkileriGruptanAl')).Enabled := True;
+                  MenucxYeni.Enabled := True;
+                  MenucxKaydet.Enabled := False;
+                  MenucxIptal.Enabled := True;
+                 // PopupMenuEnabled(Self,PopupMenu1,True);
+                  PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
 
-          end;
-    Sil : begin
+               end;
+      Yeni : begin
+                 IslemveMenuGorunumSetEkle(ugUser);
+                 // TcxButtonKadir(FindComponent('btnYetkileriGruptanAl')).Enabled := False;
+                  MenucxYeni.Enabled := False;
+                  MenucxKaydet.Enabled := True;
+                  MenucxIptal.Enabled := False;
+                  TcxImageComboBox(FindComponent('userSkin')).ItemIndex := 3;
+                 // PopupMenuEnabled(Self,PopupMenu1,True);
+                  PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+              end;
+        Sil : begin
 
-           // post;
-           //ShowMessage('Ýptal');
-          end;
+               // post;
+               //ShowMessage('Ýptal');
+              end;
 
     end;
   finally

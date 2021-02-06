@@ -176,7 +176,7 @@ var
 begin
   inherited;
 
-  GirisRecord.F_firmaKod_ := ADO_SahaGozetim.fieldbyname('sirketKod').AsString;
+  //GirisRecord.F_firmaKod_ := ADO_SahaGozetim.fieldbyname('sirketKod').AsString;
 
   case Tcontrol(sender).Tag of
   -9 : begin
@@ -240,12 +240,11 @@ var
 begin
 
        sql := 'exec sp_SKS_Faaliyet_Durum_Raporu  ' + txtkodTopPanel.Text + ','
-       + QuotedStr(datalar.AktifSirket);
+              + QuotedStr(datalar.AktifSirket);
 
 
        datalar.QuerySelect(ADO_SahaGozetim,sql);
        gridRapor.ViewData.Expand(True);
-
 
 end;
 

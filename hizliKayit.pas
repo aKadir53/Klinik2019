@@ -468,7 +468,7 @@ begin
            '@KURUM = ' + #39 + '1000' + #39 +
            ',@SIGORTANO = ' + #39 + '0000' + #39 +
            ',@CINSIYETI = ' + #39 + inttostr(txtCinsiyet.ItemIndex) + #39 +
-           ',@MEDENI = ' + #39 + '0' + #39 +
+           ',@MEDENI = NULL' +
            ',@HASTAADI = ' + #39 + txtHastaAdi.Text + #39 +
            ',@HASTASOYADI = ' + #39 + txtHastaSoyAdi.Text + #39 +
            ',@BABAADI = ' + #39 + '' + #39 +
@@ -559,6 +559,16 @@ begin
 
           txtHata.Lines.Add(error);
 
+          if _gelisNo = '-1' then
+          begin
+            datalar.ADOConnection2.RollbackTrans;
+            ShowMessageSkin('Ýþlem Yapýlýrken Hata Oluþtu',error,'','info');
+            btnVazgec.Click;
+            exit;
+            // Hata fýrlat;
+          end;
+
+
 
    if memDataRaporlar.fieldbyname('raporNo').AsString <> ''
    then begin
@@ -620,8 +630,8 @@ begin
   except on e : Exception do
     begin
         datalar.ADOConnection2.RollbackTrans;
-       ShowMessageSkin('Ýþlem Yapýlýrken Hata Oluþtu',e.Message,'','info');
-       exit;
+        ShowMessageSkin('Ýþlem Yapýlýrken Hata Oluþtu',e.Message,'','info');
+        exit;
     end;
   end;
 

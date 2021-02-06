@@ -137,7 +137,7 @@ var
   HTSOTCCvp : TenayServiceSYNLAB_SYNEVO_CENTRO.TCSonuclariResult;
   KurumMNT : TenayServiceSYNLAB_SYNEVO_CENTRO.KurumBilgileri;
   I,s , testAdet , j , x  : integer;
-  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,kayitTip : string;
+  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,markersonuc,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,kayitTip : string;
   ado : TADOQuery;
   t : boolean;
   Http : THTTPRIO;
@@ -247,59 +247,48 @@ begin
                                 if testKod <> ''
                                 Then Begin
                                   a := _TetkikSonuclar_.Aciklama;
-                               //   b := HTSOCvp.Testler[x].NormalDeger;
-
-                                   _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'Poz','POZ',[rfReplaceAll]);
-                                   _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'Neg','NEG',[rfReplaceAll]);
-                                   _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,',','.',[rfReplaceAll]);
-                                   _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'-','',[rfReplaceAll]);
-
-
-                                   _TetkikSonuclar_.Aciklama := StringReplace(_TetkikSonuclar_.Aciklama,'Neg','NEG',[rfReplaceAll]);
-                                   _TetkikSonuclar_.Aciklama := StringReplace(_TetkikSonuclar_.Aciklama,'Poz','POZ',[rfReplaceAll]);
-
                                    sonuc := _TetkikSonuclar_.Sonuc;
-
-                                   if (pos('NEG',_TetkikSonuclar_.Sonuc) > 0)
-                                   Then sonuc := '-1'
-                                   Else
-                                   if (pos('POZ',_TetkikSonuclar_.Sonuc) > 0)
-                                   Then sonuc := '1'
-                                   Else
-                                   if (pos('NEG',_TetkikSonuclar_.Aciklama) > 0)
-                                   Then sonuc := '-1'
-                                   Else
-                                   if (pos('POZ',_TetkikSonuclar_.Aciklama) > 0)
-                                   Then sonuc := '1'
-                                   Else sonuc := _TetkikSonuclar_.Sonuc;
 
                                    if (testKod = '907440') or
                                       (testKod = '906610') or
                                       (testKod = '906630') or
                                       (testKod = '906660')
                                    Then Begin
-                                      sonucA := trim(StringReplace(StringReplace(_TetkikSonuclar_.Sonuc,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
-                                      sonucA := trim(StringReplace(StringReplace(SonucA,'NEGatif','',[rfReplaceAll]),'POZitif','',[rfReplaceAll]));
-                                      sonucA := trim(StringReplace(StringReplace(SonucA,'NEGATÝF','',[rfReplaceAll]),'POZÝTÝF','',[rfReplaceAll]));
-                                      sonucA := trim(StringReplace(StringReplace(SonucA,'DÜÞÜK','',[rfReplaceAll]),'düþük','',[rfReplaceAll]));
-                                      sonucA := trim(StringReplace(SonucA,'-','',[rfReplaceAll]));
-                                      sonucA := trim(StringReplace(SonucA,'(','',[rfReplaceAll]));
-                                      sonucA := trim(StringReplace(SonucA,')','',[rfReplaceAll]));
+                                       _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'Poz','POZ',[rfReplaceAll]);
+                                       _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'Neg','NEG',[rfReplaceAll]);
+                                       _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,',','.',[rfReplaceAll]);
+                                       _TetkikSonuclar_.Sonuc := StringReplace(_TetkikSonuclar_.Sonuc,'-','',[rfReplaceAll]);
 
-                                      sql := 'update hareketler set Gd = ' + QuotedStr(Sonuc) +
-                                             ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
-                                             ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                                       _TetkikSonuclar_.Aciklama := StringReplace(_TetkikSonuclar_.Aciklama,'Neg','NEG',[rfReplaceAll]);
+                                       _TetkikSonuclar_.Aciklama := StringReplace(_TetkikSonuclar_.Aciklama,'Poz','POZ',[rfReplaceAll]);
 
-                                       datalar.QueryExec(ado,sql);
+                                       markersonuc := '0';
 
-                                      sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
-                                             ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-                                      datalar.QueryExec(ado,sql);
+                                       if (pos('NEG',_TetkikSonuclar_.Sonuc) > 0)
+                                       Then markersonuc := '-1'
+                                       Else
+                                       if (pos('POZ',_TetkikSonuclar_.Sonuc) > 0)
+                                       Then markersonuc := '1'
+                                       Else
+                                       if (pos('NEG',_TetkikSonuclar_.Aciklama) > 0)
+                                       Then markersonuc := '-1'
+                                       Else
+                                       if (pos('POZ',_TetkikSonuclar_.Aciklama) > 0)
+                                       Then markersonuc := '1' ;
+
+                                         sql := 'update hareketler set Gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(_TetkikSonuclar_.Sonuc) + ')' +
+                                                                    ',islemAciklamasi = dbo.fn_gecerliKarakterRakam(' + QuotedStr(_TetkikSonuclar_.Sonuc) + ')' +
+                                                                    ',MarkerGD = ' + QuotedStr(markerSonuc) +
+                                                                    ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                                                                    ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+
+                                         datalar.QueryExec(ado,sql);
+
                                    End
                                    else
                                    begin
                                       try
-                                       sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_TetkikSonuclar_.Sonuc) + ')' +
+                                       sql := 'update hareketler set Gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(_TetkikSonuclar_.Sonuc) + ')' +
                                              ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 

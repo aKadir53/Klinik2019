@@ -13,6 +13,7 @@ object frmSMS: TfrmSMS
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -31,10 +32,6 @@ object frmSMS: TfrmSMS
     object cxTabSheet1: TcxTabSheet
       Caption = 'Hastaya Mesaj G'#246'nder'
       ImageIndex = 190
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object cxGroupBox1: TcxGroupBox
         Left = 0
         Top = 0
@@ -44,8 +41,8 @@ object frmSMS: TfrmSMS
         Height = 140
         Width = 445
         object txtmsg: TcxMemo
-          Left = 2
-          Top = -2
+          Left = 3
+          Top = 15
           Align = alClient
           Properties.MaxLength = 160
           Properties.OnChange = txtmsgPropertiesChange
@@ -58,10 +55,12 @@ object frmSMS: TfrmSMS
           StyleHot.LookAndFeel.NativeStyle = False
           StyleHot.LookAndFeel.SkinName = 'McSkin'
           TabOrder = 0
-          ExplicitWidth = 439
-          ExplicitHeight = 115
-          Height = 140
-          Width = 441
+          ExplicitLeft = 2
+          ExplicitTop = -2
+          ExplicitWidth = 441
+          ExplicitHeight = 140
+          Height = 115
+          Width = 439
         end
       end
       object btnMesajGonder: TcxButton

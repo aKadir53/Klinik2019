@@ -4,36 +4,48 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,Kadir,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,KadirLabel,GirisUnit,KadirType,Kadir, KadirMedula3,
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxStyles,
   dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
   dxSkinMoneyTwins, dxSkinsDefaultPainters, dxSkinscxPCPainter, cxCustomData,
   cxFilter, cxData, cxDataStorage, cxEdit, DB, cxDBData, Vcl.Menus, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
-  cxGridCustomView, cxGrid, cxDropDownEdit, cxImageComboBox;
+  cxGridCustomView, cxGrid, cxDropDownEdit, cxImageComboBox, cxPCdxBarPopupMenu,
+  cxContainer, cxTextEdit, cxMemo, cxPC;
 
 type
   TfrmTaniKart = class(TGirisForm)
-    cxGrid1: TcxGrid;
-    gridTanilar: TcxGridDBTableView;
-    cxGridDBColumn1: TcxGridDBColumn;
-    cxGridDBColumn2: TcxGridDBColumn;
-    cxGridDBColumn3: TcxGridDBColumn;
-    cxGridDBColumn4: TcxGridDBColumn;
-    cxGridDBColumn5: TcxGridDBColumn;
-    cxGridLevel2: TcxGridLevel;
     PopupMenu1: TPopupMenu;
     Ekle1: TMenuItem;
     Sl1: TMenuItem;
     Kapat1: TMenuItem;
     Tanilar: TListeAc;
-    gridTanilarColumn1: TcxGridDBColumn;
-    gridTanilarColumn2: TcxGridDBColumn;
+    M1: TMenuItem;
+    cxPageControl1: TcxPageControl;
+    Tab_Tani: TcxTabSheet;
+    Tab_log: TcxTabSheet;
+    Grid_Tanilar: TcxGrid;
+    ListeS: TcxGridDBTableView;
+    ListeSColumn2: TcxGridDBColumn;
+    cxGridDBColumn1: TcxGridDBColumn;
+    cxGridDBColumn2: TcxGridDBColumn;
+    cxGridDBColumn3: TcxGridDBColumn;
+    cxGridDBColumn4: TcxGridDBColumn;
+    cxGridDBColumn5: TcxGridDBColumn;
+    ListeSColumn1: TcxGridDBColumn;
+    cxGridLevel2: TcxGridLevel;
+    txtLog: TcxMemo;
+    ListeSColumn3: TcxGridDBColumn;
+    ListeSColumn4: TcxGridDBColumn;
+    ListeSColumn5: TcxGridDBColumn;
+    ListeSColumn6: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure TaniGetir;
     procedure TaniEkle;
     procedure TaniSil;
+
+    procedure MedulayaGonder;
     procedure cxButtonCClick(Sender: TObject);
   private
     { Private declarations }
@@ -45,7 +57,9 @@ type
 const _TableName_ = 'Hareketler';
       formGenislik = 600;
       formYukseklik = 300;
-      TaniSQL = 'select * from Hareketler  where dosyaNO = %s and gelisNo = %s and Tip = ''T''';
+      TaniSQL = 'select Hr.*,g.TakipNo,g.basvuruNo,g.SIRANO hastaneRefNo from Hareketler Hr ' +
+                ' join Hasta_Gelisler g on g.dosyaNO = Hr.dosyaNO and g.gelisNO = Hr.gelisNo ' +
+                ' where Hr.dosyaNO = %s and Hr.gelisNo = %s and Tip = ''T''';
 var
   frmTaniKart: TfrmTaniKart;
 
@@ -58,6 +72,12 @@ function TfrmTaniKart.Init(Sender: TObject) : Boolean;
 begin
   cxTab.Tabs[0].Caption := _HastaAdSoyad_;
   TaniGetir;
+
+  if _pasifSebeb_ = '5' then
+  begin
+   ListeS.OptionsData.Editing := False;
+  end;
+
   Result := True;
 end;
 
@@ -98,9 +118,70 @@ procedure TfrmTaniKart.TaniGetir;
 begin
   sqlRun.SQL.Text := Format(TaniSQL,[#39+_dosyaNo_+#39,_gelisNo_]);
   sqlRun.Open;
-  gridTanilar.DataController.DataSource := DataTableSource;
+  ListeS.DataController.DataSource := DataTableSource;
 
 end;
+
+
+procedure TfrmTaniKart.MedulayaGonder;
+var
+   x , durum , _msg_,satir ,sirano: integer;
+   oncekiTalepBilgisi ,sql , sonuc,talep,TakipNo,BasvuruNo  : string;
+   HataliIslem,Hatali : TStringList;
+   fark : double;
+   sysTakipNo,islemRefNo,mesajTipi,HastaneRefNo,eNabizSonuc ,raporTakipNo,sebeb: string;
+begin
+
+   if UserRight('MEDULA ÝÞLEMLERÝ', 'Ödeme Yolla') = False
+   then begin
+       ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !','','','info');
+       exit;
+   end;
+
+  txtLog.Lines.Clear;
+
+
+   if LisansKontrol(fark) = False
+   Then Begin
+    ShowMessageSkin('Lisans Yenileyin','','','info');
+    exit;
+   End;
+
+
+
+   durum := 0;
+   DurumGoster(True);
+   try
+       for x := 0 to ListeS.Controller.SelectedRowCount - 1 do
+       begin
+           Application.ProcessMessages;
+           satir := ListeS.Controller.SelectedRows[x].RecordIndex;
+           talep := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('islemSiraNo').Index)) ;
+           TakipNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('TakipNo').Index)) ;
+           BasvuruNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('BasvuruNo').Index)) ;
+           islemRefNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('siraNo').Index));
+           HastaneRefNo := varToStr(ListeS.DataController.GetValue(satir,ListeS.DataController.GetItemByFieldName('hastaneRefNo').Index));
+
+           Application.ProcessMessages;
+
+           if (talep = '')
+           then begin
+               HizmetKayitVeriSeti(takipNo,BasvuruNo, 'D','G','T','',sonuc);
+               txtLog.Lines.Add('Medula Hizmet Kayýt : ' + takipno + '-' + sonuc);
+           end
+           else
+             txtLog.Lines.Add(takipno + ' - Medula Hizmet Kayýt Ýçin ,islemSýraNo  Boþ olmalýdýr');
+        end;
+
+   finally
+      TaniGetir;
+      DurumGoster(False);
+   end;
+
+
+end;
+
+
 procedure TfrmTaniKart.cxButtonCClick(Sender: TObject);
 begin
   datalar.KontrolUserSet := False;
@@ -117,6 +198,10 @@ begin
   -3 : begin
          close;
        end;
+
+  -10 : begin
+           MedulayaGonder;
+        end;
 
   end;
 

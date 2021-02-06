@@ -392,6 +392,19 @@ type
     ITS: THTTPRIO;
     IdHTTP1: TIdHTTP;
     MedEczaneYardimciIslemWS: TMedEczaneYardimciIslem;
+    memDataBitmemisIlac: TdxMemData;
+    memDataBitmemisIlacilacAdi: TStringField;
+    memDataBitmemisIlackullanimDozu: TStringField;
+    memDataBitmemisIlackullanimPeriyot: TStringField;
+    memDataBitmemisIlackutuAdet: TStringField;
+    memDataBitmemisIlacilacAlimTarihi: TStringField;
+    memDataBitmemisIlacdozBitisTarihi: TStringField;
+    MemDataOlayBildirimOku: TdxMemData;
+    IntegerField10: TIntegerField;
+    StringField44: TStringField;
+    MemDataOlayBildirimOkuTarih: TDateField;
+    MemDataOlayBildirimOkuaciklama: TStringField;
+    DataSource_MemDataOlayBildirimOku: TDataSource;
 
  //   procedure pcarihareketlerAfterScroll(DataSet: TDataSet);
  //   procedure TempConnectionAfterConnect(Sender: TObject);
@@ -422,11 +435,12 @@ type
 
     { Private declarations }
   public
+   DokumanYuklesin : integer;
    LabEntegrasyonBilgileri : TLabEntegrasyonBilgileri;
    userTC,servername,username, usersifre , _username , _sifre , _donemuser , _donemsifre , usernameAdi ,
    _tesisKodu , _labusername , _labsifre , doktor ,doktorKodu,doktorTC, doktorAdi , SonReceteDoktorKodu,SonImzaDoktorKodu,sirketKodu,
    IGU, DSPers, _dosyaNo_,_gelisNo_,kontrolKod,RiskTanimBilgiEkle,
-   _labkurumkod , _labkurumkodText, _laburl , _labfirma , _LabCalismaYon,_LabBarkodBasim,
+   _labkurumkod , _labkurumkodText, _laburl , _labfirma , _LabCalismaYon,_LabBarkodBasim, _LabBarkodOlustur,
    _SKRS , _saglikNetUser , _labID,_labSonucIcinGozArdiEt : string;
    _saglikNetPass , _firmaSKRS , _usermernis , _passmernis, UserGroup, UserGroupName , Personel : string;
    _doktorReceteUser,_doktorRecetePas,_KurumSKRS_, _userSaglikNet_ , _passSaglikNet_ , _userSaglikNet2_ , _passSaglikNet2_ , itsGLN , itsUser , itsPass: string;
@@ -541,6 +555,8 @@ type
    EtkinMaddeTeshisKoduSelect : string;
    EtkinMaddeKoduSelect : string;
    E2033HataTakipYaz : string;
+   WhatsappTelefonToken : string;
+   WhatsappMesajTagEkle : string;
 
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
     function MasterBaglan : Boolean; overload;

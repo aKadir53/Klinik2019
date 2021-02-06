@@ -682,6 +682,7 @@ object GirisForm: TGirisForm
         Align = alClient
         TabOrder = 0
         LayoutLookAndFeel = dxLayoutSkinLookAndFeel1
+        ExplicitTop = 1
         object Sayfa1_dxLayoutControl1Group_Root: TdxLayoutGroup
           AlignHorz = ahLeft
           AlignVert = avTop
@@ -770,10 +771,6 @@ object GirisForm: TGirisForm
     object sayfa2: TcxTabSheet
       Caption = 'sayfa2'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object sayfa2_dxLayoutControl3: TdxLayoutControl
         Left = 0
         Top = 0
@@ -820,10 +817,6 @@ object GirisForm: TGirisForm
     object sayfa3: TcxTabSheet
       Caption = 'sayfa3'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object sayfa3_dxLayoutControl2: TdxLayoutControl
         Left = 0
         Top = 0
@@ -876,10 +869,6 @@ object GirisForm: TGirisForm
     object sayfa4: TcxTabSheet
       Caption = 'sayfa4'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object dxLayoutControl1: TdxLayoutControl
         Left = 0
         Top = 0
@@ -932,10 +921,6 @@ object GirisForm: TGirisForm
     object sayfa5: TcxTabSheet
       Caption = 'sayfa5'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object dxLayoutControl2: TdxLayoutControl
         Left = 0
         Top = 0
@@ -989,10 +974,6 @@ object GirisForm: TGirisForm
       Caption = 'sayfaList'
       ImageIndex = 3
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object cxGridGiris: TcxGrid
         Left = 58
         Top = 29
@@ -1946,8 +1927,8 @@ object GirisForm: TGirisForm
   end
   object DataTableSource: TDataSource
     DataSet = sqlRun
-    Left = 128
-    Top = 296
+    Left = 136
+    Top = 304
   end
   object sqlRun: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -1955,8 +1936,8 @@ object GirisForm: TGirisForm
     Parameters = <>
     SQL.Strings = (
       '')
-    Left = 80
-    Top = 280
+    Left = 88
+    Top = 272
   end
   object dxLayoutLookAndFeelList1: TdxLayoutLookAndFeelList
     Left = 72
@@ -1987,7 +1968,15 @@ object GirisForm: TGirisForm
   end
   object SelectAdo: TADOQuery
     Connection = DATALAR.ADOConnection2
+    CursorType = ctStatic
+    ParamCheck = False
     Parameters = <>
+    Prepared = True
+    SQL.Strings = (
+      
+        'exec sp_frmHastaListesi '#39'20210101'#39','#39'20210131'#39','#39'1'#39','#39'2'#39','#39'1000'#39','#39'00' +
+        '0005'#39','#39#39
+      '')
     Left = 224
     Top = 296
   end

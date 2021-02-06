@@ -8,7 +8,7 @@ uses
   cxLookAndFeelPainters, cxStyles, cxCustomData, cxFilter, cxData,
   cxDataStorage, cxEdit, cxDBData, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGridLevel, cxClasses, cxGridCustomView, cxGrid,
-  cxImageComboBox, ImgList, StdCtrls, Buttons, sBitBtn,
+  cxImageComboBox, ImgList, StdCtrls, Buttons, sBitBtn, KadirLabel,
   ExtCtrls, dxSkinsCore, dxSkinsDefaultPainters, dxSkinscxPCPainter,
   dxSkinBlack, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkinDarkRoom,
   dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans, dxSkiniMaginary, dxSkinLilian,
@@ -74,6 +74,7 @@ type
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
     cxGrid1DBTableView1Column12: TcxGridDBColumn;
+    Yontem: TcxGridDBColumn;
     procedure btnVazgecClick(Sender: TObject);
     procedure L1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -92,9 +93,20 @@ implementation
      LabTestlerService;
 {$R *.dfm}
 procedure TfrmTestAyarlari.FormCreate(Sender: TObject);
+var
+  IC : TcxImageComboKadir;
 begin
 
   Menu := PopupMenu1;
+
+  IC := TcxImageComboKadir.Create(self);
+  IC.Conn := Datalar.ADOConnection2;
+  IC.TableName := '(select * from OSGB_MASTER.dbo.LabYontemler) tmp';
+  IC.ValueField := 'kod';
+  IC.DisplayField := 'Tanimi';
+  IC.Filter := '';
+
+  TcxImageComboBoxProperties(Yontem.Properties).Items := IC.Properties.Items;
 
 end;
 
@@ -104,7 +116,7 @@ var
 begin
   Result := False;
   sql := 'select L.butKodu,L.tanimi,L.uygulamaSuresi,L.uygulamaAdet,L.tip,L.sira,L.minD,L.maxD,L.SGKTip,F.birim, ' +
-         'L.hepatitMarker,L.SonucTip,L.grupKodu,L.grupKodu_Centro,L.Loinc,L.ref_aciklama,F.islemKodu,F.islemKoduC,L.yeniButKodu ' +
+         'L.hepatitMarker,L.SonucTip,L.grupKodu,L.grupKodu_Centro,L.Loinc,L.ref_aciklama,F.islemKodu,F.islemKoduC,L.yeniButKodu,L.yontem ' +
          'from LabTestler L ' +
          'left join LabTestler_Firma F on F.butKodu = L.butKodu and F.Tip = L.UygulamaAdet ' +
          ' where F.labID = ' + QuotedStr(datalar._labID);

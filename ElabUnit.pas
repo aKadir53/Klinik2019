@@ -299,7 +299,7 @@ var
 procedure SonucYaz(Sonuclar : PatientResults ; c  : integer);
 var
  x : integer;
- sonuc , kod2 : string;
+ sonuc , markerSonuc, kod2 : string;
  ado : TADOQuery;
 begin
       ado := TADOQuery.Create(nil);
@@ -321,21 +321,25 @@ begin
          //    sonuclar[x].SonucAciklama := StringReplace(sonuclar[x].SonucAciklama,'Neg','NEG',[rfReplaceAll]);
          //    sonuclar[x].SonucAciklama := StringReplace(sonuclar[x].SonucAciklama,'Poz','POZ',[rfReplaceAll]);
 
+             markersonuc := '0';
              if (pos('NEG',sonuclar.TestList[x].Result) > 0)
-             Then sonuc := '-1'
+             Then markerSonuc := '-1'
              Else
              if (pos('POZ',sonuclar.TestList[x].Result) > 0)
-             Then sonuc := '1'
+             Then markerSonuc := '1'
              Else
              if (pos('NEG',sonuclar.TestList[x].Note) > 0)
-             Then sonuc := '-1'
+             Then markerSonuc := '-1'
              Else
              if (pos('POZ',sonuclar.TestList[x].Note) > 0)
-             Then sonuc := '1'
-             Else sonuc := sonuclar.TestList[x].Result;
+             Then markerSonuc := '1';
+
+             sonuc := sonuclar.TestList[x].Result;
 
              try
-               sql := 'update hareketler set gd = ' + QuotedStr(sonuc) +
+               sql := 'update hareketler set gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                      ',islemAciklamasi = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                      ',MarkerGD = ' + QuotedStr(markerSonuc) +
                       ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' +
                       QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo + ' and Tip1 = ' + QuotedStr(_F_) ;
                datalar.QueryExec(ado,sql);
@@ -444,7 +448,7 @@ var
 procedure SonucYaz(pr :  array of PatientResults ; c  : integer);
 var
  x,ix : integer;
- sonuc , kod2 : string;
+ sonuc ,markerSonuc, kod2 : string;
  ado : TADOQuery;
  Sonuclar : PatientResults;
 begin
@@ -469,20 +473,22 @@ begin
          //    sonuclar[x].SonucAciklama := StringReplace(sonuclar[x].SonucAciklama,'Poz','POZ',[rfReplaceAll]);
 
              if (pos('NEG',sonuclar.TestList[x].Result) > 0)
-             Then sonuc := '-1'
+             Then markerSonuc := '-1'
              Else
              if (pos('POZ',sonuclar.TestList[x].Result) > 0)
-             Then sonuc := '1'
+             Then markerSonuc := '1'
              Else
              if (pos('NEG',sonuclar.TestList[x].Note) > 0)
-             Then sonuc := '-1'
+             Then markerSonuc := '-1'
              Else
              if (pos('POZ',sonuclar.TestList[x].Note) > 0)
-             Then sonuc := '1'
+             Then markerSonuc := '1'
              Else sonuc := sonuclar.TestList[x].Result;
 
              try
-               sql := 'update hareketler set gd = ' + QuotedStr(sonuc) +
+               sql := 'update hareketler set gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                      ',islemAciklamasi = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                      ',MarkerGD = ' + QuotedStr(markerSonuc) +
                       ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' +
                       QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo + ' and Tip1 = ' + QuotedStr(_F_) ;
                datalar.QueryExec(ado,sql);

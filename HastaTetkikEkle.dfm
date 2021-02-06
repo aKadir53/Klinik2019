@@ -136,7 +136,6 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
               OptionsView.HeaderAutoHeight = True
               OptionsView.IndicatorWidth = 0
               OptionsView.RowSeparatorColor = clBlack
-              Styles.OnGetContentStyle = cxGridIlacTedaviPlaniStylesGetContentStyle
               object cxGridTetkiklerdosyaNo: TcxGridDBColumn
                 DataBinding.FieldName = 'dosyaNo'
                 Visible = False
@@ -1025,11 +1024,64 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
       ImageIndex = 28
       OnClick = ItemClick
     end
+    object Sonuc: TMenuItem
+      Caption = 'Sonu'#231' Ekle'
+      object Negatif: TMenuItem
+        Tag = -1
+        Caption = 'NEGAT'#304'F'
+        OnClick = N3Click
+      end
+      object Pozitif: TMenuItem
+        Tag = 1
+        Caption = 'POZ'#304'T'#304'F'
+        OnClick = N3Click
+      end
+      object APozitif: TMenuItem
+        Caption = 'A RH +'
+        OnClick = ABRH2Click
+      end
+      object ANegatif: TMenuItem
+        Tag = 1
+        Caption = 'A RH -'
+        OnClick = ABRH2Click
+      end
+      object BPozitif: TMenuItem
+        Tag = 4
+        Caption = 'B RH +'
+        OnClick = ABRH2Click
+      end
+      object BNegatif: TMenuItem
+        Tag = 5
+        Caption = 'B RH -'
+        OnClick = ABRH2Click
+      end
+      object ABPozitif: TMenuItem
+        Tag = 2
+        Caption = 'AB RH +'
+        OnClick = ABRH2Click
+      end
+      object ABNegatif: TMenuItem
+        Tag = 3
+        Caption = 'AB RH -'
+        OnClick = ABRH2Click
+      end
+      object Pozitif0: TMenuItem
+        Tag = 6
+        Caption = '0 RH +'
+        OnClick = ABRH2Click
+      end
+      object Negatif0: TMenuItem
+        Tag = 7
+        Caption = '0 RH -'
+        OnClick = ABRH2Click
+      end
+    end
   end
   object ADO_Tetkikler: TADOQuery
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
     Filtered = True
+    AfterScroll = ADO_TetkiklerAfterScroll
     EnableBCD = False
     Parameters = <>
     Prepared = True
@@ -1142,5 +1194,73 @@ object frmHastaTetkikEkle: TfrmHastaTetkikEkle
     TableName = 'TedaviUyariAyar'
     Left = 444
     Top = 364
+  end
+  object MarkerMenu: TPopupMenu
+    OnPopup = MarkerMenuPopup
+    Left = 592
+    Top = 160
+    object P1: TMenuItem
+      Tag = 1
+      Caption = 'POZ'#304'T'#304'F'
+      OnClick = N3Click
+    end
+    object N3: TMenuItem
+      Tag = -1
+      Caption = 'NEGAT'#304'F'
+      OnClick = N3Click
+    end
+    object N4: TMenuItem
+      Caption = '-'
+    end
+    object t9: TMenuItem
+      Tag = -2
+      Caption = 'T'#252'm'#252' NEGAT'#304'F'
+      Visible = False
+      OnClick = N3Click
+    end
+  end
+  object KanGrubuMenu: TPopupMenu
+    OnPopup = MarkerMenuPopup
+    Left = 592
+    Top = 216
+    object MenuItem1: TMenuItem
+      Caption = 'A RH +'
+      OnClick = ABRH2Click
+    end
+    object MenuItem2: TMenuItem
+      Tag = 4
+      Caption = 'B RH +'
+      OnClick = ABRH2Click
+    end
+    object ABRH1: TMenuItem
+      Tag = 2
+      Caption = 'AB RH +'
+      OnClick = ABRH2Click
+    end
+    object N0RH1: TMenuItem
+      Tag = 6
+      Caption = '0 RH +'
+      OnClick = ABRH2Click
+    end
+    object N0RH2: TMenuItem
+      Tag = 7
+      Caption = '0 RH -'
+      OnClick = ABRH2Click
+    end
+    object ARH1: TMenuItem
+      Tag = 1
+      Caption = 'A RH -'
+      OnClick = ABRH2Click
+    end
+    object BRH1: TMenuItem
+      Tag = 5
+      Caption = 'B RH -'
+      OnClick = ABRH2Click
+    end
+    object ABRH2: TMenuItem
+      Tag = 3
+      Caption = 'AB RH -'
+      OnClick = ABRH2Click
+    end
   end
 end

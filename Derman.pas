@@ -289,7 +289,7 @@ var
   ado : TADOQuery;
   I ,TestAdet , x : integer;
   ss , dosyaNo, gelisNo, id,idC, ornekNo,ornekNoC, sm , _F_  , testKod , _kod_ ,
-  min , max , sonuc , sonucA ,sql ,kayitTip : string;
+  min , max , sonuc ,markersonuc ,  sonucA ,sql ,kayitTip : string;
   t : boolean;
 
 procedure sonucyaz(Cvp : HastaTahlilSonuclariCevap ; Tip : string);
@@ -334,25 +334,25 @@ begin
                     (testKod = '906630') or
                     (testKod = '906660')
                  Then Begin
+                    markersonuc := '0';
                     if (pos('NEG',Cvp.SonucDetay[x].SonucDeger) > 0)
-                    Then sonuc := '-1'
+                    Then markersonuc := '-1'
                     Else
                     if (pos('POZ',Cvp.SonucDetay[x].SonucDeger) > 0)
-                    Then sonuc := '1';
+                    Then markersonuc := '1';
 
-                    sonucA := trim(StringReplace(StringReplace(Cvp.SonucDetay[x].SonucDeger,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
-                    sonucA := trim(StringReplace(StringReplace(SonucA,'NEGatif','',[rfReplaceAll]),'POZitif','',[rfReplaceAll]));
-                    sonucA := trim(StringReplace(StringReplace(SonucA,'NEGATÝF','',[rfReplaceAll]),'POZÝTÝF','',[rfReplaceAll]));
-
-                    //sonucA := sonuc;
+                    sonuc := Cvp.SonucDetay[x].SonucDeger;
+                    (*
                     try
                      if strtofloat(sonuc) < strtofloat(max)
                      Then sonuc := '-1' else sonuc := '1';
                     except end;
+                      *)
 
                     try
-                     sql := 'update hareketler set Gd = ' + sonuc +
-                              ' , islemAciklamasi = ' + QuotedStr(sonucA) +
+                     sql := 'update hareketler set Gd = dbo.fn_gecerliKarakterRakam(' + sonuc + ')' +
+                              ',islemAciklamasi = dbo.fn_gecerliKarakterRakam(' + sonuc + ')' +
+                              ',MarkerGD = ' + QuotedStr(markerSonuc) +
                               ' where onay = 1 and code = ' + QuotedStr(testKod) +
                               ' and tip = ''L'' and tip1 = ' + QuotedStr(Tip) +
                               ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
@@ -412,6 +412,10 @@ begin
 
    progres.Properties.Max := gridAktif.Controller.SelectedRowCount;
    progres.Position := 0;
+
+     if not DirectoryExists('C:\NoktaV3\DERMAN')
+     then
+      MkDir('C:\NoktaV3\DERMAN');
 
 
    for x := 0 to gridAktif.Controller.SelectedRowCount - 1 do

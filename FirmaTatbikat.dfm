@@ -249,6 +249,7 @@ object frmTatbikat: TfrmTatbikat
       Tag = -92
       Caption = 'Raporu Sil'
       ImageIndex = 43
+      Visible = False
       OnClick = cxButtonCClick
     end
     object R3: TMenuItem

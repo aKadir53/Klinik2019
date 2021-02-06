@@ -13,14 +13,14 @@ object frmSKSKriter: TfrmSKSKriter
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Grid_Sks_Tanim: TcxGridKadir
-    Left = 0
-    Top = 0
-    Width = 708
-    Height = 465
-    Align = alClient
+    Left = 16
+    Top = 24
+    Width = 652
+    Height = 385
     TabOrder = 0
     ExceleGonder = False
     PopupForm = False
@@ -128,12 +128,17 @@ object frmSKSKriter: TfrmSKSKriter
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 184
+    Left = 240
     Top = 128
     object G1: TMenuItem
       Caption = 'G'#246'sterge Tan'#305'm Kartlar'#305
       ImageIndex = 28
       OnClick = G1Click
+    end
+    object S1: TMenuItem
+      Caption = 'SKS Kriter Hedef Tablosu'
+      ImageIndex = 73
+      OnClick = S1Click
     end
   end
 end

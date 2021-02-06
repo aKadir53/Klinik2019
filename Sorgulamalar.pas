@@ -220,13 +220,22 @@ procedure TfrmSorgulamalar.btnSQLRunClick(Sender: TObject);
 var
   sql : string;
 begin
+    sql := trim(SQL_text.Text);
+    if ((pos('INSERT',UpperCase(sql)) > 0) or
+        (pos('UPDATE',UpperCase(sql)) > 0) or
+        (pos('DELETE',UpperCase(sql)) > 0))
+    then begin
+      ShowMessageSkin('Bu eylemler yürütülemez','[Sadece Select]','','info');
+      exit;
+    end;
+
+
     ADO_SQL11.close;
     ADO_SQL11.SQL.Clear;
     sql := copy(trim(SQL_text.Text),1,6);
     if UpperCase(sql) = 'CREATE'
     Then Begin
-    datalar.QueryExec(ADO_SQL11,SQL_text.Lines.Text);
-
+      datalar.QueryExec(ADO_SQL11,SQL_text.Lines.Text);
     ENd
     else
 

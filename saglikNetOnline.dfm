@@ -25,7 +25,7 @@ object frmSaglikNetOnline: TfrmSaglikNetOnline
     Height = 658
     Align = alClient
     TabOrder = 0
-    Properties.ActivePage = cxTabSheet3
+    Properties.ActivePage = page_list
     OnChange = cxPageControl1Change
     ClientRectBottom = 651
     ClientRectLeft = 3

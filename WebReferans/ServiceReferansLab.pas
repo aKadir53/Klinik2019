@@ -77,7 +77,7 @@ const
   defWSDL = 'http://www.referanslab.com/WebService/ReLabSonucOku.asmx?wsdl';
   defURL  = 'http://www.referanslab.com/WebService/ReLabSonucOku.asmx';
   defSvc  = 'ReLabSonucOku';
-  defPrt  = 'ReLabSonucOkuSoap12';
+  defPrt  = 'ReLabSonucOkuSoap';//'ReLabSonucOkuSoap12';
 var
   RIO: THTTPRIO;
 begin

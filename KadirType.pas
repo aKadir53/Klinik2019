@@ -23,6 +23,10 @@ type
                          TelefonNums : string ; mesaj : string;
                          var Sonuc : string);stdCall;
 
+  TSendWhatsappText = procedure(token: string ;
+                         TelefonNums : string ; mesaj : PWideChar;
+                         var Sonuc : PWideChar);stdCall;
+
   TENabizSendMesaj = procedure(msj : pwidechar ; mesajTipi : pwidechar ;
                          var Id : integer ;
                          var sonucMesaj : PWideChar ;
@@ -127,6 +131,18 @@ type
                       TesisKodu : integer;
                        var sonuc : PWideChar;
                        url : PWideChar); stdcall;
+
+  T_BitmemisIlacListeSorgulaBilgisi_ = procedure(
+                      tesisKodu : PWideChar;
+                      doktorkullanici : PWideChar;
+                      doktrsifre : PWideChar;
+                      pin : PWideChar;
+                      doktorTc : PWideChar;
+                      hastaTc : PWideChar;
+                       var sonuc : PWideChar;
+                     //  var SonucJson : PWideChar;
+                      url : PWideChar;
+                      cardType : PWideChar); stdcall;
 
 
   TRaporImzala = procedure(Id : integer;
@@ -910,6 +926,7 @@ type
     F_HASTAADI : string;
     F_HASTASOYADI : string;
     F_PasifSebeb_ : variant;
+    F_Aktif_ : string;
   End;
 
 type
@@ -930,6 +947,7 @@ type
     SirketRiskID : string;
     Method : Variant;
     Bolum : Variant;
+    Birimi : Variant;
     TehlikeKaynagi : Variant;
     Tehlike : Variant;
     Etkilenecek : Variant;
@@ -955,6 +973,7 @@ type
     Stream : TMemoryStream;
     SektorId : string;
     SSGBolum: integer;
+    SSGBirim : integer;
     SSGYapilacakFaliyetTuru: Integer;
     SSGKokNeden: String;
     SSGFaliyetPlan: String;
@@ -966,6 +985,8 @@ type
     SSGTakipSüresi : String;
     SSGKapamaOnayi : Variant;
     SSGTespitTarihi : String;
+    SSGDogrulamaYapan : String;
+    SSGKaliteSorumlusu : String;
     RDS_ID : string;
   End;
 
@@ -1046,10 +1067,10 @@ type
     GorusmeNotlari : string;
     Aksiyon : string;
     Gorevli : string;
-    GorevTarihi : TDate;
-    HedafTarih : TDate;
+    GorevTarihi : variant;
+    HedafTarih : variant;
     YapilanIslem : string;
-    TamamlanmaTarihi : TDate;
+    TamamlanmaTarihi : variant;
     Tamam : integer;
   end;
 
@@ -1123,7 +1144,7 @@ type
 
   TeLHijyen = record
     id : string;
-    Tarih : Tdate;
+    Tarih : TdateTime;
     sirketKod : string;
     gozlemci : string;
   end;
@@ -1370,6 +1391,7 @@ Const
   TagfrmCariHareketGiris = 820;
   TagfrmCariHesapEkstre = 830;
   TagfrmStokKart = 831;
+  TagfrmStokDepoCikisList = 832;
   TagfrmRDS = 840;
   TagfrmAjandaOzet = 850;
   TagfrmSirketSahaGozetim = 860;
@@ -1436,6 +1458,8 @@ Const
   TagfrmITS = 6000;
   TagfrmITSPaket = 6001;
   TagfrmKurumFaturaHazirlik = 6002;
+  TagfrmVKI = 6003;
+  TagfrmPersonelGirisCikis = 6004;
 
 
 
@@ -1606,6 +1630,7 @@ Const
   TatbikatYeni = 114;
   TatbikatDuzenle = 115;
   AsiTakipListesi = 116;
+  SKSOlayBildirimGor = 117;
 
   BeslenmeYeni = 120;
   BeslenmeDuzenle = 121;
@@ -1627,6 +1652,8 @@ Const
   DisardenGelenEvrakYukle = 302;
   DisardenGelenEvrakSil = 303;
   UTSKullanimiBildirimTablosu = 304;
+  MedulaSifreGecmisi = 305;
+  QREpikrizLinki = 306;
 
   NelerYeni = 333;
 
@@ -1634,6 +1661,7 @@ Const
 
   ITSAlimBildir = 6000;
   ITSSarfBildir = 6001;
+  BitmemisIlacListesi = 6003;
 
 
 

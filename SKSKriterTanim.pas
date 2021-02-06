@@ -9,7 +9,7 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit, DB, cxDBData,kadir,kadirType,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, Data.Win.ADODB,
   cxGridLevel, cxClasses, cxGridCustomView, cxGrid, dxSkinBlue, dxSkinCaramel,
-  dxSkinCoffee, dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky,
+  dxSkinCoffee, dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, cxDropDownEdit,
   dxSkinLondonLiquidSky, dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters,
   KadirLabel,data_modul, cxTextEdit, Vcl.Menus;
 
@@ -31,16 +31,24 @@ type
     Grid_Sks_TanimDBTableView1Column2: TcxGridDBColumn;
     PopupMenu1: TPopupMenu;
     G1: TMenuItem;
+    S1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Grid_Sks_TanimDBTableView1NavigatorButtonsButtonClick(
       Sender: TObject; AButtonIndex: Integer; var ADone: Boolean);
     procedure G1Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure PropertiesEditValueChanged(Sender: TObject);virtual;
+    procedure S1Click(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
+     function Init(Sender: TObject) : Boolean; override;
   end;
+
+const formGenislik = 700;
+      formYukseklik = 600;
 
 var
   frmSKSKriter: TfrmSKSKriter;
@@ -55,13 +63,68 @@ begin
 end;
 
 procedure TfrmSKSKriter.FormCreate(Sender: TObject);
+var
+ i , yil : integer;
 begin
+
+  ClientHeight := formYukseklik;
+  ClientWidth := formGenislik;
   Menu := PopupMenu1;
+
+  SayfaCaption('Kartlar','','','','');
+
+  setDataStringC(self,'txtYil','Hedef Deðer Yil',Kolon1,'',70,'');
+  setDataStringKontrol(self,Grid_Sks_Tanim ,'Grid_Sks_Tanim','',Kolon1,'',sayfa1.Width-20,sayfa1.Height-20);
+
+
+  TcxComboBox(FindComponent('txtYil')).Properties.Items.Clear;
+  yil := CurrentYear;
+  for i := 0 to 5 do
+  begin
+     TcxComboBox(FindComponent('txtYil')).properties.Items.Add(intToStr(yil-i));
+  end;
+  TcxComboBox(FindComponent('txtYil')).Text :=  copy(FormatDateTime('YYYYMMDD',date),1,4);
+
+  TcxComboBox(FindComponent('txtYil')).Properties.OnEditValueChanged := PropertiesEditValueChanged;
+
+
   Grid_Sks_Tanim.Dataset.Active := False;
   Grid_Sks_Tanim.Dataset.Connection := datalar.ADOConnection2;
-  Grid_Sks_Tanim.Dataset.SQL.Text := 'select * from SKS_istatistik_Tanim_Tablosu';
+  Grid_Sks_Tanim.Dataset.SQL.Text := 'select T.sira,T.TetkikKod,TetkikAdi,Tip,RefTip,H.Operator,Operator2,H.Hedef,  ' +
+    'gostergeKodu,tanimi,amac,formul,altGosterge,HedefTanimi,peryot,sorumlular,paylasilacakKisiler,dikkatedilecekhususlar,veriKaynak ' +
+    ' from SKS_istatistik_Tanim_Tablosu T' +
+    ' join SKS_istatistik_Tanim_Tablosu_Hedef H on T.TetkikKod = H.TetkikKod and H.yil = datepart(year,getdate()) and T.sira = H.sira' +
+          ' order by T.sira ';
   Grid_Sks_Tanim.Dataset.Active := True;
+
+  if Grid_Sks_Tanim.Dataset.Eof
+  then begin
+     datalar.QueryExec(
+     'insert into SKS_istatistik_Tanim_Tablosu_Hedef ' +
+     'select TetkikKod,datepart(year,getdate()),sira,0,Operator from SKS_istatistik_Tanim_Tablosu ');
+
+    Grid_Sks_Tanim.Dataset.SQL.Text := 'select T.sira,T.TetkikKod,TetkikAdi,Tip,RefTip,H.Operator,Operator2,H.Hedef,  ' +
+      'gostergeKodu,tanimi,amac,formul,altGosterge,HedefTanimi,peryot,sorumlular,paylasilacakKisiler,dikkatedilecekhususlar,veriKaynak ' +
+      ' from SKS_istatistik_Tanim_Tablosu T' +
+      ' join SKS_istatistik_Tanim_Tablosu_Hedef H on T.TetkikKod = H.TetkikKod and H.yil = datepart(year,getdate()) and T.sira = H.sira' +
+      ' order by T.sira ';
+    Grid_Sks_Tanim.Dataset.Active := True;
+
+  end;
+
+
+
+  Kolon2.Visible := False;
+  Kolon3.Visible := False;
+  Kolon4.Visible := False;
+
   cxPanel.Visible := False;
+end;
+
+procedure TfrmSKSKriter.FormShow(Sender: TObject);
+begin
+  inherited;
+  //
 end;
 
 procedure TfrmSKSKriter.G1Click(Sender: TObject);
@@ -69,9 +132,9 @@ var
   TopluDataset : TDataSetKadir;
 begin
   try
-    TopluDataset.Dataset0 := Grid_Sks_Tanim.Dataset;
-    TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
-    TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
+    TopluDataset.Dataset1 := Grid_Sks_Tanim.Dataset;
+    TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+    TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
     PrintYap('IGK','Ýndikatör Taným Kartý','',TopluDataset,pTNone)
   finally
   end;
@@ -121,6 +184,56 @@ begin
 
 
 
+
+end;
+
+function TfrmSKSKriter.Init(Sender: TObject): Boolean;
+begin
+  Result := True;
+  if not inherited Init(Sender) then exit;
+
+end;
+
+procedure TfrmSKSKriter.PropertiesEditValueChanged(Sender: TObject);
+begin
+ //
+  Grid_Sks_Tanim.Dataset.Active := False;
+  Grid_Sks_Tanim.Dataset.Connection := datalar.ADOConnection2;
+  Grid_Sks_Tanim.Dataset.SQL.Text := 'select T.sira,T.TetkikKod,TetkikAdi,Tip,RefTip,H.Operator,Operator2,H.Hedef,  ' +
+    'gostergeKodu,tanimi,amac,formul,altGosterge,HedefTanimi,peryot,sorumlular,paylasilacakKisiler,dikkatedilecekhususlar,veriKaynak ' +
+    ' from SKS_istatistik_Tanim_Tablosu T' +
+    ' join SKS_istatistik_Tanim_Tablosu_Hedef H on T.TetkikKod = H.TetkikKod and H.yil = ' + TcxComboBox(FindComponent('txtYil')).Text  + ' and T.sira = H.sira' +
+          ' order by T.sira ';
+  Grid_Sks_Tanim.Dataset.Active := True;
+
+  if Grid_Sks_Tanim.Dataset.Eof
+  then begin
+     datalar.QueryExec(
+     'insert into SKS_istatistik_Tanim_Tablosu_Hedef ' +
+     'select TetkikKod,' + TcxComboBox(FindComponent('txtYil')).Text + ',sira,0,Operator from SKS_istatistik_Tanim_Tablosu ');
+
+    Grid_Sks_Tanim.Dataset.SQL.Text := 'select T.sira,T.TetkikKod,TetkikAdi,Tip,RefTip,H.Operator,Operator2,H.Hedef,  ' +
+      'gostergeKodu,tanimi,amac,formul,altGosterge,HedefTanimi,peryot,sorumlular,paylasilacakKisiler,dikkatedilecekhususlar,veriKaynak ' +
+      ' from SKS_istatistik_Tanim_Tablosu T' +
+      ' join SKS_istatistik_Tanim_Tablosu_Hedef H on T.TetkikKod = H.TetkikKod and H.yil = ' + TcxComboBox(FindComponent('txtYil')).Text + ' and T.sira = H.sira' +
+      ' order by T.sira ';
+    Grid_Sks_Tanim.Dataset.Active := True;
+
+  end;
+
+end;
+
+procedure TfrmSKSKriter.S1Click(Sender: TObject);
+var
+  TopluDataset : TDataSetKadir;
+begin
+  try
+    TopluDataset.Dataset1 := datalar.QuerySelect('exec sp_SKSKriterHedefTablo');
+    TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+    TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
+    PrintYap('SKSHT','SKS Kriter Hedef Tablo','',TopluDataset,pTNone)
+  finally
+  end;
 
 end;
 

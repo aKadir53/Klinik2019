@@ -3,7 +3,7 @@ unit SMS;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils,StrUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
   dxSkinsCore, dxSkinBlack, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
   dxSkinDarkRoom, dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans,
@@ -29,6 +29,7 @@ type
     procedure txtmsgPropertiesChange(Sender: TObject);
     function findMethod(dllHandle : Cardinal; methodname : string) : FARPROC;
     function SendMesajGonder(tel,mesaj : string) : string;
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -37,6 +38,8 @@ type
     hasta : string;
     MobilTel : string;
     mesaj : string;
+    token : string;
+    tip : string;
   end;
 
 
@@ -82,6 +85,9 @@ begin
   end;
 end;
 
+
+
+
 procedure TfrmSMS.btnMesajGonderClick(Sender: TObject);
 var
   sonuc ,tel : string;
@@ -100,21 +106,33 @@ begin
         exit;
       end;
 
-      sonuc := SendMesajGonder(tel,txtmsg.Text);
+      if Tip = ''
+      then
+       sonuc := SendMesajGonder(tel,txtmsg.Text)
+      else
+       sonuc := SendMesajGonderWhatsapp(token,tel,txtmsg.Text);
+
+
+
       SS := TStringList.Create;
       try
         ExtractStrings(['|'], [], PChar(sonuc),SS);
 
-        if SS[1] = '200'
+        if (SS[1] = '200') or (SS[1] = 'OK')
         then begin
           ShowMessageSkin('Mesaj Gönderildi','','','info');
+          (*
           datalar.QueryExec('insert into SmsGonderimLog (dosyaNO,tel,msj)' +
                             ' values(' + QuotedStr(dosyaNo) + ',' +
                             QuotedStr(tel) + ',' +
                             QuotedStr(txtmsg.Text) + ')');
+          *)
         end
         else
          ShowMessageSkin('Hata : ' + SS[2] ,'','','info');
+
+
+
       finally
         SS.Free;
       end;
@@ -126,10 +144,33 @@ begin
 
 end;
 
-procedure TfrmSMS.FormShow(Sender: TObject);
+procedure TfrmSMS.FormCreate(Sender: TObject);
 begin
-  frmSMS.Caption := 'SMS Gönderim  [' + hasta + ']';
-  frmSMS.txtmsg.Text := mesaj;
+   //  btnMesajGonder.Images := datalar.imag24png;
+end;
+
+procedure TfrmSMS.FormShow(Sender: TObject);
+var
+ Bitmap : TBitmap;
+begin
+  Bitmap := TBitmap.Create;
+  try
+    if Tip = '' then
+    begin
+     frmSMS.Caption := 'SMS Gönderim  [' + hasta + ']';
+     datalar.imag24png.GetImage(144,Bitmap);
+    end
+    else
+    begin
+     frmSMS.Caption := Tip +  ' [' + hasta + ']';
+     datalar.imag24png.GetImage(143,Bitmap);
+    end;
+
+    btnMesajGonder.Glyph := Bitmap;
+    frmSMS.txtmsg.Text := mesaj;
+  finally
+    Bitmap.free;
+  end;
 end;
 
 procedure TfrmSMS.txtmsgPropertiesChange(Sender: TObject);

@@ -116,6 +116,8 @@ type
     PersonelKaydet: TAction;
     YeniMuayene: TAction;
     Splitter_Muayene: TSplitter;
+    M1: TMenuItem;
+    W1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxButtonCClick(Sender: TObject);
@@ -1385,6 +1387,8 @@ begin
   setDataString(self,'MESLEKADI','Meslek Tanimi',Kolon3,'',200,false,'',True);
 //  OrtakEventAta(meslekKod);
 
+  setDataStringIC(self,'vardiya','Vardiya',Kolon3,'',80,'PDKS_Vardiya','kod','tanimi','',1);
+
   setDataStringBLabel(self,'bosSatir2',Kolon3,'',350);
 
  // setDataStringC(self,'seans','Seans',sayfa2_Kolon1,'_s_',50,'1,2,3,4,5');
@@ -1711,6 +1715,13 @@ begin
          tel := dosyaNoPersonelTel(_dosyaNO_,TcxTextEdit(FindComponent('EV_TEL1')).Text);
          SMSSend(tel,msj,_HastaAdSoyad_);
        end;
+
+-128 : begin
+          tel := dosyaNoHastaTel(_dosyaNO_,TcxTextEdit(FindComponent('EV_TEL1')).Text);
+          tel := trim(StringReplace(StringReplace(StringReplace(tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+          WhatsappSend(datalar.WhatsappTelefonToken,tel,msj,_HastaAdSoyad_);
+       end;
+
  -29 : begin
          HastaRaporlari;
        end;

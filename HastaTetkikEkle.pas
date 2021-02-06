@@ -8,7 +8,7 @@ uses
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxContainer,
   cxEdit, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
   dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin,
-  dxSkinMoneyTwins, dxSkinsDefaultPainters, dxSkinscxPCPainter,Adodb,
+  dxSkinMoneyTwins, dxSkinsDefaultPainters, dxSkinscxPCPainter,Adodb,strUtils,
   cxPCdxBarPopupMenu, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   DB, cxDBData, cxGridLevel, cxClasses, cxGridCustomView, cxGridCustomTableView,
   cxGridTableView, cxGridDBTableView, cxGrid, cxTextEdit, cxMaskEdit,
@@ -117,6 +117,31 @@ type
     O2: TMenuItem;
     T8: TMenuItem;
     D1: TMenuItem;
+    MarkerMenu: TPopupMenu;
+    P1: TMenuItem;
+    N3: TMenuItem;
+    KanGrubuMenu: TPopupMenu;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    ABRH1: TMenuItem;
+    N0RH1: TMenuItem;
+    N0RH2: TMenuItem;
+    ARH1: TMenuItem;
+    BRH1: TMenuItem;
+    ABRH2: TMenuItem;
+    N4: TMenuItem;
+    t9: TMenuItem;
+    Sonuc: TMenuItem;
+    Negatif: TMenuItem;
+    Pozitif: TMenuItem;
+    APozitif: TMenuItem;
+    ANegatif: TMenuItem;
+    BPozitif: TMenuItem;
+    BNegatif: TMenuItem;
+    ABPozitif: TMenuItem;
+    ABNegatif: TMenuItem;
+    Pozitif0: TMenuItem;
+    Negatif0: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure DoktorBilgisiDegis;
     procedure ItemClick(Sender: TObject);
@@ -139,9 +164,16 @@ type
       Sender: TcxCustomGridTableView; APrevFocusedRecord,
       AFocusedRecord: TcxCustomGridRecord;
       ANewItemRecordFocusingChanged: Boolean);
+    procedure ADO_TetkiklerAfterScroll(DataSet: TDataSet);
+    procedure SonucGirisPropertiesEditValueChanged(Sender: TObject);
+    procedure N3Click(Sender: TObject);
+    procedure MarkerMenuPopup(Sender: TObject);
+    procedure ABRH2Click(Sender: TObject);
+    procedure PopupMenuSonucEkleVisible(Grup : String);
   private
     { Private declarations }
   public
+      function Init(Sender: TObject) : Boolean; override;
     { Public declarations }
   end;
 
@@ -171,10 +203,12 @@ begin
   sonuclar;
   case cxTabTetkik.TabIndex of
   1 : begin
+         Aciklama.PropertiesClassName := 'Memo';
          SonucGiris.Visible := false;
          Aciklama.Width := 230;
       end;
   0 : begin
+         Aciklama.PropertiesClassName := 'TextEdit';
          SonucGiris.Visible := true;
          Aciklama.Width := 150;
       end;
@@ -200,6 +234,17 @@ begin
 
 end;
 
+
+procedure TfrmHastaTetkikEkle.SonucGirisPropertiesEditValueChanged(
+  Sender: TObject);
+begin
+  inherited;
+  if ADO_Tetkikler.FieldByName('CODE').AsString = '705140'
+  then begin
+   ADO_Tetkikler.FieldByName('islemAciklamasi').Value :=
+   TcxImageComboBox(Sender).Properties.Items[TcxImageComboBox(Sender).ItemIndex].Description;
+  end;
+end;
 
 procedure TfrmHastaTetkikEkle.Sonuclar;
 begin
@@ -291,20 +336,20 @@ begin
    Tetkikler.where := ' charindex(''.'',butKodu) = 0  and uygulamaAdet = ''G''';
    List := Tetkikler.ListeGetir;
 
-   if List[0].kolon1 = '908170'
-   then begin
-      uzmanDoktor :=
-       datalar.QuerySelect('select kod from doktorlarT where durum = ''Aktif'' and uzman = ''Evet'' and sirketKod = ' + QuotedStr(datalar.AktifSirket)).FieldByName('kod').AsString;
-       doktor := uzmanDoktor;
-   end
-     else
-       doktor := _Doktor_;
-
-
 
    try
      if length(List) > 0 then
      begin
+          uzmanDoktor :=
+           datalar.QuerySelect('select kod from doktorlarT where durum = ''Aktif'' and uzman = ''Evet'' and sirketKod = ' + QuotedStr(datalar.AktifSirket)).FieldByName('kod').AsString;
+
+       if List[0].kolon1 = '908170'
+       then begin
+           doktor := uzmanDoktor;
+       end
+         else
+           doktor := ifThen(_Doktor_ = '',uzmanDoktor,_doktor_);
+
        ado := datalar.QuerySelect('select butKodu,tanimi,uygulamaAdet from labtestler where substring(butKodu,1,6) = ' + QuotedStr(List[0].kolon1));
        while not ado.Eof do
        begin
@@ -372,6 +417,22 @@ begin
 
 end;
 
+
+function TfrmHastaTetkikEkle.Init(Sender: TObject): Boolean;
+begin
+  Result := True;
+  if not inherited Init(Sender) then exit;
+
+  if _pasifSebeb_ = '5' then
+  begin
+    cxGridTetkikler.OptionsData.Editing := False;
+    SonucGiris.Editing := False;
+    cxPanelHesapla.Enabled := False;
+    cxBtnDegerlendir.Enabled := False;
+  end;
+
+
+end;
 
 procedure TfrmHastaTetkikEkle.ItemClick(Sender: TObject);
 var
@@ -596,6 +657,100 @@ begin
         *)
 end;
 
+procedure TfrmHastaTetkikEkle.MarkerMenuPopup(Sender: TObject);
+begin
+ (*
+  if (ADO_Tetkikler.FieldByName('CODE').AsString = '906610') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '906630') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '906660') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '907440')
+  then begin
+  end
+  else
+  MarkerMenu.CloseMenu;
+   *)
+
+end;
+
+procedure TfrmHastaTetkikEkle.N3Click(Sender: TObject);
+var
+  sql : string;
+begin
+  inherited;
+
+  if TMenuItem(Sender).Tag = -2 then
+  begin
+    sql := 'update hareketler ' +
+           'set gd = 0 , MarkerGD = Null ' +
+           'where dosyano = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNo_ +
+           ' and code in (''906610'',''906630'',''906660'',''907440'') ' +
+
+           'update hareketler ' +
+           'set gd = -1 , MarkerGD = Null ' +
+           'where dosyano = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNo_ +
+           ' and code in (''906610'',''906630'',''906660'',''907440'') ';
+    datalar.QueryExec(sql);
+    ADO_Tetkikler.Requery();
+  end
+  else
+  begin
+
+    ADO_Tetkikler.Edit;
+    ADO_Tetkikler.FieldByName('gd').AsFloat := 0;
+    ADO_Tetkikler.FieldByName('MarkerGD').AsVariant := Null;
+    ADO_Tetkikler.Post;
+
+    ADO_Tetkikler.Edit;
+    ADO_Tetkikler.FieldByName('gd').AsFloat := TMenuItem(Sender).Tag;
+    ADO_Tetkikler.FieldByName('MarkerGD').AsVariant := Null;
+    ADO_Tetkikler.Post;
+
+  end;
+
+
+
+end;
+
+procedure TfrmHastaTetkikEkle.PopupMenuSonucEkleVisible(Grup: String);
+begin
+  if Grup = 'Kan' then
+  begin
+   Sonuc.Visible := True;
+   Negatif.Visible := False;
+   Pozitif.Visible := False;
+   APozitif.Visible := True;
+   ANegatif.Visible := True;
+   BPozitif.Visible := True;
+   BNegatif.Visible := True;
+   ABPozitif.Visible := True;
+   ABNegatif.Visible := True;
+   Pozitif0.Visible := True;
+   Negatif0.Visible := True;
+  end
+  else
+  if Grup = 'Marker' then
+  begin
+   Sonuc.Visible := True;
+   Negatif.Visible := True;
+   Pozitif.Visible := True;
+   APozitif.Visible := False;
+   ANegatif.Visible := False;
+   BPozitif.Visible := False;
+   BNegatif.Visible := False;
+   ABPozitif.Visible := False;
+   ABNegatif.Visible := False;
+   Pozitif0.Visible := False;
+   Negatif0.Visible := False;
+
+  end
+  else
+  begin
+    Sonuc.Visible := False;
+  end;
+
+
+end;
+
 procedure TfrmHastaTetkikEkle.spKtvClick(Sender: TObject);
 var
    CaxP , G_ure , C_ure , iKilo , kilofark , g,c ,Dca  ,alb ,demirbaglama,Ts : double;
@@ -683,6 +838,75 @@ begin
         *)
 end;
 
+
+procedure TfrmHastaTetkikEkle.ABRH2Click(Sender: TObject);
+begin
+  inherited;
+  ADO_Tetkikler.Edit;
+  ADO_Tetkikler.FieldByName('gd').AsFloat := TMenuItem(Sender).Tag;
+  ADO_Tetkikler.FieldByName('islemAciklamasi').AsString :=
+   StringReplace(TMenuItem(Sender).Caption,'&','',[rfReplaceAll]);
+  ADO_Tetkikler.Post;
+end;
+
+procedure TfrmHastaTetkikEkle.ADO_TetkiklerAfterScroll(DataSet: TDataSet);
+var
+  FItem : TcxImageComboBoxItem;
+  ado : TADOQuery;
+  Items: TcxImageComboBoxItems;
+  Item: TcxImageComboBoxItem;
+     p : TPoint;
+     x,y : integer;
+begin
+  inherited;
+  {
+  try
+  if ADO_Tetkikler.FieldByName('CODE').AsString = '705140'
+  then begin
+       (*
+        SonucGiris.PropertiesClassName := 'TcxImageComboBoxProperties';
+        TcxImageComboBoxProperties(SonucGiris.Properties).Alignment.Vert :=  TcxEditVertAlignment.taVCenter;
+        TcxImageComboBoxProperties(SonucGiris.Properties).Items.Clear;
+        SonucGiris.Properties.Alignment.Horz := taLeftJustify;
+        SonucGiris.Properties.OnEditValueChanged := SonucGirisPropertiesEditValueChanged;
+        TcxImageComboBoxProperties(SonucGiris.Properties).ClearKey := VK_DELETE;
+
+        TcxImageComboBoxProperties(SonucGiris.Properties).Items :=
+        TcxImageComboKadir(FindComponent('KanGrupCombo')).Properties.Items;
+         *)
+     //  SonucGiris.PropertiesClassName := '';
+       SonucGiris.Options.Editing := False;
+     //  PopupMenuSonucEkleVisible('Kan');
+
+
+  end
+  else
+  if (ADO_Tetkikler.FieldByName('CODE').AsString = '906610') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '906630') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '906660') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '907440')
+     then begin
+     //  SonucGiris.PropertiesClassName := '';
+       SonucGiris.Options.Editing := False;
+    //   PopupMenuSonucEkleVisible('Marker');
+
+     end
+
+  else
+  begin
+    //  SonucGiris.PropertiesClassName := '';
+      SonucGiris.Options.Editing := True;
+    //  PopupMenuSonucEkleVisible('');
+
+  end;
+
+  except
+
+  end;
+
+  }
+end;
+
 procedure TfrmHastaTetkikEkle.cxBtnDegerlendirClick(Sender: TObject);
 var
   sql : string;
@@ -735,9 +959,64 @@ procedure TfrmHastaTetkikEkle.cxGridTetkiklerFocusedRecordChanged(
   AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
 begin
   inherited;
-   if ADO_Tetkikler.FieldByName('islemSiraNo').AsString <> ''
-   then Sender.OptionsData.Editing := False
-   else Sender.OptionsData.Editing := True;
+   if _pasifSebeb_ = '5'
+   then begin
+     Sender.OptionsData.Editing := False;
+   end
+   else
+     if ADO_Tetkikler.FieldByName('islemSiraNo').AsString <> ''
+       then Sender.OptionsData.Editing := False
+         else Sender.OptionsData.Editing := True;
+
+
+  try
+  if ADO_Tetkikler.FieldByName('CODE').AsString = '705140'
+  then begin
+       (*
+        SonucGiris.PropertiesClassName := 'TcxImageComboBoxProperties';
+        TcxImageComboBoxProperties(SonucGiris.Properties).Alignment.Vert :=  TcxEditVertAlignment.taVCenter;
+        TcxImageComboBoxProperties(SonucGiris.Properties).Items.Clear;
+        SonucGiris.Properties.Alignment.Horz := taLeftJustify;
+        SonucGiris.Properties.OnEditValueChanged := SonucGirisPropertiesEditValueChanged;
+        TcxImageComboBoxProperties(SonucGiris.Properties).ClearKey := VK_DELETE;
+
+        TcxImageComboBoxProperties(SonucGiris.Properties).Items :=
+        TcxImageComboKadir(FindComponent('KanGrupCombo')).Properties.Items;
+         *)
+     //  SonucGiris.PropertiesClassName := '';
+       SonucGiris.Options.Editing := False;
+       cxGridTetkikler.PopupMenu := KanGrubuMenu;
+     //  PopupMenuSonucEkleVisible('Kan');
+
+
+  end
+  else
+  if (ADO_Tetkikler.FieldByName('CODE').AsString = '906610') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '906630') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '906660') or
+     (ADO_Tetkikler.FieldByName('CODE').AsString = '907440')
+     then begin
+     //  SonucGiris.PropertiesClassName := '';
+       SonucGiris.Options.Editing := False;
+       cxGridTetkikler.PopupMenu := MarkerMenu;
+     //  PopupMenuSonucEkleVisible('Marker');
+
+     end
+
+  else
+  begin
+    //  SonucGiris.PropertiesClassName := '';
+      SonucGiris.Options.Editing := True;
+      cxGridTetkikler.PopupMenu := Nil;
+     // PopupMenuSonucEkleVisible('');
+
+  end;
+
+  except
+
+  end;
+
+
 end;
 
 procedure TfrmHastaTetkikEkle.DoktorBilgisiDegis;
@@ -748,17 +1027,19 @@ var
 begin
   inherited;
 
+
     if mrYes = ShowPopupForm('Tetkik Doktor Bilgisi Deðiþtir',SeansDoktorUpdate)
     Then Begin
+                 (*
                     datalar.QueryExec('exec sp_TetkikTarihDoktorDegistir ' +
                                       '@dosyaNo = ' + QuotedStr(_dosyaNO_) + ',' +
                                       '@gelisNo = ' + _gelisNO_ + ',' +
                                       '@doktor = ' + QuotedStr(datalar.SeansBilgi.doktor) );
 
                     ADO_Tetkikler.Requery;
+                   *)
 
 
-       (*
         for x := 0 to cxGridTetkikler.Controller.SelectedRowCount - 1 do
         begin
            Application.ProcessMessages;
@@ -774,7 +1055,7 @@ begin
            end;
 
         end; // for end
-        *)
+
 
     End;
 
@@ -786,7 +1067,7 @@ var
   index,i : integer;
   Ts,Ts1 : TStringList;
   List,List1 : TListeAc;
-  DoktorCombo : TcxImageComboKadir;
+  DoktorCombo , Kangrup : TcxImageComboKadir;
 begin
  //cxYeni.Visible := false;
   inherited;
@@ -806,8 +1087,15 @@ begin
   TcxImageComboBoxProperties(cxGridTetkikleryapanDoktor.Properties).Items :=
   TcxImageComboKadir(FindComponent('DoktorCombo')).Properties.Items;
 
+  //setDataStringIC(self,'KanGrupCombo','KanGrupCombo',Kolon1,'BB',150,'KanGruplari','Kod','Grup','');
+  //TdxLayoutGroup(FindComponent('dxLaKanGrupCombo')).Visible := false;
+
+  //setDataStringIC(self,'MarkerCombo','MarkerCombo',Kolon1,'BB',150,'','','','',-1,'1;Pozitif,-1;Negatif');
+  //TdxLayoutGroup(FindComponent('dxLaMarkerCombo')).Visible := false;
+
   cxTabTetkik.Tabs[0].ImageIndex := 47;
   cxTabTetkik.Tabs[1].ImageIndex := 95;
+
 
 
 end;

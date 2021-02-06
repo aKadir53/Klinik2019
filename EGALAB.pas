@@ -218,7 +218,7 @@ var
 procedure SonucYazVen(Sonuclar : ArrayOfSonucDurum ; c  : integer);
 var
  x : integer;
- sonuc , kod2 : string;
+ sonuc ,markersonuc , kod2 : string;
  ado : TADOQuery;
 begin
       _F_ := '';
@@ -235,15 +235,7 @@ begin
 
               if testKod <> ''
               Then Begin
-                 Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,'Poz','POZ',[rfReplaceAll]);
-                 Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,'Neg','NEG',[rfReplaceAll]);
 
-                 Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,'>','',[rfReplaceAll]);
-                 Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,'<','',[rfReplaceAll]);
-                 Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,',','.',[rfReplaceAll]);
-
-                 Sonuclar[x].Aciklama := StringReplace(Sonuclar[x].Aciklama,'Neg','NEG',[rfReplaceAll]);
-                 Sonuclar[x].Aciklama := StringReplace(Sonuclar[x].Aciklama,'Poz','POZ',[rfReplaceAll]);
                  sonuc := Sonuclar[x].Sonuc ;
 
                  if (testKod = '907440') or
@@ -251,29 +243,37 @@ begin
                     (testKod = '906630') or
                     (testKod = '906660')
                  Then Begin
+
+                       Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,'Poz','POZ',[rfReplaceAll]);
+                       Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,'Neg','NEG',[rfReplaceAll]);
+
+                       Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,'>','',[rfReplaceAll]);
+                       Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,'<','',[rfReplaceAll]);
+                       Sonuclar[x].Sonuc := StringReplace(Sonuclar[x].Sonuc,',','.',[rfReplaceAll]);
+
+                       Sonuclar[x].Aciklama := StringReplace(Sonuclar[x].Aciklama,'Neg','NEG',[rfReplaceAll]);
+                       Sonuclar[x].Aciklama := StringReplace(Sonuclar[x].Aciklama,'Poz','POZ',[rfReplaceAll]);
+
+                       markersonuc := '0';
                        if (pos('NEG',Sonuclar[x].EKSONUC1) > 0) or (pos('NEG',Sonuclar[x].Sonuc) > 0)
-                       Then sonuc := '-1'
+                       Then markersonuc := '-1'
                        Else
                        if (pos('POZ',Sonuclar[x].EKSONUC1) > 0) or (pos('POZ',Sonuclar[x].Sonuc) > 0)
-                       Then sonuc := '1'
+                       Then markersonuc := '1'
                        Else
                        if (pos('NEG',Sonuclar[x].Aciklama) > 0)
-                       Then sonuc := '-1'
+                       Then markersonuc := '-1'
                        Else
                        if (pos('POZ',Sonuclar[x].Aciklama) > 0)
-                       Then sonuc := '1'
-                       Else sonuc := Sonuclar[x].Sonuc;
+                       Then markersonuc := '1';
 
-                       sql := 'update hareketler set  gd = ' + QuotedStr(sonuc) +
+
+                       sql := 'update hareketler set  gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(Sonuclar[x].Sonuc) + ')' +
+                              ',islemAciklamasi = dbo.fn_gecerliKarakterRakam(' + QuotedStr(Sonuclar[x].Sonuc) + ')' +
+                              ',MarkerGD = ' + QuotedStr(markerSonuc) +
                               ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' +
                               QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
                               ' and tip1 = ' + QuotedStr(_F_) ;
-                       datalar.QueryExec(sql);
-
-                       sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(Sonuclar[x].Sonuc) +
-                              ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' +
-                               QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
-                               ' and tip1 = ' + QuotedStr(_F_) ;
                        datalar.QueryExec(sql);
 
                  End
@@ -281,7 +281,7 @@ begin
                  begin
 
                      try
-                       sql := 'update hareketler set  gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(Sonuclar[x].Sonuc) + ')' +
+                       sql := 'update hareketler set  gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(Sonuclar[x].Sonuc) + ')' +
                               ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' +
                               QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
                               ' and tip1 = ' + QuotedStr(_F_) ;

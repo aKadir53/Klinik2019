@@ -991,6 +991,7 @@ end;
 procedure TfrmLabEntegrasyon.FormCreate(Sender: TObject);
 var
  chk : TcxCheckGroupItem;
+  d : string;
 begin
   inherited;
   cxPanel.Visible := false;
@@ -1003,12 +1004,19 @@ begin
 
   TopPanel.Visible := True;
 
-  TapPanelElemanVisible(True,True,True,false,false,false,false,false,False,False,false,False,False);
+  TapPanelElemanVisible(True,False,False,false,false,false,false,false,False,False,false,True,False);
   RdGroup.Visible := True;
   RdGroup.Width := 250;
 
 
+  txtDonemTopPanel.Yil := copy(FormatDateTime('YYYYMMDD', date()),1,4);
+  d := copy(FormatDateTime('YYYYMMDD', date()),5,2);
+  txtDonemTopPanel.EditValue := copy(FormatDateTime('YYYYMMDD', date()),5,2);
 
+ // txtay.ItemIndex :=  strtoint(copy(tarihal(date()),5,2))-1;
+
+  ay1 := txtDonemTopPanel.getValueIlkTarih; //tarihal(ayaditoay(txtAy.Text));
+  ay2 := txtDonemTopPanel.getValueSonTarih; //tarihal(ayliktarih2(txtAy.Text));
 
  // Liste.DataController.DataSource.DataSet.AfterScroll := AfterScroll;
 
@@ -1370,6 +1378,8 @@ begin
    GridHizmet.Dataset.Close;
    sql := 'exec sp_LabListesi ' + txtTopPanelTarih1.GetSQLValue + ',' +
                                   txtTopPanelTarih2.GetSQLValue + ',' +
+                                  //QuotedStr(ay1) + ',' +
+                                 // QuotedStr(ay2) + ',' +
                                   QuotedStr(datalar.AktifSirket) + ',' +
                                   QuotedStr(RdGroup.EditValue);
 
@@ -1418,6 +1428,13 @@ end;
 procedure TfrmLabEntegrasyon.TopPanelPropertiesChange(Sender: TObject);
 begin
   inherited;
+
+  ay1 := txtDonemTopPanel.getValueIlkTarih; //tarihal(ayaditoay(txtAy.Text));
+  ay2 := txtDonemTopPanel.getValueSonTarih; //tarihal(ayliktarih2(txtAy.Text));
+
+  txtTopPanelTarih1.EditValue := tarihyap(ay1);
+  txtTopPanelTarih2.EditValue := tarihyap(ay2);
+
   Liste.ViewData.Expand(true);
 
   //  Bilgiler;

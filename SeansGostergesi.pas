@@ -70,6 +70,7 @@ var
    satir , _SeansGtop , st , gun : integer;
   _tarih_ : TdATE;
   bmpOk , bmpCancel : TBitmap;
+  Renk : TColor;
 begin
 
    bmpOk := TBitmap.Create;
@@ -158,26 +159,56 @@ begin
        if (gridHastalar.Cells[40,x] = '0')
        then begin
            gridHastalar.Cells[1,x] := '   ' + datalar.ADO_SQL.Fields[0].AsString;
-           satir := satir + 1;
+         //  satir := satir + 1;
        end
        else gridHastalar.Cells[1,x] := datalar.ADO_SQL.Fields[0].AsString;
 
+
+       if (gridHastalar.Cells[40,x] = '0')
+       then begin
+            gridHastalar.cells[0,x] := '';
+           for j := 1 to 32 do
+           begin
+             gridHastalar.Colors[j,x] := clNone;
+             gridHastalar.FontColors[j,x] := clNone;
+             gridHastalar.FontSizes[j,x] := 8;
+           end;
+           gridHastalar.FontStyles[1,x] := gridHastalar.FontStyles[1,x] - [fsBold];
+       end;
+
+
+       if (gridHastalar.Cells[40,x] = '1')
+       then begin
+            gridHastalar.cells[0,x] := '';
+           for j := 1 to 32 do
+           begin
+             gridHastalar.Colors[j,x] := clYellow;
+             gridHastalar.FontColors[j,x] := clNone;
+             gridHastalar.FontSizes[j,x] := 8;
+           end;
+           gridHastalar.FontStyles[1,x] := gridHastalar.FontStyles[1,x] + [fsBold];
+       end;
+
        if (gridHastalar.Cells[40,x] = '9')
        then begin
-            satir := 0;
+            satir := 1;
             gridHastalar.cells[0,x] := '';
 
            _SeanTop := 0;
            gridHastalar.Cells[33,x] := '';
            for j := 1 to 32 do
            begin
+             Renk := $00FF8080;
              gridHastalar.Colors[j,x] := $00FF8080;
              gridHastalar.FontColors[j,x] := clWhite;
              gridHastalar.FontSizes[j,x] := 9;
            end;
            gridHastalar.FontStyles[1,x] := gridHastalar.FontStyles[1,x] + [fsBold];
-
        end;
+
+
+
+
 
        if txtTip.ItemIndex = 0
        Then Begin
@@ -227,9 +258,11 @@ begin
             gridHastalar.Ints[0,x] := satir;
            end
            else
+           begin
             gridHastalar.Ints[0,x] := satir;
+             satir := satir + 1;
 
-
+           end;
 
        gridHastalar.cells[33,x] := datalar.ADO_SQL.Fields[33].AsString;//floattostr(gridHastalar.RowSumABS(x,2,32));
        gridHastalar.Alignments[33,x] := taRightJustify;
@@ -374,10 +407,15 @@ begin
        end;
 
 
+       if (gridHastalar.Cells[40,x] = '1')
+       then begin
+          gridHastalar.cells[0,x] := '';
+       end;
+
        if (gridHastalar.Cells[40,x] = '9')
        then begin
                   gridHastalar.Cells[33,x] := '';
-                  satir := 0;
+                  satir := 1;
                   gridHastalar.cells[0,x] := '';
        end;
        datalar.ADO_SQL.Next;
@@ -519,8 +557,36 @@ var
   L : TStringList;
   sql ,txtTarih1 , txtTarih2 ,ay1 , ay2 : string;
   TopluDataset : TDataSetKadir;
+  _tarih_ : TdATE;
+  gun : integer;
 begin
-     TopluDataset.Dataset1 := datalar.ADO_SQL;
+
+   ay1 := formatfloat('00',txtDonem.ItemIndex);
+   txtTarih1 := txtYil.Text + ay1 + '01';
+   _tarih_ := tarihyap(txtTarih1);
+   gun := DaysInMonth(_tarih_);
+   txtTarih2 := txtYil.Text + ay1 + inttostr(gun);
+
+   if txtTip.ItemIndex = 0
+   Then Begin
+     if chkDevredilen.Checked
+     Then
+       sql := 'exec sp_SeansGostergesi' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',' +  QuotedStr(datalar.AktifSirket) + ',''G'',' + QuotedStr(txtSeans.Text) + ',''E'''
+     Else
+      sql := 'exec sp_SeansGostergesi' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',' +  QuotedStr(datalar.AktifSirket) + ','''',' + QuotedStr(txtSeans.Text) + ',''E''';
+   End
+   else
+   Begin
+     if chkDevredilen.Checked
+     Then
+       sql := 'exec sp_SeansGostergesiMakina' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',''G''' + ',' + QuotedStr(datalar.AktifSirket)
+     Else
+       sql := 'exec sp_SeansGostergesiMakina' + #39 + txtTarih1 + #39 + ',' + #39 + txtTarih2 + #39 + ',''''' + ',' + QuotedStr(datalar.AktifSirket) ;
+
+   End;
+
+
+     TopluDataset.Dataset1 := datalar.QuerySelect(sql);
      TopluDataset.Dataset2 := DATALAR.ADO_AktifSirket;
 
    if txtTip.ItemIndex = 0

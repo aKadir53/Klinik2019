@@ -57,6 +57,12 @@ function TfrmAsiKarti.Init(Sender: TObject) : Boolean;
 begin
   cxTab.Tabs[0].Caption := _HastaAdSoyad_;
   AsiGetir;
+
+  if _pasifSebeb_ = '5' then
+  begin
+    gridAsilar.OptionsData.Editing := False;
+  end;
+
   Result := True;
 end;
 

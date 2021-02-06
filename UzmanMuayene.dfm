@@ -1152,8 +1152,8 @@ object frmUzmanMuayene: TfrmUzmanMuayene
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 456
-    Top = 256
+    Left = 480
+    Top = 264
     object K1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -1259,8 +1259,9 @@ object frmUzmanMuayene: TfrmUzmanMuayene
     end
   end
   object PopupIlac: TPopupMenu
-    Left = 736
-    Top = 248
+    Tag = 100
+    Left = 552
+    Top = 264
     object E1: TMenuItem
       Tag = 80
       Caption = 'Ekle'

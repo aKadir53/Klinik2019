@@ -256,6 +256,11 @@ object frmKurumBilgi: TfrmKurumBilgi
       Visible = False
       OnClick = cxButtonCClick
     end
+    object N1: TMenuItem
+      Tag = -3
+      Caption = #350'ifre De'#287'i'#351'tirme Ge'#231'mi'#351'i'
+      OnClick = cxButtonCClick
+    end
   end
   object cxStyleRepository2: TcxStyleRepository
     Left = 16

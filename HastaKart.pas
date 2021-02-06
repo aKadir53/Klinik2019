@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,pngImage,
   cxContainer, cxEdit, Menus, StdCtrls, cxButtons, cxGroupBox, DB, ADODB,
-  cxTextEdit, cxMaskEdit, cxButtonEdit, cxDBEdit,
+  cxTextEdit, cxMaskEdit, cxButtonEdit, cxDBEdit,Soap.EncdDecd,
   Data_Modul,strUtils,kadirType,KadirLabel,Kadir,KadirMedula3,
   GirisUnit, cxStyles, dxSkinscxPCPainter, cxCustomData, cxFilter,
   cxData, cxDataStorage, cxDBData, cxGridCustomTableView, cxGridTableView,
@@ -126,6 +126,10 @@ type
     Y1: TMenuItem;
     G3: TMenuItem;
     S2: TMenuItem;
+    E1: TMenuItem;
+    E2: TMenuItem;
+    M1: TMenuItem;
+    W1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxButtonCClick(Sender: TObject);
@@ -513,7 +517,9 @@ begin
     Then Begin
 
        Tarih := datalar.QuerySelect('select min(Tarih) Tarih from HareketlerSeans ' +
-                                    ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNO_).FieldByName('Tarih').AsDateTime;
+                                    ' where  dosyaNo = ' + QuotedStr(_dosyaNO_) +
+                                    ' and gelisNo = ' + _gelisNO_ +
+                                    ' and isnull(sebeb,1) not in (''0'',''9'',''10'',''11'')').FieldByName('Tarih').AsDateTime;
 
 
        if (datalar.GelisDuzenleRecordK.GirisTarihi > Tarih) and
@@ -798,7 +804,9 @@ begin
 
   if TcxCheckBox(Sender).Name = 'KVKK_Onay'
   then begin
+     if TcxCheckBox(Sender).Checked then TcxTextEdit(FindComponent('KVKK_Paylas')).Text := '';
      TcxTextEdit(FindComponent('KVKK_Paylas')).Enabled := not TcxCheckBox(Sender).Checked;
+
   end;
 
 
@@ -822,8 +830,19 @@ begin
          TcxImageComboKadir(FindComponent('PasifSebeb')).Filter := 'tip = ''P''';
          TdxLayoutGroup(FindComponent('dxLaAktifDegisTarih')).Visible := False;
          TdxLayoutGroup(FindComponent('dxLaPasifDegisTarih')).Visible := True;
-         TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
-         TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := false;
+         if  TcxImageComboKadir(FindComponent('PasifSebeb')).EditValue = 5
+         then begin
+           TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := True;
+           TdxLayoutGroup(FindComponent('dxLaOlumNedeniDiger')).Visible := True;
+           TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := True;
+         end
+         else
+         begin
+           TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := false;
+           TdxLayoutGroup(FindComponent('dxLaOlumNedeniDiger')).Visible := false;
+           TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
+         end;
+
       end
       else
       begin
@@ -832,6 +851,7 @@ begin
          TdxLayoutGroup(FindComponent('dxLaPasifDegisTarih')).Visible := False;
          TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
          TdxLayoutGroup(FindComponent('dxLaOlumNedeni')).Visible := false;
+
       end;
   end;
 
@@ -848,6 +868,30 @@ begin
       TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
     end;
   end;
+
+  if TcxImageComboKadir(Sender).name = 'OlumNedeni'
+  then begin
+    if  TcxImageComboKadir(FindComponent('OlumNedeni')).EditValue = 7
+    then begin
+       TdxLayoutGroup(FindComponent('dxLaOlumNedeniDiger')).Visible := True;
+    end
+    else begin
+      TdxLayoutGroup(FindComponent('dxLaOlumNedeniDiger')).Visible := false;
+    end;
+  end;
+
+
+  if TcxComboBox(Sender).name = 'OncekiRRTYontem'
+  then begin
+    if  TcxComboBox(FindComponent('OncekiRRTYontem')).EditValue = 'TX'
+    then begin
+       TdxLayoutGroup(FindComponent('dxLaTxSonrasiDiyalizTarihi')).Visible := True;
+    end
+    else begin
+      TdxLayoutGroup(FindComponent('dxLaTxSonrasiDiyalizTarihi')).Visible := false;
+    end;
+  end;
+
 
   if TcxImageComboKadir(Sender).name = 'VatandasTip'
   then begin
@@ -1126,43 +1170,54 @@ begin
   end;
 
 
-
-
-  if varTostr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue) = '5'
+  if (varTostr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue) = '5')
+     and
+     (UserRight('Hasta Kartý', 'Ölen Hastada Deðiþiklik') = False)
   Then begin
-    Disabled(self,True);
-
+    cxTab.Tabs[0].ImageIndex := 52;
     _pasifSebeb_ := '5';
-    d1.Enabled := True;
-    K1.Enabled := True;
-    AKart1.Enabled := True;
-    T2.Enabled := True;
-    YatBilgileri1.Enabled := True;
-    Epikriz1.Enabled := True;
-    R1.Enabled := True;
-    N3.Enabled := True;
-    HastaRaporlar1.Enabled := True;
-    H1.Enabled := True;
-    U1.Enabled := True;
-    SeansKart1.Enabled := True;
-    T1.Enabled := True;
-    T3.Enabled := True;
-    MenucxYeni.Enabled := True;
-    H2.Enabled := True;
-    akipBul1.Enabled := True;
-    akipBilgisiOku1.Enabled := True;
-    SysTakipNoSGKHizmetSorgula1.Enabled := True;
-    H3.Enabled := True;
-   // PopupMenuEnabled(Self,PopupMenu1,False);
-    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+        Disabled(self,True);
+        PopupMenuEnabled(Self,PopupMenu1,False);
+        cxGridGelis.Enabled := True;
+        d1.Enabled := True;
+        K1.Enabled := True;
+        AKart1.Enabled := True;
+        T2.Enabled := True;
+        YatBilgileri1.Enabled := True;
+        Epikriz1.Enabled := True;
+        R1.Enabled := True;
+        N3.Enabled := True;
+        HastaRaporlar1.Enabled := True;
+        H1.Enabled := True;
+        U1.Enabled := True;
+        SeansKart1.Enabled := True;
+        T1.Enabled := True;
+        T3.Enabled := True;
+        MenucxYeni.Enabled := True;
+        H2.Enabled := True;
+        akipBul1.Enabled := True;
+        akipBilgisiOku1.Enabled := True;
+        SysTakipNoSGKHizmetSorgula1.Enabled := True;
+        H3.Enabled := True;
+
+        PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+
   end
   else
   begin
+    cxTab.Tabs[0].ImageIndex := -1;
     _pasifSebeb_ := varTostr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue);
     PopupMenuEnabled(Self,PopupMenu1,True);
     PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
   end;
 
+  TcxImageComboKadir(FindComponent('sirketKod')).Enabled := cxGridGelis.Dataset.Eof;
+
+  if TcxCheckBox(FindComponent('KVKK_Onay')).Checked
+  then begin
+    TcxTextEdit(FindComponent('KVKK_Paylas')).Text := '';
+    TcxTextEdit(FindComponent('KVKK_Paylas')).Enabled := False;
+  end;
 
 end;
 
@@ -1176,19 +1231,21 @@ var
  TopluDataset : TDataSetKadir;
 begin
 
+    if dosyaNo.Text <> ''
+    then
+      if mrYes = ShowPopupForm('SKS Hasta Formlarý',SKS_HastaForm)
+      Then Begin
+               TopluDataset.Dataset1 := datalar.QuerySelect(
+                                        'exec sp_HastaTanimBilgileri ' +
+                                        ' @dosyaNO = ' + QuotedStr(dosyaNo.EditText));
+               TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
+               TopluDataset.Dataset3 := datalar.ADO_AktifSirket;
 
-    if mrYes = ShowPopupForm('SKS Hasta Formlarý',SKS_HastaForm)
-    Then Begin
-             TopluDataset.Dataset1 := datalar.QuerySelect(
-                                      'exec sp_HastaTanimBilgileri ' +
-                                      ' @dosyaNO = ' + QuotedStr(dosyaNo.EditText));
-             TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
-             TopluDataset.Dataset3 := datalar.ADO_AktifSirket;
+               PrintYap(datalar.SKSForm.raporKodu,datalar.SKSForm.raporKodu,'',TopluDataset,kadirType.pTNone);
 
-             PrintYap(datalar.SKSForm.raporKodu,datalar.SKSForm.raporKodu,'',TopluDataset,kadirType.pTNone);
-
-    End;
-
+      End
+    else
+    ShowMessageSkin('Hasta Dosyasý Açýlmadan Bu Ýþlem Kullanýlamaz...','','','info');
 
 end;
 
@@ -1306,6 +1363,11 @@ begin
   Result := True;
   if not inherited Init(Sender) then exit;
 
+  if _dosyaNo_ = '' then
+  begin
+          Disabled(self,True);
+  end;
+
   if _TC_ <> '' then
   begin
     ado := TADOQuery.Create(nil);
@@ -1357,12 +1419,46 @@ begin
      dosyaNo.OnKeyDown(frmHastaKart.dosyaNo,key,[]);
 
     if _pasifSebeb_ = '5' then Disabled(self,True) else enabled;
+
     FormInputZorunluKontrolPaint(self,$00FCDDD1);
-    TcxImageComboKadir(FindComponent('sirketKod')).Enabled := cxGridGelis.Dataset.Eof;
     Result := True;
   end;
 
 
+  if _dosyaNo_ <> ''
+  Then
+  if (_pasifSebeb_ = '5')
+     and
+     (UserRight('Hasta Kartý', 'Ölen Hastada Deðiþiklik') = False)
+   then begin
+      PopupMenuEnabled(self,PopupMenu1,False);
+      Disabled(self,True);
+      cxGridGelis.Enabled := True;
+      d1.Enabled := True;
+      K1.Enabled := True;
+      AKart1.Enabled := True;
+      T2.Enabled := True;
+      YatBilgileri1.Enabled := True;
+      Epikriz1.Enabled := True;
+      R1.Enabled := True;
+      N3.Enabled := True;
+      HastaRaporlar1.Enabled := True;
+      H1.Enabled := True;
+      U1.Enabled := True;
+      SeansKart1.Enabled := True;
+      T1.Enabled := True;
+      T3.Enabled := True;
+      MenucxYeni.Enabled := True;
+      H2.Enabled := True;
+      akipBul1.Enabled := True;
+      akipBilgisiOku1.Enabled := True;
+      SysTakipNoSGKHizmetSorgula1.Enabled := True;
+      H3.Enabled := True;
+   end
+    else enabled;
+
+   TcxImageComboKadir(FindComponent('sirketKod')).Enabled := cxGridGelis.Dataset.Eof;
+   if not inherited Init(Sender) then exit;
 
 
 end;
@@ -1386,9 +1482,10 @@ var
 
 begin
  _SaveKontrol := True;
-  USER_ID.Tag := 0;
+ // USER_ID.Tag := 0;
   //sirketKod.Tag := 0;
   PopupMenu1.Images := datalar.imag24png;
+
   Menu := PopupMenu1;
 
   ClientHeight := formYukseklik;
@@ -1431,8 +1528,12 @@ begin
    *)
 
   setDataString(self,'HUVIYETNO','',Kolon1,'dn',45);
-  setDataString(self,'TCKIMLIKNO','TC Kimlik No  ',Kolon1,'',130,True);
-  setDataString(self,'yupass','Yupas No  ',Kolon1,'',130,True);
+
+  setDataString(self,'TCKIMLIKNO','TC Kimlik No  ',Kolon1,'',130,True,'',False,0,'',ecNormal,'',ktRakam);
+  setDataString(self,'yupass','Yupas No  ',Kolon1,'',130,True,'',False,0,'',ecNormal,'',ktRakam);
+
+
+
   TdxLayoutGroup(FindComponent('dxLayupass')).Visible := False;
 
   setDataString(self,'HUVIYETTIPI','PasaportNo',Kolon1,'',130);
@@ -1456,9 +1557,22 @@ begin
   VatandasTip.Filter := 'AKTIF = 1';
   setDataStringKontrol(self,VatandasTip, 'VatandasTip','Vatandaþ Tipi  ',Kolon1,'',100);
 
+  (*
   UYRUK := ListeAcCreate('SKRS_ULKE_KODLARI','KODU,ADI','Kod,Ülke Adi',
                        '50,200','KODU','Ülke Kodlarý','',2);
   setDataStringB(self,'UYRUGU','Uyruk',Kolon1,'',50,UYRUK,false,nil,'ADI','',True,True);
+   *)
+
+  EGITIM := TcxImageComboKadir.Create(self);
+  EGITIM.Conn := Datalar.ADOConnection2;
+  EGITIM.TableName := 'SKRS_ULKE_KODLARI';
+  EGITIM.ValueField := 'MERNISKODU';
+  EGITIM.DisplayField := 'ADI';
+  EGITIM.BosOlamaz := True;
+  EGITIM.Filter := '';
+  OrtakEventAta(EGITIM);
+  setDataStringKontrol(self,EGITIM,'UYRUGU','Uyruk',kolon1,'',130);
+
 
   EGITIM := TcxImageComboKadir.Create(self);
   EGITIM.Conn := Datalar.ADOConnection2;
@@ -1572,6 +1686,8 @@ begin
 
   setDataStringKontrol(self,txtAktifPasifSebeb , 'PasifSebeb','',Kolon4,'',160);
   setDataStringKontrol(self,txtOlumNeden , 'OlumNedeni','',Kolon4,'',160);
+  setDataString(self,'olumNedeniDiger','Açýklama',Kolon4,'',250,True);
+
 
 
   muayenePeryot := TcxImageComboKadir.Create(self);
@@ -1587,6 +1703,7 @@ begin
   TdxLayoutGroup(FindComponent('dxLaolumYeri')).Visible := False;
   TdxLayoutGroup(FindComponent('dxLaAktifDegisTarih')).Visible := False;
   TdxLayoutGroup(FindComponent('dxLaPasifDegisTarih')).Visible := False;
+  TdxLayoutGroup(FindComponent('dxLaolumNedeniDiger')).Visible := False;
 
   Sirketlerx := TcxImageComboKadir.Create(self);
   Sirketlerx.Conn := Datalar.ADOConnection2;
@@ -1609,7 +1726,7 @@ begin
   setDataString(self,'MESLEKADI','Meslek Tanimi',Kolon1,'',200,false,'',False);
 
   setDataStringChk(self,'KVKK_Onay','',Kolon1,'',10,ctint,'Bilgilerim Paylaþýlmasýn');
-  setDataString(self,'KVKK_Paylas','Paylaþýlacak Kiþi',Kolon1,'',94,false,'',False);
+  setDataString(self,'KVKK_Paylas','Paylaþýlacak Kiþi',Kolon1,'',130,false,'',False);
 
 //  OrtakEventAta(meslekKod);
 
@@ -1639,7 +1756,17 @@ begin
   setDataStringKontrol(self,BASLANGIC, 'BASLANGIC','Ýlk Diyaliz Tarihi',Sayfa2_Kolon1,'',100);
 
   merkezdeBaslangic := TcxDateEditKadir.Create(self);
+  merkezdeBaslangic.ValueTip := tvDate;
   setDataStringKontrol(self,merkezdeBaslangic, 'merkezdeBaslangic','Merkezde Baþlama Tarihi',Sayfa2_Kolon1,'',100);
+
+
+  setDataStringC(self,'OncekiRRTYontem','Onceki RRT Yontemi',Sayfa2_Kolon1,'',100,'PD,TX,Yok');
+
+  merkezdeBaslangic := TcxDateEditKadir.Create(self);
+  merkezdeBaslangic.ValueTip := tvDate;
+  setDataStringKontrol(self,merkezdeBaslangic, 'TxSonrasiDiyalizTarihi','Tx Sonrasý D.Tarihi',Sayfa2_Kolon1,'',100);
+  TdxLayoutGroup(FindComponent('dxLaTxSonrasiDiyalizTarihi')).Visible := False;
+
 
   setDataStringKontrol(self,hastaTip , 'hastaTip','Hasta Tipi',Sayfa2_Kolon1,'',100);
   setDataStringKontrol(self,Tip , 'Tip','Diyaliz Tipi',Sayfa2_Kolon1,'',100);
@@ -1658,7 +1785,7 @@ begin
 
 
   setDataStringC(self,'seans','Seans',Sayfa2_Kolon2,'_s_',50,'1,2,3,4,5');
-  setDataString(self,'seansSuresi','Seans Süre',Sayfa2_Kolon2,'_s_',30);
+  setDataStringCurr(self,'seansSuresi','Seans Süre',Sayfa2_Kolon2,'_s_',30,'0',0);
   setDataStringCurr(self,'makinaNo','Makina',Sayfa2_Kolon2,'_s_',40,'0',0);
   setDataStringKontrol(self,seansGunleri , 'seansGunleri','Seans Günleri',Sayfa2_Kolon2,'',230);
 
@@ -1740,39 +1867,51 @@ begin
 procedure TfrmHastaKart.FormShow(Sender: TObject);
 begin
   inherited;
-  if varTostr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue) = '5'
+  (*
+  if (varTostr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue) = '5') and
+     (UserRight('Hasta Kartý', 'Ölen Hastada Deðiþiklik')) = False
   Then begin
-    Disabled(self,True);
-    _pasifSebeb_ := '5';
-    (*
-    d1.Enabled := True;
-    K1.Enabled := True;
-    AKart1.Enabled := True;
-    T2.Enabled := True;
-    YatBilgileri1.Enabled := True;
-    Epikriz1.Enabled := True;
-    R1.Enabled := True;
-    N3.Enabled := True;
-    HastaRaporlar1.Enabled := True;
-    H1.Enabled := True;
-    U1.Enabled := True;
-    SeansKart1.Enabled := True;
-    T1.Enabled := True;
-    T3.Enabled := True;
-    MenucxYeni.Enabled := True;
-    H2.Enabled := True;
-    akipBul1.Enabled := True;
-    akipBilgisiOku1.Enabled := True;
-    SysTakipNoSGKHizmetSorgula1.Enabled := True;
-    H3.Enabled := True;   *)
-   // PopupMenuEnabled(Self,PopupMenu1,False);
-    PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+
+        Disabled(self,True);
+        _pasifSebeb_ := '5';
+
+        PopupMenuEnabled(Self,PopupMenu1,False);
+        d1.Enabled := True;
+        K1.Enabled := True;
+        AKart1.Enabled := True;
+        T2.Enabled := True;
+        YatBilgileri1.Enabled := True;
+        Epikriz1.Enabled := True;
+        R1.Enabled := True;
+        N3.Enabled := True;
+        HastaRaporlar1.Enabled := True;
+        H1.Enabled := True;
+        U1.Enabled := True;
+        SeansKart1.Enabled := True;
+        T1.Enabled := True;
+        T3.Enabled := True;
+        MenucxYeni.Enabled := True;
+        H2.Enabled := True;
+        akipBul1.Enabled := True;
+        akipBilgisiOku1.Enabled := True;
+        SysTakipNoSGKHizmetSorgula1.Enabled := True;
+        H3.Enabled := True;
+
+        PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+
   end
   else
   begin
     _pasifSebeb_ := varToStr(TcxImageComboBox(FindComponent('PasifSebeb')).EditValue);
     PopupMenuEnabled(Self,PopupMenu1,True);
     PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+  end;
+     *)
+
+  if TcxCheckBox(FindComponent('KVKK_Onay')).Checked
+  then begin
+    TcxTextEdit(FindComponent('KVKK_Paylas')).Text := '';
+    TcxTextEdit(FindComponent('KVKK_Paylas')).Enabled := False;
   end;
 
 end;
@@ -2013,7 +2152,7 @@ procedure TfrmHastaKart.cxButtonCClick(Sender: TObject);
 var
  List : TListeAc;
  _L_ : ArrayListeSecimler;
- _name_, tel,msj,sysTakipNo,eNabizSonuc : string;
+ _name_, tel,msj,sysTakipNo,eNabizSonuc , QR  : string;
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
  TopluDataset : TDataSetKadir;
@@ -2049,6 +2188,8 @@ begin
     GirisFormRecord.F_sysTakipNo := cxGridGelis.Dataset.FieldByName('sysTakipNo').AsString;
     GirisFormRecord.F_firmaKod_ := DATALAR.AktifSirket;
     GirisFormRecord.F_PasifSebeb_ := sqlRun.FieldByName('PasifSebeb').AsString;
+
+    GirisFormRecord.F_Aktif_ := sqlRun.FieldByName('Aktif').AsString;
 
     GirisFormRecord.F_SeansBilgi.DiyalizorCinsi := sqlRun.FieldByName('DiyalizorCinsi').AsString;
     GirisFormRecord.F_SeansBilgi.DiyalizorTipi := sqlRun.FieldByName('DiyalizorTipi').AsString;
@@ -2184,9 +2325,7 @@ begin
           F._Foto_ := foto;
           if F <> nil then F.ShowModal;
        end;
- -26 : begin
-         EpikrizYaz(dosyaNo.Text,cxGridGelis.Dataset.FieldByName('gelisNo').AsString,false);
-       end;
+
  -27 : begin
          GelisAc;
        end;
@@ -2196,6 +2335,13 @@ begin
           tel := trim(StringReplace(StringReplace(StringReplace(tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
           SMSSend(tel,msj,_HastaAdSoyad_);
        end;
+ -128 : begin
+          tel := dosyaNoHastaTel(_dosyaNO_,TcxTextEdit(FindComponent('EV_TEL1')).Text);
+          tel := trim(StringReplace(StringReplace(StringReplace(tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+          WhatsappSend(datalar.WhatsappTelefonToken,tel,msj,_HastaAdSoyad_);
+       end;
+
+
  -29 : begin
             F := FormINIT(TagfrmRaporDetay,GirisFormRecord,ikEvet,'');
             F._Foto_ := foto;
@@ -2352,6 +2498,40 @@ begin
             F._Foto_ := foto;
             if F <> nil then F.ShowModal;
           //  IlacTedaviKarti(dosyaNo.Text,_gelisNo_,noktasizTarih(DATALAR.Bilgi.ProvizyonTarihi));
+       end;
+
+ -26 : begin
+         QR := 'Epikriz'+datalar.osgbKodu+','+datalar._database+','+datalar.AktifSirket+','+dosyaNo.EditText;
+         EpikrizYaz(dosyaNo.Text,cxGridGelis.Dataset.FieldByName('gelisNo').AsString,false,QR);
+       end;
+
+-500 : begin
+
+                    QR := 'Epikriz'+datalar.osgbKodu+','+datalar._database+','+datalar.AktifSirket+','+dosyaNo.EditText;
+                    if mrYes = ShowPopupForm('QR Epikriz Linkiniz',QREpikrizLinki,QR)
+                    Then Begin
+
+                    End;
+
+
+             // FotoEkle('');
+
+
+
+          //    QR := 'http://mavinokta-store.net:8080/m?token='+
+          //        EncodeString(EncodeString(EncodeString('mvnkt'))+#29+EncodeString(EncodeString(QR))+#29+EncodeString(EncodeString('YeM')));
+
+             // firmaKodDecode()
+
+         //     QRBarkod(QR,'C:\NoktaV3\QR\Epikriz\' + dosyaNo.EditText+'.jpg');
+
+             // QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\QR\' + dosyaNo.EditText+'.jpg');
+          //    TopluDataset.Dataset0 := sqlRun;
+         //     TopluDataset.Dataset1 := datalar.ADO_FOTO;
+         //     TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+         //     TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
+
+         //     PrintYap('PKB','Hasta Kart','',TopluDataset,kadirType.pTNone);
        end;
 
 

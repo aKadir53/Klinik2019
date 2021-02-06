@@ -67,6 +67,14 @@ var
 begin
   inherited;
     case TMenuItem(sender).Tag  of
+
+      -3 : begin
+            if mrYes = ShowMessageSkin('Konsultasyon Ýptal Edilecek , ','','','msg') then
+            begin
+              datalar.QueryExec('delete from KonsultasyonForm where id = ' + KonsList.Dataset.FieldByName('id').AsString);
+              KonsList.Dataset.Requery();
+            end;
+           end;
       -1 : begin
               TopluDataset.Dataset0 := KonsList.dataset;
               TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
@@ -199,7 +207,7 @@ begin
 //
    sql := 'select * from KonsultasyonForm Kf ' +
           ' join hastakart h on h.dosyaNo = Kf.dosyaNo ' +
-          ' join OSGB_MASTER.dbo.SNKlinikler K on K.Kodu = Kf.bolum ' +
+          ' left join OSGB_MASTER.dbo.SNKlinikler K on K.Kodu = Kf.bolum ' +
           ' where h.dosyano = ' + QuotedStr(_dosyaNo_) +
           ' and Tarih between ' + txtTopPanelTarih1.GetSQLValue + ' and ' + txtTopPanelTarih2.GetSQLValue;
    datalar.QuerySelect(KonsList.Dataset,sql);

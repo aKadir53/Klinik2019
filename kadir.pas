@@ -2,7 +2,7 @@ unit kadir;
 
 interface
 
-uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Vcl.Controls, Consts,
+uses Windows, Messages, system.SysUtils, Variants, Classes, Graphics, Vcl.Controls, Consts,
   Dialogs, ADODB, registry, ComCtrls, StdCtrls, db, ExtCtrls,comObj ,cxProgressBar,
   ShellApi, forms, data_modul, Grids,  Rio, SOAPHTTPClient,cxGridExportLink,
   xsbuiltIns,  Mask, Math, Printers,   zlib, StrUtils, Menus, SHDocVw,
@@ -14,7 +14,8 @@ uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Vcl.Controls, Con
   cxCheckListBox,cxGridCustomTableView, cxGridTableView, cxGridBandedTableView,cxGridDBBandedTableView, cxClasses,
   cxGroupBox, cxRadioGroup,cxGridLevel, cxGrid, cxCheckBox, cxImageComboBox, cxTextEdit, cxButtonEdit,
   cxCalendar,dxLayoutContainer, dxLayoutControl,cxPC, cxImage,superobject,DISWS,ekrtf,ekbasereport,
-  frxExportPDF ,CSGBService,IOUtils,DelphiZXingQRCode,cxMaskEdit,cxMemo;
+  frxExportPDF ,CSGBService,IOUtils,DelphiZXingQRCode,cxMaskEdit,cxMemo,idHash,IdHashMessageDigest,
+  frxClass;
 
 
  type
@@ -24,6 +25,10 @@ uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Vcl.Controls, Con
 
 function SMSGonder(tel,mesaj : string) : string;
 procedure SMSSend(tel : string; Msj : string = '';Kisi : string ='';dosyaNo : string = '');
+procedure WhatsappSend(token :string ; tel : string; Msj : string = '';Kisi : string ='';dosyaNo : string = '');
+
+function SendMesajGonderWhatsapp(token ,tel,mesaj : string) : string;
+
 function findMethod(dllHandle : Cardinal; methodname : string) : FARPROC;
 
 function WanIp(url : string = 'http://bot.whatismyipaddress.com') : string;
@@ -271,7 +276,7 @@ function TestKodToNormalDeger(kod, yas, cins: string; deger: double): Boolean;
 function SgKTipEslestirKod(kod: string): string;
 function DiyalizPaketiUygula(DosyaNo, GelisNo, sablonId: string): integer;
 procedure EpikrizYaz(DosyaNo, GelisNo : string ; DataSet : Tdataset = nil);overload;
-Procedure EpikrizYaz(DosyaNo, GelisNo: string; QR: Boolean);overload;
+Procedure EpikrizYaz(DosyaNo, GelisNo: string; QR: Boolean ; QRText : string = '');overload;
 procedure ImzaFoyleriYaz;
 procedure MenuIDRun(MenuId : integer);
 function sureKontrol: Boolean;
@@ -418,6 +423,7 @@ function IsNull (const s: String): Boolean;
 procedure LisansUzat;
 function SahaSaglikGozlemSil(const GozlemID: integer): Boolean;
 function KaliteYonetimPlanSil(const GozlemID: integer): Boolean;
+function ElHijyenSil(const GozlemID: integer): Boolean;
 function AnketSil(const ID: integer): Boolean;
 function VeritabaniAlaninaFotografYukle(const sTableName, sKeyField, sImageField, sKeyValue: String): Boolean;
 function VeritabaniAlanindanFotografYukle(const sTableName, sKeyField, sImageField, sKeyValue: String; var aImage: TcxImage): Boolean;
@@ -445,6 +451,7 @@ procedure PersonelTetkikIstemleri(tarih,tarih2 : string);
 procedure YeniRecete(islem: Integer ; _dosyaNo_,_gelisNo_,_MuayeneProtokolNo_ : string);
 function FirmaBilgileri(sirketKodu : string ; subeKodu  : string = '00') : TFirmaBilgi;
 function isgKurulEkibiMailBilgileri(id : string) : string;
+function isgKurulEkibiTelBilgileri(id : string) : string;
 function isgRDSEkibiMailBilgileri(id : string) : string;
 
 function mailGonder (alici , konu , mesaj : string ;  filename : string = '' ; displayName : string = ''): string;
@@ -460,7 +467,7 @@ function SifreGecerliMi (const sSifre: String; const pMinKarakter, pMinHarf, pMi
 
 procedure DokumanOku(DokumanID,rev,DokumanNo : string ; Open : Boolean = True);
 function OkunmayanDokumanVar(user : string) : Boolean;
-
+function OkunmayanOlayBildirimVar(user : string) : Boolean;
 
 procedure DokumanAc(Dataset : Tdataset;fieldName : string;fileName : string; Open : Boolean = True ; DokumanTip : string = 'rtf');
 
@@ -487,6 +494,11 @@ function EgitimHash(egitim : string): string;
 Function EgitimKodlari : String;
 procedure SetAnaFormFoto;
 Function myFileSize(filename : string) : integer;
+function FolderSize(Dir : string) : Double;
+
+
+procedure ChangeFAttrib(dsy:  String);
+procedure DelTree(StartDir: string);
 
 Procedure EgitimSorgulaCSGBCvpBilgiGuncelle(cvp : ArrayOfEgitimBilgisiCevap);
 Procedure EgitimKaydetCSGBCvpBilgiGuncelle(egitimId,msg,sorguNo : string);
@@ -512,6 +524,7 @@ procedure TakipListGetir(kullaniciAdi,sifre,sksrs,Tarih,uygulamaKodu : string);
 procedure ENabizMuayeneKayit(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 procedure ENabizHizmetKayit(HastaneRefNo,sysTakipNo : string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 procedure ENabizHizmetSil(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '');
+procedure ENabizVeriPaketiSil(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; VeriPaketi : string = '');
 procedure ENabizTetkikKayit(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 procedure ENabizRadyolojiKayit(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string);
 procedure ENabizSgkBildir(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
@@ -580,6 +593,9 @@ procedure ExceldenLabSonucYukle(t1,t2 : String ; progres : TcxProgressBar ; txtL
 function ComboYil(yil : integer = 2020 ; index : integer = 10) : TStringList;
 
 procedure MemoBosSatirSil(Memo : TcxMemo);
+
+function MD5(const fileName : string) : string;
+
 
 const
 //  LIB_DLL = 'D:\Projeler\VS\c#\EFatura\EFaturaDLL\ClassLibrary1\bin\Debug\EFaturaDLL.dll';
@@ -668,6 +684,63 @@ function findMethod(dllHandle : Cardinal; methodname : string) : FARPROC;
 begin
  Result := GetProcAddress(dllHandle,pchar(methodname));
 end;
+
+
+function SendMesajGonderWhatsapp(token ,tel,mesaj : string) : string;
+var
+  SendMesaj : TSendWhatsappText;
+  dllHandle: Cardinal;
+  _sonuc_ : pwidechar;
+  _mesaj_ : pwidechar;
+begin
+  _mesaj_ := '';
+  SendMesajGonderWhatsapp := '';
+  dllHandle := LoadLibrary(NoktaDll);
+  try
+    if dllHandle = 0 then exit;
+    @SendMesaj := findMethod(dllHandle, 'Mhatshapp');
+
+    if addr(SendMesaj) <> nil
+    then begin
+      _mesaj_ := pwidechar(ifThen(datalar.WhatsappMesajTagEkle = 'Evet',
+      'Gönderen :' + #13#10 + ' *'+datalar.AktifSirketAdi+'* ' + #13#10,'') + mesaj);
+
+      SendMesaj(token,tel,_mesaj_,_sonuc_);
+
+    SendMesajGonderWhatsapp := _sonuc_;
+    end
+    else
+
+    if not Assigned(SendMesaj)
+    then
+      raise Exception.Create(LIB_DLL + ' içersinde Mhatshapp Method bulunamadý!');
+  finally
+    FreeLibrary(dllHandle);
+  end;
+end;
+
+
+
+function MD5(const fileName : string) : string;
+ var
+   idmd5 : TIdHashMessageDigest5;
+   fs : TFileStream;
+   hash : T4x4LongWordRecord;
+
+ begin
+   idmd5 := TIdHashMessageDigest5.Create;
+   //fs := TFileStream.Create(fileName, fmOpenRead OR fmShareDenyWrite) ;
+   try
+     result := idmd5.HashStringAsHex ( fileName );
+
+     //idmd5.HashString(fileName);// AsHex(idmd5.HashValue(fs)) ;
+   finally
+   //  fs.Free;
+     idmd5.Free;
+   end;
+ end;
+
+
 
 procedure MemoBosSatirSil(Memo : TcxMemo);
 var
@@ -1504,8 +1577,8 @@ begin
 
   try
     QRCode.Data := Text;
-    QRCode.Encoding := qrAuto; //TQRCodeEncoding(cmbEncoding.ItemIndex);
-    QRCode.QuietZone := 4;//StrToIntDef(edtQuietZone.Text, 4);
+    QRCode.Encoding := qrISO88591; //TQRCodeEncoding(cmbEncoding.ItemIndex);
+    QRCode.QuietZone := 2;//StrToIntDef(edtQuietZone.Text, 4);
     QRCodeBitmap.SetSize(QRCode.Rows, QRCode.Columns);
 
     for Row := 0 to QRCode.Rows - 1 do
@@ -1889,6 +1962,35 @@ begin
     ado.Free;
   end;
 end;
+
+
+procedure ENabizVeriPaketiSil(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; VeriPaketi : string = '');
+var
+  sql ,msj : string;
+  ado : TADOQuery;
+begin
+  ado := TADOQuery.Create(nil);
+  ado.Connection := datalar.ADOConnection2;
+  try
+    if sysTakipNo <> '' then
+    begin
+       sql := 'select dbo.fn_VERIPKAETI_SIL(' + QuotedStr(sysTakipNo) + ',' + QuotedStr(VeriPaketi) + ')';
+       datalar.QuerySelect(ado,sql);
+       msj := ado.Fields[0].AsString;
+       if msj <> '' then
+       begin
+          MesajGonder(ado.Fields[0].AsString,'VeriPaketi Sil',HastaneRefNo,_Sonuc_);
+       end
+       else
+       _Sonuc_ := 'Mesaj Oluþturulamadý';
+    end
+  else
+  _Sonuc_ := 'SysTakipNo Boþ Olmaz';
+  finally
+    ado.Free;
+  end;
+end;
+
 
 procedure ENabizSgkBildir(HastaneRefNo,sysTakipNo: string ; var _Sonuc_ : string ; islemReferansNo : string = '' ; Tip : string = '');
 var
@@ -2743,7 +2845,7 @@ begin
               Width := strToint(KolonGenislik[i]);
 
               HeaderAlignmentHorz := taCenter;
-              HeaderAlignmentVert := vaCenter;
+              HeaderAlignmentVert := TcxAlignmentVert.vaCenter;
               PropertiesClassName := ifThen(KolonProperties[i]='nil','',KolonProperties[i]) ;
             //  Properties.Alignment.Horz := taCenter;
 
@@ -2921,6 +3023,80 @@ begin
   RESULT := dsize;//floattostr(dsize) + strsize;
 end;
 
+
+function FolderSize(Dir : string) : Double;
+var
+  SearchRec : TSearchRec;
+  Separator : string;
+  DirBytes : Double;
+begin
+ Result := 0;
+ if Copy(Dir,Length(Dir),1) = '\' then
+ Separator := ''
+  else
+   Separator := '\';
+
+  if FindFirst(Dir + Separator + '*.*',faAnyFile,SearchRec) = 0
+  then begin
+   if FileExists(Dir + Separator + SearchRec.Name)
+    then begin
+      DirBytes := DirBytes + SearchRec.Size;
+    end
+    else
+    if DirectoryExists(Dir + Separator+SearchRec.Name)
+    then begin
+      if (SearchRec.Name<> '.') and (SearchRec.Name <> '..')
+      then begin
+         FolderSize(Dir + Separator + SearchRec.Name) ;
+      end;
+    end;
+    while FindNext(SearchRec) = 0 do
+    begin
+     if FileExists(Dir + Separator + SearchRec.Name)
+     then begin
+       DirBytes := DirBytes + SearchRec.Size;
+     end
+     else if DirectoryExists(Dir + Separator + SearchRec.Name)
+     then begin
+        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..')
+        then begin
+         FolderSize(Dir + Separator + SearchRec.Name) ;
+        end;
+     end;
+    end;
+  end;
+  FindClose(SearchRec) ;
+  Result := DirBytes;
+end;
+
+procedure ChangeFAttrib(dsy:  String);
+begin
+ FileSetAttr(dsy, system.SysUtils.faReadOnly or system.SysUtils.faSysFile);
+end;
+
+procedure DelTree(StartDir: string);
+var
+  Search : TSearchRec;
+begin
+if Startdir[Length(Startdir)] <> '\' then
+  startdir := startdir + '\';
+  if FindFirst(startdir + '*.*', faAnyFile, Search) = 0 then
+  repeat
+    if (Search.Name[1] <> '.' ) then
+      if ((Search.Attr and faDirectory) > 0) then
+      begin
+        RmDir(StartDir + Search.Name);
+        ChangeFAttrib(StartDir + Search.Name);
+      end else
+      begin
+        DeleteFile(StartDir + Search.Name);
+        Application.ProcessMessages;
+      end;
+  until FindNext(Search) <> 0;
+  FindClose(Search);
+end;
+
+
 procedure SetAnaFormFoto;
 var
   g : TBitmap;
@@ -3056,6 +3232,9 @@ begin
 
 //  if UserRight('SKS', TControl(sender).Hint) = True
 //  then begin
+
+     item := StringReplace(StringReplace(item,'DropMenu','',[rfReplaceAll]),'ToolButton','',[rfReplaceAll]);
+
 
      userField :=
      StringReplace(StringReplace(item,'Durum','User',[rfReplaceAll]),'Onay','User',[rfReplaceAll]);
@@ -3673,6 +3852,42 @@ begin
 end;
 
 
+function OkunmayanOlayBildirimVar(user : string) : Boolean;
+var
+  ado : TADOQuery;
+  _List_ : TStringList;
+begin
+ OkunmayanOlayBildirimVar := False;
+ _List_ := TStringList.Create;
+ try
+    ado := datalar.QuerySelect(
+                        'select s.tanimi, o.* from OlayBildirim o ' +
+                        ' join SIRKETLER_TNM s on s.SirketKod = o.sirketKod ' +
+                        ' where gorulmeTarihi is null ');
+
+    if not ado.Eof
+    Then
+    begin
+      OkunmayanOlayBildirimVar := True;
+      datalar.MemDataOlayBildirimOku.Active := False;
+      datalar.MemDataOlayBildirimOku.Active := True;
+      while not ado.Eof do
+      begin
+         datalar.MemDataOlayBildirimOku.Append;
+         datalar.MemDataOlayBildirimOku.FieldByName('id').AsString := ado.FieldByName('id').AsString;
+         datalar.MemDataOlayBildirimOku.FieldByName('sirketKod').AsString := ado.FieldByName('tanimi').AsString;
+         datalar.MemDataOlayBildirimOku.FieldByName('aciklama').AsString := ado.FieldByName('aciklama').AsString;
+         datalar.MemDataOlayBildirimOku.FieldByName('Tarih').AsDateTime := ado.FieldByName('Tarih').AsDateTime;
+         datalar.MemDataOlayBildirimOku.post;
+         ado.next;
+      end;
+    end;
+  finally
+    ado.free;
+  end;
+
+end;
+
 procedure DokumanOku(DokumanID,rev,DokumanNo : string ; Open : Boolean = True);
 var
   Blob : TAdoBlobStream;
@@ -3785,7 +4000,7 @@ begin
       end;
 
       dosyaTip := ExtractFileExt(fielName);
-      dosyaTip := StringReplace(dosyaTip,'.','',[rfReplaceAll]);
+      dosyaTip := UpperCase(StringReplace(dosyaTip,'.','',[rfReplaceAll]));
       Dataset.Edit;
     try
       Blob := TADOBlobStream.Create(TBlobField(Dataset.FieldByName(field)),bmwrite);
@@ -4163,6 +4378,25 @@ begin
   end;
 
 end;
+
+function isgKurulEkibiTelBilgileri(id : string) : string;
+var
+  sql: string;
+  ado: TADOQuery;
+  Dataset : TDataset;
+begin
+  isgKurulEkibiTelBilgileri := '';
+//  ado := TADOQuery.Create(nil);
+  try
+//    ado.Connection := datalar.ADOConnection2;
+    sql := 'sp_isgKurulEkibiMailBilgileri ' +  QuotedStr(id);
+    isgKurulEkibiTelBilgileri := datalar.QuerySelect(sql).Fields[1].AsString;
+  finally
+//   ado.free;
+  end;
+
+end;
+
 
 function isgRDSEkibiMailBilgileri(id : string) : string;
 var
@@ -4798,6 +5032,23 @@ begin
   end;
 end;
 
+
+procedure WhatsappSend(token :string ; tel : string; Msj : string = '';Kisi : string ='';dosyaNo : string = '');
+begin
+  Application.CreateForm(TfrmSMS, frmSMS);
+  try
+    frmSMS.token := token;
+    frmSMS.tip := 'Whatsapp';
+    frmSMS.mesaj := Msj;
+    frmSMS.MobilTel := tel;
+    frmSMS.hasta := Kisi;
+    frmSMS.dosyaNo := dosyaNo;
+    frmSMS.ShowModal;
+  finally
+    freeandnil (frmSMS);
+  end;
+end;
+
 function SQLSelectToDataSet(Columns,Table,Where : string) : TADOQuery;
 var
   sql : string;
@@ -5265,11 +5516,14 @@ procedure PrintYapDokuman(raporKodu,caption,formId : string; Data: TDataSetKadir
 begin
   Application.CreateForm(TfrmRapor, frmRapor);
   try
+   // frmRapor.frxReport1.PreviewOptions.Buttons := [pbPrint, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbNavigator];
+
     frmRapor.raporDataDokuman(Data ,raporKodu,caption,formId,yazdirmaTipi,'',SayfaGizle);
 
     if yazdirmaTipi = pTNone
     then begin
       if Form <> nil then TGirisForm(Form).DurumGoster(False);
+//      frmRapor.frxReport1.PreviewOptions.Buttons := [pbPrint, pbLoad, pbSave, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbNavigator];
       frmRapor.ShowModal;
     end;
 
@@ -5733,44 +5987,67 @@ var
   TBB : TToolButton;
   i,r : integer;
 begin
-  for mi in Menu.Items do
-  begin
-    if (mi.Visible = True) then
-    begin
-        for i := 0 to TB.ButtonCount - 1 do
+  try
+      for mi in Menu.Items do
+      begin
+        if (mi.Visible = True) then
         begin
-          if mi.Tag = TB.Buttons[i].Tag
-          then begin
-            TB.Buttons[i].Enabled := mi.Enabled;
-            if mi.Count > 0
-            Then begin
-              for r := 0 to mi.count - 1 do
-              begin
-                for TBBDown in TB.Buttons[i].DropdownMenu.Items do
-                begin
-                   if mi[r].Tag = TBBDown.Tag then TBBDown.Enabled := mi[r].Enabled;
+            for i := 0 to TB.ButtonCount - 1 do
+            begin
+              if mi.Tag = TB.Buttons[i].Tag
+              then begin
+                TB.Buttons[i].Enabled := mi.Enabled;
+                if mi.Count > 0
+                Then begin
+                  for r := 0 to mi.count - 1 do
+                  begin
+                    for TBBDown in TB.Buttons[i].DropdownMenu.Items do
+                    begin
+                       if mi[r].Tag = TBBDown.Tag then TBBDown.Enabled := mi[r].Enabled;
+                    end;
+                  end;
+
                 end;
               end;
-
             end;
-          end;
         end;
-    end;
+      end;
+  except on e : exception do
+   begin
+      Showmessage(mi.Caption,'','','info');
+   end;
   end;
 end;
 
 
 procedure PopupMenuEnabled(AOwner : TComponent ; Menu : TPopupMenu ; Enableded : Boolean = True);
 var
-  mi : TMenuItem;
+  mi,misub : TMenuItem;
+  r , i: integer;
 begin
+
+  for mi in Menu.Items do
+  begin
+          if mi.count > 0 then mi.Enabled := True
+          else
+          mi.Enabled := Enableded;
+
+          for i := 0 to mi.count - 1 do
+          begin
+             mi.Items[i].Enabled := Enableded;
+
+          end;
+  end;
+
+ (*
   for mi in Menu.Items do
   begin
     if (mi.Visible = True) then
     begin
        mi.Enabled := Enableded;
-    end;
-  end;
+
+   end;
+  *)
 end;
 
 procedure PopupMenuToToolBar(AOwner : TForm ; TB : TToolbar ; Menu : TPopupMenu);
@@ -5826,7 +6103,9 @@ begin
        //   pmenu.Name := 'PopupDropMenu'+mi.Name;
           pmenu.ParentBiDiMode := True;
           pmenu.Images := menu.Images;
-          AOwner.PopupMenu := pmenu;
+
+       //   AOwner.PopupMenu := pmenu;
+
           for i := 0 to mi.count - 1 do
           begin
             if (mi.Items[i].Visible = True)
@@ -8063,9 +8342,9 @@ begin
 end;
 
 
-Procedure EpikrizYaz(DosyaNo, GelisNo: string; QR: Boolean);
+Procedure EpikrizYaz(DosyaNo, GelisNo: string; QR: Boolean ; QRText : string = '');
 var
-  sql: string;
+  sql , text : string;
   printT : TprintTip;
   TopluDataset : TDataSetKadir;
 begin
@@ -8108,6 +8387,20 @@ begin
   sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Kons')
     + ',' + GelisNo;
   TopluDataset.Dataset8 :=   datalar.QuerySelect(sql);
+
+  try
+    if DirectoryExists('C:\NoktaV3\MobilQR') = False
+    then
+      MkDir('C:\NoktaV3\MobilQR');
+    FotoEkle('');
+    text := 'http://mavinokta-store.net:8080/m?token='+
+    EncodeString(EncodeString(EncodeString('mvnkt'))+#29+EncodeString(EncodeString(QRText))+#29+EncodeString(EncodeString('YeM')));
+    text := StringReplace(text ,#$D#$A,'',[rfReplaceAll]);
+    QRBarkod(text,'C:\NoktaV3\MobilQR\' + DosyaNo +'.jpg');
+    QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\MobilQR\' + DosyaNo+'.jpg');
+    TopluDataset.Dataset10 := datalar.ADO_FOTO;
+  except
+  end;
 
   if QR = True then
   begin
@@ -13303,6 +13596,29 @@ begin
   end;
 end;
 
+
+function ElHijyenSil(const GozlemID: integer): Boolean;
+var
+  ado : TADOQuery;
+begin
+  ado := TADOQuery.Create(nil);
+  try
+    Result := False;
+    BeginTrans (DATALAR.ADOConnection2);
+    try
+      datalar.QueryExec (ado, 'delete from El_HijyenGozlemDetay where gozlem_id = ' + IntToStr (GozlemID));
+      datalar.QueryExec (ado, 'delete from EL_HijyenGozlem where id = ' + IntToStr (GozlemID));
+      Result := True;
+    finally
+      if Result then
+        CommitTrans (DATALAR.ADOConnection2)
+       else
+        RollbackTrans (DATALAR.ADOConnection2);
+    end;
+  finally
+    ado.Free;
+  end;
+end;
 
 
 function KaliteYonetimPlanSil(const GozlemID: integer): Boolean;

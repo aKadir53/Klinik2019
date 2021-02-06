@@ -519,7 +519,7 @@ var
   _tetkikSonuc_ : TenayENA.TetkikSonuc;
   KurumMNT : TenayENA.KurumBilgileri;
   I,s , testAdet , sonucAdet , j , x , Tc : integer;
-  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,_tc_ ,kayitTip: string;
+  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc,markerSonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,_tc_ ,kayitTip: string;
   ado : TADOQuery;
   t : boolean;
   Http : THTTPRIO;
@@ -625,54 +625,46 @@ begin
                       Then Begin
                          a := _tetkikSonuc_.Aciklama;
 
-                         _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,'Poz','POZ',[rfReplaceAll]);
-                         _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,'Neg','NEG',[rfReplaceAll]);
-                         _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,',','.',[rfReplaceAll]);
-                         _tetkikSonuc_.Aciklama := StringReplace(_tetkikSonuc_.Aciklama,'Neg','NEG',[rfReplaceAll]);
-                         _tetkikSonuc_.Aciklama := StringReplace(_tetkikSonuc_.Aciklama,'Poz','POZ',[rfReplaceAll]);
-
                          sonuc := _tetkikSonuc_.Sonuc;
-
-                         if (pos('NEG',_tetkikSonuc_.Sonuc) > 0)
-                         Then sonuc := '-1'
-                         Else
-                         if (pos('POZ',_tetkikSonuc_.Sonuc) > 0)
-                         Then sonuc := '1'
-                         Else
-                         if (pos('NEG',_tetkikSonuc_.Aciklama) > 0)
-                         Then sonuc := '-1'
-                         Else
-                         if (pos('POZ',_tetkikSonuc_.Aciklama) > 0)
-                         Then sonuc := '1'
-                         Else sonuc := _tetkikSonuc_.Sonuc;
 
                          if (testKod = '907440') or
                             (testKod = '906610') or
                             (testKod = '906630') or
                             (testKod = '906660')
                          Then Begin
-                            (*
-                            sonucA := trim(StringReplace(StringReplace(_tetkikSonuc_.Sonuc,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
-                            sonucA := trim(StringReplace(StringReplace(SonucA,'NEGatif','',[rfReplaceAll]),'POZitif','',[rfReplaceAll]));
-                            sonucA := trim(StringReplace(StringReplace(SonucA,'NEGATÝF','',[rfReplaceAll]),'POZÝTÝF','',[rfReplaceAll]));
-                            sonucA := trim(StringReplace(StringReplace(SonucA,'DÜÞÜK','',[rfReplaceAll]),'düþük','',[rfReplaceAll]));
-                            sonucA := trim(StringReplace(SonucA,'-','',[rfReplaceAll]));
-                             *)
-                            sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
-                                      ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
-                                      ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+                             _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,'Poz','POZ',[rfReplaceAll]);
+                             _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,'Neg','NEG',[rfReplaceAll]);
+                             _tetkikSonuc_.Sonuc := StringReplace(_tetkikSonuc_.Sonuc,',','.',[rfReplaceAll]);
+                             _tetkikSonuc_.Aciklama := StringReplace(_tetkikSonuc_.Aciklama,'Neg','NEG',[rfReplaceAll]);
+                             _tetkikSonuc_.Aciklama := StringReplace(_tetkikSonuc_.Aciklama,'Poz','POZ',[rfReplaceAll]);
 
-                             datalar.QueryExec(sql);
+                             sonuc := _tetkikSonuc_.Sonuc;
+                             markerSonuc := '0';
+                             if (pos('NEG',_tetkikSonuc_.Sonuc) > 0)
+                             Then markerSonuc := '-1'
+                             Else
+                             if (pos('POZ',_tetkikSonuc_.Sonuc) > 0)
+                             Then markerSonuc := '1'
+                             Else
+                             if (pos('NEG',_tetkikSonuc_.Aciklama) > 0)
+                             Then markerSonuc := '-1'
+                             Else
+                             if (pos('POZ',_tetkikSonuc_.Aciklama) > 0)
+                             Then markerSonuc := '1';
 
-                            sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(_tetkikSonuc_.Sonuc) +
-                                   ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
-                                   ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
-                            datalar.QueryExec(sql);
+                                 sql := 'update hareketler set Gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
+                                        ',islemAciklamasi = dbo.fn_gecerliKarakterRakam(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
+                                        ',MarkerGD = ' + QuotedStr(markerSonuc) +
+                                        ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
+                                        ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
+
+                                 datalar.QueryExec(sql);
+
                          End
                          else
                          begin
                             try
-                             sql := 'update hareketler set Gd = dbo.fn_gecersizKarakterHarf(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
+                             sql := 'update hareketler set Gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
                                       ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
                                       ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
 

@@ -87,7 +87,7 @@ var
   ado : TADOQuery;
   I ,TestAdet , x : integer;
   ss , dosyaNo, gelisNo, id,idC, ornekNo,ornekNoC, sm , _F_  , testKod , kod , _kod_ ,tc,
-  min , max , sonuc , sonucA ,sql ,kayitTip : string;
+  min , max , sonuc , markerSonuc, sonucA ,sql ,kayitTip : string;
   t : boolean;
   d1,d2 : TXSDateTime;
 
@@ -122,24 +122,27 @@ procedure sonucyaz(Cvp : C_GeneralResult);
                 //   HTSOCvp.Testler[x].Aciklama := StringReplace(HTSOCvp.Testler[x].Aciklama,'Neg','NEG',[rfReplaceAll]);
                 //   HTSOCvp.Testler[x].Aciklama := StringReplace(HTSOCvp.Testler[x].Aciklama,'Poz','POZ',[rfReplaceAll]);
 
+                   markerSonuc := '0';
                    if (pos('NEG',Cvp.Result_[j].LabResult[m].Result_Value) > 0)
-                   Then sonuc := '-1'
+                   Then markerSonuc := '-1'
                    Else
                    if (pos('POZ',Cvp.Result_[j].LabResult[m].Result_Value) > 0)
-                   Then sonuc := '1'
+                   Then markerSonuc := '1'
                    Else
                    if (pos('NEG',Cvp.Result_[j].LabResult[m].Result_Value) > 0)
-                   Then sonuc := '-1'
+                   Then markerSonuc := '-1'
                    Else
                    if (pos('POZ',Cvp.Result_[j].LabResult[m].Result_Value) > 0)
-                   Then sonuc := '1'
-                   Else sonuc := Cvp.Result_[j].LabResult[m].Result_Value;
+                   Then markerSonuc := '1';
+
+                   sonuc := Cvp.Result_[j].LabResult[m].Result_Value;
 
 
                    if Cvp.Result_[j].App_IO_Type = '0' then _F_ := 'G' else _F_ := 'C';
 
                   try
-                   sql := 'update hareketler set gd = ' + sonuc +
+                   sql := 'update hareketler set gd = dbo.fn_gecerliKarakterRakam(' + sonuc + ')' +
+                            ',MarkerGD = ' + QuotedStr(markerSonuc) +
                             ' where onay = 1 and code = ' + QuotedStr(Kod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
                             ' and gelisNO = ' + gelisNo + ' and Tip1 = ' + QuotedStr(_F_) ;
 

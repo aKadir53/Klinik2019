@@ -23,7 +23,7 @@ uses
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
   cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxImage,
-  cxImageComboBox, cxButtonEdit, cxColorComboBox, Vcl.ImgList;
+  cxImageComboBox, cxButtonEdit, cxColorComboBox, Vcl.ImgList, cxTimeEdit;
 
 type
   TfrmSirketSahaGozetim = class(TGirisForm)
@@ -138,6 +138,14 @@ type
     DofListesiColumn2: TcxGridDBBandedColumn;
     DofListesiColumn3: TcxGridDBBandedColumn;
     DofListesiColumn4: TcxGridDBBandedColumn;
+    F1: TMenuItem;
+    K1: TMenuItem;
+    K2: TMenuItem;
+    K3: TMenuItem;
+    D3: TMenuItem;
+    N1: TMenuItem;
+    SatirlarColumn1: TcxGridDBBandedColumn;
+    SatirlarColumn2: TcxGridDBBandedColumn;
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -231,6 +239,7 @@ begin
       i1.Visible := False;
       B1.Visible := False;
       D2.Visible := False;
+      F1.Visible := True;
     end
     else
     begin
@@ -239,7 +248,7 @@ begin
       i1.Visible := True;
       B1.Visible := True;
       D2.Visible := True;
-
+      F1.Visible := False;
     end;
     Menu := PopupMenu1;
     PopupMenuToToolBar(self,ToolBar1,Menu);
@@ -251,6 +260,7 @@ procedure TfrmSirketSahaGozetim.SirketlerPropertiesChange(Sender: TObject);
 var
   sube : string;
 begin
+(*
  sube := ' and IGU = ' + QuotedStr(datalar.IGU);
 
 
@@ -262,7 +272,7 @@ begin
  TcxImageComboKadir(FindComponent('hazirlayan')).TableName := SirketIGUToSQLStr(TcxImageComboKadir(FindComponent('sirketKod')).EditingValue);
  TcxImageComboKadir(FindComponent('hazirlayan')).Filter := '';
 
-
+  *)
 end;
 
 procedure TfrmSirketSahaGozetim.FaturaDetay;
@@ -271,15 +281,18 @@ var
 begin
 
     sql :=
-    'SELECT sgd.sirketSahaGozetimId, sgd.id, sgd.Tespitler, sgd.TespitTarihi, sgd.Image, sgd.DokumanTip, sgd.Bolum,'+
-                  ' rb.tanimi AS BolumTanimi,sgd.FaliyetKapamaTarihi,sgd.TakipSüresi,sgd.KapamaOnayi ,'+
+    'SELECT sgd.sirketSahaGozetimId, sgd.id, sgd.Tespitler, sgd.TespitTarihi, sgd.Image, sgd.DokumanTip, sgd.Bolum,sgd.Birim,'+
+                  ' rb.tanimi AS BolumTanimi,Br.tanimi AS BirimTanimi,sgd.FaliyetKapamaTarihi,sgd.TakipSüresi,sgd.KapamaOnayi ,'+
                   ' sgd.YapilacakFaliyetTuru, sft.tanimi AS FaaliyetTanimi, sgd.KokNeden, sgd.FaliyetPlan,'+
-                  ' sgd.UygulanacakFaliyetTarihi, sgd.BolumYetkilisi, sgd.Sonuc, sts.tanimi AS SonucTanimi, sgd.YapilanFaliyet'+
+                  ' sgd.UygulanacakFaliyetTarihi, sgd.BolumYetkilisi, sgd.Sonuc, sts.tanimi AS SonucTanimi, sgd.YapilanFaliyet ,' +
+                  ' sgd.DogrulamaYapan, sgd.KaliteSorumlusu, sgd.idd '+
     ' FROM dbo.SirketSahaGozetimDetay AS sgd LEFT OUTER JOIN '+
                     'dbo.RDS_RiskBolum AS rb ON rb.kod = sgd.Bolum LEFT OUTER JOIN  '+
+                    'dbo.Birimler as Br on Br.Kod = sgd.Birim LEFT OUTER JOIN ' +
                     'dbo.SahaGozetimFaaliyetTuru AS sft ON sft.kod = sgd.YapilacakFaliyetTuru LEFT OUTER JOIN '+
                     'dbo.SahaGozetimTakipTetkikSonuc AS sts ON sts.kod = sgd.Sonuc ' +
-         ' where sgd.sirketSahaGozetimId = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text);
+         ' where sgd.sirketSahaGozetimId = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text) +
+         ' order by TespitTarihi';
 
          SahaGozetimGrid.Dataset.Active := False;
          SahaGozetimGrid.Dataset.SQL.Text := sql;
@@ -297,6 +310,14 @@ end;
 procedure TfrmSirketSahaGozetim.cxKaydetClick(Sender: TObject);
 begin
   //SirketKodx.Text := datalar.AktifSirket; giriþ formuna eklendi.
+
+  if varToStr(TcxImageComboBox(FindComponent('sirketKod')).EditValue) = ''
+  Then begin
+    TcxImageComboBox(FindComponent('sirketKod')).EditValue := datalar.AktifSirket;
+  //  TcxImageComboBox(FindComponent('sirketKod')).SetFocus;
+ //   exit;
+  end;
+
   inherited;
 
   case TControl(sender).Tag  of
@@ -304,18 +325,14 @@ begin
          SahaGozetimGrid.Enabled := True;
         end;
     2 : begin
-           if datalar.IGU <> ''
-           then begin
-             TcxImageComboKadir(FindComponent('hazirlayan')).EditValue := datalar.IGU;
-             TcxImageComboKadir(FindComponent('hazirlayan')).Enabled := False;
-           end
-           else
-             TcxImageComboKadir(FindComponent('hazirlayan')).Enabled := True;
-
+          // TcxImageComboKadir(FindComponent('hazirlayan')).Enabled := True;
            TcxDateEditKadir(FindComponent('date_create')).EditValue := date;
+           TcxImageComboBox(FindComponent('sirketKod')).EditValue := datalar.AktifSirket;
+           TcxTextEdit(FindComponent('isveren')).Text := datalar.username;
            SahaGozetimGrid.Enabled := False;
            FaturaDetay;
         end;
+
   end;
 end;
 
@@ -333,6 +350,8 @@ begin
     Enabled;
     FaturaDetay;
 
+
+    (*
     if (TcxImageComboKadir(FindComponent('hazirlayan')).EditValue <>
        datalar.IGU) and
        TcxImageComboKadir(FindComponent('Onay')).EditValue = 1
@@ -342,7 +361,7 @@ begin
        Satirlar.OptionsData.Deleting := False;
 
        TcxImageComboKadir(FindComponent('SirketKod')).Enabled := False;
-       TcxTextEditKadir(FindComponent('hazirlayan')).Enabled := False;
+     //  TcxTextEditKadir(FindComponent('hazirlayan')).Enabled := False;
        TcxImageComboKadir(FindComponent('date_create')).Enabled := False;
        TcxImageComboKadir(FindComponent('isveren')).Enabled := False;
        TcxImageComboKadir(FindComponent('Onay')).Enabled := False;
@@ -355,12 +374,12 @@ begin
        Satirlar.OptionsData.Deleting := True;
 
        TcxImageComboKadir(FindComponent('SirketKod')).Enabled := True;
-       TcxTextEditKadir(FindComponent('hazirlayan')).Enabled := True;
+     //  TcxTextEditKadir(FindComponent('hazirlayan')).Enabled := True;
        TcxImageComboKadir(FindComponent('date_create')).Enabled := True;
        TcxImageComboKadir(FindComponent('isveren')).Enabled := True;
        TcxImageComboKadir(FindComponent('Onay')).Enabled := True;
     end;
-
+      *)
 
 end;
 
@@ -394,20 +413,31 @@ var
 procedure datawrite;
 begin
    Satirlar.DataController.DataSet.FieldByName('Tespitler').AsString := datalar.Risk.Onlemler;
+
    if datalar.Risk.SSGBolum <= 0 then
      Satirlar.DataController.DataSet.FieldByName('Bolum').Clear
     else
      Satirlar.DataController.DataSet.FieldByName('Bolum').AsInteger := datalar.Risk.SSGBolum;
+
+   if datalar.Risk.SSGBirim <= 0 then
+     Satirlar.DataController.DataSet.FieldByName('Birim').Clear
+    else
+     Satirlar.DataController.DataSet.FieldByName('Birim').AsInteger := datalar.Risk.SSGBirim;
+
+
+
    if datalar.Risk.SSGYapilacakFaliyetTuru <= 0 then
      Satirlar.DataController.DataSet.FieldByName('YapilacakFaliyetTuru').Clear
     else
      Satirlar.DataController.DataSet.FieldByName('YapilacakFaliyetTuru').AsInteger := datalar.Risk.SSGYapilacakFaliyetTuru;
    Satirlar.DataController.DataSet.FieldByName('KokNeden').AsString := datalar.Risk.SSGKokNeden;
    Satirlar.DataController.DataSet.FieldByName('FaliyetPlan').AsString := datalar.Risk.SSGFaliyetPlan;
+
    if IsNull (datalar.Risk.SSGUygulanacakFaliyetTarihi) then
      Satirlar.DataController.DataSet.FieldByName('UygulanacakFaliyetTarihi').Clear
     else
      Satirlar.DataController.DataSet.FieldByName('UygulanacakFaliyetTarihi').AsDateTime := StrToDate (datalar.Risk.SSGUygulanacakFaliyetTarihi);
+
    Satirlar.DataController.DataSet.FieldByName('BolumYetkilisi').AsString := datalar.Risk.SSGBolumYetkilisi;
 
    if datalar.Risk.SSGSonuc <= 0 then
@@ -434,7 +464,14 @@ begin
     else
      Satirlar.DataController.DataSet.FieldByName('KapamaOnayi').AsVariant := datalar.Risk.SSGKapamaOnayi;
 
+   if IsNull (datalar.Risk.SSGTespitTarihi) then
+     Satirlar.DataController.DataSet.FieldByName('TespitTarihi').Clear
+    else
      Satirlar.DataController.DataSet.FieldByName('TespitTarihi').AsDateTime := StrToDate (datalar.Risk.SSGTespitTarihi);
+
+
+   Satirlar.DataController.DataSet.FieldByName('DogrulamaYapan').AsString := datalar.Risk.SSGDogrulamaYapan;
+   Satirlar.DataController.DataSet.FieldByName('KaliteSorumlusu').AsString := datalar.Risk.SSGKaliteSorumlusu;
 
 
  //  Satirlar.DataController.DataSet.FieldByName('Image').AsVariant := datalar.Risk.Image;
@@ -467,16 +504,25 @@ begin
    end;
      *)
    datalar.Risk.Onlemler := Satirlar.DataController.DataSet.FieldByName('Tespitler').AsString;
-   datalar.Risk.SSGTespitTarihi := DateToStr (Satirlar.DataController.DataSet.FieldByName('TespitTarihi').AsDateTime);
+
+   if Satirlar.DataController.DataSet.FieldByName('TespitTarihi').IsNull then
+     datalar.Risk.SSGTespitTarihi := ''
+    else
+     datalar.Risk.SSGTespitTarihi := DateToStr (Satirlar.DataController.DataSet.FieldByName('TespitTarihi').AsDateTime);
+
 
    datalar.Risk.SSGBolum := Satirlar.DataController.DataSet.FieldByName('Bolum').AsInteger;
+   datalar.Risk.SSGBirim := Satirlar.DataController.DataSet.FieldByName('Birim').AsInteger;
+
    datalar.Risk.SSGYapilacakFaliyetTuru := Satirlar.DataController.DataSet.FieldByName('YapilacakFaliyetTuru').AsInteger;
    datalar.Risk.SSGKokNeden := Satirlar.DataController.DataSet.FieldByName('KokNeden').AsString;
    datalar.Risk.SSGFaliyetPlan := Satirlar.DataController.DataSet.FieldByName('FaliyetPlan').AsString;
+
    if Satirlar.DataController.DataSet.FieldByName('UygulanacakFaliyetTarihi').IsNull then
      datalar.Risk.SSGUygulanacakFaliyetTarihi := ''
     else
      datalar.Risk.SSGUygulanacakFaliyetTarihi := DateToStr (Satirlar.DataController.DataSet.FieldByName('UygulanacakFaliyetTarihi').AsDateTime);
+
    datalar.Risk.SSGBolumYetkilisi := Satirlar.DataController.DataSet.FieldByName('BolumYetkilisi').AsString;
    datalar.Risk.SSGSonuc := Satirlar.DataController.DataSet.FieldByName('Sonuc').AsInteger;
    datalar.Risk.SSGYapilanFaliyet := Satirlar.DataController.DataSet.FieldByName('YapilanFaliyet').AsString;
@@ -491,6 +537,11 @@ begin
     else
      datalar.Risk.SSGUygulanacakFaliyetTarihi := DateToStr (Satirlar.DataController.DataSet.FieldByName('TakipSüresi').AsDateTime);
   datalar.Risk.SSGKapamaOnayi := Satirlar.DataController.DataSet.FieldByName('KapamaOnayi').AsInteger;
+
+   datalar.Risk.SSGDogrulamaYapan := Satirlar.DataController.DataSet.FieldByName('DogrulamaYapan').AsString;
+   datalar.Risk.SSGKaliteSorumlusu := Satirlar.DataController.DataSet.FieldByName('KaliteSorumlusu').AsString;
+
+
 end;
 
 begin
@@ -502,6 +553,7 @@ begin
         datalar.Risk.RiskID := '';
         datalar.Risk.Onlemler := '';
         datalar.Risk.SSGBolum := -1;
+        datalar.Risk.SSGBirim := -1;
         datalar.Risk.SSGYapilacakFaliyetTuru := -1;
         datalar.Risk.SSGKokNeden := '';
         datalar.Risk.SSGFaliyetPlan := '';
@@ -679,17 +731,35 @@ begin
 
 
   case Tcontrol(sender).Tag of
+
+  1,2,-98,-99,-100
+        : begin
+           datalar.QuerySelect(DofList.Dataset,'exec sp_Dof_Filters ' +
+                          ' @sirketKod = ' + QuotedStr(datalar.aktifSirket) +
+                          ',@tarih1 = ' + TcxDateEditKadir(FindComponent('Tarih1')).GetSQLValue  +
+                          ',@tarih2 = '  + TcxDateEditKadir(FindComponent('Tarih2')).GetSQLValue +
+                          ',@tip = ' + intTostr(Tcontrol(sender).Tag));
+          end;
+
+
+
+
+
+
   -20 : begin
-          TopluDataset.Dataset0 := datalar.QuerySelect('select * from SirketSahaGozetim_view where id = ' +
+          TopluDataset.Dataset2 := datalar.QuerySelect('select * from SirketSahaGozetim_view where id = ' +
                                                         varTostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
           TopluDataset.Dataset1 := SahaGozetimGrid.Dataset;
+          TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
+          TopluDataset.Dataset4 := datalar.ADO_aktifSirket;
 
           PrintYap('DOF','Duzeltici Önleyici Faliyet','',TopluDataset);
         end;
   -21 : begin
-          TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+          TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
            TopluDataset.Dataset1 := datalar.ADO_aktifSirket;
           TopluDataset.Dataset2 := DofList.Dataset;
+
 
           PrintYap('DTL','Duzeltici Takip List','',TopluDataset);
         end;
@@ -710,7 +780,7 @@ begin
        DurumGoster;
        try
          if not dosya.Execute then Exit;
-         DokumanYukle(Satirlar.DataController.Dataset,'Image',dosya.FileName,2048);
+         DokumanYukle(Satirlar.DataController.Dataset,'Image',dosya.FileName);
        finally
          dosya.free;
          DurumGoster(False);
@@ -718,7 +788,7 @@ begin
 
       end;
   -25 : begin
-          DokumanAc(Satirlar.DataController.Dataset,'Image','DOFBelge_'+Satirlar.DataController.Dataset.FieldByName('id').AsString);
+          DokumanAc(Satirlar.DataController.Dataset,'Image','DOFBelge_'+Satirlar.DataController.Dataset.FieldByName('id').AsString,True,'');
         end;
   end;
 end;
@@ -734,8 +804,9 @@ begin
       datalar.QuerySelect(DofList.Dataset,
                           'select * from DOF_Takip_Listesi_View  ' +
                           ' where sirketKod = ' + QuotedStr(datalar.aktifSirket) +
-                          ' and date_create between ' + TcxDateEditKadir(FindComponent('Tarih1')).GetSQLValue  +
-                          ' and ' + TcxDateEditKadir(FindComponent('Tarih2')).GetSQLValue
+                          ' and TespitTarihi between ' + TcxDateEditKadir(FindComponent('Tarih1')).GetSQLValue  +
+                          ' and ' + TcxDateEditKadir(FindComponent('Tarih2')).GetSQLValue +
+                          ' order by TespitTarihi '
                           );
 
     end;
@@ -779,9 +850,9 @@ begin
 
 
 
-  Faturalar := ListeAcCreate('SirketSahaGozetim_view','id,sirketKod,sirketAdi,date_create,RDS_ID',
-                       'ID,ÞirketKodu,ÞirketAdý,Tarihi,GozlemID',
-                       '40,60,250,80,50','ID','Saha Gözetimleri',where,5,True);
+  Faturalar := ListeAcCreate('SirketSahaGozetim_view','id,sirketKod,sirketAdi,date_create,paylasilan,RDS_ID',
+                       'ID,ÞirketKodu,ÞirketAdý,Tarihi,Taným,GozlemID',
+                       '40,60,250,80,100,50','ID','Saha Gözetimleri',where,6,True);
 
   setDataStringB(self,'id','ID',Kolon1,'trh',50,Faturalar,True,nil,'','',True,True,-100);
   TcxButtonEditKadir(FindComponent('id')).Identity := True;
@@ -813,7 +884,7 @@ begin
   setDataStringKontrol(self,Subeler,'SubeKod','Þube',Kolon1,'trh',80,0,alNone,'');
     *)
 
-
+  (*
   IGU := TcxImageComboKadir.Create(self);
   IGU.Conn := Datalar.ADOConnection2;
   IGU.TableName := 'IGU';
@@ -822,9 +893,12 @@ begin
   IGU.BosOlamaz := False;
   IGU.Filter := ' durum = ''Aktif''';
   setDataStringKontrol(self,IGU,'hazirlayan','Ýþ Güvenlik Uzm',Kolon1,'trh',100,0,alNone,'');
+  *)
 
 //  setDataString(self,'hazirlayan','Hazýrlayan',Kolon1,'trh',80,false,'',True);
-  setDataString(self,'isveren','Isveren',Kolon1,'trh',120,false,'',False);
+  setDataString(self,'isveren','Tespit Yapan',Kolon1,'trh',100,false,'',False);
+
+  setDataString(self,'paylasilan','Taným',Kolon1,'trh',120,false,'',False);
 
   Onay := TcxImageComboKadir.Create(self);
   Onay.Conn := nil;
@@ -833,7 +907,7 @@ begin
   setDataStringKontrol(self,Onay,'Onay','Onay',kolon4,'trh',50);
   OrtakEventAta(Onay);
 
-  setDataString(self,'RDS_ID','Gözlem ID',Kolon1,'trh',50,false,'',False);
+  setDataStringCurr(self,'RDS_ID','Gözlem ID',Kolon1,'trh',50,'0',0);
 
 (*
   try

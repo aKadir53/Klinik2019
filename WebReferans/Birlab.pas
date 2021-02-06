@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,kadir,
   adodb,XMLIntf,XMLDoc,strutils,XSBuiltIns,SOAPHTTPClient, Rio, SuperObject,
-  Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask,
+  Dialogs, StdCtrls, Grids, BaseGrid,ComCtrls, Mask, IdTCPClient,
   data_modul,cxGridDBTableView, cxMemo,cxProgressBar,BirlabService;
 
 
@@ -209,7 +209,7 @@ procedure SonucAl(tarih1,tarih2 : TDate ; gridAktif : TcxGridDBTableView ; txtLo
 var
   Cvp : BirlabService.SorguCevap;
   Sql , VENPASS,VENUSER,KURUM_KODU , SERVIS_KODU ,ss ,sm, dosyaNo,tc,gelisNo,islemNo : string;
-  testKod ,test , min,max, _F_,sonuc ,sonucA ,id : string;
+  testKod ,test , min,max, _F_,sonuc , markersonuc ,sonucA ,id : string;
   ado : TADOQuery;
   x, testAdet : integer;
   t : boolean;
@@ -227,6 +227,7 @@ begin
    Response := TStringStream.Create;
    datalar.idHttp1.Request.UserName := VENUSER;
    datalar.idHttp1.Request.Password := VENPASS;
+   datalar.idHttp1.ConnectTimeout := 0;
    url := datalar._laburl;                    // 2016-02-01   2016-02-010
  try
    ado := TADOQuery.Create(nil);
@@ -271,6 +272,19 @@ begin
           url := datalar._laburl;
           getUrl := url + '/sonuc/'+tc+'/'+_tarih1+'/'+_tarih2+'';
 
+          (*
+          datalar.idHttp1.readTimeout := 15000;
+          (datalar.idHttp1 as TIdTCPClient).Connect(20000);
+          if datalar.idHttp1.connected then
+          begin
+            datalar.idHttp1.Get(getUrl, Response);
+          end
+          else
+          begin
+            raise Exception.Create('no connection was established')
+          end;
+           *)
+
           datalar.idHttp1.Get(getUrl, Response);
           Response.SaveToFile(datalar.HTTP_XMLDosya_Name + '.txt');
           try
@@ -307,46 +321,52 @@ begin
                    sonuc := StringReplace(sonuc,',','.',[rfReplaceAll]);
                    sonucA := JArr.O[r].S['SONUC'];
 
-                   if (pos('NEG',sonuc) > 0)
-                   Then sonuc := '-1'
-                   Else
-                   if (pos('POZ',sonuc) > 0)
-                   Then sonuc := '1'
-                   Else sonuc := sonuc;
-
                    if (testKod = '907440') or
                       (testKod = '906610') or
                       (testKod = '906630') or
                       (testKod = '906660')
                    Then Begin
                      try
+                      sonuc := sonuc;
                       sonuc := trim(StringReplace(StringReplace(sonuc,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
+                      markersonuc := '0';
+                      if (pos('NEG',sonuc) > 0)
+                      Then markersonuc := '-1'
+                      Else
+                      if (pos('POZ',sonuc) > 0)
+                      Then markersonuc := '1';
+
+                      (*
                       if strtofloat(sonuc) < strtofloat(max)
                       Then sonuc := '-1' else sonuc := '1';
-
-                      sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
+                      *)
+                      sql := 'update hareketler set gd  = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                             ',islemAciklamasi = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                             ',MarkerGD = ' + QuotedStr(markerSonuc) +
                              ' where onay = 1 and code = ' + QuotedStr(testKod) +
                              ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
                              ' and tip1 = ' + QuotedStr(_F_);
                       datalar.QueryExec(ado,sql);
                      except
                      end;
-                   End;
+                   End
+                   else
+                   begin
+                      try
+                       sql := 'update hareketler set gd = dbo.fn_gecerliKarakterRakam(' + sonuc + ')' +
+                                ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                                ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
+                                 ' and tip1 = ' + QuotedStr(_F_); ;
 
-                  try
-                   sql := 'update hareketler set gd = ' + sonuc +
-                            ' where onay = 1 and code = ' + QuotedStr(testKod) +
-                            ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
-                             ' and tip1 = ' + QuotedStr(_F_); ;
-
-                   datalar.QueryExec(ado,sql);
-                  except
-                     sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
-                            ' where onay = 1 and code = ' + QuotedStr(testKod) +
-                            ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
-                             ' and tip1 = ' + QuotedStr(_F_);
-                     datalar.QueryExec(ado,sql);
-                  end;
+                       datalar.QueryExec(ado,sql);
+                      except
+                         sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
+                                ' where onay = 1 and code = ' + QuotedStr(testKod) +
+                                ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
+                                 ' and tip1 = ' + QuotedStr(_F_);
+                         datalar.QueryExec(ado,sql);
+                      end;
+                   end;
                 End;
           end; // test for end
           ornekdurumyaz('Sonuç Alýndý',id,'');

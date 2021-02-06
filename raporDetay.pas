@@ -727,7 +727,9 @@ begin
 
    case TControl(sender).Tag of
   -1 : begin
-         AktifRaporYap;
+         if RaporGrid.Dataset.FieldByName('turu').AsString = '1'
+         then
+           AktifRaporYap;
        end;
   RaporMedulaKaydet,
   RaporMedulaSil,
@@ -1190,7 +1192,7 @@ begin
     datalar.RaporBilgisi.raporCaption :=  _HastaAdSoyad_;
 
 
-    if mrYes = ShowPopupForm('Rapor Duzenle',raporUpdate)
+    if mrYes = ShowPopupForm('Rapor Duzenle',raporUpdate,_pasifSebeb_)
     Then Begin
        Application.ProcessMessages;
           sql := 'update Raporlar set ' +

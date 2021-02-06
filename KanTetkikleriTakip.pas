@@ -93,7 +93,7 @@ begin
 
 
        sql := 'exec sp_HastaTetkikTakipPIVOT @dosyaNo = ' + QuotedStr(_dosyaNo_)  +
-                                           ',@yil = ' + QuotedStr(_provizyonTarihi_) + ',@f=1,@marker=''T''' +
+                                           ',@yil = ' + QuotedStr(_provizyonTarihi_) + ',@f=-1,@marker=''T''' +
                                            ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
        datalar.QuerySelect(ADO_Tele,sql);
 
@@ -129,7 +129,7 @@ end;
 procedure TfrmKanTetkikTakip.Yukle;
 begin
   inherited;
-  KanTetkikleri('','');
+//  KanTetkikleri('','');
 end;
 
 procedure TfrmKanTetkikTakip.KanTetkikleri(dosyaNo,Tarih : String);

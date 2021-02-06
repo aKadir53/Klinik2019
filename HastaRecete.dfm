@@ -1635,8 +1635,8 @@ object frmHastaRecete: TfrmHastaRecete
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 144
-    Top = 240
+    Left = 560
+    Top = 464
     object K1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'
@@ -1650,9 +1650,9 @@ object frmHastaRecete: TfrmHastaRecete
     end
     object ReeteSorgula1: TMenuItem
       Tag = -11
-      Caption = 'Re'#231'ete Sorgula'
+      Caption = 'Bitmemi'#351' '#304'la'#231' Sorgula'
       ImageIndex = 68
-      Visible = False
+      OnClick = cxButtonCClick
     end
     object S2: TMenuItem
       Tag = -31
@@ -1684,11 +1684,21 @@ object frmHastaRecete: TfrmHastaRecete
       ImageIndex = 28
       OnClick = cxButtonCClick
     end
-    object SMSGnder1: TMenuItem
-      Tag = -8
-      Caption = 'SMS G'#246'nder'
-      ImageIndex = 94
-      OnClick = cxButtonCClick
+    object M2: TMenuItem
+      Caption = 'Mesaj G'#246'nder'
+      ImageIndex = 144
+      object SMSGnder1: TMenuItem
+        Tag = -8
+        Caption = 'SMS G'#246'nder'
+        ImageIndex = 94
+        OnClick = cxButtonCClick
+      end
+      object W1: TMenuItem
+        Tag = -28
+        Caption = 'Whatsapp'
+        ImageIndex = 143
+        OnClick = cxButtonCClick
+      end
     end
     object HastannReeteleri1: TMenuItem
       Tag = -13
@@ -1863,9 +1873,10 @@ object frmHastaRecete: TfrmHastaRecete
     Top = 78
   end
   object PopupMenuEkleSil: TPopupMenu
+    Tag = 1
     Images = DATALAR.imag24png
-    Left = 56
-    Top = 240
+    Left = 736
+    Top = 464
     object E1: TMenuItem
       Tag = -1
       Caption = 'Ekle'
@@ -1880,8 +1891,9 @@ object frmHastaRecete: TfrmHastaRecete
     end
   end
   object GridIlaclarPopup: TPopupMenu
-    Left = 656
-    Top = 240
+    Tag = 1
+    Left = 664
+    Top = 464
     object L1: TMenuItem
       Tag = -21
       Caption = #304'la'#231' Listesinden Ekle'
@@ -1940,7 +1952,7 @@ object frmHastaRecete: TfrmHastaRecete
     Grup = False
     GrupCol = 0
     Left = 92
-    Top = 278
+    Top = 270
   end
   object Oku: TTimer
     Enabled = False
@@ -1952,7 +1964,7 @@ object frmHastaRecete: TfrmHastaRecete
   object ReceteSablonAc: TListeAc
     ListeBaslik = 'Recete '#350'ablonlar'#305
     TColcount = 2
-    TColsW = '30,100'
+    TColsW = '50,200'
     Table = 'ReceteSablon'
     Conn = DATALAR.ADOConnection2
     Filtercol = 1
@@ -1969,13 +1981,14 @@ object frmHastaRecete: TfrmHastaRecete
     BiriktirmeliSecim = False
     Grup = False
     GrupCol = 0
-    Left = 260
-    Top = 246
+    Left = 188
+    Top = 278
   end
   object PopupMenu2: TPopupMenu
+    Tag = 1
     OnPopup = PopupMenu2Popup
-    Left = 744
-    Top = 232
+    Left = 696
+    Top = 464
     object ilacR2: TMenuItem
       Tag = -40
       Caption = 'Re'#231'ete '#304'la'#231' A'#231#305'klama Ekle (Medula)'
@@ -2117,8 +2130,8 @@ object frmHastaRecete: TfrmHastaRecete
     Top = 488
   end
   object cxStyleRepository1: TcxStyleRepository
-    Left = 440
-    Top = 376
+    Left = 504
+    Top = 336
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svColor, svFont, svTextColor]
@@ -2162,9 +2175,10 @@ object frmHastaRecete: TfrmHastaRecete
     end
   end
   object PopupMenu3: TPopupMenu
+    Tag = 1
     Images = DATALAR.imag24png
-    Left = 584
-    Top = 344
+    Left = 632
+    Top = 464
     object MenuItem1: TMenuItem
       Tag = 9999
       Caption = 'Kapat'

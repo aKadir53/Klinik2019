@@ -19,7 +19,7 @@ uses
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue, AdvObj,
   cxTextEdit, cxMaskEdit, cxDropDownEdit, cxCalendar, cxGroupBox, cxRadioGroup,
   cxLabel, cxStyles, dxSkinscxPCPainter, cxCustomData, cxFilter, cxData,
-  cxDataStorage, DB, cxDBData, cxGridLevel, cxClasses, cxGridCustomView,
+  cxDataStorage, DB, cxDBData, cxGridLevel, cxClasses, cxGridCustomView,TransUtils,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid, KadirLabel,
   cxImageComboBox, cxPCdxBarPopupMenu, cxMemo, cxPC , Data_Modul,StrUtils;
 
@@ -244,7 +244,10 @@ inherited;
         end;
 
   -50 : begin
-          PasifYap;
+          if cxGrid2.Dataset.Eof then exit;
+          if mrYes = ShowMessageSkin('Hasta Pasif Yapýlýyor, Emin misiniz?','','','msg')
+          then
+            PasifYap;
         end;
 
   end;
@@ -348,8 +351,12 @@ begin
                        datalar.QuerySelect(sqlRun,sql);
                        gelis := sqlRun.fieldbyname('Gelis').AsString;
                        error := sqlRun.fieldbyname('error').AsString;
-                     except
+                     except on e : Exception do
+                      begin
+                       gelis := '-1';
+                       error := e.Message;
                        Datalar.ADOConnection2.RollbackTrans;
+                      end;
                      end;
 
 
@@ -390,16 +397,7 @@ begin
 
            end; // for end
 
-        //  datalar.ADOConnection2.CommitTrans;
-         // ShowMessageSkin('Geliþler Açýldý','','','info');
-         // Takipsor.Enabled := true;
-   //   except on e : Exception do
-   //     begin
-   //         datalar.ADOConnection2.RollbackTrans;
-   //         ShowMessageSkin('Hata Oluþtu : ' + e.Message,'','','info');
-            //exit;
-  //      end;
-   //   end;
+
 
   finally
     DurumGoster(False);
@@ -413,6 +411,7 @@ procedure TfrmTopluGelis.KanAlimTarihiSet;
 var
   x : integer;
   gelis , sonuc ,sql : string;
+  b : boolean;
 begin
 
   Takipsor.Enabled := false;
@@ -425,26 +424,32 @@ begin
 
            setData(x);
 
-           sql := 'update hareketler set kanalindimi = 0 ' +
-            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tip = ''S'' '
-                  +
+           b := False;
+           BeginTrans (datalar.ADOConnection2);
+           try
+             sql := 'update hareketler set kanalindimi = 0 ' +
+                    ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tip = ''S'' ';
+             datalar.QueryExec(sql);
 
-                 // ' update hareketler set kanalindimi = 1 ' +
-            	 //		' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD', strTodatetime(kanAlimTarihi))) + ' and Tip = ''S'' '
-                  ' exec sp_TetkikTarihDoktorDegistir ' +
-                  '@dosyaNo = ' + QuotedStr(dosyaNo) + ',' +
-                  '@gelisNo = ' + gelisNo + ',' +
-                  '@tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD', strTodatetime(kanAlimTarihi)))
-                  +
-                  ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(FormatDateTime('YYYYMMDD HH:NN', strTodatetime(kanAlimTarihi))) +
-               //   ' from hasta_gelisler g ' +
-               //   ' join hastakart hk on hk.dosyaNO = g.dosyaNo ' +
-              //    ' dbo.KanAlimTarihi(hk.SeansGunleri,' + txtSeansNo.Text + ',' + QuotedStr(tarih(kanAlimTarihi))  + ',hk.seans)' +
+             sql := ' exec sp_TetkikTarihDoktorDegistir ' +
+                    '@dosyaNo = ' + QuotedStr(dosyaNo) + ',' +
+                    '@gelisNo = ' + gelisNo + ',' +
+                    '@tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD', strTodatetime(kanAlimTarihi)));
+             datalar.QueryExec(sql);
 
-            			' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
+             sql := 'update hareketler set kanalindimi = 1 ' +
+                    ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo + ' and Tip = ''S'' and ' +
+                    ' tarih = ' + QuotedStr(FormatDateTime('YYYYMMDD', strTodatetime(kanAlimTarihi)));
+             datalar.QueryExec(sql);
 
-
-           datalar.QueryExec(sql);
+             sql := ' update hasta_gelisler set KanAlimZamani =  ' +  QuotedStr(FormatDateTime('YYYYMMDD HH:NN', strTodatetime(kanAlimTarihi))) +
+                    ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
+             datalar.QueryExec(sql);
+             b := True;
+           finally
+               if b then CommitTrans (datalar.ADOConnection2)
+                    else RollbackTrans (datalar.ADOConnection2);
+           end;
        end;
 
        ShowMessageSkin('Kan Alým Tarihleri Ayarlandý ','','','info');
@@ -1054,6 +1059,7 @@ var
   sql,dosyaNo : string;
   satir : integer;
 begin
+   if Liste.Controller.SelectedRowCount = 0 then exit;
    satir := Liste.Controller.SelectedRows[0].RecordIndex;
    dosyaNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
    datalar.QueryExec('update hastaKart set aktif = 0 where dosyaNO = ' + QuotedStr(dosyaNo));
@@ -1154,6 +1160,8 @@ var
  r ,satir : integer;
  Form : TGirisForm;
 begin
+   if cxGrid2.Dataset.Eof then exit;
+   if Liste.Controller.SelectedRowCount = 0 then exit;
    satir := Liste.Controller.SelectedRows[0].RecordIndex;
    dosyaNo := varTostr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
 

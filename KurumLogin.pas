@@ -49,6 +49,7 @@ type
     DataSource2: TDataSource;
     ADO_WebServisErisim_Ortak: TADOQuery;
     Mavi: TcxStyle;
+    N1: TMenuItem;
     procedure sBitBtn1Click(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -316,7 +317,21 @@ end;
 procedure TfrmKurumBilgi.cxButtonCClick(Sender: TObject);
 begin
    inherited;
-   SifreBilgisiDegis(Tcontrol(sender).Tag);
+
+   case TMenuItem(sender).Tag of
+
+   -3 : begin
+          if mrYes = ShowPopupForm('Medula Þifre Geçmiþi',MedulaSifreGecmisi,'')
+          Then Begin
+
+
+          End;
+        end;
+     else
+     SifreBilgisiDegis(Tcontrol(sender).Tag);
+   end;
+
+
 end;
 
 procedure TfrmKurumBilgi.SifreBilgisiDegis(Tag : integer);

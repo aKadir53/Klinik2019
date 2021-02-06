@@ -97,7 +97,7 @@ var
   Cvp : OrnekNoyaGoreSorgulaResponse;
   i   : integer;
   p : TPoint;
-  dosyaNo,gelisNo,kayitTip,sql,GC,ss,ornekNo,id,_F_,testKod,min,max,sonuc,sonucA : string;
+  dosyaNo,gelisNo,kayitTip,sql,GC,ss,ornekNo,id,_F_,testKod,min,max,sonuc,sonucA,markersonuc : string;
   ado : TADOQuery;
   t : boolean;
 
@@ -127,21 +127,12 @@ begin
               (testKod = '906630') or
               (testKod = '906660')
            Then Begin
-
+              markersonuc := '0';
               if (pos('NEG',Cvp.tetkikSonuc[x].Deger) > 0)
-              Then sonuc := '-1'
+              Then markersonuc := '-1'
               Else
               if (pos('POZ',Cvp.tetkikSonuc[x].Deger) > 0)
-              Then sonuc := '1'
-              Else sonuc := Cvp.tetkikSonuc[x].Deger;
-
-              sonucA := Cvp.tetkikSonuc[x].Deger;
-              sonucA := trim(StringReplace(sonucA,'(','',[rfReplaceAll]));
-              sonucA := trim(StringReplace(sonucA,')','',[rfReplaceAll]));
-              sonucA := trim(StringReplace(sonucA,'NEGATÝF','',[rfReplaceAll]));
-              sonucA := trim(StringReplace(sonucA,'POZÝTÝF','',[rfReplaceAll]));
-              sonucA := trim(StringReplace(sonucA,'-','',[rfReplaceAll]));
-              sonucA := trim(StringReplace(sonucA,'_','',[rfReplaceAll]));
+              Then markersonuc := '1';
 
               (*
               try
@@ -150,14 +141,15 @@ begin
               except end;
               *)
                 try
-                  sql :=  'update hareketler set gd = ' + sonuc +
-                          ',islemAciklamasi  = ' + QuotedStr(sonucA) +
+                  sql :=  'update hareketler set gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                          ',islemAciklamasi  = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                          ',MarkerGD = ' + QuotedStr(markerSonuc) +
                           ' where onay = 1 and code = ' + QuotedStr(testKod) +
                           ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
                           ' and Tip1 = ' + QuotedStr(_F_);
                   datalar.QueryExec(ado,sql);
                 except
-                  sql :=  'update hareketler set islemAciklamasi  = ' + QuotedStr(sonucA) +
+                  sql :=  'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
                           ' where onay = 1 and code = ' + QuotedStr(testKod) +
                           ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo +
                           ' and Tip1 = ' + QuotedStr(_F_);
@@ -167,7 +159,6 @@ begin
            End
            Else
            begin
-
 
               try
                sql := 'update hareketler set gd = ' + sonuc +

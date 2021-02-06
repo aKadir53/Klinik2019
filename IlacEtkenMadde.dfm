@@ -758,6 +758,10 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
           Font.Style = []
           ParentFont = False
           TabOrder = 0
+          ExplicitLeft = 2
+          ExplicitTop = 28
+          ExplicitWidth = 894
+          ExplicitHeight = 520
           object ilacList: TcxGridDBTableView
             Navigator.Buttons.First.Visible = True
             Navigator.Buttons.PriorPage.Visible = True
@@ -883,6 +887,14 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
               HeaderAlignmentVert = vaCenter
               Width = 49
             end
+            object ilacListColumn7: TcxGridDBColumn
+              DataBinding.FieldName = 'ICD'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
+              HeaderAlignmentHorz = taCenter
+              HeaderAlignmentVert = vaCenter
+            end
           end
           object cxGridLevel3: TcxGridLevel
             GridView = ilacList
@@ -925,6 +937,7 @@ object frmIlacEtkenMaddeSutKural: TfrmIlacEtkenMaddeSutKural
             Style.Color = 8454143
             TabOrder = 1
             OnKeyDown = Edit1KeyDown
+            ExplicitWidth = 890
             Width = 888
           end
         end

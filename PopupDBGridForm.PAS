@@ -473,7 +473,7 @@ begin
     begin
       txtTable.Visible := True;
       txtTable.Conn := Datalar.ADOConnection2;
-      txtTable.TableName := 'PopupDBGridFormTabloTanim';
+      txtTable.TableName := 'OSGB_MASTER.dbo.PopupDBGridFormTabloTanim';
       txtTable.ValueField := 'id';
       txtTable.DisplayField := 'tanimi';
       txtTable.Filter := ' aktif = 1';
@@ -504,7 +504,7 @@ begin
                  begin
                     ClientWidth := 400;
                     txtTable.Conn := Datalar.ADOConnection2;
-                    txtTable.TableName := 'PopupDBGridFormTabloTanim';
+                    txtTable.TableName := 'OSGB_MASTER.dbo.PopupDBGridFormTabloTanim';
                     txtTable.ValueField := 'id';
                     txtTable.DisplayField := 'tanimi';
                     OrtakEventAta(txtTable);
@@ -524,7 +524,7 @@ TagfrmCalisanGeriBildirimAnketSoruTanim
                  begin
                     ClientWidth := 400;
                     txtTable.Conn := Datalar.ADOConnection2;
-                    txtTable.TableName := 'PopupDBGridFormTabloTanim';
+                    txtTable.TableName := 'OSGB_MASTER.dbo.PopupDBGridFormTabloTanim';
                     txtTable.ValueField := 'id';
                     txtTable.DisplayField := 'tanimi';
                     OrtakEventAta(txtTable);
@@ -541,7 +541,7 @@ TagfrmSahaSaglikGozetimTanim
                      :
                  begin
                     txtTable.Conn := Datalar.ADOConnection2;
-                    txtTable.TableName := 'PopupDBGridFormTabloTanim';
+                    txtTable.TableName := 'OSGB_MASTER.dbo.PopupDBGridFormTabloTanim';
                     txtTable.ValueField := 'id';
                     txtTable.DisplayField := 'tanimi';
                     OrtakEventAta(txtTable);
@@ -558,7 +558,7 @@ TagfrmISGKurulToplantiTanim
                  begin
                     ClientWidth := 400;
                     txtTable.Conn := Datalar.ADOConnection2;
-                    txtTable.TableName := 'PopupDBGridFormTabloTanim';
+                    txtTable.TableName := 'OSGB_MASTER.dbo.PopupDBGridFormTabloTanim';
                     txtTable.ValueField := 'id';
                     txtTable.DisplayField := 'tanimi';
                     OrtakEventAta(txtTable);
@@ -1146,7 +1146,7 @@ begin
    ado := TADOQuery.Create(nil);
   try
     ado.Connection := datalar.ADOConnection2;
-    sql := 'select * from PopupDBGridFormTabloTanim where id = ' + varToStr(txtTable.EditingValue) +
+    sql := 'select * from OSGB_MASTER.dbo.PopupDBGridFormTabloTanim where id = ' + varToStr(txtTable.EditingValue) +
            ' and aktif = 1';
     datalar.QuerySelect(ado,sql);
 

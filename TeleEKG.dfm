@@ -274,6 +274,7 @@ object frmTeleEKG: TfrmTeleEKG
       Tag = 9999
       Caption = 'Kapat'
       ImageIndex = 18
+      Visible = False
       OnClick = cxKaydetClick
     end
     object Y1: TMenuItem

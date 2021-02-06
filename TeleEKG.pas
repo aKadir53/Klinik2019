@@ -92,6 +92,9 @@ var
   sql,dosyaNo,gelisNo : string;
   x : integer;
 begin
+    if ADO_SQL.Eof then exit;
+
+
     datalar.TeleEkg.Tarih := ADO_SQL.FieldByName('TARIH').AsDateTime;
     datalar.TeleEkg.ack := ADO_SQL.FieldByName('sonuc').AsString;
     datalar.TeleEkg.code := ADO_SQL.FieldByName('code').AsString;

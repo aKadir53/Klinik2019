@@ -91,6 +91,11 @@ type
     R2: TMenuItem;
     R3: TMenuItem;
     D4: TMenuItem;
+    D5: TMenuItem;
+    D6: TMenuItem;
+    D7: TMenuItem;
+    gridDokumanlarColumn4: TcxGridDBColumn;
+    D8: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnListClick(Sender: TObject);
@@ -112,6 +117,7 @@ type
     procedure TopPanelButonClick(Sender: TObject);
     procedure EkUDFList1Functions0Calculate(Sender: TObject; Args: TEkUDFArgs;
       ArgCount: Integer; UDFResult: TObject);
+    procedure D5Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -123,7 +129,7 @@ var
   frmSKS_Dokumanlar: TfrmSKS_Dokumanlar;
   KirilimStatus : integer;
 implementation
-     uses yeniDokuman,
+     uses SKS_yeniDokuman, //yeniDokuman,
           rapor;
           //DokumanDurumListesi;
 {$R *.dfm}
@@ -149,12 +155,14 @@ begin
      gridDokumanlarColumn1.GroupIndex := -1;
      KapsamAdi.GroupIndex := -1;
      turAdi.GroupIndex := -1;
+     gridDokumanlar.OptionsSelection.MultiSelect := True;
   end
   else
   begin
      gridDokumanlarColumn1.GroupIndex := 0;
      KapsamAdi.GroupIndex := 1;
      turAdi.GroupIndex := 2;
+     gridDokumanlar.OptionsSelection.MultiSelect := False;
   end;
 
 
@@ -293,11 +301,32 @@ var
  Form : TGirisForm;
  aTabSheet : TcxTabSheet;
  bTamam : Boolean;
+ kilit : string;
+
 begin
+
+    if UserRight('SKS','Döküman Düzenle') = False
+    then begin
+      ShowMessageSkin('Döküman Düzenleme Yetkiniz Yok','','','info');
+      exit;
+    end;
+
     bTamam := False;
     try
      Form := FormINIT(TagfrmSKS_YeniDokuman,self,Ado_Dokumanlar.FieldByName('id').AsString,nil);
      bTamam := Form <> nil;
+
+     kilit := varToStr(gridDokumanlar.DataController.GetValue(
+     gridDokumanlar.Controller.SelectedRows[0].RecordIndex,
+     gridDokumanlar.DataController.GetItemByFieldName('kilit').Index));
+
+     TfrmSKS_YeniDokuman(Form).kilit := strTOint(ifThen(kilit = '','0',kilit));
+
+     TfrmSKS_YeniDokuman(Form).cxTab.Tabs[0].Caption :=
+        gridDokumanlar.DataController.GetValue(
+     gridDokumanlar.Controller.SelectedRows[0].RecordIndex,
+     gridDokumanlar.DataController.GetItemByFieldName('dokumanNo').Index);
+
      if bTamam then Form.ShowModal;
      Ado_Dokumanlar.Requery;
     finally
@@ -322,6 +351,21 @@ begin
 
 //  txtTopPanelTarih2.Date := ayliktarih(date,t2);
 //  txtTopPanelTarih1.Date := t2;
+
+
+  if datalar.DokumanYuklesin = 1
+  then begin
+   D5.Visible := True;
+   //D8.Visible := True;
+  end
+  else
+  begin
+    D5.Visible := False;
+    //D8.Visible := False;
+  end;
+
+
+
 
   Result := True;
 end;
@@ -629,8 +673,9 @@ begin
                  sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
                       ' join SKS_DokumanKapsamlari DK on DK.kod = D.Kapsam ' +
                       ' join SKS_DokumanTurleri DT on DT.kod = D.tur ' +
-                      ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id'+ // and DR.aktif = 1' +
-                      ' where D.id = ' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('id').AsString;
+                      ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id and DR.sirketKod = ' + QuotedStr(datalar.AktifSirket) + // and DR.aktif = 1' +
+                      ' where D.id = ' + gridDokumanlar.DataController.DataSource.dataset.FieldByName('id').AsString +
+                      ' and D.sirketKod = ' + QuotedStr(datalar.AktifSirket) ;
                  TopluDataset.Dataset2 := datalar.QuerySelect(sql);
 
 
@@ -668,13 +713,13 @@ begin
               if Ado_Dokumanlar.FieldByName('rev').AsString = ''
               then begin
                  tableName := 'SKS_Dokumanlar';
-                 where := ' id = ' + Ado_Dokumanlar.FieldByName('id').AsString;
+                 where := ' id = ' + Ado_Dokumanlar.FieldByName('id').AsString + ' and sirketKod = ' + QuotedStr(datalar.AktifSirket);
               end
               else
               begin
                  rev := Ado_Dokumanlar.FieldByName('rev').AsString;
                  tableName := 'SKS_DokumanlarRev';
-                 where := ' dokumanid = ' + Ado_Dokumanlar.FieldByName('id').AsString + ' and rev = ' + rev;
+                 where := ' dokumanid = ' + Ado_Dokumanlar.FieldByName('id').AsString + ' and rev = ' + rev + ' and sirketKod = ' + QuotedStr(datalar.AktifSirket);
               end;
 
               try
@@ -728,6 +773,120 @@ begin
   end;
 
 end;
+
+end;
+
+procedure TfrmSKS_Dokumanlar.D5Click(Sender: TObject);
+var
+  sql , dokumanNo , lar , _kilit_: string;
+  x ,satir , kilit  : integer;
+begin
+  inherited;
+
+  case TMenuItem(sender).Tag of
+   500,501 : begin
+                 DurumGoster(True,True,'Ýþlem Yapýlýyor, Lütfen Bekleyiniz...');
+                 try
+                       pbar.Properties.Max := gridDokumanlar.Controller.SelectedRowCount;
+                       pbar.Position := 0;
+
+                       kilit := TMenuItem(sender).Tag - 500;
+
+                       for x := 0 to gridDokumanlar.Controller.SelectedRowCount - 1 do
+                       begin
+                         satir := gridDokumanlar.Controller.SelectedRows[x].RecordIndex;
+                         dokumanNo := gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('dokumanNo').Index);
+
+
+                         sql := 'update SKS_Dokumanlar ' +
+                                 ' set Kilit =  ' + intToStr(kilit) +
+                                 ' where sirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and DokumanNo = ' + QuotedStr(dokumanNo);
+                         datalar.QueryExec(sql);
+                         Ado_Dokumanlar.Requery();
+                         Application.ProcessMessages;
+                         pbar.Position := pbar.Position + 1;
+
+                       end;
+                       ShowMessageSkin('Ýþlem Yapýldý','','','info');
+
+                 finally
+                   DurumGoster(False);
+                 end;
+         end;
+
+   502 : begin
+          if mrYes = ShowMessageSkin('Seçilen Dökümanlar','Nokta Sunucusundan Yüklenecek','Döküman Sizdeki döküman üzerine yazýlacak , Eminmisiniz','msg')
+          then begin
+             DurumGoster(True,True,'Döküman Yükleme Yapýlýyor, Lütfen Bekleyiniz...');
+             try
+                   pbar.Properties.Max := gridDokumanlar.Controller.SelectedRowCount;
+                   pbar.Position := 0;
+
+                   for x := 0 to gridDokumanlar.Controller.SelectedRowCount - 1 do
+                   begin
+                     satir := gridDokumanlar.Controller.SelectedRows[x].RecordIndex;
+                     dokumanNo := gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('dokumanNo').Index);
+                     _kilit_ := varTostr(gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('kilit').Index));
+
+                     if (_kilit_ = '0') or (_kilit_ = '')
+                     then begin
+
+                       sql := ' exec sp_DokumanAndRaporDizaynAl @dokumanNos = ' + QuotedStr(dokumanNo);
+                       //@sirketKodu = ' +  QuotedStr(datalar.AktifSirket) +
+                       //                                        ',@dokumanNo = ' + QuotedStr(dokumanNo);
+                       datalar.QueryExec(sql);
+                     end;
+
+                     Application.ProcessMessages;
+                     pbar.Position := pbar.Position + 1;
+
+                   end;
+                   ShowMessageSkin('Dokuman Ýçerikleri Yüklendi','','','info');
+
+             finally
+               DurumGoster(False);
+             end;
+
+          end;
+
+         end;
+
+   503 : begin
+
+          if mrYes = ShowMessageSkin('Seçilen Dökümanlar','Diðer Þirketlere Yüklenecek','Diðere Þirketlerdeki Dökümanýn Üzerine Yazýlacak , Eminmisiniz','msg')
+          then begin
+             DurumGoster(True,True,'Döküman Yükleme Yapýlýyor, Lütfen Bekleyiniz...');
+             try
+                   pbar.Properties.Max := gridDokumanlar.Controller.SelectedRowCount;
+                   pbar.Position := 0;
+
+                   for x := 0 to gridDokumanlar.Controller.SelectedRowCount - 1 do
+                   begin
+                     satir := gridDokumanlar.Controller.SelectedRows[x].RecordIndex;
+                     dokumanNo := gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('dokumanNo').Index);
+                     kilit := gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('kilit').Index);
+
+                       sql := ' exec [sp_DokumanAndRaporDizaynGonder] @sirketKodu = ' +  QuotedStr(datalar.AktifSirket) +
+                                                                    ',@dokumanNo = ' + QuotedStr(dokumanNo);
+                       datalar.QueryExec(sql);
+
+                     Application.ProcessMessages;
+                     pbar.Position := pbar.Position + 1;
+
+                   end;
+                   ShowMessageSkin('Dokumanlar Yüklendi','','','info');
+
+             finally
+               DurumGoster(False);
+             end;
+
+
+          end;
+         end;
+
+  end;
+
+
 
 end;
 

@@ -99,6 +99,7 @@ type
     ilacListColumn5: TcxGridDBColumn;
     ilacListColumn6: TcxGridDBColumn;
     gridIlacSarfTurKodu: TcxGridDBColumn;
+    ilacListColumn7: TcxGridDBColumn;
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
     procedure ado_BransKodlariAfterScroll(DataSet: TDataSet);

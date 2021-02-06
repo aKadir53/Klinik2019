@@ -22,7 +22,9 @@ uses
   dxSkinOffice2007Silver, dxSkinOffice2010Black, dxSkinOffice2010Blue,
   dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver,
   dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008, dxSkinValentine,
-  dxSkinXmas2008Blue, cxImage;
+  dxSkinXmas2008Blue, cxImage, cxEditRepositoryItems, IdBaseComponent,
+  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, IdIOHandler,
+  IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL;
 
 type
   TfrmHastaListeD = class(TGirisForm)
@@ -82,12 +84,23 @@ type
     T2: TMenuItem;
     T3: TMenuItem;
     H3: TMenuItem;
+    ListeColumn9: TcxGridDBColumn;
+    cxEditRepository1: TcxEditRepository;
+    cxEditRepository1ButtonItem1: TcxEditRepositoryButtonItem;
+    ListeColumn12: TcxGridDBColumn;
+    ADOQuery1: TADOQuery;
+    N5: TMenuItem;
+    M2: TMenuItem;
+    IdHTTP1: TIdHTTP;
+    IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
+    procedure TopPanelButonClick(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
     procedure btnAraClick(Sender: TObject);
     procedure btnGuncelleClick(Sender: TObject);
     procedure Bilgiler;
+    Procedure JSONSend;
     procedure ado_BransKodlariAfterPost(DataSet: TDataSet);
     procedure ListeDblClick(Sender: TObject);
     procedure SeansKart1Click(Sender: TObject);
@@ -115,6 +128,9 @@ type
     procedure ListeGetCellHeight(Sender: TcxCustomGridTableView;
       ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
       ACellViewInfo: TcxGridTableDataCellViewInfo; var AHeight: Integer);
+    procedure cxEditRepository1ButtonItem1PropertiesButtonClick(Sender: TObject;
+      AButtonIndex: Integer);
+    procedure M2Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -164,6 +180,8 @@ var
  ado,ado0,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
  m : string;
 begin
+  if _Dataset.Eof then exit;
+
   datalar.KontrolUserSet := False;
   inherited;
   if datalar.KontrolUserSet = True then exit;
@@ -180,6 +198,10 @@ begin
   GirisFormRecord.F_Makina_ := _Dataset.FieldByName('MakinaNo').AsString;
   GirisFormRecord.F_Seans_ := _Dataset.FieldByName('Seans').AsString;
   GirisFormRecord.F_mobilTel_ := _Dataset.FieldByName('EV_TEL1').AsString;
+  GirisFormRecord.F_PasifSebeb_ := _Dataset.FieldByName('PasifSebeb').AsString;
+
+  GirisFormRecord.F_Aktif_ := _Dataset.FieldByName('Aktif').AsString;
+
 
   GirisFormRecord.F_SeansBilgi.DiyalizorTipi := _Dataset.FieldByName('DiyalizorTipi').AsString;
   GirisFormRecord.F_SeansBilgi.DiyalizorCinsi := _Dataset.FieldByName('DiyalizorCinsi').AsString;
@@ -262,7 +284,7 @@ begin
 
        end;
  -37 : begin
-          GirisFormRecord.F_provizyonTarihi_ := tarihal(date);
+          GirisFormRecord.F_provizyonTarihi_ := FormatDateTime('YYYYMMDD', _Dataset.FieldByName('BHDAT').AsDateTime);
           F := FormINIT(TagfrmKanTetkikTakip,GirisFormRecord,ikHayir);
           if F <> nil then F.ShowModal;
        end;
@@ -442,12 +464,101 @@ begin
                if F <> nil then F.ShowModal;
             end;
 
+    -50    : begin
+               (*
+                if mrYEs = ShowMessageSkin('Hastalarýn Ýlk Seanslarý','Merkezde Baþlangýç Olarak Ayarlanacak','','msg')
+                then begin
+                    DurumGoster(True);
+                    try
+                       datalar.QueryExec('exec sp_ilkSeansTarihiniMerkezdeBaslangicYap @sirketKod = ' + QuotedStr(datalar.AktifSirket));
+                    finally
+                       DurumGoster(False);
+                    end;
+                end;
+                *)
+             end;
+
   end;
 end;
 
 procedure TfrmHastaListeD.cxDonemComboKadir1PropertiesChange(Sender: TObject);
 begin
    Bilgiler;
+end;
+
+procedure TfrmHastaListeD.cxEditRepository1ButtonItem1PropertiesButtonClick(
+  Sender: TObject; AButtonIndex: Integer);
+var
+ GirisFormRecord : TGirisFormRecord;
+ F : TGirisForm;
+ Datasets : TDataSetKadir;
+ ado : TADOQuery;
+ x ,satir: integer;
+ _dosyaNos_ ,sql,m,dosyaNo : string;
+begin
+
+  if _Dataset.Eof then exit;
+
+
+  datalar.KontrolUserSet := False;
+  inherited;
+  if datalar.KontrolUserSet = True then exit;
+
+  GirisFormRecord.F_dosyaNo_ := _Dataset.FieldByName('dosyaNo').AsString;
+  GirisFormRecord.F_gelisNo_ := _Dataset.FieldByName('gelisNo').AsString;
+
+  case AButtonIndex of
+    0 : begin
+          EpikrizYaz(_Dataset.FieldByName('dosyaNo').AsString,_Dataset.FieldByName('gelisNo').AsString,false);
+        end;
+    1 : begin
+              DurumGoster(True,False,'Ýmza Föyleri Yükleniyor, Lütfen Bekleyiniz');
+              try
+                Datasets.Dataset3 := datalar.ADO_aktifSirketLogo;
+                Datasets.Dataset2 := datalar.ADO_AktifSirket;
+
+                DataSource.Dataset.Filtered := True;
+                DataSource.Dataset.Filter := 'dosyaNO = ' + QuotedStr(GirisFormRecord.F_dosyaNo_);
+
+                Datasets.Dataset1 := DataSource.Dataset;
+
+                PrintYap('039','Ýmza Föyü',intTostr(TagfrmHastaListeD),Datasets);
+                DataSource.Dataset.Filtered := False;
+              finally
+                DurumGoster(False);
+              end;
+        end;
+    2 : begin
+
+                DurumGoster(True);
+
+                satir := Liste.Controller.SelectedRows[0].RecordIndex;
+               _dosyaNos_ := ifThen(_dosyaNos_='',_dosyaNos_+'',_dosyaNos_+',') +
+                 varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+
+
+                try
+                  ado := TADOQuery.Create(nil);
+                  sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = ' + QuotedStr(_dosyaNos_) + ' , @yil = ' + QuotedStr(ay1) +
+                                ',@marker = ' + QuotedStr('E') + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                                ',@seans = ' + QuotedStr(txtSeansTopPanel.text);
+                  datalar.QuerySelect(ado,sql);
+
+                  Datasets.Dataset1 := ado;
+                  Datasets.Dataset2 := datalar.ADO_AktifSirket;
+                  Datasets.Dataset3 := datalar.ADO_aktifSirketLogo;
+                  PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),Datasets);
+                finally
+                  DurumGoster(False);
+                  ado.Free;
+                end;
+
+
+        end;
+
+  end;
+
+
 end;
 
 procedure TfrmHastaListeD.cxRadioGroup1PropertiesChange(Sender: TObject);
@@ -522,6 +633,7 @@ function TfrmHastaListeD.Init(Sender: TObject): Boolean;
 var
   seans : string;
 begin
+   TopPanel.Visible := True;
    TapPanelElemanVisible(True,false,false,false,True,false,True,false,False,True,False,True,False,True,True);
    txtTekTarih.Clear;
 
@@ -536,7 +648,7 @@ begin
 
    if seans <> ''
    then begin
-     ChangeButtonListClick := True;
+//     ChangeButtonListClick := True;
      txtSeansTopPanel.EditValue := seans;
    end;
 
@@ -731,8 +843,10 @@ var
   index : integer;
   g : TGraphic;
 begin
-  inherited;
+ // inherited;
 
+   if _Dataset.Eof  then exit;
+   
    g := TJpegimage.Create;
 
    try
@@ -767,6 +881,64 @@ begin
     AHeight := 48;
 
   end;
+
+end;
+
+procedure TfrmHastaListeD.M2Click(Sender: TObject);
+begin
+  inherited;
+   JSONSend;
+end;
+
+Procedure TfrmHastaListeD.JSONSend;
+var
+  Json: string;
+  sResponse: string;
+  JsonToSend: TMemoryStream;
+  StrList1 : TStringList;
+  IdSSLIOHandlerSocketOpenSSL1 : TIdSSLIOHandlerSocketOpenSSL;
+begin
+
+  StrList1 := TStringList.Create;
+  Json := '{"action": {"type": "text", "token": ["95cb762c-cc51-457a-bec2-e2e7f289c770"], "numbers": "905417309091", "message": "Test."}}';
+  StrList1.Text := Json;
+//  memoRequest.Text := Json;
+
+  JsonToSend := TMemoryStream.Create;
+
+  try
+   StrList1.SaveToStream(JsonToSend);
+  //  WriteStringToStream(JsonToSend, Json, enUTF8);
+    JsonToSend.Position := 0;
+    UnLoadOpenSSLLibrary;
+    IdHTTP1.Request.ContentType := 'application/json';
+    IdHTTP1.Request.CharSet := 'utf-8';
+    IdHTTP1.HTTPOptions := IdHTTP1.HTTPOptions + [hoKeepOrigProtocol];
+ (*
+  IdSSLIOHandlerSocketOpenSSL1 := TIdSSLIOHandlerSocketOpenSSL.Create(self);
+  with idSSLIOHandlerSocketOpenSSL1 do
+    begin
+      SSLOptions.Method := sslvSSLv2;
+      SSLOptions.Mode := sslmUnassigned;
+      SSLOptions.VerifyMode := [];
+      SSLOptions.VerifyDepth := 0;
+      host := '';
+    end;
+   *)
+    try
+
+      sResponse := IdHTTP1.Post('https://api.mhatsapp.com/api/v3/message/send/', JsonToSend);
+
+    except on E: Exception do
+      ShowMessageSkin('Hata: '#13#10 + e.Message,'','','info');
+    end;
+
+  finally
+    JsonToSend.Free;
+    StrList1.Free;
+  end;
+
+ // memoResponse.Text := sResponse;
 
 end;
 
@@ -866,6 +1038,27 @@ begin
   ay2 := txtDonemTopPanel.getValueSonTarih; //tarihal(ayliktarih2(txtAy.Text));
 //  Bilgiler;
 end;
+
+procedure TfrmHastaListeD.TopPanelButonClick(Sender: TObject);
+var
+ sql : string;
+begin
+  inherited;
+ (*
+    sql := 'exec sp_frmHastaListesi ' + QuotedStr(txtDonemTopPanel.getValueIlkTarih) + ',' +
+                                        QuotedStr(txtDonemTopPanel.getValueSonTarih) + ',' +
+                                        QuotedStr(vartoStr(AktifPasifTopPanel.EditValue)) + ',' +
+                                        QuotedStr(varToStr(txtSeansTopPanel.EditValue)) + ',' +
+                                        QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
+                                        QuotedStr(datalar.AktifSirket) + ',' +
+                                        QuotedStr(varToStr(ifThen(txtTekTarih.GetValue='NULL','',txtTekTarih.GetValue)));
+
+
+
+  //  datalar.QuerySelect(ADOQuery1,sql);
+  *)
+end;
+
 
 procedure TfrmHastaListeD.txtayPropertiesChange(Sender: TObject);
 begin

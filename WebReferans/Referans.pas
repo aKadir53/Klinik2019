@@ -73,7 +73,7 @@ var
   _dataset_ : TClientDataSet;
   gndref,gndrefs,tstref,hstref,fromglstar,toglstar,HataMesaji: string;
   XML : TXMLData;
-  XMLString , sm , hata ,dosyaNo,gelisNo,id , SS,sonuc ,testKod , _F_ ,sql , msj : string;
+  XMLString , sm , hata ,dosyaNo,gelisNo,id , SS,sonuc , markersonuc ,testKod , _F_ ,sql , msj : string;
   SonucListesi : ReLabSonucListesiResult;
   I,x : integer;
   t : boolean;
@@ -130,31 +130,34 @@ begin
            sonucAciklama := copy(sonucAciklama,1,5);
          end;
 
-         Sonuc := StringReplace(Sonuc,'Poz','POZ',[rfReplaceAll]);
-         Sonuc := StringReplace(Sonuc,'Neg','NEG',[rfReplaceAll]);
-
-         if (pos('NEG',Sonuc) > 0)
-         Then sonuc := '-1'
-         Else
-         if (pos('POZ',Sonuc) > 0) or (pos('POS',Sonuc) > 0)
-         Then sonuc := '1'
-         Else
-         sonuc := Sonuc;
 
          if (testKod = '907440') or
             (testKod = '906610') or
             (testKod = '906630') or
             (testKod = '906660')
          Then Begin
-             sql := 'update hareketler set Gd = ' + sonuc +
+             markersonuc := '0';
+             sonuc := StringReplace(Sonuc,'Poz','POZ',[rfReplaceAll]);
+             sonuc := StringReplace(sonuc,'Neg','NEG',[rfReplaceAll]);
+
+             if (pos('NEG',Sonuc) > 0)
+             Then markersonuc := '-1'
+             Else
+             if (pos('POZ',Sonuc) > 0) or (pos('POS',Sonuc) > 0)
+             Then markersonuc := '1';
+
+
+             sql := 'update hareketler set Gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                    ',MarkerGD = ' + QuotedStr(markerSonuc) +
+                    ',islemAciklamasi  = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
                     ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                     ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
              datalar.QueryExec(sql);
-
-            sql := 'update hareketler set islemAciklamasi  = dbo.fn_gecersizKarakterHarf(' + QuotedStr(SS) + ')' +
+            (*
+            sql := 'update hareketler set islemAciklamasi  = dbo.fn_gecerliKarakterRakam(' + QuotedStr(SS) + ')' +
                       ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                       ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-            datalar.QueryExec(sql);
+            datalar.QueryExec(sql);*)
          End
          else
          begin
@@ -212,7 +215,7 @@ begin
   gndrefs := datalar._labsifre;
 
   datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\Referans\Referans_SonucAl.XML';
-
+ // datalar.Lab.Port := 'ReLabSonucOkuSoap';
   try
    SonucListesi := (datalar.Lab as ReLabSonucOkuSoap).ReLabSonucListesi(gndref,gndrefs,tstref,hstref,glmref,fromglstar,toglstar,msj);
   except on e : Exception do

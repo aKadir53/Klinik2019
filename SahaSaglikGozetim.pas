@@ -298,7 +298,8 @@ begin
          Gozlem(yeniGozlem);
        end;
   -11 : begin
-         Gozlem(GozlemDuzenle);
+         if not ADO_SahaGozetim.Eof then
+           Gozlem(GozlemDuzenle);
        end;
   -18 : begin
           if ADO_SahaGozetim.RecordCount > 0 then

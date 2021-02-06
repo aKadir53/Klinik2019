@@ -682,6 +682,32 @@ begin
 //  _HastaBilgileriniCaptionGoster_ := True;
 
   yukle;
+
+ if _pasifSebeb_ = '5' then
+ begin
+   // cxTab.Tabs[0].ImageIndex := 52;
+    izlemPanel.Enabled := False;
+    TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).OptionsData.Editing := False;
+    TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridHemsireTakip')).Levels[0].GridView).OptionsData.Editing := False;
+    TcxGridDBTableView(TcxGridKadir(FindComponent('GridIlaclar')).Levels[0].GridView).OptionsData.Editing := False;
+
+    TcxCheckBox(FindComponent('FizikiMuayene')).Properties.ReadOnly := True;
+    TcxMemo(FindComponent('FizikiMuayeneDiger')).Properties.ReadOnly := True;
+    TcxCheckBox(FindComponent('DamarYolu')).Properties.ReadOnly := True;
+    TcxMemo(FindComponent('DamarYoluDiger')).Properties.ReadOnly := True;
+    TcxCheckBox(FindComponent('Komp')).Properties.ReadOnly := True;
+    TcxMemo(FindComponent('KompDiger')).Properties.ReadOnly := True;
+    TcxCheckBox(FindComponent('Nutrisyon')).Properties.ReadOnly := True;
+    TcxMemo(FindComponent('NutrisyonDiger')).Properties.ReadOnly := True;
+    TcxImageComboBox(FindComponent('sonuc')).Properties.ReadOnly := True;
+    TcxImageComboBox(FindComponent('Doktor')).Properties.ReadOnly := True;
+    TcxDateEditKadir(FindComponent('Tarih')).Properties.ReadOnly := True;
+    DiyalizTedaviControlleriReadOnly(True);
+    PopupMenuEnabled(Self,PopupMenu1,False);
+
+ end;
+
+
   Result := True;
 end;
 
@@ -827,6 +853,9 @@ begin
   TcxGridDBTableView(TcxGridKadir(FindComponent('cxGridKons')).Levels[0].GridView).Columns[2].Editing := False;
 
  // Kolon4.Visible := false;
+
+
+
 
   SayfaCaption('Uzman Muayene','','','','');
 

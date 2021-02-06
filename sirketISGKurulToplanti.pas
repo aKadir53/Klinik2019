@@ -85,6 +85,44 @@ type
     M2: TMenuItem;
     T2: TMenuItem;
     E2: TMenuItem;
+    DofList: TcxGridKadir;
+    cxGridDBTableView2: TcxGridDBTableView;
+    cxGridDBColumn23: TcxGridDBColumn;
+    cxGridDBColumn24: TcxGridDBColumn;
+    cxGridDBColumn25: TcxGridDBColumn;
+    cxGridDBColumn26: TcxGridDBColumn;
+    cxGridDBColumn27: TcxGridDBColumn;
+    cxGridDBColumn28: TcxGridDBColumn;
+    cxGridDBColumn29: TcxGridDBColumn;
+    cxGridDBColumn30: TcxGridDBColumn;
+    cxGridDBColumn31: TcxGridDBColumn;
+    cxGridDBColumn32: TcxGridDBColumn;
+    cxGridDBColumn33: TcxGridDBColumn;
+    cxGridDBColumn34: TcxGridDBColumn;
+    cxGridDBColumn35: TcxGridDBColumn;
+    cxGridDBColumn36: TcxGridDBColumn;
+    cxGridDBColumn37: TcxGridDBColumn;
+    cxGridDBColumn38: TcxGridDBColumn;
+    cxGridDBColumn39: TcxGridDBColumn;
+    cxGridDBColumn40: TcxGridDBColumn;
+    cxGridDBColumn41: TcxGridDBColumn;
+    cxGridDBColumn42: TcxGridDBColumn;
+    cxGridDBColumn43: TcxGridDBColumn;
+    cxGridDBColumn44: TcxGridDBColumn;
+    cxGridDBBandedTableView2: TcxGridDBBandedTableView;
+    DofListesi: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn1: TcxGridDBBandedColumn;
+    DofListesiColumn1: TcxGridDBBandedColumn;
+    DofListesiColumn2: TcxGridDBBandedColumn;
+    DofListesiColumn3: TcxGridDBBandedColumn;
+    DofListesiColumn4: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn2: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn3: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn4: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn5: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn6: TcxGridDBBandedColumn;
+    cxGridLevel2: TcxGridLevel;
+    W1: TMenuItem;
     procedure NewRecord(DataSet: TDataSet);
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
@@ -158,8 +196,9 @@ begin
   KurulEkipGrid.Dataset.Connection := Datalar.ADOConnection2;
   KurulEkipGrid.Dataset.Active := False;
   KurulEkipGrid.Dataset.SQL.Text :=
-  'select AdiSoyadi,Gorevi,eMail,Telefon from SirketISGKurulToplantiEkibi E ' +
+  'select AdiSoyadi,GT.tanimi Gorevi,eMail,Telefon from SirketISGKurulToplantiEkibi E ' +
   ' join SIRKET_SUBE_EKIP_View SE on SE.kod = E.EkipID ' +
+  ' join FirmaISGEkipGorevTnm Gt on GT.kod = SE.Gorevi ' +
   ' where SirketKod = ' +
   QuotedStr(datalar.AktifSirket) +
   ' and E.ISGKurulToplantiID = ' + QuotedStr(vartoStr(TcxButtonEditKadir(FindComponent('id')).EditValue));
@@ -222,10 +261,27 @@ begin
    Satirlar.DataController.DataSet.FieldByName('GorusmeNotlari').AsString := datalar.KurulToplantiMadde.GorusmeNotlari;
    Satirlar.DataController.DataSet.FieldByName('Aksiyon').AsString := datalar.KurulToplantiMadde.Aksiyon;
    Satirlar.DataController.DataSet.FieldByName('Gorevli').AsString := datalar.KurulToplantiMadde.Gorevli;
-   Satirlar.DataController.DataSet.FieldByName('GorevTarihi').AsDateTime := datalar.KurulToplantiMadde.GorevTarihi;
-   Satirlar.DataController.DataSet.FieldByName('HedefTarih').AsDateTime := datalar.KurulToplantiMadde.HedafTarih;
+//   Satirlar.DataController.DataSet.FieldByName('GorevTarihi').AsDateTime := datalar.KurulToplantiMadde.GorevTarihi;
+   if datalar.KurulToplantiMadde.GorevTarihi = Null then
+     Satirlar.DataController.DataSet.FieldByName('GorevTarihi').Clear
+    else
+     Satirlar.DataController.DataSet.FieldByName('GorevTarihi').AsDateTime := datalar.KurulToplantiMadde.GorevTarihi;
+
+
+   //   Satirlar.DataController.DataSet.FieldByName('HedefTarih').AsDateTime := datalar.KurulToplantiMadde.HedafTarih;
+   if datalar.KurulToplantiMadde.HedafTarih = Null then
+     Satirlar.DataController.DataSet.FieldByName('HedefTarih').Clear
+    else
+     Satirlar.DataController.DataSet.FieldByName('HedefTarih').AsDateTime := datalar.KurulToplantiMadde.HedafTarih;
+
    Satirlar.DataController.DataSet.FieldByName('YapilanIslem').AsString := datalar.KurulToplantiMadde.YapilanIslem;
-   Satirlar.DataController.DataSet.FieldByName('TamamlanmaTarihi').AsDateTime := datalar.KurulToplantiMadde.TamamlanmaTarihi;
+
+//   Satirlar.DataController.DataSet.FieldByName('TamamlanmaTarihi').AsDateTime := datalar.KurulToplantiMadde.TamamlanmaTarihi;
+   if datalar.KurulToplantiMadde.TamamlanmaTarihi = Null then
+     Satirlar.DataController.DataSet.FieldByName('TamamlanmaTarihi').Clear
+    else
+     Satirlar.DataController.DataSet.FieldByName('TamamlanmaTarihi').AsDateTime := datalar.KurulToplantiMadde.TamamlanmaTarihi;
+
    Satirlar.DataController.DataSet.FieldByName('Tamam').AsInteger := datalar.KurulToplantiMadde.Tamam;
 
 
@@ -264,10 +320,31 @@ begin
    datalar.KurulToplantiMadde.GorusmeNotlari := Satirlar.DataController.DataSet.FieldByName('GorusmeNotlari').AsString;
    datalar.KurulToplantiMadde.Aksiyon := Satirlar.DataController.DataSet.FieldByName('Aksiyon').AsString;
    datalar.KurulToplantiMadde.Gorevli := Satirlar.DataController.DataSet.FieldByName('Gorevli').AsString;
-   datalar.KurulToplantiMadde.GorevTarihi := Satirlar.DataController.DataSet.FieldByName('GorevTarihi').AsDateTime;
-   datalar.KurulToplantiMadde.HedafTarih := Satirlar.DataController.DataSet.FieldByName('HedefTarih').AsDateTime;
+
+   //datalar.KurulToplantiMadde.GorevTarihi := Satirlar.DataController.DataSet.FieldByName('GorevTarihi').AsDateTime;
+
+   if Satirlar.DataController.DataSet.FieldByName('GorevTarihi').IsNull then
+     datalar.KurulToplantiMadde.GorevTarihi := Null
+    else
+     datalar.KurulToplantiMadde.GorevTarihi := Satirlar.DataController.DataSet.FieldByName('GorevTarihi').AsDateTime;
+
+  // datalar.KurulToplantiMadde.HedafTarih := Satirlar.DataController.DataSet.FieldByName('HedefTarih').AsDateTime;
+   if Satirlar.DataController.DataSet.FieldByName('HedefTarih').IsNull then
+     datalar.KurulToplantiMadde.HedafTarih := Null
+    else
+     datalar.KurulToplantiMadde.HedafTarih := Satirlar.DataController.DataSet.FieldByName('HedefTarih').AsDateTime;
+
+
    datalar.KurulToplantiMadde.YapilanIslem := Satirlar.DataController.DataSet.FieldByName('YapilanIslem').AsString;
-   datalar.KurulToplantiMadde.TamamlanmaTarihi := Satirlar.DataController.DataSet.FieldByName('TamamlanmaTarihi').AsDateTime;
+
+   //datalar.KurulToplantiMadde.TamamlanmaTarihi := Satirlar.DataController.DataSet.FieldByName('TamamlanmaTarihi').AsDateTime;
+
+
+   if Satirlar.DataController.DataSet.FieldByName('TamamlanmaTarihi').IsNull then
+     datalar.KurulToplantiMadde.TamamlanmaTarihi := Null
+    else
+     datalar.KurulToplantiMadde.TamamlanmaTarihi := Satirlar.DataController.DataSet.FieldByName('TamamlanmaTarihi').AsDateTime;
+
    datalar.KurulToplantiMadde.Tamam := Satirlar.DataController.DataSet.FieldByName('Tamam').AsInteger;
 
 end;
@@ -452,14 +529,21 @@ var
   FB : TFirmaBilgi;
   GirisRecord : TGirisFormRecord;
   F : TGirisForm;
+  Tels , sonuc : string;
+  SS : TStringList;
+  DataSet : TADOQuery;
+  mesaj : PWideChar;
 begin
   inherited;
 
-  TopluDataset.Dataset0 := datalar.QuerySelect('select * from SirketISGKurulToplanti_view where id = ' +
+  if TcxButtonEditKadir(FindComponent('id')).text = '' then exit;
+
+  TopluDataset.Dataset1 := datalar.QuerySelect('select * from SirketISGKurulToplanti_view where id = ' +
                                                         varTostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
-  TopluDataset.Dataset1 := KurulEkipGrid.Dataset;
-  TopluDataset.Dataset2 := KurulMaddeler.Dataset;
-  TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
+
+  TopluDataset.Dataset2 := KurulEkipGrid.Dataset;
+  TopluDataset.Dataset3 := KurulMaddeler.Dataset;
+  TopluDataset.Dataset4 := datalar.ADO_aktifSirketLogo;
 
   case Tcontrol(sender).Tag of
   -20 : begin
@@ -488,6 +572,7 @@ begin
    -40 : begin
           PrintYap('KTT','Kurul Toplantý Tutanaðý','',TopluDataset,pTPDF,self);
           FB.isgKurulEkibiMailBilgileri := isgKurulEkibiMailBilgileri(vartostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
+
           //:= FirmaBilgileri(vartostr(TcxImageComboKadir(FindComponent('sirketKod')).EditValue),'00');
           if (mailGonder(FB.isgKurulEkibiMailBilgileri,
                         'Kurul Toplantý Tutanaðý',
@@ -498,6 +583,46 @@ begin
              Then ShowMessageSkin('Email Bilgilendirmesi Yapýldý','','','info')
               else ShowMessageSkin('Email Bilgilendirmesi Yapýlamadý','','','info')
         end;
+
+   -50 : begin
+
+          DurumGoster(True);
+          try
+            DataSet := datalar.QuerySelect('sp_isgKurulEkibiWhatsappBilgileri ' +
+            vartostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
+
+            while not Dataset.Eof do
+            begin
+              mesaj := PwideChar(Dataset.FieldByName('mesaj').AsString);
+              sonuc := SendMesajGonderWhatsapp(datalar.WhatsappTelefonToken,Dataset.FieldByName('Telefon').AsString,
+                                               mesaj);
+              SS := TStringList.Create;
+              try
+                ExtractStrings(['|'], [], PChar(sonuc),SS);
+                if (SS[1] = '200') or (SS[1] = 'OK')
+                then begin
+                   Tels := Tels + Dataset.FieldByName('Telefon').AsString + ',';
+                  //ShowMessageSkin('Mesaj Gönderildi','','','info');
+                  (*
+                  datalar.QueryExec('insert into SmsGonderimLog (dosyaNO,tel,msj)' +
+                                    ' values(' + QuotedStr(dosyaNo) + ',' +
+                                    QuotedStr(tel) + ',' +
+                                    QuotedStr(txtmsg.Text) + ')');
+                  *)
+                end ;
+
+              finally
+                SS.Free;
+              end;
+              Dataset.Next;
+              Sleep(2000);
+              Application.ProcessMessages;
+            end;
+            ShowMessageSkin('Mesaj Gönderildi',Tels,'','info');
+          finally
+            DurumGoster(False);
+          end;
+         end;
 
 
   end;
@@ -510,11 +635,30 @@ var
   sql : string;
   dataset : Tdataset;
 begin
+
+    if TcxButtonKadir(sender).tag = -21
+    Then begin
+      datalar.QuerySelect(DofList.Dataset,
+                          'select * from SirketISGKurulToplanti_view  ' +
+                          ' where sirketKod = ' + QuotedStr(datalar.aktifSirket) +
+                          ' and ToplantiZamani between ' + TcxDateEditKadir(FindComponent('Tarih1')).GetSQLValue  +
+                          ' and ' + TcxDateEditKadir(FindComponent('Tarih2')).GetSQLValue
+                          );
+
+    end;
+
+ //   F := FormINIT(9010,GirisRecord,ikHayir,'');
+  //  if F <> nil then F.ShowModal;
+
+
+
+
+
   if TcxButtonEditKadir(FindComponent('id')).Text <> ''
   Then
     if TcxButtonKadir (Sender).ButtonName = 'btnEkipYukle' then
     begin
-     if varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) = '' then exit;
+     if varToStr(TcxImageComboKadir(FindComponent('IsgEkipID')).EditValue) = '' then exit;
         datalar.QueryExec('delete from SirketISGKurulToplantiEkibi where ISGKurulToplantiID = ' + varToStr(TcxImageComboKadir(FindComponent('id')).EditValue) );
        sql :=
        'insert into SirketISGKurulToplantiEkibi(ISGKurulToplantiID,EkipId) ' +
@@ -565,14 +709,18 @@ begin
   setDataString(self,'ToplantiBaskani','Toplantý Baþkaný',Kolon1,'',150,false,'');
   setDataString(self,'Sekreter','Sekreter',Kolon1,'',150,false,'');
 
+  setDataStringMemo(self,'GundemMaddeleri','Gündem',Kolon1,'',410,30);
+
+
+
  // setDataStringBLabel(self,'bosSatir1',kolon1,'',300);
 
   FaturaTarihi := TcxDateEditKadir.Create(Self);
   FaturaTarihi.ValueTip := tvDate;
   FaturaTarihi.Properties.Kind := ckDateTime;
   setDataStringKontrol(self,FaturaTarihi,'kararTarihi','Karar Tarihi',Kolon2,'',150);
-  setDataString(self,'defterSayfaNo','Defter Sayfa No',Kolon2,'',80,false,'');
-  setDataString(self,'kararNo','Karar No',Kolon2,'',80,false,'',False);
+  setDataStringCurr(self,'defterSayfaNo','Defter Sayfa No',Kolon2,'',80,'0',0);
+  setDataStringCurr(self,'kararNo','Karar No',Kolon2,'',80,'0',0);
 
 
   sirketlerx := TcxImageComboKadir.Create(self);
@@ -600,18 +748,30 @@ begin
   //TcxImageComboKadir(FindComponent('IsgEkipID')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
   addButton(self,nil,'btnEkipYukle','','Komite Ekip Getir',kolon1,'ekip',100,ButtonClick,50);
 
-  setDataStringKontrol(self,KurulEkipGrid,'KurulEkipGrid',' ',Kolon1,'',410,250,alNone,'',clLeft);
+  setDataStringKontrol(self,KurulEkipGrid,'KurulEkipGrid',' ',Kolon1,'',410,200,alNone,'',clLeft);
 
   setDataStringKontrol(self,KurulMaddeler,'KurulMaddeler',' ',Kolon2,'',540,360,alNone,'',clLeft);
 
 
 
+  FaturaTarihi := TcxDateEditKadir.Create(Self);
+  FaturaTarihi.ValueTip := tvDate;
+  FaturaTarihi.Tag := -1;
+  setDataStringKontrol(self,FaturaTarihi,'Tarih1','Tarih Aralýðý',sayfa2_Kolon1,'trh2',100);
+  FaturaTarihi := TcxDateEditKadir.Create(Self);
+  FaturaTarihi.ValueTip := tvDate;
+  FaturaTarihi.Tag := -1;
+  setDataStringKontrol(self,FaturaTarihi,'Tarih2','',sayfa2_Kolon1,'trh2',100);
+  addButton(self,nil,'btnList','','Listele',sayfa2_Kolon1,'trh2',100,ButtonClick,-21);
+
+
+  setDataStringKontrol(self,DofList,'DofList','',sayfa2_Kolon1,'',1,1,alClient);
 
   kolon2.Width := 0;
   Kolon3.Width := 0;
   Kolon4.Width := 0;
 
-  SayfaCaption('','','','','');
+  SayfaCaption('Toplantý','Toplantý Listesi','','','');
   Disabled(self,True);
 end;
 

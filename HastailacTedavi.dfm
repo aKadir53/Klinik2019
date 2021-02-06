@@ -594,6 +594,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
       Tag = 81
       Caption = 'D'#252'zenle'
       ImageIndex = 35
+      Visible = False
       OnClick = cxButtonCClick
     end
     object S2: TMenuItem
@@ -605,6 +606,7 @@ object frmHastaIlacTedavi: TfrmHastaIlacTedavi
     object A1: TMenuItem
       Tag = -100
       Caption = 'Se'#231'ili Tedaviyi Son Tedaviye Aktar'
+      ImageIndex = 9
       OnClick = cxButtonCClick
     end
   end

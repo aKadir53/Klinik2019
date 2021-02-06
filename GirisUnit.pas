@@ -150,10 +150,10 @@ type
     procedure KontrolEditValueClear;
     procedure sqlRunLoad;virtual;
     procedure Yukle;virtual;
-    procedure Disabled(_form: TForm ; indexField : Boolean);
+    procedure Disabled(_form: TForm ; indexField : Boolean = True);
     procedure Enabled;
     procedure newButonVisible(durum : boolean);
-    procedure indexKaydiBul(kod : string;Fieldname : string = '');
+    procedure indexKaydiBul(kod : string;Fieldname : string = '' ; sirketKod : string = '');
     procedure cxButtonKadir1Click(Sender: TObject);
     procedure TopPanelButonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -239,6 +239,7 @@ type
     F_yas_ : integer;
     F_value_ : Variant;
     F_pasifSebeb_ : string;
+    F_Aktif_ : string;
 
     F_SaveKontrol : Boolean;
 
@@ -285,10 +286,14 @@ type
      parent : TdxLayoutGroup;grup : string ;uzunluk : integer;List : string); overload;
     procedure setDataStringIC(sender : Tform ; fieldName,caption : string;
      parent : TdxLayoutGroup;grup : string ;uzunluk : integer;TableName,valueField,DescField : string;filter :string = '';tag : integer = -1;itemList : string = '');
+
     procedure setDataString(sender : Tform ; fieldName ,caption: string ;
           parent : TdxLayoutGroup; grup : string;uzunluk : integer;Zorunlu : Boolean = False;
           ObjectName : String = '';ReadOnly : Boolean = False;_Tag_ : integer = 0;
-          DefaultText : string = '' ; EditCharCase : TEditCharCase = ecNormal ; EditMask : string = '');
+          DefaultText : string = '' ; EditCharCase : TEditCharCase = ecNormal ; EditMask : string = '' ; KarakterTip : TKarakterTip = ktNone);
+
+
+
     procedure setDataStringMemo(sender : Tform ; fieldName ,caption: string ;
           parent : TdxLayoutGroup; grup : string;uzunluk,yukseklik : integer);
     procedure setDataStringB(sender : Tform; fieldName ,caption: string ;
@@ -319,6 +324,7 @@ type
  //   procedure SetGrid(cxGrid : TcxGrid ; Colums,ColumnsPropertiesClassName,ColumsCaption,ColumnsWidth : String);
  //   function CreateGrid(name : string; Form : TGirisForm)  : TcxGrid;
     procedure DiyalizTedaviControlleriniFormaEkle(Grp : TdxLayoutGroup ; Baslik : Boolean = True);
+    procedure DiyalizTedaviControlleriReadOnly(ReadOnly : Boolean = True);
     procedure DiyalizTedavi_UF_KontrolleriniFormaEkle(Grp : TdxLayoutGroup);
     function SirketComboFilter : string;
     function  Init(Sender: TObject) : Boolean; virtual;
@@ -381,6 +387,7 @@ type
     property _yas_ : integer read F_yas_ write F_yas_;
     property _value_ : variant read F_value_ write F_value_;
     property _pasifSebeb_ : string read F_pasifSebeb_ write F_pasifSebeb_;
+    property _Aktif_ : string read F_Aktif_ write F_Aktif_;
     property _SaveKontrol : Boolean read F_SaveKontrol write SetSaveKontrol Default False ;
   end;
 
@@ -509,7 +516,7 @@ begin
    ADO.Connection := Datalar.ADOConnection2;
    Application.ProcessMessages;
    TGirisForm(self).DurumGoster;
-
+ // try
    try
      case formTag of
 
@@ -534,8 +541,8 @@ begin
 
      TagfrmHastaListeD :
          begin
-            sql := 'exec sp_frmHastaListesi ' + txtDonemTopPanel.getValueIlkTarih + ',' +
-                                                txtDonemTopPanel.getValueSonTarih + ',' +
+            sql := 'exec sp_frmHastaListesi ' + QuotedStr(txtDonemTopPanel.getValueIlkTarih) + ',' +
+                                                QuotedStr(txtDonemTopPanel.getValueSonTarih) + ',' +
                                                 QuotedStr(vartoStr(AktifPasifTopPanel.EditValue)) + ',' +
                                                 QuotedStr(varToStr(txtSeansTopPanel.EditValue)) + ',' +
                                                 QuotedStr(varToStr(KurumTipTopPanel.EditValue)) + ',' +
@@ -690,11 +697,17 @@ begin
 
      end;
      if sql = '' then exit;
-     datalar.QuerySelect(ADO,sql);
-     ResultDataset := ADO;
+
+     datalar.QuerySelect(sql);
+
+     ResultDataset := datalar.QuerySelect(sql);
    finally
      DurumGoster(False);
    end;
+//  except
+//    ADO.free;
+//  end;
+
 end;
 
 procedure TGirisForm.pSaatGetTime(Sender: TObject; var ATime: TDateTime);
@@ -808,11 +821,29 @@ begin
 end;
 
 function TGirisForm.Init(Sender: TObject) : Boolean;
+var
+  i,ToolBar1H,TopPanelH,cxPanelH : integer;
 begin
   USER_ID.Text := datalar.username;
   //sirketKod.Text := datalar.AktifSirket; //sadece yeni kayýt ise yap dedik, diðerlerinde veritabanýndan geldikçe eziliyor zaten.
   FormInputZorunluKontrolPaint(self,$00FCDDD1);
-  cxTab.PopupMenu := menu;
+
+  sayfa1.Width := AnaForm.sayfalar.Width - 20;
+  sayfa2.Width := sayfa1.Width;
+  sayfa3.Width := sayfa1.Width;
+  sayfa4.Width := sayfa1.Width;
+
+
+  if ToolBar1.Visible then ToolBar1H := ToolBar1.Height else ToolBar1H := 0;
+  if TopPanel.Visible then TopPanelH := TopPanel.Height else TopPanelH := 0;
+  if cxPanel.Visible then cxPanelH := cxPanel.Height else cxPanelH := 0;
+
+  sayfa1.Height := AnaForm.sayfalar.Height - (ToolBar1H + TopPanelH + cxPanelH + sayfalar.TabHeight + AnaForm.sayfalar.TabHeight + dxStatusBar1.Height);
+  sayfa2.Height := sayfa1.Height;
+  sayfa3.Height := sayfa1.Height;
+  sayfa4.Height := sayfa1.Height;
+
+ // cxTab.PopupMenu := menu;
 
 //  pnlDurum.Alignment := alCenterCenter;
 
@@ -843,6 +874,32 @@ begin
 
 
   end;
+
+
+  if _pasifSebeb_ = '5'
+  Then begin
+      cxTab.Tabs[0].ImageIndex := 52;
+   // Disabled(self,True);
+    for i := 0 to self.ComponentCount - 1 do
+     begin
+       if (self.Components[i] is TPopupMenu)
+       then begin
+         PopupMenuEnabled(Self,TPopupMenu(self.Components[i]),False);
+         try
+           if TPopupMenu(self.Components[i]).Tag = 0
+           then
+             PopupMenuToToolBarEnabled(self,ToolBar1,TPopupMenu(self.Components[i]));
+         except
+         end;
+       end;
+     end;
+
+  end
+  else
+  begin
+     cxTab.Tabs[0].ImageIndex := -1;
+  end;
+
 
 
 
@@ -1072,6 +1129,35 @@ end;
 
 
 
+procedure TGirisForm.DiyalizTedaviControlleriReadOnly(ReadOnly : Boolean = True);
+begin
+  try
+    TcxImageComboBox(Self.FindComponent('DiyalizorCinsi')).Properties.ReadOnly := ReadOnly;
+    TcxImageComboBox(Self.FindComponent('DiyalizorTipi')).Properties.ReadOnly := ReadOnly;
+    TcxImageComboBox(Self.FindComponent('Diyalizor')).Properties.ReadOnly := ReadOnly;
+    TcxImageComboBox(Self.FindComponent('D')).Properties.ReadOnly := ReadOnly;
+    TcxImageComboBox(Self.FindComponent('GIRISYOLU')).Properties.ReadOnly := ReadOnly;
+    TcxImageComboBox(Self.FindComponent('DiyalizorCinsi')).Properties.ReadOnly := ReadOnly;
+
+    if Assigned(TcxCheckBox(Self.FindComponent('GIRISYOLU_ENF')))
+    then
+     TcxCheckBox(Self.FindComponent('GIRISYOLU_ENF')).Properties.ReadOnly := ReadOnly;
+
+    TcxComboBox(Self.FindComponent('YA')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('HEPARINTIP')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('HEPARIN')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('HEPARINUYG')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('HCOOO')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('ISI')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('APH')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('Na')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('Igne')).Properties.ReadOnly := ReadOnly;
+    TcxComboBox(Self.FindComponent('IgneV')).Properties.ReadOnly := ReadOnly;
+  finally
+  end;
+end;
+
+
 procedure TGirisForm.SetFormID(const Value : integer);
 begin
   FformID := Value;
@@ -1112,7 +1198,7 @@ begin
            DosyaKaydet.FileName := TcxGridKadir(self.Components[i]).ExcelFileName+'.XLS';
            if not DosyaKaydet.Execute then Exit;
            try
-              ExportGridToExcel(DosyaKaydet.FileName,TcxGridKadir(self.Components[i]),False,True);
+              ExportGridToExcel(DosyaKaydet.FileName,TcxGridKadir(self.Components[i]),False,True,True);
            except on e : Exception do
              begin
                 ShowMessageSkin('Hata Oluþtu : ' + e.Message,'','','info');
@@ -1228,9 +1314,9 @@ begin
   end;
 end;
 
-procedure TGirisForm.indexKaydiBul(kod : string ; Fieldname : string = '');
+procedure TGirisForm.indexKaydiBul(kod : string ; Fieldname : string = '' ; sirketKod : string = '');
 var
- _oldvalue_ , SQL : string;
+ _oldvalue_ , SQL , WheresirketKod: string;
 begin
 // index alan ve bu alanýn deðerine sahip olan kayýt getiriliyor. ve sqlRun dataset edit yapýlýyor
 // sqlRunLoad ile kayýt kontrollere yerleþtiriliyor.
@@ -1238,21 +1324,33 @@ begin
 // kayýt yok ise append yapýlýyor.
     SQL := ifThen(sqlTip = sql_Select , selectSQLW,_spSQL_);
 
+  // 19.12.2020 eklendi.
+  // ButtonEditKadir sirketKod set edilmiþse kod deðeri ayný olan sirket bazlý kayýt var demektir.
+  //örneðin id deðeri 1310 olan dokuman SKS_Dokumanlar tablosunda 000005 ve 000031 sirketleri için vardýr
+  //kayýtlarý ayýran özellik sirketkodu olduðunu belirtiyor.
+
+  if sirketKod <> ''
+  then
+    WheresirketKod := ' and sirketKod = ' + QuotedStr(datalar.AktifSirket)
+  else
+    WheresirketKod := '';
+
+
   try
     if Fieldname = '' then Fieldname := indexFieldName;
     if kod <> ''
     then begin
      if sqlTip <> sql_Select
      then
-       sqlRun.SQL.Text := Format(SQL,[kod])
+       sqlRun.SQL.Text := Format(SQL,[kod]) + WheresirketKod
      else
-       sqlRun.SQL.Text := Format(SQL,[tablename,Fieldname+'='+#39+kod+#39]);
+       sqlRun.SQL.Text := Format(SQL,[tablename,Fieldname+'='+#39+kod+#39]) + WheresirketKod;
        sqlRun.Open;
        sql := Format(insertrecordViewLog,[QuotedStr(Fieldname),QuotedStr(kod),QuotedStr(tablename),QuotedStr(datalar.username)]);
        datalar.QueryExec(sql);
     end
     else begin
-     sqlRun.SQL.Text := Format(SQL,[tablename,Fieldname+'='+#39+kod+#39]);
+     sqlRun.SQL.Text := Format(SQL,[tablename,Fieldname+'='+#39+kod+#39]) + WheresirketKod;
      sqlRun.Open;
      sqlRunLoad;
      if (TcxButtonEditKadir(FindComponent(Fieldname)).indexField = True)
@@ -1325,7 +1423,7 @@ begin
 end;
 
 
-procedure TGirisForm.Disabled(_form: TForm ; indexField : Boolean);
+procedure TGirisForm.Disabled(_form: TForm ; indexField : Boolean = True);
 var
   _say, x , i : integer;
   _Obje_ : TcxCustomEdit;
@@ -1346,7 +1444,6 @@ begin
     else begin
       if IsDisableControl (_obje_)
       Then begin
-
         if (SameText (_obje_.ClassName, 'TcxGrid')) or
            (SameText (_obje_.ClassName, 'TcxGridKadir'))
            and (_pasifSebeb_ = '5')
@@ -1365,7 +1462,7 @@ begin
       end;
     end;
 
-   if (_obje_.ClassName = 'TcxButtonEditKadir') then TcxButtonEditKadir(_obje_).Enabled := indexField;
+   if (_obje_.ClassName = 'TcxButtonEditKadir') then TcxButtonEditKadir(_obje_).Enabled := TcxButtonEditKadir(_obje_).indexField;
 
   end;
 
@@ -1472,6 +1569,7 @@ begin
 // butoneditlerde index alan kontrolü yapýlarak indexField true ise tabloda konumlanma yapýlacaðý
 // false ise butonedit için seçim yapýlacagý belirleniyor. seçim yapýlan kod butonedite taným ise labele yerleþiyor
 
+
   for i := 0 to self.ComponentCount - 1 do
   begin
     _obje_ := TcxCustomEdit(self.Components[i]);
@@ -1515,7 +1613,8 @@ begin
        end
        else
        begin
-         try TcxImageComboKadir(_obje_).EditValue := sqlRun.FieldByName(_Obje_.Name).AsVariant;
+         try
+         TcxImageComboKadir(_obje_).EditValue := sqlRun.FieldByName(_Obje_.Name).AsVariant;
          except on e : exception do
           begin
            //ShowMessageSkin(e.Message,'','','info');
@@ -1541,10 +1640,13 @@ begin
        Else
        if (self.Components[i].ClassName = 'TcxDateEditKadir')
        Then Begin
+
           if (sqlRun.FieldByName(_Obje_.Name).AsString = '') or (sqlRun.FieldByName(_Obje_.Name).AsVariant = NULL)
           then _obje_.Clear
           else
-          try TcxDateEdit(_obje_).Date := tarihyap(sqlRun.FieldByName(_Obje_.Name).AsVariant);except end;
+          try
+          TcxDateEdit(_obje_).Date := tarihyap(sqlRun.FieldByName(_Obje_.Name).AsVariant);except end;
+
        End
        Else
        if (self.Components[i].ClassName = 'TcxButtonEditKadir') and
@@ -1594,6 +1696,7 @@ begin
 
     end;
   end;
+
 
 
 end;
@@ -1649,14 +1752,20 @@ begin
 
       if (TcxButtonEditKadir(sender).indexField = True)
       then begin
-        indexKaydiBul(varTostr(TcxCustomEdit(sender).EditingValue),TcxButtonEditKadir(sender).name);
+        indexKaydiBul(varTostr(TcxCustomEdit(sender).EditingValue),
+                       TcxButtonEditKadir(sender).name,
+                       TcxButtonEditKadir(sender).sirketKod
+                       );
        // TcxButtonEditKadir(sender).Properties.ReadOnly := True;
       end;
       TcxButtonEditKadir(sender).ListeAc.Where := where;
 
   end
   else
-     indexKaydiBul(varTostr(TcxCustomEdit(sender).EditingValue),TcxButtonEditKadir(sender).name);
+     indexKaydiBul(varTostr(TcxCustomEdit(sender).EditingValue),
+                   TcxButtonEditKadir(sender).name ,
+                   TcxButtonEditKadir(sender).sirketKod
+                   );
 
 
   if _pasifSebeb_ = '5'
@@ -1929,7 +2038,7 @@ begin
   dxLa := TdxLayoutGroup(parent).CreateItemForControl(cxButton);
   dxLa.Name := 'dxLaB'+Name;
   dxLa.AlignHorz := ahLeft;
-  dxLa.Width := TdxLayoutGroup(parent).Width;
+  dxLa.Width := uzunluk;//TdxLayoutGroup(parent).Width;
   dxLa.Height := yukseklik;
   dxLa.Caption := captionItem;
   dxLa.Visible := not cxButton.NewButtonVisible;
@@ -1951,7 +2060,7 @@ begin
         end ;
 
       dxLa.Parent := TdxLayoutGroup(Self.findcomponent(grup));
-      TdxLayoutGroup(Self.findcomponent(grup)).Width := TdxLayoutGroup(parent).Width;
+      TdxLayoutGroup(Self.findcomponent(grup)).Width := uzunluk;//TdxLayoutGroup(parent).Width;
  //     SpaceItem.Parent := TdxLayoutGroup(findcomponent(grup));
     end;
   cxButton.OnClick := Event;
@@ -1999,11 +2108,56 @@ begin
 //  cxButton.OnClick := cxButtonCClick;
 end;
 
-procedure TGirisForm.setDataString(sender : Tform ; fieldName ,caption: string;
-                  parent : TdxLayoutGroup; grup : string;uzunluk : integer ;
-                  Zorunlu : Boolean = False;
-                  ObjectName : String = '';ReadOnly : Boolean = False;_Tag_ : integer = 0 ;
-                  DefaultText : string = '';EditCharCase : TEditCharCase = ecNormal; EditMask : string = '');
+
+procedure TGirisForm.setDataStringMemo(sender : Tform ; fieldName ,caption: string; parent : TdxLayoutGroup; grup : string;uzunluk,yukseklik : integer);
+var
+  cxEdit : TcxMemo;
+  dxLa : TdxLayoutItem;
+  dxLaG : TdxLayoutGroup;
+begin
+  cxEdit := TcxMemo.Create(self);
+  cxEdit.Name := fieldName;
+  cxEdit.Text := '';
+  cxEdit.Properties.ScrollBars := ssVertical;
+  dxLa := TdxLayoutGroup(parent).CreateItemForControl(cxEdit);
+  dxLa.Name := 'dxLa'+fieldName;
+  dxLa.AlignHorz := ahLeft;
+  cxEdit.Width := uzunluk;
+ // dxLa.Width := uzunluk;
+  dxLa.Height := yukseklik;
+  dxLa.Caption := caption;
+//  SpaceItem := TdxLayoutEmptySpaceItem.Create(self);
+ // SpaceItem.Name := 'dxSp'+fieldName;
+ // SpaceItem.Width := TdxLayoutGroup(parent).Width - (50 + uzunluk);
+  if grup = '' then
+    dxLa.Parent := parent
+    else begin
+        if Self.FindComponent(grup) = nil
+        then begin
+         dxLaG := TdxLayoutGroup.Create(self);
+         dxLaG.Name := grup;
+         dxLaG.LayoutDirection := ldHorizontal;
+         dxLaG.Parent := parent;
+         dxLag.ShowBorder := false;
+        end ;
+
+      dxLa.Parent := TdxLayoutGroup(Self.findcomponent(grup));
+ //     SpaceItem.Parent := TdxLayoutGroup(findcomponent(grup));
+    end;
+
+  cxEdit.Style.Color := clWhite;
+  cxEdit.OnEnter := cxEditEnter;
+  cxEdit.OnExit := cxEditExit;
+  cxEdit.OnKeyDown := cxTextEditKeyDown;
+  cxEdit.Properties.OnEditValueChanged := PropertiesEditValueChanged;
+end;
+
+
+
+procedure TGirisForm.setDataString(sender: Tform; fieldName, caption: string;
+  parent: TdxLayoutGroup; grup: string; uzunluk: integer; Zorunlu: Boolean;
+  ObjectName: String; ReadOnly: Boolean; _Tag_: integer; DefaultText: string;
+  EditCharCase: TEditCharCase; EditMask: string; KarakterTip: TKarakterTip);
 var
   cxEdit : TcxTextEditKadir;
   cxEditMask : TcxMaskEdit;
@@ -2024,6 +2178,7 @@ begin
         cxEdit.Properties.ImmediatePost := True;
         cxEdit.BosOlamaz := Zorunlu;//KontrolZorunlumu(TForm(sender).Tag,fieldName); //Zorunlu;
         cxEdit.Width := uzunluk;
+        cxEdit.KarakterTip := KarakterTip;
         control := cxEdit;
    end
    else
@@ -2072,58 +2227,13 @@ begin
  //     SpaceItem.Parent := TdxLayoutGroup(findcomponent(grup));
     end;
 
+
   TcxTextEdit(control).Style.Color := clWhite;
   TcxTextEdit(control).OnEnter := cxEditEnter;
   TcxTextEdit(control).OnExit := cxEditExit;
   TcxTextEdit(control).OnKeyDown := cxTextEditKeyDown;
   TcxTextEdit(control).Properties.OnEditValueChanged := PropertiesEditValueChanged;
 end;
-
-procedure TGirisForm.setDataStringMemo(sender : Tform ; fieldName ,caption: string; parent : TdxLayoutGroup; grup : string;uzunluk,yukseklik : integer);
-var
-  cxEdit : TcxMemo;
-  dxLa : TdxLayoutItem;
-  dxLaG : TdxLayoutGroup;
-begin
-  cxEdit := TcxMemo.Create(self);
-  cxEdit.Name := fieldName;
-  cxEdit.Text := '';
-  cxEdit.Properties.ScrollBars := ssVertical;
-  dxLa := TdxLayoutGroup(parent).CreateItemForControl(cxEdit);
-  dxLa.Name := 'dxLa'+fieldName;
-  dxLa.AlignHorz := ahLeft;
-  cxEdit.Width := uzunluk;
- // dxLa.Width := uzunluk;
-  dxLa.Height := yukseklik;
-  dxLa.Caption := caption;
-//  SpaceItem := TdxLayoutEmptySpaceItem.Create(self);
- // SpaceItem.Name := 'dxSp'+fieldName;
- // SpaceItem.Width := TdxLayoutGroup(parent).Width - (50 + uzunluk);
-  if grup = '' then
-    dxLa.Parent := parent
-    else begin
-        if Self.FindComponent(grup) = nil
-        then begin
-         dxLaG := TdxLayoutGroup.Create(self);
-         dxLaG.Name := grup;
-         dxLaG.LayoutDirection := ldHorizontal;
-         dxLaG.Parent := parent;
-         dxLag.ShowBorder := false;
-        end ;
-
-      dxLa.Parent := TdxLayoutGroup(Self.findcomponent(grup));
- //     SpaceItem.Parent := TdxLayoutGroup(findcomponent(grup));
-    end;
-
-  cxEdit.Style.Color := clWhite;
-  cxEdit.OnEnter := cxEditEnter;
-  cxEdit.OnExit := cxEditExit;
-  cxEdit.OnKeyDown := cxTextEditKeyDown;
-  cxEdit.Properties.OnEditValueChanged := PropertiesEditValueChanged;
-end;
-
-
-
 procedure TGirisForm.setDataStringB(sender : Tform; fieldName,caption : string;
      parent : TdxLayoutGroup;grup : string ;uzunluk :integer; Prms : TListeAc;indexField : Boolean;
      obje:TcxButtonEditKadir;tanimi : string='tanimi';whereColumObjeName : string = '';
@@ -2393,6 +2503,8 @@ begin
   cxEditC.OnEnter := cxEditEnter;
   cxEditC.OnExit := cxEditExit;
   cxEditC.OnKeyDown := cxTextEditBKeyDown;
+  cxEditC.Properties.OnEditValueChanged := PropertiesEditValueChanged;
+
 end;
 
 
@@ -2566,8 +2678,8 @@ begin
       TcxdateEdit(obje).Properties.DateOnError := deNull;
       //TcxdateEdit(obje).Properties.ImmediateDropDownWhenKeyPressed := True;
       TcxdateEdit(obje).Properties.ImmediatePost := ImmediatePost;
-      TcxdateEdit(obje).Properties.MaxDate := strtodate('01.01.2500');
-      TcxdateEdit(obje).Properties.MinDate := strtodate('01.01.1900');
+      //TcxdateEdit(obje).Properties.MaxDate := strtodate('01.01.2500');
+      //TcxdateEdit(obje).Properties.MinDate := strtodate('01.01.1900');
       TcxdateEdit(obje).Properties.OnValidate := PropertiesValidate;
     end;
     if obje.ClassName <> 'TImage'
@@ -2682,6 +2794,15 @@ begin
 
         _obje_ := TcxCustomEdit(self.Components[i]);
 
+      //hash
+      (*
+        if (self.Components[i].Name = 'password') and (self.Name = 'frmUsers')
+        then begin
+           sqlRun.FieldByName(_Obje_.Name).AsVariant :=
+           md5(TcxTextEditKadir(FindComponent ('password')).Text)
+        end
+        else
+        *)
 
         if (self.Components[i].ClassName = 'TcxCheckGroupKadir')
         then begin
@@ -2753,6 +2874,10 @@ begin
              if TcxDateEditKadir(_Obje_).ValueTip = tvDate
              then
                sqlRun.FieldByName(_Obje_.Name).AsVariant :=  TcxDateEditKadir(_Obje_).GetValue('YYYY-MM-DD hh:mm') //tarihal(TcxDateEdit(_Obje_).Date)
+             else
+             if TcxDateEditKadir(_Obje_).ValueTip = tvDateTime
+             then
+               sqlRun.FieldByName(_Obje_.Name).AsVariant :=  TcxDateEditKadir(_Obje_).EditValue // GetValue('YYYY-MM-DD hh:mm') //tarihal(TcxDateEdit(_Obje_).Date)
                else
                 sqlRun.FieldByName(_Obje_.Name).AsVariant :=  TcxDateEditKadir(_Obje_).GetValue('YYYYMMDD') //tarihal(TcxDateEdit(_Obje_).Date)
 
@@ -3162,6 +3287,7 @@ begin
   if _HastaBilgileriniCaptionGoster_ then
    cxTab.Tabs[0].Caption := self._HastaAdSoyad_;// datalar.HastaBil.Adi + ' ' + datalar.HastaBil.SoyAdi;
 
+ // cxTab.Tabs[0].ImageIndex := -1;
   for i := 0 to self.ComponentCount - 1 do
    begin
      if (self.Components[i] is TdxLayoutControl)
@@ -3175,18 +3301,29 @@ begin
   end;
 
 
+
   if _pasifSebeb_ = '5'
   Then begin
-    Disabled(self,True);
+      cxTab.Tabs[0].ImageIndex := 52;
+   // Disabled(self,True);
     for i := 0 to self.ComponentCount - 1 do
      begin
        if (self.Components[i] is TPopupMenu)
        then begin
          PopupMenuEnabled(Self,TPopupMenu(self.Components[i]),False);
-         PopupMenuToToolBarEnabled(self,ToolBar1,TPopupMenu(self.Components[i]));
+         try
+           if TPopupMenu(self.Components[i]).Tag = 0
+           then
+             PopupMenuToToolBarEnabled(self,ToolBar1,TPopupMenu(self.Components[i]));
+         except
+         end;
        end;
      end;
 
+  end
+  else
+  begin
+     cxTab.Tabs[0].ImageIndex := -1;
   end;
 
 

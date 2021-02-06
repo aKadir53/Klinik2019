@@ -442,6 +442,21 @@ begin
         if Cvp.HATAVAR = true
         Then Begin
             txtLog.Lines.Add(Cvp.HATAMESAJI + ' - ' + Cvp.ACIKLAMA);
+
+            if Cvp.HATAKODU = '017'
+            then begin
+              sql := 'update hasta_gelisler set DYOBID = ' + QuotedStr(Cvp.KOD) +
+                     ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
+              datalar.QueryExec(sql);
+
+            end;
+
+       (*
+        <KOD>6122084</KOD>
+        <HATAKODU>017</HATAKODU>
+        <HATAVAR>true</HATAVAR>
+        <HATAMESAJI>HASTANIN MONTH MUST BE BETWEEN 1-12 AYINA AÝT ÝZLEMÝ BULUNMAKTADIR.HASTAYA AYDA BÝR ADET ÝZLEM KAYDI GÝREBÝLÝRSÝNÝZ.(DIYALIZTEDAVI ID=6122084)</HATAMESAJI>
+         *)
         End
         Else
         begin
@@ -845,6 +860,7 @@ begin
   GirisFormRecord.F_gelisNo_ := Hastalar.FieldByName('gelisNo').AsString;
   GirisFormRecord.F_HastaAdSoyad_ := Hastalar.FieldByName('HASTAADI').AsString + ' ' +
                                      Hastalar.FieldByName('HASTASOYADI').AsString;
+  GirisFormRecord.F_PasifSebeb_ := Hastalar.FieldByName('PasifSebeb').AsString;
 
   DurumGoster;
   try
@@ -938,7 +954,7 @@ begin
   IC.TableName := 'DoktorlarT';
   IC.DisplayField := 'Tanimi';
   IC.ValueField := 'kod';
-  IC.Filter := ' sirketKod = ' + QuotedStr(datalar.AktifSirket);
+  IC.Filter := DoktorlarFilter;
 
   TcxImageComboBoxProperties(gridHastalardoktor.Properties).Items := IC.Properties.Items;
 
@@ -1111,16 +1127,18 @@ procedure TfrmIzlem.H2Click(Sender: TObject);
 var
  r ,satir : integer;
  Form : TGirisForm;
- dosyaNo : string;
+ dosyaNo , ps : string;
 begin
    satir := gridHastalar.Controller.SelectedRows[0].RecordIndex;
    dosyaNo := varTostr(gridHastalar.DataController.GetValue(satir,gridHastalar.DataController.GetItemByFieldName('dosyaNo').Index));
+   ps := Hastalar.FieldByName('pasifSebeb').AsString;
 
    if FindTab(AnaForm.sayfalar,TagfrmHastaKart)
    Then begin
      Form := TGirisForm(FormClassType(TagfrmHastaKart));
      TGirisForm(FormClassType(TagfrmHastaKart))._dosyaNO_ := dosyaNo;
      TGirisForm(FormClassType(TagfrmHastaKart))._TC_ := '';
+     TGirisForm(FormClassType(TagfrmHastaKart))._pasifSebeb_ := ps;
      TGirisForm(FormClassType(TagfrmHastaKart)).Init(Form);
    end
    Else begin

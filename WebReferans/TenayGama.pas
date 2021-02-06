@@ -421,7 +421,7 @@ var
   _tetkikSonuc_ : TenayserviceGAMA.TetkikSonuc;
   KurumMNT : TenayserviceGAMA.KurumBilgileri;
   I,s , testAdet , sonucAdet , j , x , Tc : integer;
-  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc ,sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,
+  dosyaNo,gelisNo,testKod ,id, sm , _F_ ,sql , sonuc , markersonuc , sonucA, a,b,c,t1,t2,onaytarihi,ss ,min ,max,Field,
   _tc_,kayitTip : string;
   ado : TADOQuery;
   t : boolean;
@@ -546,38 +546,33 @@ begin
                          Then Begin
 
                              if (pos('NEG',_tetkikSonuc_.Sonuc) > 0) or (pos('N',_tetkikSonuc_.Sonuc) > 0)
-                             Then sonuc := '-1'
+                             Then markersonuc := '-1'
                              Else
                              if (pos('POZ',_tetkikSonuc_.Sonuc) > 0) or (pos('P',_tetkikSonuc_.Sonuc) > 0)
-                             Then sonuc := '1'
+                             Then markersonuc := '1'
                              Else
                              if (pos('NEG',_tetkikSonuc_.Aciklama) > 0)
-                             Then sonuc := '-1'
+                             Then markersonuc := '-1'
                              Else
                              if (pos('POZ',_tetkikSonuc_.Aciklama) > 0)
-                             Then sonuc := '1'
-                             Else sonuc := _tetkikSonuc_.Sonuc;
+                             Then markersonuc := '1';
 
-                            sonucA := trim(StringReplace(StringReplace(_tetkikSonuc_.Sonuc,'>','',[rfReplaceAll]),'<','',[rfReplaceAll]));
-                            sonucA := trim(StringReplace(StringReplace(SonucA,'NEGatif','',[rfReplaceAll]),'POZitif','',[rfReplaceAll]));
-                            sonucA := trim(StringReplace(StringReplace(SonucA,'NEGATÝF','',[rfReplaceAll]),'POZÝTÝF','',[rfReplaceAll]));
-                            sonucA := trim(StringReplace(StringReplace(SonucA,'DÜÞÜK','',[rfReplaceAll]),'düþük','',[rfReplaceAll]));
-                            sonucA := trim(StringReplace(SonucA,'-','',[rfReplaceAll]));
+                             sonuc := _tetkikSonuc_.Sonuc;
 
-                            sql := 'update hareketler set gd = ' + sonuc +
+                            sql := 'update hareketler set gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                                      ',islemAciklamasi = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
+                                      ',MarkerGD = ' + QuotedStr(markerSonuc) +
                                       ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
                                       ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_) ;
 
                              datalar.QueryExec(sql);
 
-                            sql := 'update hareketler set islemAciklamasi  = dbo.fn_gecersizKarakterHarf(' + QuotedStr(sonucA) + ')' +
-                                   ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
-                            datalar.QueryExec(sql);
+
                          End
                          else
                          begin
                             try
-                             sql := 'update hareketler set gd = ' + sonuc +
+                             sql := 'update hareketler set gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonuc) + ')' +
                                       ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and tip1 = ' + QuotedStr(_F_) +
                                       ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
 

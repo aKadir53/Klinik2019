@@ -82,7 +82,6 @@ uses
   PersonelKart in 'PersonelKart.pas' {frmPersonelKart},
   GetFormClass in 'GetFormClass.pas',
   HastaKart in 'HastaKart.pas' {frmHastaKart},
-  yeniDokuman in 'yeniDokuman.pas' {frmSKS_YeniDokuman},
   KadirMedula3 in 'KadirMedula3.pas',
   HastaSeansIsle in 'HastaSeansIsle.pas' {frmHastaSeans},
   hizmetKayitIslemleriWS in 'hizmetKayitIslemleriWS.pas',
@@ -116,12 +115,17 @@ uses
   EGALAB in 'EGALAB.pas',
   elabUNYE in 'elabUNYE.pas',
   TenayGama in 'WebReferans\TenayGama.pas',
-  saglikTesisiEczaneYardimciIslemleriWS in 'saglikTesisiEczaneYardimciIslemleriWS.pas';
+  saglikTesisiEczaneYardimciIslemleriWS in 'saglikTesisiEczaneYardimciIslemleriWS.pas',
+  TenaySYNLAB in 'TenaySYNLAB.pas',
+  TenaySynevo in 'TenaySynevo.pas',
+  TenayAhenk in 'TenayAhenk.pas',
+  TenaySIMGE in 'TenaySIMGE.pas',
+  TenayBIOLAB in 'TenayBIOLAB.pas';
 
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 4071;
+  AppalicationVer : integer = 4092;
   yvKversiyon : integer = 3;
   NoktaURL : string = 'https://www.noktayazilim.net';
   VersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019Versiyon.txt';
@@ -243,13 +247,17 @@ begin
     End;
 
 
-
-
-
     end;
 
-
-
+    if not FileExists('C:\NoktaV3\Newtonsoft.Json.dll')
+    then begin
+      try
+        filename := 'Newtonsoft.Json.dll';
+        Application.ProcessMessages;
+        Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
+      finally
+      end;
+    end;
 
   GetBuildInfo(Application.ExeName, V1, V2, V3,V4);
   ExeVersiyon:= Format('%d.%d.%d.%d', [V1, V2, V3,V4]);

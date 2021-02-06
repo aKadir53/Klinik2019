@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxControls, cxLookAndFeels,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxControls, cxLookAndFeels,EncdDecd,
   cxLookAndFeelPainters, Vcl.ExtCtrls, dxNavBar,kadirType,kadir,GirisUnit,
   KadirLabel, Data.Win.ADODB, dxSkinsForm, dxSkinsdxStatusBarPainter,
   dxStatusBar, Vcl.ComCtrls, Vcl.ToolWin, Vcl.ImgList, cxClasses, dxNavBarBase,
@@ -193,6 +193,7 @@ type
       const pDisp: IDispatch; const URL: OleVariant);
     procedure WebBrowser1NavigateComplete2(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
+    procedure ToolButton11Click(Sender: TObject);
   private
     { Private declarations }
     procedure WMSettingChange(var Message: TMessage); message WM_SETTINGCHANGE;
@@ -514,7 +515,8 @@ begin
       datalar.SMSHesapUser := WebErisimBilgiFirma('SMS','00');
       datalar.SMSHesapSifre := WebErisimBilgiFirma('SMS','01');
       datalar.SMSHesapFrom := WebErisimBilgiFirma('SMS','02');
-
+      datalar.WhatsappTelefonToken := WebErisimBilgiFirma('SMS','03');
+      datalar.WhatsappMesajTagEkle := WebErisimBilgiFirma('SMS','04');
 
       datalar.SMTPSunucu := WebErisimBilgi('EML','01');
       datalar.SMTPUserName := WebErisimBilgi('EML','02');
@@ -527,6 +529,7 @@ begin
       datalar._labkurumkod := WebErisimBilgiFirma('LA','02');
       datalar._labkurumkodText := WebErisimBilgiFirma('LA','03');
       datalar._labID := WebErisimBilgiFirma('LA','05');
+      datalar._LabBarkodOlustur := WebErisimBilgiFirma('LA','11');
 
       datalar.KurumBransi := WebErisimBilgiFirma('98','11');
    //   datalar._labSonucIcinGozArdiEt := WebErisimBilgiFirma('817');
@@ -695,6 +698,8 @@ begin
     datalar.Ado_DSP.Active := True;
     datalar.ADO_TehlikeSiniflari.Active := True;
     datalar.KontrolZorunlu.Active := True;
+    datalar.ADO_AktifSirket.Requery();
+    datalar.ADO_aktifSirketLogo.Requery();
     ado.SQL.Text := 'Select Donem,Doktor, SirketKodu, IGU, DigerSaglikPers, Grup, ADISOYADI, GrupTanimi from Users where Kullanici = ' + SQLValue(DATALAR.username);
     ado.Open;
     try
@@ -1058,6 +1063,19 @@ begin
   End;
 
 
+  if UserRight('SKS', 'Olay Bildirimleri Uyarýsýný Gör') = True
+  then
+    if OkunmayanOlayBildirimVar(datalar.username)
+    Then Begin
+       ShowmessageSkin('Görmenizi Bekleyen Olay Bildirim Var',
+                                  'Görmek Ýçin Dokuman Butonunu Basarak Dökümanlarý Açýn',
+                                  '',
+                                  'info');
+       ToolButton11.Visible := True;
+
+    End;
+
+
 (*
   MainMenuKadir1.Left := -1 * MainMenuKadir1.Width;
   MainMenuKadir1.Height := self.ClientHeight - (dxStatusBar1.Height + ToolBar1.Height);
@@ -1102,6 +1120,7 @@ begin
   dxStatusBar1.Panels[3].Width := length(dxStatusBar1.Panels[3].Text) * 8;
   dxStatusBar1.Panels[5].Text := 'Versiyon : ' + datalar.versiyon + ' - Lisans Bitiþ Tarihi : ' + FormattedTarih(Datalar.LisansBitis);
   SetUserInfo;
+
 
 
 
@@ -1183,7 +1202,8 @@ begin
      sql := 'select * from sorunCozumSureci ss ' +
             'join sorunlar s on s.sorunId = ss.sorunId ' +
             'where kurumKodu = ' + QuotedStr(datalar._tesisKodu) +
-            'and taraf = ''Nokta'' and ss.durum in (1,2,3) ' ;
+            ' and taraf = ''Nokta'' and ss.durum in (1,2,3) ' +
+            ' and Kullanici = ' + QuotedStr(datalar.username);
      ado.SQL.Text := sql;
      ado.Open;
 
@@ -1195,10 +1215,43 @@ begin
          ShowMessageSkin('Noktadan Mesaj Var','Destek Talep Ekranýndan Okuyabilirsiniz','','info');
        end;
 
-
    finally
      ado.free;
    end;
+
+
+  if UserRight('SKS', 'Olay Bildirimleri Uyarýsýný Gör') = True
+  then
+    if OkunmayanOlayBildirimVar(datalar.username)
+    Then Begin
+       ShowmessageSkin('Görmenizi Bekleyen Olay Bildirim Var',
+                                  'Görmek Ýçin Olay Bildirim Butonunu Kullanýnýz',
+                                  '',
+                                  'info');
+       ToolButton11.Visible := True;
+
+    End;
+
+
+
+end;
+
+procedure TAnaForm.ToolButton11Click(Sender: TObject);
+begin
+    if not datalar.MemDataOlayBildirimOku.Eof
+    then begin
+      ShowPopupForm('Olay Bildirim',SKSOlayBildirimGor);
+    (*
+      datalar.QueryExec('Update OlayBildirim ' +
+                        ' set gorulmeTarihi = getdate() ' +
+                       // ' where kullanici = ' + QuotedStr(datalar.username) +
+                        ' where id = ' + datalar.MemDataOlayBildirimOku.FieldByName('id').AsString);
+                        // +
+                       // ' and rev = ' + datalar.MemDataKullaniciDokumanOku.FieldByName('rev').AsString);
+
+      OkunmayanOlayBildirimVar(datalar.username);
+      *)
+    end;
 end;
 
 procedure TAnaForm.ToolButton12Click(Sender: TObject);
@@ -1362,6 +1415,7 @@ var
   bTamam : Boolean;
   sSifre : String;
   iThermo : Integer;
+  prm : string;
 begin
 // MenuItem cliklendiðinde menu satiri form açýlma þekli ile form açar yada sadece method çalýþtýrýr.
 //FormID > 0 form açýlacak
@@ -1420,6 +1474,14 @@ begin
                 Finally
                   Cursor := crNone;
                 End;
+              end;
+
+      4003 : begin
+                 prm := EncodeString(datalar.osgbKodu+','+datalar._database+','+datalar.AktifSirket);
+                 ShellExecute(0, 'open', PChar('D:\Projeler\VS\PDKS\bin\x86\Debug\FK623AttendDllCSSample.exe'), PChar(prm),
+                 nil, SW_SHOWNORMAL);
+                 exit;
+
               end;
 
        (*

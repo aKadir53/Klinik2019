@@ -480,8 +480,12 @@ begin
                     ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket);
       datalar.QuerySelect(ado,sql);
 
-      topluset.Dataset0 := ado;
-      topluset.Dataset1 := Datalar.ADO_AktifSirket;
+
+
+      topluset.Dataset1 := ado;
+      topluset.Dataset2 := datalar.ADO_AktifSirket;
+      topluset.Dataset3 := datalar.ADO_aktifSirketLogo;
+
       PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),topluset);
     finally
       DurumGoster(False);

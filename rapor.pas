@@ -538,12 +538,20 @@ begin
   frxDesigner1.OnShow:= DesignerOnShow;
   frmRapor.Caption := kod + ' - ' + caption;
 
+  if kod <> 'BOS'
+  then begin
+   datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod) + ' and sirketKod = ' + QuotedStr(datalar.AktifSirket) );
+   Table1 := datalar.QuerySelect('select * from SKS_Dokumanlar where dokumanNo = ' + QuotedStr(kod) + ' and sirketKod = ' + QuotedStr(datalar.AktifSirket));
+  end
+  else
+  begin
+   datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod));
+   Table1 := datalar.QuerySelect('select * from SKS_Dokumanlar where dokumanNo = ' + QuotedStr(kod));
+  end;
 
-  datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod));
-  Table1 := datalar.QuerySelect('select * from SKS_Dokumanlar where dokumanNo = ' + QuotedStr(kod));
   if not Table1.Eof
   then begin
-      if datalar.ADO_RAPORLAR_Q.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
+      if datalar.ADO_RAPORLAR_Q.Eof // Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
       Then begin
 
           Table := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ''BOS''');
@@ -633,7 +641,7 @@ begin
   else
   if printTip in [pTOnIzle,pTDizayn] then
   begin
-    frxReport1.PreviewOptions.Buttons := [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator];
+    frxReport1.PreviewOptions.Buttons := [pbPrint, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbNavigator];
     frxReport1.PrintOptions.ShowDialog := True;
     if printer <> ''
     Then begin
@@ -656,11 +664,19 @@ begin
   frmRapor.Caption := kod + ' - ' + caption;
 
 
-  datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod));
+  datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod) +
+                                             ' and sirketKod = ' + QuotedStr(datalar.AktifSirket) );
 
 //  if datalar.ADO_RAPORLAR_Q.Locate('raporkodu;sirketKod',VarArrayOf([kod, datalar.AktifSirket]),[]) = False
 
-  if datalar.ADO_RAPORLAR_Q.Locate('raporkodu',kod,[]) = False
+  if (datalar.ADO_RAPORLAR_Q.eof) and (pos('.',kod) = 0)
+  then begin
+    datalar.QuerySelect(datalar.ADO_RAPORLAR_Q,'select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod));
+    //+' and sirketKod = ' + QuotedStr(datalar.AktifSirket) );
+  end;
+
+
+  if datalar.ADO_RAPORLAR_Q.eof //Locate('raporkodu',kod,[]) = False
   Then begin
       datalar.ADO_RAPORLAR_Q.Append;
       datalar.ADO_RAPORLAR_Q.FieldByName('raporKodu').AsString := kod;

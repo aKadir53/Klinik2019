@@ -26,8 +26,6 @@ object frmFaaliyetDurumBildirim: TfrmFaaliyetDurumBildirim
     ExcelFileName = 'TahlilSonuclar'#305
     ExceleGonder = True
     PopupForm = False
-    ExplicitLeft = 16
-    ExplicitTop = 24
     object gridRapor: TcxGridDBTableView
       DataController.DataSource = DataSource1
       DataController.Summary.DefaultGroupSummaryItems = <>

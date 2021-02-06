@@ -219,10 +219,13 @@ object frmHastaSeans: TfrmHastaSeans
               PropertiesClassName = 'TcxImageComboBoxProperties'
               Properties.Alignment.Horz = taCenter
               Properties.Alignment.Vert = taVCenter
+              Properties.ImmediatePost = True
+              Properties.ImmediateUpdateText = True
               Properties.Items = <>
               GroupSummaryAlignment = taCenter
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
               Width = 141
@@ -665,6 +668,8 @@ object frmHastaSeans: TfrmHastaSeans
               Caption = 'Seansa Girmeme Sebebi'
               DataBinding.FieldName = 'sebeb'
               PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               Properties.ClearKey = 46
               Properties.Items = <
                 item
@@ -683,9 +688,14 @@ object frmHastaSeans: TfrmHastaSeans
                 item
                   Description = 'T'#305'bbi Sebeb'
                   Value = '11'
+                end
+                item
+                  Description = 'Merkezden Ayr'#305'ld'#305
+                  Value = '12'
                 end>
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Options.Filtering = False
               Options.Sorting = False
               Width = 100
@@ -901,6 +911,13 @@ object frmHastaSeans: TfrmHastaSeans
               Visible = False
               Position.BandIndex = 0
               Position.ColIndex = 50
+              Position.RowIndex = 0
+            end
+            object ListeSColumn10: TcxGridDBBandedColumn
+              DataBinding.FieldName = 'ilkSeansTarihiKontrol'
+              Visible = False
+              Position.BandIndex = 0
+              Position.ColIndex = 52
               Position.RowIndex = 0
             end
           end
@@ -1383,6 +1400,7 @@ object frmHastaSeans: TfrmHastaSeans
     end
   end
   object PopupMenu5: TPopupMenu
+    Tag = 1
     Images = DATALAR.imag24png
     Left = 80
     Top = 120
@@ -1407,6 +1425,12 @@ object frmHastaSeans: TfrmHastaSeans
     object S7: TMenuItem
       Caption = 'Seans Onay '#304'ptal'
       ImageIndex = 33
+      OnClick = c
+    end
+    object S9: TMenuItem
+      Tag = -2
+      Caption = 'Seansa Girmedi'
+      ImageIndex = 37
       OnClick = c
     end
     object Y1: TMenuItem
@@ -1467,6 +1491,12 @@ object frmHastaSeans: TfrmHastaSeans
       Tag = -4
       Caption = 'Seans'#305' D'#252'zenle'
       ImageIndex = 51
+      OnClick = c
+    end
+    object DoktorBilgisiDeitir1: TMenuItem
+      Tag = -12
+      Caption = 'Doktor Bilgisi De'#287'i'#351'tir'
+      ImageIndex = 74
       OnClick = c
     end
     object K1: TMenuItem
@@ -1652,5 +1682,27 @@ object frmHastaSeans: TfrmHastaSeans
     GrupCol = 0
     Left = 280
     Top = 176
+  end
+  object Sebebler: TListeAc
+    ListeBaslik = 'Seansa Girmeme'
+    TColcount = 2
+    TColsW = '40,200'
+    Table = 'SeansaGirmemeSebebleri'
+    Conn = DATALAR.ADOConnection2
+    Filtercol = 0
+    BaslikRenk = clBlack
+    DipRenk = clBlack
+    Kolonlar.Strings = (
+      'kod'
+      'tanimi')
+    KolonBasliklari.Strings = (
+      'Kod'
+      'Tanimi')
+    Calistir = fgEvet
+    BiriktirmeliSecim = False
+    Grup = False
+    GrupCol = 0
+    Left = 240
+    Top = 288
   end
 end

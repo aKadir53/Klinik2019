@@ -623,10 +623,11 @@
           Width = 74
         end
         object cxGridDBTableView1Toplam: TcxGridDBColumn
+          Caption = 'Toplam Planlanan'
           DataBinding.FieldName = 'Toplam'
           HeaderAlignmentHorz = taCenter
           Styles.Header = cxStyle6
-          Width = 56
+          Width = 130
         end
         object cxGridDBTableView1Column3: TcxGridDBColumn
           DataBinding.FieldName = 'Girilen'
@@ -936,7 +937,7 @@
       Height = 570
       Align = alClient
       TabOrder = 0
-      Properties.ActivePage = SeanslarPage
+      Properties.ActivePage = TetkiklerPage
       Properties.Style = 11
       OnPageChanging = HizmetPagePageChanging
       ClientRectBottom = 563
@@ -1811,6 +1812,8 @@
               Caption = 'Seansa Girmeme Sebebi'
               DataBinding.FieldName = 'sebeb'
               PropertiesClassName = 'TcxImageComboBoxProperties'
+              Properties.Alignment.Horz = taCenter
+              Properties.Alignment.Vert = taVCenter
               Properties.ClearKey = 46
               Properties.Items = <
                 item
@@ -1829,9 +1832,14 @@
                 item
                   Description = 'T'#305'bbi Sebeb'
                   Value = '11'
+                end
+                item
+                  Description = 'Merkezden Ayr'#305'ld'#305
+                  Value = '12'
                 end>
               HeaderAlignmentHorz = taCenter
               HeaderAlignmentVert = vaCenter
+              Options.Editing = False
               Options.FilteringPopup = False
               Options.Sorting = False
               Styles.Content = cxStyle5
@@ -2074,6 +2082,13 @@
               Visible = False
               Position.BandIndex = 0
               Position.ColIndex = 10
+              Position.RowIndex = 0
+            end
+            object ListeColumn10: TcxGridDBBandedColumn
+              DataBinding.FieldName = 'ilkSeansTarihiKontrol'
+              Visible = False
+              Position.BandIndex = 0
+              Position.ColIndex = 11
               Position.RowIndex = 0
             end
           end
@@ -2970,6 +2985,14 @@
                 Position.ColIndex = 11
                 Position.RowIndex = 0
               end
+              object GridListColumn13: TcxGridDBBandedColumn
+                Caption = 'Doktor'
+                DataBinding.FieldName = 'doktor'
+                Visible = False
+                Position.BandIndex = 0
+                Position.ColIndex = 12
+                Position.RowIndex = 0
+              end
             end
             object cxGridLevel4: TcxGridLevel
               GridView = GridList
@@ -3035,13 +3058,6 @@
         Caption = 'P704234  >>  P704230'
         OnClick = cxButtonCClick
       end
-    end
-    object ahlilSonular1: TMenuItem
-      Tag = -4
-      Caption = 'Tahlil Sonu'#231'lar'#305
-      ImageIndex = 45
-      Visible = False
-      OnClick = cxButtonCClick
     end
     object E3: TMenuItem
       Caption = 'E-Nab'#305'z'
@@ -3188,8 +3204,14 @@
       ImageIndex = 33
       OnClick = cxButtonCClick
     end
+    object ahlilSonular1: TMenuItem
+      Tag = -4
+      Caption = 'Seansa Girmedi'
+      ImageIndex = 37
+      OnClick = cxButtonCClick
+    end
     object S9: TMenuItem
-      Caption = 'Seans Kapat'
+      Caption = 'Seans Kapat (E-'#304'mza)'
       ImageIndex = 18
       OnClick = cxButtonCClick
       object D3: TMenuItem
@@ -3575,8 +3597,6 @@
         Caption = 'Tan'#305'lar'#305' Kaydet'
         OnClick = T2Click
       end
-      object T6: TMenuItem
-      end
     end
     object T7: TMenuItem
       Tag = -32
@@ -3584,5 +3604,26 @@
       ImageIndex = 47
       OnClick = T2Click
     end
+  end
+  object Sebeb: TListeAc
+    ListeBaslik = 'Seansa Girmeme'
+    TColcount = 2
+    TColsW = '40,200'
+    Table = 'SeansaGirmemeSebebleri'
+    Filtercol = 0
+    BaslikRenk = clBlack
+    DipRenk = clBlack
+    Kolonlar.Strings = (
+      'kod'
+      'tanimi')
+    KolonBasliklari.Strings = (
+      'Kod'
+      'Tanimi')
+    Calistir = fgEvet
+    BiriktirmeliSecim = False
+    Grup = False
+    GrupCol = 0
+    Left = 48
+    Top = 432
   end
 end

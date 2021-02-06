@@ -12,6 +12,7 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter_GG: TSplitter
@@ -27,7 +28,7 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
   end
   object dokumanID: TcxButtonEditKadir
     Tag = -100
-    Left = 17
+    Left = 25
     Top = 8
     Properties.Buttons = <
       item
@@ -77,7 +78,7 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
     Width = 121
   end
   object yayinTarihi: TcxDateEditKadir
-    Left = 161
+    Left = 177
     Top = 8
     TabOrder = 1
     BosOlamaz = True
@@ -116,10 +117,6 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       LevelTabs.Style = 1
       ExceleGonder = False
       PopupForm = False
-      ExplicitLeft = 2
-      ExplicitTop = -2
-      ExplicitWidth = 586
-      ExplicitHeight = 209
       object gridRev: TcxGridDBTableView
         PopupMenu = PopupMenu1
         OnDblClick = gridRevDblClick
@@ -534,10 +531,6 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       LevelTabs.Style = 1
       ExceleGonder = False
       PopupForm = False
-      ExplicitLeft = 2
-      ExplicitTop = -2
-      ExplicitWidth = 796
-      ExplicitHeight = 229
       object gridGG: TcxGridDBTableView
         OnDblClick = gridGGDblClick
         Navigator.Buttons.First.Visible = False
@@ -861,10 +854,6 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       LevelTabs.Style = 1
       ExceleGonder = False
       PopupForm = False
-      ExplicitLeft = 2
-      ExplicitTop = -2
-      ExplicitWidth = 188
-      ExplicitHeight = 225
       object gridDokumanlarRevOku: TcxGridDBTableView
         Navigator.Buttons.First.Visible = False
         Navigator.Buttons.PriorPage.Visible = False

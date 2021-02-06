@@ -694,7 +694,7 @@ object frmElHijyen: TfrmElHijyen
   end
   object DataSource1: TDataSource
     DataSet = ADO_SahaGozetim
-    Left = 80
+    Left = 152
     Top = 274
   end
   object ADO_SahaGozetim: TADOQuery
@@ -814,14 +814,19 @@ object frmElHijyen: TfrmElHijyen
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
       OnClick = cxButtonCClick
-      object E1: TMenuItem
-        Tag = -20
+      object ElHijyeniGzlemFormu1: TMenuItem
+        Tag = -22
         Caption = 'El Hijyeni G'#246'zlem Formu'
         OnClick = cxButtonCClick
       end
       object E2: TMenuItem
         Tag = -21
         Caption = 'El Hijyeni Uyum Raporu'
+        OnClick = cxButtonCClick
+      end
+      object E1: TMenuItem
+        Tag = -20
+        Caption = 'El Hijyeni G'#246'zlem Formu (BO'#350')'
         OnClick = cxButtonCClick
       end
     end
@@ -838,8 +843,8 @@ object frmElHijyen: TfrmElHijyen
   end
   object DataSource2: TDataSource
     DataSet = ADOQuery1
-    Left = 88
-    Top = 378
+    Left = 120
+    Top = 386
   end
   object ADOQuery1: TADOQuery
     Connection = DATALAR.ADOConnection2
@@ -855,7 +860,14 @@ object frmElHijyen: TfrmElHijyen
         Value = 1
       end>
     SQL.Strings = (
-      'select * from  El_HijyenGozlemDetay E'
+      
+        'select * ,case when meslek = 1 then '#39'Hekim'#39' else case when mesle' +
+        'k = 2 then '#39'Hem'#351'ire'#39' else case when meslek = 3 then '#39'Di'#287'er Sa'#287'l'#305 +
+        'k'#39' else '#39'Di'#287'er'#39' end end end meslekTanim '
+      
+        ',case when cinsiyet = 0 then '#39'Bay'#39' else '#39'Bayan'#39' end cinsiyetTani' +
+        'm '
+      'from  El_HijyenGozlemDetay E'
       'where E.gozlem_id =:@id'
       '')
     Left = 48

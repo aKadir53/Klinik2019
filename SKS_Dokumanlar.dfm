@@ -35,6 +35,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     Width = 121
   end
   object cxGrid2: TcxGridKadir
+    Tag = 500
     Left = 0
     Top = 0
     Width = 972
@@ -105,6 +106,22 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       OptionsView.IndicatorWidth = 0
       OptionsView.RowSeparatorColor = clBlack
       Styles.Group = cxStyle1
+      object gridDokumanlarColumn4: TcxGridDBColumn
+        DataBinding.FieldName = 'kilit'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Images = AnaForm.Menu_Image24x24
+        Properties.Items = <
+          item
+            ImageIndex = 792
+            Value = 1
+          end
+          item
+            Value = 0
+          end>
+        Options.Editing = False
+        Width = 20
+        IsCaptionAssigned = True
+      end
       object gridDokumanlarid: TcxGridDBColumn
         DataBinding.FieldName = 'id'
         Visible = False
@@ -118,7 +135,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 75
+        Width = 71
       end
       object gridDokumanlarColumn1: TcxGridDBColumn
         DataBinding.FieldName = 'dokumanTip'
@@ -154,7 +171,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         HeaderGlyphAlignmentHorz = taCenter
-        Width = 36
+        Width = 34
       end
       object gridDokumanlaradi: TcxGridDBColumn
         Caption = 'D'#246'k'#252'man Tan'#305'm'#305
@@ -165,7 +182,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         HeaderAlignmentVert = vaCenter
         Styles.Content = cxStyle2
         Styles.Header = cxStyle2
-        Width = 249
+        Width = 236
       end
       object KapsamAdi: TcxGridDBColumn
         DataBinding.FieldName = 'KapsamAdi'
@@ -239,7 +256,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 81
+        Width = 77
       end
       object gridDokumanlarraporlamaKime: TcxGridDBColumn
         DataBinding.FieldName = 'raporlamaKime'
@@ -259,7 +276,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 94
+        Width = 90
       end
       object gridDokumanlardenetci: TcxGridDBColumn
         DataBinding.FieldName = 'denetci'
@@ -306,7 +323,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
           end>
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 121
+        Width = 115
       end
       object gridDokumanlarOnay: TcxGridDBColumn
         Caption = 'Onay Durum'
@@ -333,7 +350,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
           end>
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 115
+        Width = 109
       end
       object gridDokumanlarRev: TcxGridDBColumn
         Caption = 'Rev.'
@@ -344,7 +361,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
-        Width = 62
+        Width = 59
       end
       object gridDokumanlarColumn2: TcxGridDBColumn
         Caption = 'Revizyon Tarihi'
@@ -355,7 +372,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         GroupSummaryAlignment = taCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 80
+        Width = 76
       end
       object gridDokumanlarColumn3: TcxGridDBColumn
         Caption = 'Dosya'
@@ -384,11 +401,15 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
           item
             ImageIndex = 121
             Value = 'RTF'
+          end
+          item
+            ImageIndex = 111
+            Value = 'DOCX'
           end>
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
-        Width = 40
+        Width = 38
       end
     end
     object cxGridLevel1: TcxGridLevel
@@ -578,6 +599,31 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     Images = DATALAR.imag24png
     Left = 328
     Top = 88
+    object D6: TMenuItem
+      Tag = 501
+      Caption = 'Dokuman'#305' Kilitle'
+      ImageIndex = 141
+      OnClick = D5Click
+    end
+    object D7: TMenuItem
+      Tag = 500
+      Caption = 'Dokuman'#305' Serbest B'#305'rak'
+      ImageIndex = 140
+      OnClick = D5Click
+    end
+    object D5: TMenuItem
+      Tag = 502
+      Caption = 'D'#246'k'#252'man '#304#231'eri'#287'ini Nokta'#39'dan AL'
+      ImageIndex = 69
+      Visible = False
+      OnClick = D5Click
+    end
+    object D8: TMenuItem
+      Tag = 503
+      Caption = 'Di'#287'er '#350'irketlerime G'#246'nder'
+      ImageIndex = 70
+      OnClick = D5Click
+    end
     object T1: TMenuItem
       Tag = 1
       Caption = 'T'#252'm K'#305'r'#305'l'#305'mlar'#305' A'#231
@@ -616,12 +662,14 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       Tag = -5
       Caption = 'Onay'
       ImageIndex = 7
+      Visible = False
       OnClick = cxButtonCClick
     end
     object kontrolDurum: TMenuItem
       Tag = -6
       Caption = 'Kontrol'
       ImageIndex = 0
+      Visible = False
       OnClick = cxButtonCClick
     end
     object N3: TMenuItem
@@ -669,6 +717,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
     object R2: TMenuItem
       Caption = 'RTF '#39'den Al'
       ImageIndex = 9
+      Visible = False
       object R1: TMenuItem
         Tag = -11
         Caption = 'RTF den '#304#231'erik Y'#252'kle'

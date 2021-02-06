@@ -214,8 +214,12 @@ var
   g : TBitmap;
   Dataset : TDataset;
   imzaTc : string;
+  fileSize : Double;
 
 begin
+
+ // ShowMessage( md5(Edit2.Text),'','','info' );
+
   bloginLog := False;
   bOtomatikGiris := False;
   try
@@ -250,6 +254,10 @@ begin
       try
         Datalar.ADOConnection2.Connected := false;
         Datalar.Baglan(txtDataBase.EditingText, txtServerName.Text, '', txtServerUserName.Text, txtServerPassword.Text);
+
+
+        datalar.DokumanYuklesin := 0;
+        datalar.DokumanYuklesin := datalar.QuerySelect('select dokumanYuklesin from OSGB_MASTER.dbo.OSGB_TNM where db = ' + QuotedStr(txtDataBase.EditingText)).FieldByName('dokumanYuklesin').AsInteger;
 
       //  datalar.ProgTarih :=  FormatDateTime('DD.MM.YYYY', datalar.QuerySelect('select getdate() Tarih').FieldByName('Tarih').AsDateTime);
      //   datalar.ProgTarih := FormattedTarih(tarihal(date()));
@@ -296,6 +304,8 @@ begin
             ShowMessageSkin('Kullanýcý Adý Kullanýma Kapalý','','','info');
             Exit;
           end;
+          //if trim(login.FieldValues['password']) <> md5(edit2.Text)
+
           if trim(login.FieldValues['password']) <> edit2.Text then
           begin
             ShowMessageSkin('Þifre Hatalý','','','info');
@@ -400,7 +410,32 @@ begin
         if not UpdateThermo (7, iThermo, 'Log kaydý yazýlýyor') then Exit;
         datalar.LoginInOut.Execute;
 
-
+        try
+          if not UpdateThermo (8, iThermo, 'C:\Noktav3\http Klsörü Kontrol Ediliyor') then Exit;
+          fileSize := FolderSize('c:\Noktav3\http');
+          if fileSize > 10000000
+          Then begin
+            DelTree('c:\Noktav3\http');
+            //DeleteFile('c:\Noktav3\http\*.*')
+            //RemoveDir('c:\Noktav3\http');
+           // MkDir('c:\Noktav3\http');
+          end;
+          if FolderSize('c:\Noktav3\Message') > 10000000
+          Then begin
+            DelTree('c:\Noktav3\Message');
+            //DeleteFile('c:\Noktav3\http\*.*')
+            //RemoveDir('c:\Noktav3\http');
+           // MkDir('c:\Noktav3\http');
+          end;
+          if FolderSize('C:\NoktaV3\ProgramStartMesaj') > 10000000
+          Then begin
+            DelTree('C:\NoktaV3\ProgramStartMesaj');
+            //DeleteFile('c:\Noktav3\http\*.*')
+            //RemoveDir('c:\Noktav3\http');
+           // MkDir('c:\Noktav3\http');
+          end;
+        except
+        end;
  //       datalar.AlpemixRun := datalar.QuerySelect('select SLX from parametreler where slk = ''00'' and SLB = ''UD''').FieldByName('SLX').AsString;
 
 

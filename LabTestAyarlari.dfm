@@ -291,6 +291,18 @@ object frmTestAyarlari: TfrmTestAyarlari
         HeaderAlignmentVert = vaCenter
         Width = 119
       end
+      object Yontem: TcxGridDBColumn
+        Caption = 'Y'#246'ntem'
+        DataBinding.FieldName = 'yontem'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.ClearKey = 46
+        Properties.Items = <>
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 100
+      end
     end
     object cxGrid1Level1: TcxGridLevel
       GridView = cxGrid1DBTableView1

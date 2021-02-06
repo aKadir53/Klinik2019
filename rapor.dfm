@@ -3,7 +3,7 @@ object frmRapor: TfrmRapor
   Top = 137
   BorderStyle = bsToolWindow
   Caption = '-'
-  ClientHeight = 72
+  ClientHeight = 70
   ClientWidth = 309
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,10 +19,11 @@ object frmRapor: TfrmRapor
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 53
+    Top = 51
     Width = 309
     Height = 19
     Panels = <>
+    ExplicitTop = 375
   end
   object memo: TDBMemo
     Left = 128
@@ -38,11 +39,12 @@ object frmRapor: TfrmRapor
     Left = 0
     Top = 0
     Width = 309
-    Height = 53
+    Height = 51
     Align = alClient
     BevelInner = bvLowered
     Caption = 'Panel1'
     TabOrder = 2
+    ExplicitHeight = 375
     object btnOnIzle: TcxButton
       Left = 205
       Top = 3

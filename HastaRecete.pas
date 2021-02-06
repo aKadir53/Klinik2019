@@ -229,6 +229,8 @@ type
     MenuItem8: TMenuItem;
     D1: TMenuItem;
     MenuItem9: TMenuItem;
+    M2: TMenuItem;
+    W1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Yukle;override;
     procedure ReceteGetir(_dosyaNo , gelisNo : string);
@@ -250,7 +252,7 @@ type
     procedure cxButtonKadirIlacAckSilClick(Sender: TObject);
     procedure cxButtonKadirIlacAckEkleClick(Sender: TObject);
     procedure OkuTimer(Sender: TObject);
-    procedure EreceteNoSmsSend;
+    procedure EreceteNoSmsSend(Tip : string);
     procedure MedEczane;
     procedure SablondanYeniRecete;
     procedure ReceteyiSablonOlarakKaydet;
@@ -262,6 +264,8 @@ type
     function ReceteTaniImzalaGonder : string;
     function ReceteGonder : string;
     function ReceteImzalaSil : string;
+    function _BitmemisIlacListeSorgulaBilgisi_ : string;
+
     function ReceteImzalaOnay(tip : string = 'ReceteImzalaOnay') : string;
     function ReceteSil : string;
     procedure Listele;
@@ -353,7 +357,7 @@ var
   imzala : TReceteImzala;
   dllHandle  : Cardinal;
   receteId,TesisKodu: integer;
-  recete,doktorKullanici,doktorsifre,pin,url,cardType : string;
+  recete,doktorKullanici,doktorsifre,pin,url,cardType , ReceteIcerikHata : string;
   doktorTc : string;
   ss : PWideChar;
   sql , yol , yol1: string;
@@ -374,6 +378,7 @@ begin
 
 
   ss := 'Yok';
+  ReceteIcerikHata := SelectAdo.FieldByName('Hata').AsString;
   receteId := (ADO_Recete.FieldByName('id').AsInteger);
   recete := (SelectAdo.FieldByName('recete').AsString);
   doktorKullanici := (SelectAdo.FieldByName('doktorKullanici').AsString);
@@ -383,22 +388,29 @@ begin
   TesisKodu :=  (SelectAdo.FieldByName('TesisKodu').AsInteger);
   cardType :=  SelectAdo.FieldByName('cardType').AsString;
 
+  if ReceteIcerikHata = ''
+  then begin
+      dllHandle := LoadLibrary(LIB_DLL);
+      try
+        if dllHandle = 0 then exit;
 
-  dllHandle := LoadLibrary(LIB_DLL);
-  try
-    if dllHandle = 0 then exit;
+        @imzala := findMethod(dllHandle, 'ReceteImzalaGonder');
+        if addr(imzala) <> nil then
+        imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType),1);
 
-    @imzala := findMethod(dllHandle, 'ReceteImzalaGonder');
-    if addr(imzala) <> nil then
-    imzala(receteId,PWidechar(recete),PWidechar(doktorKullanici),PWidechar(doktorsifre),PWidechar(pin),PWidechar(doktorTc),PWidechar(TesisKodu),PWidechar(ss),PWidechar(url),PWidechar(cardType),1);
+        ReceteImzalaGonder := ss;
 
-    ReceteImzalaGonder := ss;
+        if not Assigned(imzala) then
+          raise Exception.Create(LIB_DLL + ' içersinde ReceteImzalaGonder bulunamadý!');
 
-    if not Assigned(imzala) then
-      raise Exception.Create(LIB_DLL + ' içersinde ReceteImzalaGonder bulunamadý!');
-
-  finally
-    FreeLibrary(dllHandle);
+      finally
+        FreeLibrary(dllHandle);
+      end;
+  end
+  else
+  begin
+   ReceteImzalaGonder := 'Eksik Element : ' + ReceteIcerikHata + ' , Düzeltip Tekrar Deneyiniz';
+   //ShowMessageSkin('Reçete Ýçerik Hatasý',ReceteIcerikHata,'Düzeltip Tekrar Deneyiniz','info');
   end;
 end;
 
@@ -688,6 +700,82 @@ begin
     FreeLibrary(dllHandle);
   end;
 end;
+
+
+
+function TfrmHastaRecete._BitmemisIlacListeSorgulaBilgisi_ : string;
+var
+  imzala : T_BitmemisIlacListeSorgulaBilgisi_;
+  dllHandle: Cardinal;
+  TesisKodu,recete,doktorKullanici,doktorsifre,pin,doktorTc,hastaTc,receteId,url,cardType: String;
+  ss ,ssJson: PWideChar;
+  sql ,yol , yol1: string;
+begin
+   //  ss := 'novalgin;1x1;hafta;2;10.10.2020;20.11.2020|deneme;1x1;hafta;1;10.10.2021;20.11.2021';
+   //  ShowPopupForm('Bitmemiþ Ýlaç Listesi',BitmemisIlacListesi,ss);
+
+
+  DurumGoster(True);
+  try
+  url := datalar.receteURL;
+
+  if Tag = TagfrmPersonelRecete
+  then
+      sql := 'sp_PersonelReceteToXML ' + ADO_Recete.FieldByName('id').AsString
+  else
+      sql := 'sp_HastaReceteToXML ' + ADO_Recete.FieldByName('id').AsString;
+
+  QuerySelect(sql);
+
+  ss := '';
+  ssJson := '';
+  receteId := ADO_Recete.FieldByName('id').AsString;
+  hastaTc := _TC_;
+  doktorKullanici :=  SelectAdo.FieldByName('doktorKullanici').AsString;
+  doktorsifre :=  SelectAdo.FieldByName('doktorsifre').AsString;
+  pin :=  SelectAdo.FieldByName('pin').AsString;
+  doktorTc :=  SelectAdo.FieldByName('doktorTc').AsString;
+  TesisKodu :=  SelectAdo.FieldByName('TesisKodu').AsString;
+  cardType :=  SelectAdo.FieldByName('cardType').AsString;
+
+
+  dllHandle := LoadLibrary(LIB_DLL);
+  try
+    if dllHandle = 0 then exit;
+
+
+    @imzala := findMethod(dllHandle, 'BitmemisIlacListeSorgulaBilgisi');
+    if addr(imzala) <> nil then
+    imzala(PWideChar(TesisKodu),
+           PWideChar(doktorKullanici),PWideChar(doktorsifre),
+           PWideChar(pin),PWideChar(doktorTc),PWideChar(hastaTc),
+           PWidechar(ss),
+           PWideChar(datalar.receteURL),
+           PWideChar(cardType));
+
+    _BitmemisIlacListeSorgulaBilgisi_ := ss;
+   // ShowMessageSkin(ssJson,StringReplace(ss,'|',#13,[rfReplaceAll]),'','info');
+
+   if Copy(ss,1,4) = '0000' then
+    begin
+     ss := PWideChar(StringReplace(ss,'0000','',[rfReplaceAll]));
+     ShowPopupForm('Bitmemiþ Ýlaç Listesi',BitmemisIlacListesi,ss);
+    end
+     else
+      ShowMessageSkin(ss,'','','info');
+
+    if not Assigned(imzala) then
+      raise Exception.Create(LIB_DLL + ' içersinde BitmemisIlacListeSorgulaBilgisi bulunamadý!');
+  finally
+    FreeLibrary(dllHandle);
+  end;
+  finally
+    DurumGoster(False);
+  end;
+
+
+end;
+
 
 
 function TfrmHastaRecete.ReceteImzalaSil : string;
@@ -1067,6 +1155,7 @@ var
   ado , adod : TADOQuery;
   L : ArrayListeSecimler;
 begin
+   ReceteSablonAc.SkinName := AnaForm.dxSkinController1.SkinName;
    L := ReceteSablonAc.ListeGetir;
    if High (L) < 0 then Exit;
    if L[0].kolon1 <> ''
@@ -1111,13 +1200,16 @@ begin
 
              while not adod.Eof do
              begin
-               try
-                 ADO_receteTani.Append;
-                 ADO_receteTani.FieldByName('taniKodu').AsString := ado.FieldByName('taniKodu').AsString;
-                 ADO_receteTani.FieldByName('tani').AsString := ado.FieldByName('tani').AsString;
-                 ADO_receteTani.post;
-               except
-                  ADO_receteTani.Cancel;
+               if not ADO_receteTani.Locate('taniKodu',adod.FieldByName('taniKodu').AsString,[])
+               then begin
+                 try
+                   ADO_receteTani.Append;
+                   ADO_receteTani.FieldByName('taniKodu').AsString := adod.FieldByName('taniKodu').AsString;
+                   ADO_receteTani.FieldByName('tani').AsString := adod.FieldByName('tani').AsString;
+                   ADO_receteTani.post;
+                 except
+                    ADO_receteTani.Cancel;
+                 end;
                end;
                adod.Next;
              end;
@@ -1128,8 +1220,8 @@ begin
              while not adod.Eof do
              begin
                  ADO_receteAcikla.Append;
-                 ADO_receteAcikla.FieldByName('aciklamaTip').AsString := ado.FieldByName('aciklamaTip').AsString;
-                 ADO_receteAcikla.FieldByName('aciklama').AsString := ado.FieldByName('aciklama').AsString;
+                 ADO_receteAcikla.FieldByName('aciklamaTip').AsString := adod.FieldByName('aciklamaTip').AsString;
+                 ADO_receteAcikla.FieldByName('aciklama').AsString := adod.FieldByName('aciklama').AsString;
                  ADO_receteAcikla.post;
                  adod.Next;
              end;
@@ -1145,13 +1237,13 @@ begin
 end;
 
 
-procedure TfrmHastaRecete.EreceteNoSmsSend;
+procedure TfrmHastaRecete.EreceteNoSmsSend(Tip : string);
 var
  tel,msj : string;
 begin
   if not CheckReceteStatus (True, False, False, False, False) then Exit;
 
-  if mrYes = ShowMessageSkin('E-Reçete Numaranýz SMS ile Bildirilecek','','','msg')
+  if mrYes = ShowMessageSkin('E-Reçete Numaranýz ' + ifThen(Tip='','',Tip) + ' ile Bildirilecek','','','msg')
   then begin
       //datalar.Login;
       tel := dosyaNoHastaTel(_dosyaNO_,_mobilTel_);
@@ -1171,7 +1263,10 @@ begin
        exit;
       end;
 
-
+      if Tip = 'Whatsapp'
+      then
+        WhatsappSend(datalar.WhatsappTelefonToken,tel,msj,_HastaAdSoyad_,_dosyaNO_)
+      else
       SMSSend(tel,msj,_HastaAdSoyad_,_dosyaNO_);
 
   end;
@@ -1505,6 +1600,7 @@ var
     ack : TStringList;
     j , rc : integer;
 begin
+  //  if not CheckReceteStatus (True, False, True, True, True) then Exit;
     datalar.YeniRecete.doktor := datalar.doktorKodu;
     datalar.YeniRecete.doktorAdi := doktorAdi(datalar.doktorKodu);
     datalar.YeniRecete.protokolNo := EnsonSeansProtokolNo(datalar.AktifSirket,'','Reçete');
@@ -1569,6 +1665,7 @@ begin
 
     if islem = ReceteYeniRecete
     then begin
+        if ADO_Recete.Eof then Exit;
         receteNo := ADO_Recete.fieldbyname('id').AsString;
         try
           songel := Songelis(_dosyaNo_);
@@ -1811,6 +1908,16 @@ begin
     try
        if not ADO_receteTani.Locate('receteId;taniKodu',VarArrayOf([id, List[I].kolon1]),[])
        then begin
+
+         if datalar.QuerySelect('select dbo.fn_BulasiciHastalikTanisimi(' + QuotedStr(List[I].kolon1) +')').Fields[0].AsInteger = 1
+         then begin
+           if mrYes = ShowMessageSkin('Bulaþýcý Hastalýk Tanýsýdýr','Eklemek Ýstiyor musunuz?','','msg')
+           then begin
+           end else
+             Continue;
+         end;
+
+
          ADO_receteTani.Append;
          ADO_receteTani.FieldByName('taniKodu').AsString := List[I].kolon1;
          ADO_receteTani.FieldByName('tani').AsString := List[I].kolon2;
@@ -2426,6 +2533,7 @@ begin
         end;
   -9,-40,-50,-60 :
        begin
+           // if not CheckReceteStatus (True, False, True, True, True) then Exit;
             if ADO_Recete.FieldByName('receteTur').AsString[1] in ['2','3','4','5']
             then begin
            //   path := 'D:\Projeler\VS\c#\RenkliReceteToken2\ReceteToken\WindowsFormsApplication1\bin\Debug\ReceteToken.exe';
@@ -2453,6 +2561,10 @@ begin
   -10 : begin
           MedulaSend(ReceteMedulaSil);
         end;
+  -11 : begin
+           _BitmemisIlacListeSorgulaBilgisi_;
+
+        end;
   -12 : begin
             if varToStr(ADO_Recete.FieldByName('receteAltTur').AsString) = '4'
             then MedulaSend(ReceteMedulaOnay);
@@ -2463,8 +2575,8 @@ begin
            Then MedulaSend(ReceteMedulaOnayIptal);
         end;
 
- -8 : begin
-        EReceteNoSmsSend;
+ -8,-28 : begin
+         EReceteNoSmsSend(ifThen(Tcontrol(sender).Tag = -28,'Whatsapp',''))
        end;
  -14 : begin
          MedEczane;
@@ -2504,6 +2616,7 @@ begin
        end;
 
 -100 : begin
+          if not CheckReceteStatus (True, False, True, True, True) then Exit;
           jsonText := datalar.QuerySelect('RenkliReceteJson ' + ADO_Recete.FieldByName('id').AsString + ',1').Fields[0].AsString;
           if Recetem(jsonText) = 'Recetem'
           Then begin
@@ -2614,6 +2727,8 @@ end;
 
 procedure TfrmHastaRecete.cxGridReceteDblClick(Sender: TObject);
 begin
+  if _pasifSebeb_ = '5' then exit;
+
   Duzenle;
 end;
 
@@ -2953,6 +3068,19 @@ begin
    // ReceteGetir(_dosyaNO_,_gelisNO_);
 
     ReceteWhereGelis := ' and r.gelisNo = ' + _gelisNo_;
+
+
+
+    if _pasifSebeb_ = '5' then
+    begin
+     pnlReceteDetaySag.Enabled := False;
+     cxTaniBaslikPanel.Enabled := False;
+     pnlRaceAckSag.Enabled := False;
+     pnlReceteIlacAckSag.Enabled := False;
+     cxGrid4.Enabled := False;
+     gridIlaclar.OptionsData.Editing := False;
+     cxGridIlacTedaviPlani.OptionsData.Editing := False;
+    end;
 
 
     Result := True;

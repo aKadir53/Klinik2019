@@ -91,6 +91,7 @@ object frmRaporSablon: TfrmRaporSablon
         DataController.Summary.SummaryGroups = <>
         OptionsData.Deleting = False
         OptionsView.GroupByBox = False
+        OptionsView.Indicator = True
         object cxGridHastaGelissablonAdi: TcxGridDBColumn
           Caption = #350'ablonAd'#305
           DataBinding.FieldName = 'SablonTanimi'
@@ -266,6 +267,7 @@ object frmRaporSablon: TfrmRaporSablon
         Align = alClient
         DataBinding.DataField = 'Aciklama'
         DataBinding.DataSource = DataSource3
+        Properties.OnChange = cxDBMemo1PropertiesChange
         TabOrder = 0
         Height = 178
         Width = 630
@@ -462,6 +464,7 @@ object frmRaporSablon: TfrmRaporSablon
   object Sablonlar: TADOTable
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
+    AfterScroll = SablonlarAfterScroll
     TableName = 'IlacRaporSablon'
     Left = 88
     Top = 129

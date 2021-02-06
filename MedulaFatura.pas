@@ -1583,9 +1583,11 @@ procedure TfrmMedulaFatura.HizmetleriOku1Click(Sender: TObject);
 var
  GirisFormRecord : TGirisFormRecord;
  F : TGirisForm;
+ satir : integer;
 begin
-  GirisFormRecord.F_TakipNo_ := _Dataset.FieldByName('takipNo').AsString;
-  GirisFormRecord.F_BasvuruNo_ := _Dataset.FieldByName('basvuruNo').AsString;
+  satir := FaturaList.Controller.SelectedRows[0].RecordIndex;
+  GirisFormRecord.F_TakipNo_  := FaturaList.DataController.GetValue(satir,FaturaList.DataController.GetItemByFieldName('takipNo').Index);
+  GirisFormRecord.F_BasvuruNo_ := FaturaList.DataController.GetValue(satir,FaturaList.DataController.GetItemByFieldName('basvuruNo').Index);
   F := FormINIT(TagfrmTakipBilgisiOku,GirisFormRecord);
   if F <> nil then F.ShowModal;
 end;

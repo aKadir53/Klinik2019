@@ -790,11 +790,22 @@ object frmPersonelKart: TfrmPersonelKart
     object N1: TMenuItem
       Caption = '-'
     end
-    object SmsGnder1: TMenuItem
-      Tag = -28
-      Caption = 'Sms G'#246'nder'
-      ImageIndex = 94
-      OnClick = cxButtonCClick
+    object M1: TMenuItem
+      Tag = 28
+      Caption = 'Mesaj G'#246'nder'
+      ImageIndex = 144
+      object SmsGnder1: TMenuItem
+        Tag = -28
+        Caption = 'Sms G'#246'nder'
+        ImageIndex = 94
+        OnClick = cxButtonCClick
+      end
+      object W1: TMenuItem
+        Tag = -128
+        Caption = 'Whatsapp'
+        ImageIndex = 143
+        OnClick = cxButtonCClick
+      end
     end
     object AKart1: TMenuItem
       Tag = -25

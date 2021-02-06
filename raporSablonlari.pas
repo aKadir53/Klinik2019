@@ -85,6 +85,8 @@ type
     procedure cxButtonKadirTaniSilClick(Sender: TObject);
     procedure Sablontaniekle;
     procedure btnAckKaydetClick(Sender: TObject);
+    procedure cxDBMemo1PropertiesChange(Sender: TObject);
+    procedure SablonlarAfterScroll(DataSet: TDataSet);
 
   private
     { Private declarations }
@@ -132,15 +134,19 @@ begin
     List.TColsW := '60,200';
     List.ListeBaslik := 'Tetkikler';
     _List_ := List.ListeGetir;
+
     if length(_List_) > 0
     Then BEgin
-       sql := 'insert into IlacRaporSablonTetkik(SablonId,TetkikKodu) ' +
+       sql := 'if not exists (select * from IlacRaporSablonTetkik where SablonId = ' + Sablonlar.FieldByName('id').AsString + ' and TetkikKodu = ' + QuotedStr(_List_[0].kolon1) + ')' +
+              ' begin ' +
+              'insert into IlacRaporSablonTetkik(SablonId,TetkikKodu) ' +
                          'values( ' + Sablonlar.FieldByName('id').AsString + ',' +
-                                      QuotedStr(_List_[0].kolon1) + ')';
+                                      QuotedStr(_List_[0].kolon1) + ')' +
+              ' end ';
        datalar.QueryExec(sql);
 
-       Tetkik.Active := False;
-       Tetkik.Active := True;
+       Tetkik.Requery();
+
 
     End;
 
@@ -169,14 +175,17 @@ begin
     _List_ := List.ListeGetir;
     if length(_List_) > 0
     Then BEgin
-       sql := 'insert into IlacRaporTeshislerSablon(SablonId,teshisKodu,ICD10Kodu) ' +
+       sql := 'if not exists (select * from IlacRaporTeshislerSablon where SablonId = ' + Sablonlar.FieldByName('id').AsString + ' and teshisKodu = ' + QuotedStr(_List_[0].kolon1) + ')' +
+              ' begin ' +
+              'insert into IlacRaporTeshislerSablon(SablonId,teshisKodu,ICD10Kodu) ' +
                          'values( ' + Sablonlar.FieldByName('id').AsString + ',' +
                                       QuotedStr(_List_[0].kolon1) + ',' +
-                                      QuotedStr(_List_[0].kolon3) + ')';
+                                      QuotedStr(_List_[0].kolon3) + ')' +
+              ' end ';
        datalar.QueryExec(sql);
 
-       Tani.Active := False;
-       Tani.Active := True;
+       Tani.Requery();
+
 
     End;
 
@@ -203,14 +212,18 @@ begin
     _List_ := List.ListeGetir;
     if length(_List_) > 0
     Then BEgin
-       sql := 'insert into IlacRaporEtkenMaddelerSablon(SablonId,etkenMaddeKodu,etkenMaddeAdi) ' +
+       sql :=
+        'if not exists (select * from IlacRaporEtkenMaddelerSablon where SablonId = ' + Sablonlar.FieldByName('id').AsString + ' and etkenMaddeKodu = ' + QuotedStr(_List_[0].kolon1) + ')' +
+        ' begin ' +
+        'insert into IlacRaporEtkenMaddelerSablon(SablonId,etkenMaddeKodu,etkenMaddeAdi) ' +
                          'values( ' + Sablonlar.FieldByName('id').AsString + ',' +
                                       QuotedStr(_List_[0].kolon1) + ',' +
-                                      QuotedStr(_List_[0].kolon2) + ')';
+                                      QuotedStr(_List_[0].kolon2) + ')' +
+        ' end ' ;
        datalar.QueryExec(sql);
 
-       SablonDetay.Active := False;
-       SablonDetay.Active := True;
+       SablonDetay.Requery();
+
 
     End;
   end;
@@ -228,6 +241,7 @@ procedure TfrmRaporSablon.btnAckKaydetClick(Sender: TObject);
 begin
   inherited;
   SablonAciklama.Post;
+  btnAckKaydet.Enabled := False;
 end;
 
 procedure TfrmRaporSablon.cxButtonKadirTaniEkleClick(Sender: TObject);
@@ -261,6 +275,7 @@ var
 begin
   inherited;
 
+
    if MrYes = ShowMessageSkin('Etken Madde Þablondan Çýkartýlýyor Emin misiniz ?','','','msg')
      Then Begin
         ado := TADOQuery.Create(nil);
@@ -277,6 +292,12 @@ begin
 end;
 
 
+
+procedure TfrmRaporSablon.cxDBMemo1PropertiesChange(Sender: TObject);
+begin
+  inherited;
+  btnAckKaydet.Enabled := True;
+end;
 
 procedure TfrmRaporSablon.FormCreate(Sender: TObject);
 var
@@ -314,6 +335,7 @@ begin
     tetkikler.Filter := '';
 
     Sablonlar.Active := true;
+    Sablonlar.First;
     SablonDetay.Active := true;
     Tani.Active := true;
     Tetkik.Active := true;
@@ -321,6 +343,8 @@ begin
     cxGridHastaGelisdoktor.Properties := doktorlar.Properties;
     cxGridDBTableView1kullanZamanUnit.Properties := pBirim.Properties;
     cxGridDBTetkik.Properties := tetkikler.Properties;
+
+    btnAckKaydet.Enabled := False;
 end;
 
 procedure TfrmRaporSablon.S1Click(Sender: TObject);
@@ -455,7 +479,16 @@ begin
 
 end;
 
- procedure TfrmRaporSablon.Sablontaniekle;
+ procedure TfrmRaporSablon.SablonlarAfterScroll(DataSet: TDataSet);
+begin
+  inherited;
+  if SABLONDETAY.Eof then cxButtonKadirTaniSil.Enabled := False else cxButtonKadirTaniSil.Enabled := True;
+  if Tani.Eof then cxButtonKadirTanisil1.Enabled := False else cxButtonKadirTanisil1.Enabled := True;
+  if Tetkik.Eof then cxButtonKadirTetkikSil.Enabled := False else cxButtonKadirTetkikSil.Enabled := True;
+
+end;
+
+procedure TfrmRaporSablon.Sablontaniekle;
 var
   List : ArrayListeSecimler;
   I : integer;

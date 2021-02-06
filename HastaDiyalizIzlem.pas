@@ -88,20 +88,28 @@ procedure TfrmHastaDiyalizIzlem.Kaydet;
 var
   ado : TADOQuery;
 begin
-  sql := 'update Hasta_gelisler ' +
-         ' set aciklama = ' + ifThen(trimleft(txtAciklama.lines.Text) = '' , 'NULL', QuotedStr(trimleft(txtAciklama.lines.Text))) +
-       //  ',OrnekNo = ' + QuotedStr(txtOrnekNo.Text) +
-       //  ',CikisOrnekNo = ' + QuotedStr(txtOrnekNoCikis.Text) +
-         ',DVitamin = ' + QuotedStr(txtDVitaminKul.text) +
-         ',Anemi = ' + QuotedStr(gelisSikayetSecili(txtAnemi)) +
-         ',tedaviSeyri = ' + QuotedStr(txtedaviSeyri.Text) +
-         ',DVaciklama = ' + QuotedStr(txtDAciklama.Text) +
-         ',Sinekalset = ' + QuotedStr(txtSinekalset.Text) +
-         ',Antihipertansif = ' + QuotedStr(txtAntihipertansif.Text) +
-         ',FosforBagAjan = ' + QuotedStr(gelisSikayetSecili(txtFosfor)) +
-         ' where dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNO = ' + _gelisNo_;
-   datalar.QueryExec(ado,sql);
-
+  try
+     sql := 'update Hasta_gelisler ' +
+           ' set aciklama = ' +
+           StringReplace( ifThen(trimleft(txtAciklama.lines.Text) = '' , 'NULL', QuotedStr(trimleft(txtAciklama.lines.Text))),
+                         #13#10,'',[rfReplaceAll])   +
+         //  ',OrnekNo = ' + QuotedStr(txtOrnekNo.Text) +
+         //  ',CikisOrnekNo = ' + QuotedStr(txtOrnekNoCikis.Text) +
+           ',DVitamin = ' + QuotedStr(txtDVitaminKul.text) +
+           ',Anemi = ' + QuotedStr(gelisSikayetSecili(txtAnemi)) +
+           ',tedaviSeyri = ' + QuotedStr(txtedaviSeyri.Text) +
+           ',DVaciklama = ' + QuotedStr(txtDAciklama.Text) +
+           ',Sinekalset = ' + QuotedStr(txtSinekalset.Text) +
+           ',Antihipertansif = ' + QuotedStr(txtAntihipertansif.Text) +
+           ',FosforBagAjan = ' + QuotedStr(gelisSikayetSecili(txtFosfor)) +
+           ' where dosyaNO = ' + QuotedStr(_dosyaNo_) + ' and gelisNO = ' + _gelisNo_;
+     datalar.QueryExec(ado,sql);
+     ShowMessageSkin('Ýzlem Bilgisi Kayýt Edildi','','','info');
+  except on e : exception do
+   begin
+     ShowMessageSkin('Hata : ',e.Message,'','info');
+   end;
+  end;
 end;
 
 function TfrmHastaDiyalizIzlem.gelisSikayetSecili(c : TcxCheckListBox) : string;
@@ -216,6 +224,13 @@ begin
   if not inherited Init(Sender) then exit;
   _HastaBilgileriniCaptionGoster_ := True;
   yukle;
+
+  if _pasifSebeb_ = '5' then
+  begin
+    cxPageControl1.Enabled := False;
+  end;
+
+
   Result := True;
 
 end;

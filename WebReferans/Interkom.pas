@@ -83,7 +83,7 @@ end;
 
 procedure SonucAl(gridAktif : TcxGridDBTableView ; txtLog : Tcxmemo ; progres :TcxProgressBar);
 var
-  sonucDeger , KayitTip , barkodG , barkodC ,SonucListesi : string;
+  sonucDeger , markersonuc , KayitTip , barkodG , barkodC ,SonucListesi : string;
   SonucList , SonuclarList : TStringList;
   test : TInterkomSonuc;
   testler : Sonuclar;
@@ -117,23 +117,27 @@ begin
       if testKod <> ''
       Then Begin
          sonucDeger := sonuc.sonuc;
-         sonucDeger := StringReplace(sonucDeger,'Poz','POZ',[rfReplaceAll]);
-         sonucDeger := StringReplace(sonucDeger,'Neg','NEG',[rfReplaceAll]);
-
-         if (pos('NEG',sonucDeger) > 0)
-         Then sonucDeger := '-1'
-         Else
-         if (pos('POZ',sonucDeger) > 0)
-         Then sonucDeger := '1'
-         Else
-         sonucDeger := sonuc.sonuc;
 
          if (testKod = '907440') or
             (testKod = '906610') or
             (testKod = '906630') or
             (testKod = '906660')
          Then Begin
-             sql := 'update hareketler set Gd = ' + sonucDeger +
+             markersonuc := '0';
+             sonucDeger := StringReplace(sonucDeger,'Poz','POZ',[rfReplaceAll]);
+             sonucDeger := StringReplace(sonucDeger,'Neg','NEG',[rfReplaceAll]);
+
+             if (pos('NEG',sonucDeger) > 0)
+             Then markersonuc := '-1'
+             Else
+             if (pos('POZ',sonucDeger) > 0)
+             Then markersonuc := '1';
+
+             sonucDeger := sonuc.sonuc;
+
+             sql := 'update hareketler set Gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(sonucDeger) + ')' +
+                    ',islemAciklamasi = ' + QuotedStr(sonucDeger) +
+                    ',MarkerGD = ' + QuotedStr(markersonuc) +
                     ' where onay = 1 and code = ' + QuotedStr(testKod) +  ' and tip1 = ' + QuotedStr(_F_) +
                     ' and dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNO = ' + gelisNo ;
              datalar.QueryExec(sql);

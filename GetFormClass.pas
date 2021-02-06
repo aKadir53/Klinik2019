@@ -161,7 +161,10 @@ uses
     HastaBesinDegerlendirme,
     MaviKodBildirim,
     ElHijyenGozlem,
-    AsiTakipListesi;
+    AsiTakipListesi,
+    StokDepoCikisList,
+    VKI,
+    PersonelGirisCikis;
 
 
 function FormTabImageIndex(formId : integer) : integer;
@@ -358,6 +361,8 @@ begin
    TagfrmSirketSozlesmeler : Result := TfrmSozlesmeler;
    TagfrmCariHareketGiris : Result := TfrmCariHareket;
    TagfrmCariHesapEkstre : Result := TfrmCariHesapEkstre;
+   TagfrmStokDepoCikisList : Result := TfrmStokDepoCikisList;
+
    TagfrmCariHesapBorcAlacakToplam : Result := TfrmCariHesapBorcAlacakToplam;
    TagfrmSahaSaglikGozetim : Result := TfrmSahaSaglikGozetim;
    TagfrmCihazKontrol : Result := TfrmCihazKontrol;
@@ -429,6 +434,8 @@ begin
    TagfrmCalisanGeriBildirimAnket : Result := TfrmCalisanGeriBildirimAnket;
    TagfrmITS : Result := TfrmITS;
    TagfrmITSPaket : Result := TfrmITSPaket;
+   TagfrmVKI : Result := TfrmVKI;
+   TagfrmPersonelGirisCikis : Result := TfrmPersonelGirisCikis ;
  //  TagfrmAjandaOzet : Result := TfrmAjandaOzet;
   end;
 end;
@@ -498,6 +505,7 @@ begin
 
    TagfrmCariHareketGiris : Result := frmCariHareket;
    TagfrmCariHesapEkstre : Result := frmCariHesapEkstre;
+   TagfrmStokDepoCikisList : Result := frmStokDepoCikisList;
    TagfrmCariHesapBorcAlacakToplam : Result := frmCariHesapBorcAlacakToplam;
    TagfrmRDS : Result := frmRDS;
    TagfrmKKD : Result := frmKKD;
@@ -566,6 +574,8 @@ begin
    TagfrmCalisanGeriBildirimAnket : Result := frmCalisanGeriBildirimAnket;
    TagfrmITS : Result := frmITS;
    TagfrmITSPaket : Result := frmITSPaket;
+   TagfrmVKI : Result := frmVKI;
+   TagfrmPersonelGirisCikis : Result := frmPersonelGirisCikis ;
 //   TagfrmAjandaOzet : Result := frmAjandaOzet;
 
   end;
@@ -634,6 +644,8 @@ begin
      TagfrmSirketSozlesmeler : frmSozlesmeler := TfrmSozlesmeler.Create(Tab);
      TagfrmCariHareketGiris : frmCariHareket := TfrmCariHareket.Create(Tab);
      TagfrmCariHesapEkstre : frmCariHesapEkstre := TfrmCariHesapEkstre.Create(Tab);
+     TagfrmStokDepoCikisList : frmStokDepoCikisList := TfrmStokDepoCikisList.Create(Tab);
+
      TagfrmCariHesapBorcAlacakToplam : frmCariHesapBorcAlacakToplam := TfrmCariHesapBorcAlacakToplam.Create(Tab);
      TagfrmRDS: frmRDS := TfrmRDS.Create(Tab);
      TagfrmKKD: frmKKD := TfrmKKD.Create(Tab);
@@ -697,7 +709,8 @@ begin
      TagfrmCalisanGeriBildirimAnket : frmCalisanGeriBildirimAnket := TfrmCalisanGeriBildirimAnket.Create(Tab);
      TagfrmITS : frmITS  := TfrmITS.Create(Tab);
      TagfrmITSPaket : frmITSPaket  := TfrmITSPaket.Create(Tab);
-
+     TagfrmVKI : frmVKI  := TfrmVKI.Create(Tab);
+     TagfrmPersonelGirisCikis : frmPersonelGirisCikis  := TfrmPersonelGirisCikis.Create(Tab);
   end;
   try
 
@@ -756,6 +769,7 @@ begin
     TGirisForm(Form)._SeansBilgi := Values.F_SeansBilgi;
     TGirisForm(Form)._sysTakipNo_ := Values.F_sysTakipNo;
     TGirisForm(Form)._pasifSebeb_ := Values.F_PasifSebeb_;
+    TGirisForm(Form)._Aktif_ := Values.F_Aktif_;
     TGirisForm(Form).Tag := FormTag;
     TgirisForm(Form).Parent := Tab;
     TGirisForm(Form).BringToFront;
@@ -838,6 +852,7 @@ begin
      TagfrmSirketSozlesmeler : frmSozlesmeler := TfrmSozlesmeler.Create(Tab);
      TagfrmCariHareketGiris : frmCariHareket := TfrmCariHareket.Create(Tab);
      TagfrmCariHesapEkstre : frmCariHesapEkstre := TfrmCariHesapEkstre.Create(Tab);
+     TagfrmStokDepoCikisList : frmStokDepoCikisList := TfrmStokDepoCikisList.Create(Tab);
      TagfrmCariHesapBorcAlacakToplam : frmCariHesapBorcAlacakToplam := TfrmCariHesapBorcAlacakToplam.Create(Tab);
 
      TagfrmRDS : frmRDS := TfrmRDS.Create(Tab);
@@ -901,6 +916,9 @@ begin
      TagfrmCalisanGeriBildirimAnket : frmCalisanGeriBildirimAnket := TfrmCalisanGeriBildirimAnket.Create(Tab);
      TagfrmITS : frmITS  := TfrmITS.Create(Tab);
      TagfrmITSPaket : frmITSPaket  := TfrmITSPaket.Create(Tab);
+     TagfrmVKI : frmVKI  := TfrmVKI.Create(Tab);
+     TagfrmPersonelGirisCikis : frmPersonelGirisCikis  := TfrmPersonelGirisCikis.Create(Tab);
+
   end;
   try
     Form := TGirisForm(FormClassType(abs(FormTag)));
@@ -925,6 +943,8 @@ begin
     TgirisForm(Form).Parent := Tab;
     TGirisForm(Form).BringToFront;
     TGirisForm(Form).cxPanelButtonVisible(True,True,True,False);
+
+
 
     if TGirisForm(Form).Init(Form) Then
     begin
@@ -1015,6 +1035,8 @@ begin
     TagfrmSirketSozlesmeler : Application.CreateForm(TfrmSozlesmeler , frmSozlesmeler);
     TagfrmCariHareketGiris : Application.CreateForm(TfrmCariHareket, frmCariHareket);
     TagfrmCariHesapEkstre : Application.CreateForm(TfrmCariHesapEkstre, frmCariHesapEkstre);
+    TagfrmStokDepoCikisList : Application.CreateForm(TfrmStokDepoCikisList, frmStokDepoCikisList);
+
     TagfrmCariHesapBorcAlacakToplam : Application.CreateForm(TfrmCariHesapBorcAlacakToplam, frmCariHesapBorcAlacakToplam);
 
     TagfrmRDS : Application.CreateForm(TfrmRDS, frmRDS);
@@ -1116,6 +1138,7 @@ begin
     TGirisForm(Form)._SeansBilgi := Value.F_SeansBilgi;
     TGirisForm(Form)._sysTakipNo_ := Value.F_sysTakipNo;
     TGirisForm(Form)._pasifSebeb_ := Value.F_PasifSebeb_;
+    TGirisForm(Form)._Aktif_ := Value.F_Aktif_;
     TGirisForm(Form).GonderenForm := Nil;
 
   except
@@ -1135,6 +1158,10 @@ begin
     TGirisForm(Form).cxTab.Tabs[0].ImageIndex := FormTabImageIndex(abs(FormTag));
 
     TGirisForm(Form).Tag := FormTag;
+
+    TGirisForm(Form).Width := anaform.sayfalar.Width;
+    TGirisForm(Form).Height := anaform.sayfalar.Height;
+
     if TGirisForm(Form).Init(Form) = True Then
     begin
       result := TGirisForm(Form);
