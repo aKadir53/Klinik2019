@@ -694,9 +694,6 @@ var
 begin
  //  Height := dxLayoutControl1Group2. btnGiris.Top + btnGiris.Height + 10;
 
-
-
-
    txtServerName.EditValue := regOku('OSGB_servername');
    txtServerUserName.EditValue :=  Decode64(copy(Decode64(DBUserName),4,100));   //Decode64(regOku('OSGB_serverUserName'));
    txtServerPassword.EditValue := Decode64(copy(Decode64(DBPasword),4,100));//Decode64(regOku('OSGB_serverPassWord'));

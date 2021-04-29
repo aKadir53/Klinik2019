@@ -157,6 +157,7 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
             ExplicitWidth = 229
             ExplicitHeight = 313
             object cxGridHastaGelis: TcxGridDBTableView
+              OnDblClick = cxGridHastaListesiDblClick
               OnFocusedRecordChanged = cxGridHastaGelisFocusedRecordChanged
               DataController.DataModeController.GridMode = True
               DataController.DataSource = AdoHastaGelisDataSource
@@ -242,6 +243,13 @@ object frmTedaviBilgisi: TfrmTedaviBilgisi
         Top = 22
         AutoSize = False
         Caption = 'yas'
+        Height = 20
+        Width = 114
+      end
+      object LabelTc: TcxLabel
+        Left = 128
+        Top = 41
+        AutoSize = False
         Height = 20
         Width = 114
       end

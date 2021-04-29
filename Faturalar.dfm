@@ -111,7 +111,6 @@ object frmFaturalar: TfrmFaturalar
           OptionsData.DeletingConfirmation = False
           OptionsData.Editing = False
           OptionsData.Inserting = False
-          OptionsSelection.MultiSelect = True
           OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
           OptionsView.CellAutoHeight = True
           OptionsView.Footer = True
@@ -524,7 +523,7 @@ object frmFaturalar: TfrmFaturalar
     end
     object S2: TMenuItem
       Tag = -27
-      Caption = 'Sil (Fatura '#304'ptal)'
+      Caption = #304'ptal (Fatura '#304'ptal)'
       ImageIndex = 42
       OnClick = cxButtonCClick
     end

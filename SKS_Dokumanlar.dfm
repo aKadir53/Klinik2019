@@ -127,6 +127,16 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         Visible = False
         Width = 20
       end
+      object gridDokumanlarColumn5: TcxGridDBColumn
+        Caption = 'Standart Code'
+        DataBinding.FieldName = 'StandartCode'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 47
+      end
       object gridDokumanlardokumanNo: TcxGridDBColumn
         Caption = 'D'#246'k'#252'man No'
         DataBinding.FieldName = 'dokumanNo'
@@ -135,7 +145,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 71
+        Width = 67
       end
       object gridDokumanlarColumn1: TcxGridDBColumn
         DataBinding.FieldName = 'dokumanTip'
@@ -171,7 +181,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         HeaderGlyphAlignmentHorz = taCenter
-        Width = 34
+        Width = 32
       end
       object gridDokumanlaradi: TcxGridDBColumn
         Caption = 'D'#246'k'#252'man Tan'#305'm'#305
@@ -182,7 +192,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         HeaderAlignmentVert = vaCenter
         Styles.Content = cxStyle2
         Styles.Header = cxStyle2
-        Width = 236
+        Width = 224
       end
       object KapsamAdi: TcxGridDBColumn
         DataBinding.FieldName = 'KapsamAdi'
@@ -256,7 +266,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 77
+        Width = 73
       end
       object gridDokumanlarraporlamaKime: TcxGridDBColumn
         DataBinding.FieldName = 'raporlamaKime'
@@ -276,7 +286,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 90
+        Width = 85
       end
       object gridDokumanlardenetci: TcxGridDBColumn
         DataBinding.FieldName = 'denetci'
@@ -323,7 +333,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
           end>
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 115
+        Width = 110
       end
       object gridDokumanlarOnay: TcxGridDBColumn
         Caption = 'Onay Durum'
@@ -350,7 +360,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
           end>
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 109
+        Width = 103
       end
       object gridDokumanlarRev: TcxGridDBColumn
         Caption = 'Rev.'
@@ -361,7 +371,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
-        Width = 59
+        Width = 57
       end
       object gridDokumanlarColumn2: TcxGridDBColumn
         Caption = 'Revizyon Tarihi'
@@ -372,7 +382,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         GroupSummaryAlignment = taCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 76
+        Width = 72
       end
       object gridDokumanlarColumn3: TcxGridDBColumn
         Caption = 'Dosya'
@@ -409,7 +419,7 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
-        Width = 38
+        Width = 35
       end
     end
     object cxGridLevel1: TcxGridLevel
@@ -745,6 +755,15 @@ object frmSKS_Dokumanlar: TfrmSKS_Dokumanlar
       Caption = 'Dok'#252'man Listesini Yazd'#305'r'
       ImageIndex = 28
       OnClick = cxButtonCClick
+    end
+    object N7: TMenuItem
+      Caption = '?'
+      Visible = False
+      OnClick = N7Click
+    end
+    object l2: TMenuItem
+      Caption = 'Bakanl'#305'k Logosunu De'#287'i'#351'tir'
+      OnClick = l2Click
     end
   end
   object cxStyleRepository1: TcxStyleRepository

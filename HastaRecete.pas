@@ -1676,6 +1676,10 @@ begin
         if mrYes = ShowMessageSkin('Reçeteden Reçete Üretilecek , Emin misiniz?','','','msg')
         then begin
           try
+        //    sql := 'exec sp_ReceteTekrarla @id = ' + receteNo + ',@tip = ' + QuotedStr(_p_);
+        //    datalar.QueryExec(sql);
+        //    ADO_Recete.Requery();
+
            ado := TADOQuery.Create(nil);
            try
              adoD := TADOQuery.Create(nil);
@@ -1688,8 +1692,8 @@ begin
                   ADO_Recete.FieldByName('dosyaNo').AsString := _dosyaNo_;
                   ADO_Recete.FieldByName('gelisNo').AsString := songel;
                   ADO_Recete.FieldByName('recetetur').AsString := ado.fieldbyname('receteTur').AsString;
-                  ADO_Recete.FieldByName('protokolNo').AsString := EnsonSeansProtokolNo(_firmaKod_,_sube_,'Reçete');
-                  ADO_Recete.FieldByName('doktor').AsString := datalar.YeniRecete.doktor;
+                  ADO_Recete.FieldByName('protokolNo').AsString := EnsonSeansProtokolNo(datalar.AktifSirket,'','Reçete');
+                  ADO_Recete.FieldByName('doktor').AsString := ado.fieldbyname('doktor').AsString;//datalar.YeniRecete.doktor;
                   ADO_Recete.FieldByName('receteAltTur').AsString := ado.fieldbyname('receteAltTur').AsString;
              //   ADO_Recete.FieldByName('Tani').AsString := txtTani.Text;
                   ADO_Recete.FieldByName('Tarih').AsDateTime := date();
@@ -1697,11 +1701,13 @@ begin
                   ADO_Recete.FieldByName('WanIP').AsString := datalar.WanIp;
                   ADO_Recete.Post;
 
+
                   sql := 'select * from ReceteDetay' + _p_ + ' where ReceteId = ' + receteNo;
                   datalar.QuerySelect(adoD,sql);
                   while not adoD.Eof do
                   begin
                      ADO_RECETE_DETAY.Append;
+                     ADO_RECETE_DETAY.FieldByName('ReceteID').Asinteger := ADO_Recete.FieldByName('id').AsInteger;
                      ADO_RECETE_DETAY.FieldByName('ilacKodu').AsString := adoD.FieldByName('ilacKodu').AsString;
                      ADO_RECETE_DETAY.FieldByName('ilacAdi').AsString := adoD.FieldByName('ilacAdi').AsString;
                      ADO_RECETE_DETAY.FieldByName('adet').AsInteger := adoD.FieldByName('adet').AsInteger;
@@ -1751,9 +1757,11 @@ begin
              finally
                adoD.Free;
              end;
+
            finally
              ado.Free;
            end;
+
           except on e : Exception do
            begin
              ShowMessageSkin(e.Message,'','','info');

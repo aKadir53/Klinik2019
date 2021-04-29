@@ -503,6 +503,11 @@ object frmHastaListeD: TfrmHastaListeD
     Images = DATALAR.imag24png
     Left = 384
     Top = 110
+    object S2: TMenuItem
+      Caption = 'SKS Formlar'#305
+      ImageIndex = 137
+      OnClick = S2Click
+    end
     object N5: TMenuItem
       Tag = -50
       Caption = #304'lk Seans'#305' Merkeze Ba'#351'lang'#305#231'  Yap'
@@ -569,6 +574,17 @@ object frmHastaListeD: TfrmHastaListeD
         Visible = False
         FormId = 0
       end
+      object S1: TMenuItem
+        Tag = 13
+        Caption = 'Son 6 ay'
+        OnClick = cxButtonCClick
+      end
+      object T4: TMenuItem
+        Tag = 14
+        Caption = 'Tedavi Formu'
+        ImageIndex = 67
+        OnClick = cxButtonCClick
+      end
     end
     object T2: TMenuItem
       Tag = 190
@@ -588,11 +604,21 @@ object frmHastaListeD: TfrmHastaListeD
       ImageIndex = 62
       OnClick = cxButtonCClick
     end
-    object A1: TMenuItem
-      Tag = 9020
-      Caption = 'A'#351#305' Kart'#305
+    object A2: TMenuItem
+      Caption = 'A'#351#305
       ImageIndex = 60
-      OnClick = cxButtonCClick
+      object A1: TMenuItem
+        Tag = 9020
+        Caption = 'A'#351#305' Kart'#305
+        ImageIndex = 60
+        OnClick = cxButtonCClick
+      end
+      object H4: TMenuItem
+        Tag = 9021
+        Caption = 'Hastalara A'#351#305' Ekle'
+        ImageIndex = 30
+        OnClick = cxButtonCClick
+      end
     end
     object T1: TMenuItem
       Tag = 330
@@ -653,6 +679,7 @@ object frmHastaListeD: TfrmHastaListeD
     end
     object M2: TMenuItem
       Caption = 'Mesaj'
+      ImageIndex = 143
       OnClick = M2Click
     end
   end
@@ -837,5 +864,28 @@ object frmHastaListeD: TfrmHastaListeD
     SSLOptions.VerifyDepth = 0
     Left = 144
     Top = 280
+  end
+  object Asilar: TListeAc
+    ListeBaslik = 'A'#350'ILAR'
+    TColcount = 2
+    TColsW = '50,350'
+    Table = 'Asilar'
+    Conn = DATALAR.ADOConnection2
+    Filtercol = 1
+    BaslikRenk = clBackground
+    DipRenk = clBackground
+    ButtonImajIndex = 132
+    Kolonlar.Strings = (
+      'asiKodu'
+      'asiAdi')
+    KolonBasliklari.Strings = (
+      'A'#351#305' Kodu'
+      'A'#351#305' Tan'#305'm'#305)
+    Calistir = fgEvet
+    BiriktirmeliSecim = False
+    Grup = False
+    GrupCol = 0
+    Left = 576
+    Top = 229
   end
 end

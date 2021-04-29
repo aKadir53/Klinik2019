@@ -129,7 +129,7 @@ end;
 procedure TfrmKanTetkikTakip.Yukle;
 begin
   inherited;
-//  KanTetkikleri('','');
+  KanTetkikleri('','');
 end;
 
 procedure TfrmKanTetkikTakip.KanTetkikleri(dosyaNo,Tarih : String);
@@ -224,6 +224,7 @@ end;
 procedure TfrmKanTetkikTakip.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
+  inherited;
   ADO_Tetkikler.Close;
   
 end;

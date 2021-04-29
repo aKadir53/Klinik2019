@@ -37,17 +37,10 @@ type
     VatandasTip: TcxImageComboKadir;
     seansGunleri: TcxCheckGroup;
     DOGUMTARIHI: TcxDateEditKadir;
-    PopupMenu1: TPopupMenu;
-    MenucxYeni: TMenuItem;
-    MenucxKaydet: TMenuItem;
-    MenucxIptal: TMenuItem;
-    N1: TMenuItem;
-    Kapat1: TMenuItem;
     cxFotoPanel: TcxGroupBox;
     Foto: TcxImage;
     cxFotoEkleButton: TcxButton;
     dosyaNo: TcxButtonEditKadir;
-    N2: TMenuItem;
     cxpnlHastaGelisler: TcxGroupBox;
     cxGridGelis: TcxGrid;
     DataSource1: TDataSource;
@@ -68,23 +61,11 @@ type
     cxStyle1: TcxStyle;
     cxStyle2: TcxStyle;
     ADO_Gelisler: TADOQuery;
-    lemler1: TMenuItem;
     KANGRUBU: TcxImageComboBox;
     txtAktif: TcxImageComboBox;
     ListeAc3: TListeAc;
     txtSeansSikayet: TcxCheckGroup;
-    AKart1: TMenuItem;
-    Epikriz1: TMenuItem;
     PopupMenu2: TPopupMenu;
-    GeliA1: TMenuItem;
-    SmsGnder1: TMenuItem;
-    HastaRaporlar1: TMenuItem;
-    G1: TMenuItem;
-    T1: TMenuItem;
-    R1: TMenuItem;
-    N3: TMenuItem;
-    G2: TMenuItem;
-    T2: TMenuItem;
     IseGirisMuayene: TcxGridKadir;
     GridList: TcxGridDBBandedTableView;
     GridListMuayeneSoru: TcxGridDBBandedColumn;
@@ -100,7 +81,6 @@ type
     IseGirisMuayeneLevel1: TcxGridLevel;
     cxStyleRepository2: TcxStyleRepository;
     cxStyle3: TcxStyle;
-    A1: TMenuItem;
     cxGridGelislerPROTOKOLNO: TcxGridDBBandedColumn;
     GridPersonelEgitim: TcxGridKadir;
     GridEgitim: TcxGridDBBandedTableView;
@@ -116,8 +96,29 @@ type
     PersonelKaydet: TAction;
     YeniMuayene: TAction;
     Splitter_Muayene: TSplitter;
+    PopupMenu1: TPopupMenu;
+    Kapat1: TMenuItem;
+    N1: TMenuItem;
     M1: TMenuItem;
+    SmsGnder1: TMenuItem;
     W1: TMenuItem;
+    AKart1: TMenuItem;
+    T2: TMenuItem;
+    Epikriz1: TMenuItem;
+    R1: TMenuItem;
+    N3: TMenuItem;
+    HastaRaporlar1: TMenuItem;
+    A1: TMenuItem;
+    N2: TMenuItem;
+    T1: TMenuItem;
+    lemler1: TMenuItem;
+    MenucxYeni: TMenuItem;
+    MenucxKaydet: TMenuItem;
+    MenucxIptal: TMenuItem;
+    GeliA1: TMenuItem;
+    G1: TMenuItem;
+    G2: TMenuItem;
+    HastaTanmKartYazdr1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxButtonCClick(Sender: TObject);
@@ -128,7 +129,8 @@ type
     procedure cxEditEnter(Sender: TObject);
     procedure cxEditExit(Sender: TObject);
     procedure seansGunleriPropertiesEditValueChanged(Sender: TObject);
-    procedure FotoEkle;
+//    procedure FotoEkle; overload;
+//    procedure FotoEkle(islem : string = 'Ekle'); overload;
     procedure FotoNewRecord;
     procedure cxButtonEditPropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);override;
@@ -157,6 +159,8 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ButtonClick(Sender: TObject);
     procedure cxFotoEkleButtonClick(Sender: TObject);
+    procedure HastaTanmKartYazdr1Click(Sender: TObject);
+
   protected
     procedure TopluPasifYap(const bPasif: boolean);
     { Private declarations }
@@ -164,6 +168,9 @@ type
     { Public declarations }
     procedure OrtakEventAta(Sender : TObject);overload;
     procedure OrtakEventAta(Sender : TcxImageComboKadir);overload;
+
+    procedure FotoEkle; overload;
+    procedure FotoEkle(islem : string); overload;
 
     function Init(Sender: TObject) : Boolean; override;
   end;
@@ -188,7 +195,80 @@ uses AnaUnit, HastaAsiKArti,SMS,Anamnez, TransUtils;
 {$R *.dfm}
 
 
+procedure TfrmPersonelKart.FotoEkle(islem : string);
+var
+ Fo : TOpenDialog;
+ filename,dosyaNo ,dosyaTip : string;
+ jp : TJPEGImage;
+ image : TcxImage;
+begin
+  dosyaNo := TcxButtonEditKadir(FindComponent('dosyaNo')).Text;
+  datalar.ADO_Foto.SQL.Text := Format(FotoTable,[#39+dosyaNo+#39]);
+  datalar.ADO_FOTO.Open;
 
+  if not datalar.ADO_FOTO.eof
+  then
+    datalar.ADO_FOTO.Edit
+  else
+  begin
+    datalar.ADO_FOTO.Append;
+    datalar.ADO_FOTO.FieldByName('dosyaNo').AsString := dosyaNo;
+    datalar.ADO_FOTO.FieldByName('tip').AsString := 'P';
+  end;
+
+  if islem = 'Sil'
+  then begin
+    Foto.Clear;
+    datalar.ADO_FOTO.FieldByName('Foto').value := Null;
+    datalar.ADO_FOTO.Post;
+  end
+  else
+  if islem = 'Ekle'
+  then begin
+      Fo := TOpenDialog.Create(nil);
+      try
+        Fo.Filter := 'Jpeg Dosyalarý (*.jpg)|*.jpg';
+        if not fo.Execute then Exit;
+        filename := fo.FileName;
+        dosyaTip := ExtractFileExt(filename);
+        dosyaTip := StringReplace(dosyaTip,'.','',[rfReplaceAll]);
+      finally
+        fo.Free;
+      end;
+
+      if (dosyaTip = 'JPG') or
+         (dosyaTip = 'jpg') or
+         (dosyaTip = 'jpeg') or
+         (dosyaTip = 'JPEG')
+      then begin
+          image := TcxImage.Create(nil);
+          try
+            image.Picture.LoadFromFile(filename);
+            StretchImage(image,stHerDurumdaStretch,160,240);
+            Foto.Picture := image.Picture;
+            //Foto.Picture.LoadFromFile(filename);
+            jp := TJpegimage.Create;
+            try
+              jp.Assign(Foto.Picture.Bitmap);
+              jp.CompressionQuality := 80;
+              jp.Compress;
+             // jp.SaveToFile('C:\noktav3\xx.jpg');
+              datalar.ADO_FOTO.FieldByName('Foto').Assign(jp);
+              datalar.ADO_FOTO.Post;
+            finally
+              jp.Free;
+            end;
+          finally
+            image.free;
+          end;
+      end
+      else begin
+       ShowMessageSkin('Sadece JPG formatlarý Yüklenebilir','','','info');
+       datalar.ADO_FOTO.Cancel;
+      end;
+
+  end;
+end;
 
 
 
@@ -373,6 +453,25 @@ begin
 
 end;
 
+
+procedure TfrmPersonelKart.HastaTanmKartYazdr1Click(Sender: TObject);
+var
+  TopluDataset : TDatasetKadir;
+begin
+  inherited;
+      if DirectoryExists('C:\NoktaV3\QR') = False
+      then
+        MkDir('C:\NoktaV3\QR');
+
+      FotoEkle('');
+   //   QRBarkod('http://185.99.199.39:8079?dosyaNo=' + dosyaNo.EditText,'C:\NoktaV3\QR\' + dosyaNo.EditText+'.jpg');
+  //    QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\QR\' + dosyaNo.EditText+'.jpg');
+      TopluDataset.Dataset0 := self.sqlRun;
+      TopluDataset.Dataset1 := datalar.ADO_FOTO;
+      TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+      TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
+      PrintYap('P_PKB','Personel Kart','',TopluDataset,kadirType.pTNone);
+end;
 
 procedure TfrmPersonelKart.gelisDuzenle;
 var
@@ -751,6 +850,8 @@ begin
   datalar.ADO_Foto.SQL.Text := Format(FotoTable,[#39+dosyaNo+#39]);
   datalar.ADO_FOTO.Open;
   datalar.ADO_FOTO.Edit;
+  datalar.ADO_FOTO.FieldByName('dosyaNo').AsString := dosyaNo;
+  datalar.ADO_FOTO.FieldByName('tip').AsString := 'P';
 
       Fo := TFileOpenDialog.Create(nil);
       try
@@ -1608,6 +1709,7 @@ var
  _name_, tel,msj : string;
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
+  TopluDataset : TDataSetKadir;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -1753,6 +1855,21 @@ begin
 
  -50 : begin
           FotoEkle;
+       end;
+
+-100 : begin
+              if DirectoryExists('C:\NoktaV3\QR') = False
+              then
+                MkDir('C:\NoktaV3\QR');
+
+              FotoEkle('');
+           //   QRBarkod('http://185.99.199.39:8079?dosyaNo=' + dosyaNo.EditText,'C:\NoktaV3\QR\' + dosyaNo.EditText+'.jpg');
+          //    QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\QR\' + dosyaNo.EditText+'.jpg');
+              TopluDataset.Dataset0 := self.sqlRun;
+              TopluDataset.Dataset1 := datalar.ADO_FOTO;
+              TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+              TopluDataset.Dataset3 := datalar.ADO_aktifSirketLogo;
+              PrintYap('P_PKB','Personel Kart','',TopluDataset,kadirType.pTNone);
        end;
 
  -51 : begin

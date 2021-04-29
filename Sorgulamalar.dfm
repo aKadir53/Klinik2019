@@ -503,20 +503,64 @@ object frmSorgulamalar: TfrmSorgulamalar
           OnClick = btnSQLRunClick
         end
       end
-      object SQL_grid: TDBGridEh
+      object SQL_Grid: TcxGridKadir
+        Left = 0
+        Top = 209
+        Width = 1284
+        Height = 376
+        Align = alClient
+        Font.Charset = TURKISH_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        PopupMenu = PopupMenu1
+        TabOrder = 2
+        LevelTabs.ImageBorder = 2
+        LevelTabs.Style = 1
+        ExceleGonder = False
+        PopupForm = False
+        ExplicitLeft = 88
+        ExplicitTop = 273
+        ExplicitHeight = 384
+        object cxGridDBBandedTableView1: TcxGridDBBandedTableView
+          DataController.DataSource = DataSource1
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <
+            item
+              Kind = skCount
+            end>
+          DataController.Summary.SummaryGroups = <>
+          FilterRow.InfoText = 'Filtre'
+          FilterRow.Visible = True
+          OptionsCustomize.ColumnHiding = True
+          OptionsCustomize.ColumnsQuickCustomization = True
+          OptionsData.Deleting = False
+          OptionsData.DeletingConfirmation = False
+          OptionsData.Editing = False
+          OptionsData.Inserting = False
+          OptionsSelection.MultiSelect = True
+          OptionsView.Footer = True
+          OptionsView.FooterMultiSummaries = True
+          OptionsView.Indicator = True
+          Bands = <
+            item
+            end>
+        end
+        object cxGridLevel1: TcxGridLevel
+          Caption = 'Hastalar'
+          GridView = cxGridDBBandedTableView1
+          Options.DetailFrameColor = clHighlight
+        end
+      end
+      object cxSplitter1: TcxSplitter
         Left = 0
         Top = 201
         Width = 1284
-        Height = 384
-        Align = alClient
-        DynProps = <>
-        Flat = True
-        FooterParams.Color = clWindow
-        IndicatorOptions = [gioShowRowIndicatorEh]
-        TabOrder = 2
-        TitleParams.MultiTitle = True
-        object RowDetailData: TRowDetailPanelControlEh
-        end
+        Height = 8
+        AlignSplitter = salTop
+        ExplicitWidth = 384
       end
     end
   end

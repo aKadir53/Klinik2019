@@ -3,8 +3,8 @@ object frmRapor: TfrmRapor
   Top = 137
   BorderStyle = bsToolWindow
   Caption = '-'
-  ClientHeight = 70
-  ClientWidth = 309
+  ClientHeight = 72
+  ClientWidth = 307
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,11 +19,10 @@ object frmRapor: TfrmRapor
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 51
-    Width = 309
+    Top = 53
+    Width = 307
     Height = 19
     Panels = <>
-    ExplicitTop = 375
   end
   object memo: TDBMemo
     Left = 128
@@ -38,13 +37,12 @@ object frmRapor: TfrmRapor
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 309
-    Height = 51
+    Width = 307
+    Height = 53
     Align = alClient
     BevelInner = bvLowered
     Caption = 'Panel1'
     TabOrder = 2
-    ExplicitHeight = 375
     object btnOnIzle: TcxButton
       Left = 205
       Top = 3
@@ -416,35 +414,6 @@ object frmRapor: TfrmRapor
     Left = 96
     Top = 48
   end
-  object frxXLSExport1: TfrxXLSExport
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    DataOnly = False
-    ExportEMF = True
-    AsText = False
-    Background = True
-    FastExport = True
-    PageBreaks = True
-    EmptyLines = True
-    SuppressPageHeadersFooters = False
-    Left = 184
-    Top = 40
-  end
-  object frxRTFExport1: TfrxRTFExport
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    DataOnly = False
-    PictureType = gpPNG
-    Wysiwyg = True
-    Creator = 'FastReport'
-    SuppressPageHeadersFooters = False
-    HeaderFooterMode = hfText
-    AutoSize = False
-    Left = 488
-    Top = 88
-  end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
     ShowProgress = True
@@ -466,36 +435,8 @@ object frmRapor: TfrmRapor
     CenterWindow = False
     PrintScaling = False
     CheckboxAsShape = False
-    Left = 432
-    Top = 88
-  end
-  object frxHTMLExport1: TfrxHTMLExport
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    DataOnly = False
-    FixedWidth = True
-    Background = False
-    Centered = False
-    EmptyLines = True
-    Print = False
-    PictureType = gpPNG
-    Left = 288
-    Top = 48
-  end
-  object frxXMLExport1: TfrxXMLExport
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    DataOnly = False
-    Background = True
-    Creator = 'FastReport'
-    EmptyLines = True
-    SuppressPageHeadersFooters = False
-    RowsCount = 0
-    Split = ssNotSplit
-    Left = 496
-    Top = 128
+    Left = 152
+    Top = 32
   end
   object frxDBDataset2: TfrxDBDataset
     UserName = 'frxDBDataset2'
@@ -658,5 +599,19 @@ object frmRapor: TfrmRapor
   object frxCrossObject1: TfrxCrossObject
     Left = 192
     Top = 120
+  end
+  object frxRTFExport1: TfrxRTFExport
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    DataOnly = False
+    PictureType = gpPNG
+    Wysiwyg = True
+    Creator = 'FastReport'
+    SuppressPageHeadersFooters = False
+    HeaderFooterMode = hfText
+    AutoSize = False
+    Left = 208
+    Top = 32
   end
 end

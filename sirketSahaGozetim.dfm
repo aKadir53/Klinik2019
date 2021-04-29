@@ -17,8 +17,8 @@ object frmSirketSahaGozetim: TfrmSirketSahaGozetim
   PixelsPerInch = 96
   TextHeight = 13
   object SahaGozetimGrid: TcxGridKadir
-    Left = -288
-    Top = 48
+    Left = -408
+    Top = 24
     Width = 1065
     Height = 169
     TabOrder = 0
@@ -257,7 +257,7 @@ object frmSirketSahaGozetim: TfrmSirketSahaGozetim
         Position.RowIndex = 0
       end
       object SatirlarBolumTanimi: TcxGridDBBandedColumn
-        Caption = 'B'#246'l'#252'm'
+        Caption = 'Tespit Edildi'#287'i Yer'
         DataBinding.FieldName = 'BolumTanimi'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
@@ -440,8 +440,8 @@ object frmSirketSahaGozetim: TfrmSirketSahaGozetim
     end
   end
   object DofList: TcxGridKadir
-    Left = 232
-    Top = 223
+    Left = 24
+    Top = 239
     Width = 897
     Height = 169
     TabOrder = 1
@@ -735,8 +735,11 @@ object frmSirketSahaGozetim: TfrmSirketSahaGozetim
         Position.RowIndex = 0
       end
       object cxGridDBBandedColumn5: TcxGridDBBandedColumn
-        Caption = 'B'#246'l'#252'm'
+        Caption = 'Tespit Edildi'#287'i Yer'
         DataBinding.FieldName = 'BolumTanimi'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         Options.Editing = False
         Width = 158
@@ -1039,7 +1042,8 @@ object frmSirketSahaGozetim: TfrmSirketSahaGozetim
     SkinName = 'lilian'
     Grup = False
     GrupCol = 0
-    Top = 16
+    Left = 128
+    Top = 8
   end
   object cxImageList1: TcxImageList
     Height = 141

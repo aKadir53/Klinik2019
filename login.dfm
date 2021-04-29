@@ -804,6 +804,7 @@ object frmLogin: TfrmLogin
             Style.BorderStyle = ebs3D
             Style.HotTrack = False
             TabOrder = 0
+            KarakterTip = ktRakam
             Width = 178
           end
           object btnBaglan: TcxButtonKadir
@@ -855,6 +856,7 @@ object frmLogin: TfrmLogin
             Style.BorderStyle = ebs3D
             Style.HotTrack = False
             TabOrder = 1
+            KarakterTip = ktRakam
             Width = 69
           end
           object txtServerPassword: TcxTextEditKadir
@@ -866,6 +868,7 @@ object frmLogin: TfrmLogin
             Style.BorderStyle = ebs3D
             Style.HotTrack = False
             TabOrder = 2
+            KarakterTip = ktRakam
             Width = 77
           end
           object dxLayoutControl2Group_Root: TdxLayoutGroup

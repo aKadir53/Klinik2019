@@ -66,11 +66,14 @@ object frmRaporSablon: TfrmRaporSablon
     end
     object cxGrid1: TcxGrid
       Left = 1
-      Top = 1
+      Top = 20
       Width = 303
-      Height = 675
+      Height = 656
       Align = alClient
       TabOrder = 1
+      ExplicitLeft = 0
+      ExplicitTop = 121
+      ExplicitHeight = 675
       object cxGridHastaGelis: TcxGridDBTableView
         Navigator.Buttons.First.Visible = False
         Navigator.Buttons.PriorPage.Visible = False
@@ -112,6 +115,18 @@ object frmRaporSablon: TfrmRaporSablon
       object cxGrid1Level1: TcxGridLevel
         GridView = cxGridHastaGelis
       end
+    end
+    object chkTum: TcxCheckBox
+      Left = 1
+      Top = 1
+      Align = alTop
+      Caption = 'T'#252'm '#350'ablonlar'
+      Properties.OnEditValueChanged = chkTumPropertiesEditValueChanged
+      TabOrder = 2
+      ExplicitLeft = 80
+      ExplicitTop = 24
+      ExplicitWidth = 121
+      Width = 303
     end
   end
   object Panel2: TPanel
@@ -164,7 +179,7 @@ object frmRaporSablon: TfrmRaporSablon
             Options.Editing = False
             Options.Filtering = False
             Options.FilteringFilteredItemsList = False
-            Width = 222
+            Width = 178
           end
           object cxGridDBTableView1adet: TcxGridDBColumn
             Caption = 'Adet'
@@ -210,6 +225,16 @@ object frmRaporSablon: TfrmRaporSablon
             Options.Filtering = False
             Options.FilteringFilteredItemsList = False
             Width = 80
+          end
+          object dozBirim: TcxGridDBColumn
+            Caption = 'DozBirim'
+            DataBinding.FieldName = 'kullanimDozBirim'
+            PropertiesClassName = 'TcxImageComboBoxProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.Items = <>
+            HeaderAlignmentHorz = taCenter
+            Width = 60
           end
         end
         object cxGridLevel1: TcxGridLevel
@@ -464,6 +489,7 @@ object frmRaporSablon: TfrmRaporSablon
   object Sablonlar: TADOTable
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
+    Filtered = True
     AfterScroll = SablonlarAfterScroll
     TableName = 'IlacRaporSablon'
     Left = 88

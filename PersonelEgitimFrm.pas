@@ -87,6 +87,7 @@ type
     e1: TMenuItem;
     e2: TMenuItem;
     e3: TMenuItem;
+    EgitimGridSatirlarColumn6: TcxGridDBBandedColumn;
     procedure FormCreate(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
@@ -467,7 +468,7 @@ begin
  else
  if TcxImageComboKadir(Sender).Name = 'SirketKod'
  Then begin
-     TcxImageComboKadir(FindComponent('IGU')).Filter := ' kod in (select IGU from SIRKET_SUBE_TNM where sirketKod = ' + quotedStr( varToStr(TcxImageComboKadir(Sender).EditValue)) +')';
+     TcxImageComboKadir(FindComponent('IGU')).Filter := ' sirketKod = ' + quotedStr( varToStr(TcxImageComboKadir(Sender).EditValue));
      TcxImageComboKadir(FindComponent('IGU')).ItemIndex := 0;
  //    TcxImageComboKadir(FindComponent('IGU')).Enabled := False;
  end
@@ -654,15 +655,17 @@ begin
     sql :=
          ' Select e.id, e.BaslamaTarihi,e.BitisTarihi, et.tanimi tanimi, s.Tanimi SirketTanimi ,'+
           ' dbo.egitimCheckStateToTanim(e.EgitimKod,e.EgitimTuru) EgitimBilgi,'+
-          ' EgitimCSGBGonderimSonuc,sorguNo,sorguSonuc,I.tanimi IGU,sorguSonucKodu,' +
+          ' EgitimCSGBGonderimSonuc,sorguNo,sorguSonuc,'''' IGU,sorguSonucKodu,' +
           '(select top 1 egitimciAdiSoyadi from Personel_Egitim_Egitimci where EgitimID = e.id) egitimci '+
+          ',dbo.egitimObject(e.id,'''') egitimDetay ' +
           ' from Egitimler e  left join egitimGrup_tnm et on et.Kod = e.EgitimTuru '+
           ' left outer join SIRKETLER_TNM s on s.SirketKod = e.SirketKod ' +
-          ' left join IGU I on I.kod = e.IGU ' +
+         // ' left join IGU I on I.kod = e.IGU ' +
           ' where e.BaslamaTarihi between ' + TcxDateEditKadir(FindComponent('ilkTarih')).GetSQLValue +
           ' and ' + TcxDateEditKadir(FindComponent('sonTarih')).GetSQLValue +
-          ' and e.IGU = ' + QuotedStr(datalar.IGU) +
-          ' or e.IGU in (select egitimciAdiSoyadi from Personel_Egitim_Egitimci where EgitimID = e.id)';
+          ' and s.sirketKod = ' + QuotedStr(datalar.AktifSirket);
+        //  ' and e.IGU = ' + QuotedStr(datalar.IGU) +
+       //   ' or e.IGU in (select egitimciAdiSoyadi from Personel_Egitim_Egitimci where EgitimID = e.id)';
 
     EgitimGrid.Dataset.Connection := datalar.ADOConnection2;
     EgitimGrid.Dataset.Active := false;
@@ -981,6 +984,7 @@ begin
     TMenuItem(FindComponent('e3')).Enabled := False;
   end;
   PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
+  cxPanelButtonEnabled(True,True,True);
 
 end;
 
@@ -1470,6 +1474,12 @@ begin
              ResetDetayDataset;
              TcxButtonKadir(FindComponentButtonName('btnEgitimler',self)).Enabled := False;
            end;
+    Sil : begin
+               EgitimPersonel.Dataset.Requery();
+               Egitimci.Dataset.Requery();
+               EgitimAltDetayGrid.Dataset.Requery();
+               ShowMessageSkin('Eðitim Verisi Silindi','','','info');
+          end;
     end;
   finally
     if cxKaydetResult then

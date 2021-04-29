@@ -56,7 +56,7 @@ type
     GridEkstreCins: TcxGridDBBandedColumn;
     GridEkstreYas: TcxGridDBBandedColumn;
     GridEkstreColumn1: TcxGridDBBandedColumn;
-    GridEkstreColumn2: TcxGridDBBandedColumn;
+    GridEkstreVSivi: TcxGridDBBandedColumn;
     GridEkstreColumn3: TcxGridDBBandedColumn;
     GridEkstreAtes: TcxGridDBBandedColumn;
     cxStyleRepository1: TcxStyleRepository;
@@ -201,13 +201,19 @@ begin
    Chk := chkList.Properties.Items.Add;
    Chk.Caption := 'Seans Onaylý Hastalar';
    Chk.Tag := 0;
-   chkList.Width := 350;
+   chkList.Width := 520;
 
    Chk := chkList.Properties.Items.Add;
    Chk.Caption := 'Kilo Girilmemiþ Hastalar';
    Chk.Tag := 1;
 
-   chkList.EditValue := '10';
+   Chk := chkList.Properties.Items.Add;
+   Chk.Caption := 'Kilodan Sonra AltSatýr';
+   Chk.Tag := 2;
+
+
+
+   chkList.EditValue := '101';
 
 
  (*
@@ -221,6 +227,8 @@ end;
 procedure TfrmKiloOrder.GridEkstreEditKeyDown(Sender: TcxCustomGridTableView;
   AItem: TcxCustomGridTableItem; AEdit: TcxCustomEdit; var Key: Word;
   Shift: TShiftState);
+var
+  kolon : TcxCustomGridTableItem;
 begin
   inherited;
 
@@ -235,7 +243,12 @@ begin
 
   if key = 13
   then
-    if AItem = GridEkstreAtes
+     if copy(chkList.EditValue,3,1) = '0'
+     then kolon := GridEkstreAtes
+     else
+         kolon := GridEkstreVSivi;
+
+    if AItem = kolon
     then begin
       //ado.Next;
       TcxCustomGridTableView(sender).Controller.FocusNextRecord
@@ -252,6 +265,7 @@ var
  sql : string;
 begin
   inherited;
+ try
   Sender.Controller.EditingController.Edit.PostEditValue;
 
   if (TcxGridDBColumn(AItem).DataBinding.FieldName = 'IdealKilo')
@@ -284,7 +298,9 @@ begin
      end;
 
   end;
+ except
 
+ end;
 end;
 
 procedure TfrmKiloOrder.H1Click(Sender: TObject);

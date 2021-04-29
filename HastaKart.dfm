@@ -1110,7 +1110,7 @@ object frmHastaKart: TfrmHastaKart
       end
       object H3: TMenuItem
         Tag = -39
-        Caption = 'Hizmet Detay(Takip Bilgisi)'
+        Caption = 'Hizmet Detay'
         ImageIndex = 67
         OnClick = cxButtonCClick
       end

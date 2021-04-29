@@ -495,9 +495,9 @@
     object cxGridButToplam: TcxGrid
       Left = 1
       Top = 1
-      Width = 1185
+      Width = 1323
       Height = 59
-      Align = alLeft
+      Align = alClient
       Font.Charset = TURKISH_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -551,22 +551,22 @@
           item
             Format = '#.##'
             Kind = skSum
-            Column = cxGridDBTableView1P704234
+            Column = cxGridDBTableView1P704230Girilmeyen
           end
           item
             Format = '#.##'
             Kind = skSum
-            Column = cxGridDBTableView1P704234Girilen
+            Column = cxGridDBTableView1P704233Girilmeyen
           end
           item
             Format = '#.##'
             Kind = skSum
-            Column = cxGridDBTableView1Column1
+            Column = cxGridDBTableView1P704230Gonderilmeyen
           end
           item
             Format = '#.##'
             Kind = skSum
-            Column = cxGridDBTableView1Column2
+            Column = cxGridDBTableView1P704233Gonderilmeyen
           end
           item
             Format = '#.##'
@@ -619,85 +619,57 @@
               Value = '8'
             end>
           HeaderAlignmentHorz = taCenter
-          Styles.Header = cxStyle6
           Width = 74
         end
         object cxGridDBTableView1Toplam: TcxGridDBColumn
           Caption = 'Toplam Planlanan'
           DataBinding.FieldName = 'Toplam'
           HeaderAlignmentHorz = taCenter
-          Styles.Header = cxStyle6
-          Width = 130
+          Width = 96
         end
         object cxGridDBTableView1Column3: TcxGridDBColumn
           DataBinding.FieldName = 'Girilen'
           HeaderAlignmentHorz = taCenter
-          Styles.Header = cxStyle6
           Width = 50
         end
         object cxGridDBTableView1P704230: TcxGridDBColumn
           DataBinding.FieldName = 'Girilmeyen'
           HeaderAlignmentHorz = taCenter
-          Styles.Header = cxStyle6
-          Width = 80
+          Width = 65
         end
         object cxGridDBTableView1P704230Girilen: TcxGridDBColumn
           Caption = 'P704230 Girilen'
           DataBinding.FieldName = 'P704230Girilen'
-          Visible = False
           HeaderAlignmentHorz = taCenter
           Styles.Content = cxStyle6
           Styles.Footer = cxStyle6
-          Styles.Header = cxStyle6
-          Width = 104
+          Width = 84
         end
-        object cxGridDBTableView1Column1: TcxGridDBColumn
-          Caption = 'Gonderilmeyen'
+        object cxGridDBTableView1P704230Girilmeyen: TcxGridDBColumn
+          DataBinding.FieldName = 'P704230Girilmeyen'
+          HeaderAlignmentHorz = taCenter
+          Width = 97
+        end
+        object cxGridDBTableView1P704230Gonderilmeyen: TcxGridDBColumn
           DataBinding.FieldName = 'P704230Gonderilmeyen'
-          Styles.Header = cxStyle6
-          Width = 100
-        end
-        object cxGridDBTableView1P704234: TcxGridDBColumn
-          Caption = 'P704234 Plan'
-          DataBinding.FieldName = 'P704234'
-          Visible = False
-          HeaderAlignmentHorz = taCenter
-          Width = 80
-        end
-        object cxGridDBTableView1P704234Girilen: TcxGridDBColumn
-          Caption = 'P704234 Girilen'
-          DataBinding.FieldName = 'P704234Girilen'
-          Visible = False
-          HeaderAlignmentHorz = taCenter
-          Styles.Content = cxStyle7
-          Styles.Footer = cxStyle7
-          Styles.Header = cxStyle7
-          Width = 110
-        end
-        object cxGridDBTableView1Column2: TcxGridDBColumn
-          Caption = 'P704234 Gonderilmeyen'
-          DataBinding.FieldName = 'P704234Gonderilmeyen'
-          Visible = False
-          Width = 121
-        end
-        object cxGridDBTableView1P704233: TcxGridDBColumn
-          Caption = 'P704233 Plan'
-          DataBinding.FieldName = 'P704233'
-          Visible = False
-          HeaderAlignmentHorz = taCenter
-          Width = 80
+          Width = 126
         end
         object cxGridDBTableView1P704233Girilen: TcxGridDBColumn
           Caption = 'P704233 Girilen'
           DataBinding.FieldName = 'P704233Girilen'
-          Visible = False
           HeaderAlignmentHorz = taCenter
           Width = 79
         end
-        object cxGridDBTableView1Kodsuz: TcxGridDBColumn
-          DataBinding.FieldName = 'Kodsuz'
-          Visible = False
+        object cxGridDBTableView1P704233Girilmeyen: TcxGridDBColumn
+          DataBinding.FieldName = 'P704233Girilmeyen'
           HeaderAlignmentHorz = taCenter
+          Styles.Content = cxStyle7
+          Styles.Footer = cxStyle7
+          Width = 110
+        end
+        object cxGridDBTableView1P704233Gonderilmeyen: TcxGridDBColumn
+          DataBinding.FieldName = 'P704233Gonderilmeyen'
+          Width = 121
         end
       end
       object cxGridDBBandedTableView1: TcxGridDBBandedTableView
@@ -904,7 +876,7 @@
     StyleFocused.LookAndFeel.SkinName = 'UserSkin'
     StyleHot.LookAndFeel.SkinName = 'UserSkin'
     TabOrder = 2
-    Height = 574
+    Height = 566
     Width = 3
     object chkBiyo: TcxCheckBox
       Left = 1
@@ -928,19 +900,19 @@
     Caption = ' '
     PanelStyle.Active = True
     TabOrder = 3
-    Height = 574
+    Height = 566
     Width = 1322
     object HizmetPage: TcxPageControl
       Left = 2
       Top = 2
       Width = 1318
-      Height = 570
+      Height = 562
       Align = alClient
       TabOrder = 0
       Properties.ActivePage = TetkiklerPage
       Properties.Style = 11
       OnPageChanging = HizmetPagePageChanging
-      ClientRectBottom = 563
+      ClientRectBottom = 555
       ClientRectLeft = 3
       ClientRectRight = 1311
       ClientRectTop = 26
@@ -1156,7 +1128,7 @@
           Left = 0
           Top = 19
           Width = 1308
-          Height = 518
+          Height = 510
           Cursor = crHandPoint
           Align = alClient
           TabOrder = 1
@@ -2157,22 +2129,26 @@
           Left = 728
           Top = 0
           Width = 580
-          Height = 537
+          Height = 529
           Align = alClient
           TabOrder = 0
-          Properties.ActivePage = TetkikTab
-          ClientRectBottom = 530
+          Properties.ActivePage = MalzemeTab
+          ClientRectBottom = 522
           ClientRectLeft = 3
           ClientRectRight = 573
           ClientRectTop = 26
           object TetkikTab: TcxTabSheet
             Caption = 'Tetkikler'
             ImageIndex = 0
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object cxGrid4: TcxGrid
               Left = 0
               Top = 0
               Width = 570
-              Height = 504
+              Height = 496
               Cursor = crHandPoint
               Align = alClient
               TabOrder = 0
@@ -2464,7 +2440,7 @@
               Left = 0
               Top = 0
               Width = 570
-              Height = 504
+              Height = 496
               Cursor = crHandPoint
               Align = alClient
               TabOrder = 0
@@ -2757,7 +2733,7 @@
           Left = 720
           Top = 0
           Width = 8
-          Height = 537
+          Height = 529
           Control = GridTetkikListPanel
         end
         object GridTetkikListPanel: TcxGroupBox
@@ -2766,13 +2742,13 @@
           Align = alLeft
           PanelStyle.Active = True
           TabOrder = 2
-          Height = 537
+          Height = 529
           Width = 720
           object GridTetkikList: TcxGrid
             Left = 2
             Top = 2
             Width = 716
-            Height = 533
+            Height = 525
             Cursor = crHandPoint
             Align = alClient
             TabOrder = 0
@@ -3003,6 +2979,10 @@
       object LogPage: TcxTabSheet
         Caption = 'Log'
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object txtLog: TcxMemo
           Left = 0
           Top = 0
@@ -3015,11 +2995,19 @@
           StyleFocused.LookAndFeel.SkinName = 'UserSkin'
           StyleHot.LookAndFeel.SkinName = 'UserSkin'
           TabOrder = 0
-          Height = 537
+          Height = 529
           Width = 1308
         end
       end
     end
+  end
+  object cxSplitter2: TcxSplitter
+    Left = 0
+    Top = 568
+    Width = 1325
+    Height = 8
+    AlignSplitter = salBottom
+    Control = pnlOnay
   end
   object HTTP1: THTTPRIO
     WSDLLocation = 'HizmetKayitIslemleri.wsdl'
@@ -3304,11 +3292,27 @@
       'SELECT k.KURUMTIPI,COUNT(*) Toplam ,'
       'sum(CASE WHEN (gd.durum = 1) THEN 1 ELSE 0 END) Girilen,'
       'sum(CASE WHEN (gd.Durum = 0) THEN 1 ELSE 0 END) Girilmeyen,'
-      'sum(CASE WHEN (gd.durum = 1) THEN 1 ELSE 0 END) P704230Girilen,'
       
-        'sum(CASE WHEN ((gd.durum = 1) and len(isnull(gd.islemSiraNo,'#39#39'))' +
-        '=0) THEN 1 ELSE 0 END) P704230Gonderilmeyen'
-      ' '
+        'sum(CASE WHEN (code = '#39'P704230'#39' and gd.durum = 1) THEN 1 ELSE 0 ' +
+        'END) P704230Girilen,'
+      
+        'sum(CASE WHEN (code = '#39'P704230'#39' and gd.durum = 0) THEN 1 ELSE 0 ' +
+        'END) P704230Girilmeyen,'
+      
+        'sum(CASE WHEN ((code = '#39'P704230'#39' and gd.durum = 1) and len(isnul' +
+        'l(gd.islemSiraNo,'#39#39'))=0) THEN 1 ELSE 0 END) P704230Gonderilmeyen' +
+        ','
+      
+        'sum(CASE WHEN (code = '#39'P704233'#39' and gd.durum = 1) THEN 1 ELSE 0 ' +
+        'END) P704233Girilen,'
+      
+        'sum(CASE WHEN (code = '#39'P704233'#39' and gd.durum = 0) THEN 1 ELSE 0 ' +
+        'END) P704233Girilmeyen,'
+      
+        'sum(CASE WHEN ((code = '#39'P704233'#39' and gd.durum = 1) and len(isnul' +
+        'l(gd.islemSiraNo,'#39#39'))=0) THEN 1 ELSE 0 END) P704233Gonderilmeyen' +
+        ' '
+      ''
       'FROM Hareketler gd'
       
         '    JOIN Hasta_gelisler g on g.dosyaNo = gd.dosyano AND g.gelisN' +
@@ -3347,19 +3351,20 @@
     end
   end
   object ADOQuery1: TADOQuery
+    Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
     BeforePost = ADOQuery1BeforePost
     AfterPost = ADOQuery1AfterPost
     Parameters = <>
     SQL.Strings = (
       
-        'exec sp_TopluSeansGetir '#39'20160701'#39','#39'20160903'#39','#39'1'#39','#39#39','#39#39',0,-1,0,'#39 +
-        #39)
+        'exec sp_TopluSeansGetir @tarih1 = '#39'20210327'#39',@tarih2 = '#39'20210327' +
+        #39',@s = '#39'3'#39',@ad = '#39#39',@sirketKod = '#39'000005'#39',@durum = -1'
+      '')
     Left = 88
     Top = 378
   end
   object DataSource1: TDataSource
-    DataSet = ADOQuery1
     Left = 152
     Top = 378
   end
@@ -3624,6 +3629,17 @@
     Grup = False
     GrupCol = 0
     Left = 48
+    Top = 432
+  end
+  object ADOQuery2: TADOQuery
+    Connection = DATALAR.ADOConnection2
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      
+        'exec sp_TopluSeansGetir @tarih1 = '#39'20210327'#39',@tarih2 = '#39'20210327' +
+        #39',@s = '#39'3'#39',@ad = '#39#39',@sirketKod = '#39'000005'#39',@durum = '#39'-1'#39)
+    Left = 216
     Top = 432
   end
 end

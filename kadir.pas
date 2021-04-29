@@ -34,6 +34,8 @@ function findMethod(dllHandle : Cardinal; methodname : string) : FARPROC;
 function WanIp(url : string = 'http://bot.whatismyipaddress.com') : string;
 procedure RegYaz(dizi , diziDegeri : string ; openKey : string = '');
 function RegOku(dizi : string ; openKey : string = '') : Variant;
+procedure RegSil(dizi : string ; openKey : string = '');
+
 function Songelis(DosyaNo: string): string;
 // function HGBal : string;
 // function MesajKontrol(id : string) : mesajBilgi;
@@ -227,6 +229,7 @@ function GetLocalHostName(var pHostName: string): Boolean;
 procedure HTTPbaglan(HTTP: THTTPRIO);
 // procedure HastaTakipBulP(Bilgi : THastaKabul;tarih1,tarih2 : string);
 procedure datasetiDoldur(_takipNo, tedaviTuru, _basvuru: string ; var TopluDataset : TDatasetKadir);
+procedure datasetiDoldurHD(dosyaNo,gelisNo : string ; var TopluDataset : TDatasetKadir);
 function StringMaskele(pass: string; Mode: Boolean): String;
 function InternetVarmi: Boolean;
 function seansgun(_dosyaNo: string): string;
@@ -273,10 +276,13 @@ function stokFaturaBul(Id: string): Boolean;
 
 function kareBarkodOku(Kb: string; Gsindex: integer): TKareBarkod;
 function TestKodToNormalDeger(kod, yas, cins: string; deger: double): Boolean;
+function TestKodToNormalDegerYukle : Boolean;
+function TestKodToNormalmi(kod : string ; deger : double): Boolean;
 function SgKTipEslestirKod(kod: string): string;
 function DiyalizPaketiUygula(DosyaNo, GelisNo, sablonId: string): integer;
 procedure EpikrizYaz(DosyaNo, GelisNo : string ; DataSet : Tdataset = nil);overload;
 Procedure EpikrizYaz(DosyaNo, GelisNo: string; QR: Boolean ; QRText : string = '');overload;
+Procedure TedaviKartiYaz(DosyaNo, GelisNo: string; QR: Boolean ; QRText : string = '');
 procedure ImzaFoyleriYaz;
 procedure MenuIDRun(MenuId : integer);
 function sureKontrol: Boolean;
@@ -387,6 +393,7 @@ procedure PrintYap(raporKodu,caption,formId : string; Data: TDataSetKadir; yazdi
 procedure PrintYapDokuman(raporKodu,caption,formId : string; Data: TDataSetKadir; yazdirmaTipi : TprintTip = pTNone ; Form : TForm = nil ;SayfaGizle : string = '');
 
 procedure PrintIcerik(raporKodu : string);
+procedure PrintLogo(raporKodu : string);
 procedure RTFToIcerik(raporKodu : string);
 procedure KanTetkikleri(dosyaNo,Tarih : string);
 procedure KanTetkikleriDegerlendir(dosyaNo,gelisNo : string);
@@ -413,6 +420,8 @@ function GridCellToString(Grid : TcxGridDBBandedTableView; ColonName : string ; 
 function GridCellToString(Grid : TcxGridDBTableView; ColonName : string ; Row : integer) : Variant;overload;
 function GridCellToDouble(Grid : TcxGridDBTableView; ColonName : string ; Row : integer) : Variant;
 function GridCellToBoolean(Grid : TcxGridDBTableView; ColonName : string ; Row : integer) : Boolean;
+function GridCellToVariant(Grid : TcxGridDBTableView; ColonName : string ; Row : integer) : Variant;
+
 procedure GridCellSetValue(Grid : TcxGridDBTableView; ColonName : string ; Row : integer ; Value : Variant);
 function SQLSelectToDataSet(Columns,Table,Where : string) : TADOQuery;
 procedure ExceldenPersonelYukle;
@@ -595,6 +604,10 @@ function ComboYil(yil : integer = 2020 ; index : integer = 10) : TStringList;
 procedure MemoBosSatirSil(Memo : TcxMemo);
 
 function MD5(const fileName : string) : string;
+function PDKSCihazlar : string;
+function GibFaturaNoUret(sirketKod : string ; tarih : string ; faturaId : string = '-1') : string;
+function GetDosOutput(CommandLine: string; Work: string = 'C:\'): string;
+function ArrayListeSecimlerToSTR(list : ArrayListeSecimler) : string;
 
 
 const
@@ -686,6 +699,84 @@ begin
 end;
 
 
+function GetDosOutput(CommandLine: string; Work: string = 'C:\'): string;
+var
+  SecAtrrs: TSecurityAttributes;
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  StdOutPipeRead, StdOutPipeWrite: THandle;
+  WasOK: Boolean;
+  pCommandLine: array[0..255] of AnsiChar;
+  BytesRead: Cardinal;
+  WorkDir: string;
+  Handle: Boolean;
+begin
+  Result := '';
+  with SecAtrrs do begin
+    nLength := SizeOf(SecAtrrs);
+    bInheritHandle := True;
+    lpSecurityDescriptor := nil;
+  end;
+  CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SecAtrrs, 0);
+  try
+    with StartupInfo do
+    begin
+      FillChar(StartupInfo, SizeOf(StartupInfo), 0);
+      cb := SizeOf(StartupInfo);
+      dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      wShowWindow := SW_HIDE;
+      hStdInput := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
+      hStdOutput := StdOutPipeWrite;
+      hStdError := StdOutPipeWrite;
+    end;
+    WorkDir := Work;
+    Handle := CreateProcess(nil, PChar('cmd.exe /C ' + CommandLine),
+                            nil, nil, True, 0, nil,
+                            PChar(WorkDir), StartupInfo, ProcessInfo);
+    CloseHandle(StdOutPipeWrite);
+    if Handle then
+      try
+        repeat
+          WasOK := windows.ReadFile(StdOutPipeRead, pCommandLine, 255, BytesRead, nil);
+          if BytesRead > 0 then
+          begin
+            pCommandLine[BytesRead] := #0;
+            Result := Result + pCommandLine;
+          end;
+        until not WasOK or (BytesRead = 0);
+        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+      finally
+        CloseHandle(ProcessInfo.hThread);
+        CloseHandle(ProcessInfo.hProcess);
+      end;
+  finally
+    CloseHandle(StdOutPipeRead);
+  end;
+end;
+
+function GibFaturaNoUret(sirketKod : string ; tarih : string ; faturaId : string = '-1') : string;
+var
+  sql : string;
+begin
+  sql := 'exec sp_FaturaNoUret ' + faturaId + ',' + QuotedStr(tarih) + ',' + QuotedStr(sirketKod) ;
+
+  GibFaturaNoUret := datalar.QuerySelect(sql).FieldByName('faturaNo').AsString;
+end;
+
+
+function ArrayListeSecimlerToSTR(list : ArrayListeSecimler) : string;
+var
+ str : string;
+ ss :ListeSecimler;
+begin
+     for ss in list do
+     begin
+         str := ifThen(str='',str+'',str+',') + ss.kolon1;
+     end;
+     ArrayListeSecimlerToSTR := str;
+end;
+
+
 function SendMesajGonderWhatsapp(token ,tel,mesaj : string) : string;
 var
   SendMesaj : TSendWhatsappText;
@@ -739,6 +830,11 @@ function MD5(const fileName : string) : string;
      idmd5.Free;
    end;
  end;
+
+function PDKSCihazlar : string;
+begin
+   PDKSCihazlar := datalar.QuerySelect('select  cihazIP from PDKS_Cihazlar').FieldByName('cihazIP').AsString;
+end;
 
 
 
@@ -4121,7 +4217,8 @@ begin
                        ifThen(cek = 'E','2',ifThen(AlacakHesap = '1','5','3')) + ',' +
                        QuotedStr(evrakNo) + ',' +
                        QuotedStr(cekdurum) + ',' +
-                       QuotedStr(cekId);
+                       QuotedStr(cekId) + ',' +
+                       QuotedStr(datalar.AktifSirket);
 
      datalar.QueryExec('set nocount on ' +  Sql + ' set nocount off ');
 
@@ -4310,7 +4407,7 @@ function mailGonder (alici , konu , mesaj : string ; filename : string = '' ; di
 var
   Mail : TEmailSend;
   dllHandle: Cardinal;
-  username,password,mailserver,SendTip : string;
+  username,password,mailserver,SendTip,SSL : string;
   port : integer;
   ss : PWideChar;
   sonucStr : string;
@@ -4321,6 +4418,7 @@ begin
   password := datalar.SMTPPassword;
   port := strToint(ifThen(datalar.SMTPPort = '','25',datalar.SMTPPort));
   SendTip := ifThen(datalar.SMTPSEndTip = '','SMTP',datalar.SMTPSEndTip);
+  SSL := datalar.SMTPSSL;
 
   ss := '';
   dllHandle := LoadLibrary(LIB_DLL);
@@ -4334,7 +4432,7 @@ begin
     Mail(ss,PWideChar(mailserver),PWideChar(username),PWideChar(password),
          PWideChar(alici),PWideChar(konu),
          PWideChar(mesaj),PWideChar(filename),PWideChar(displayName),port,
-         PWideChar('False'),PWideChar(SendTip));
+         PWideChar(SSL),PWideChar(SendTip));
 
     mailGonder := ss;
 
@@ -4346,9 +4444,10 @@ begin
       if sonuc[0] = '0000' then
       begin
         mailGonder := '0000';
+
       end
       else
-        ShowMessageSkin(Sonuc[0],'','','info');
+        ShowMessageSkin(Sonuc[0],Sonuc[1],'','info');
 
 
       if not Assigned(Mail) then
@@ -5008,6 +5107,25 @@ begin
   end;
 end;
 
+procedure RegSil(dizi  : string ; openKey : string = '');
+var
+  reg : tregistry;
+begin
+  reg := Tregistry.Create;
+  try
+    if IsNull (OpenKey) then OpenKey := 'Software\NOKTA\NOKTA';
+    reg.OpenKey(openKey,True);
+    try
+      reg.deletevalue(dizi);
+    finally
+      reg.CloseKey;
+    end;
+  finally
+    reg.Free;
+  end;
+end;
+
+
 function WanIp(url : string = 'http://bot.whatismyipaddress.com') : string;
 begin
     try
@@ -5096,6 +5214,17 @@ begin
         Grid.DataController.GetItemByFieldName(ColonName).Index);
 end;
 
+
+function GridCellToVariant(Grid : TcxGridDBTableView; ColonName : string ; Row : integer) : Variant;
+begin
+  GridCellToVariant := NUll;
+  if Grid.Controller.SelectedRowCount > 0
+  Then Begin
+    GridCellToVariant := Grid.DataController.GetValue(
+      Grid.Controller.SelectedRows[Row].RecordIndex,
+        Grid.DataController.GetItemByFieldName(ColonName).Index);
+  End;
+end;
 
 function GridCellToBoolean(Grid : TcxGridDBTableView; ColonName : string ; Row : integer) : Boolean;
 var
@@ -5221,7 +5350,8 @@ begin
           'diyalizTedaviYontemi = ' + QuotedStr(gelisBilgisi.TedaviYontemi) + ',' +
          // 'Yupass = ' + QuotedStr(GelisBilgisi.Yupass) + ',' +
           'sysTakipNo = ' + QuotedStr(GelisBilgisi.sysTakipNo) + ',' +
-          'Taburcu = ' + QuotedStr(GelisBilgisi.TaburcuKodu) +
+          'Taburcu = ' + QuotedStr(GelisBilgisi.TaburcuKodu) + ',' +
+          'KabulDurum = ' + GelisBilgisi.KabulDurum +
           ' where dosyaNo = ' + QuotedStr (gelisBilgisi.dosyaNo) +
           ' and gelisNo = ' + gelisBilgisi.gelisNo;
    datalar.QueryExec(sql);
@@ -5488,7 +5618,13 @@ begin
       if Form <> nil then TGirisForm(Form).DurumGoster(False);
       frmRapor.ShowModal;
     end;
-    if yazdirmaTipi = pTPDF
+
+
+
+
+
+    if (yazdirmaTipi = pTPDF) or
+       (yazdirmaTipi = pTRTFPDF)
     then begin
      if not DirectoryExists('C:\NoktaV3\Temp')
      then
@@ -5502,6 +5638,20 @@ begin
       if Form <> nil then TGirisForm(Form).DurumGoster(False);
     end;
 
+    if (yazdirmaTipi = pTRTF) or
+       (yazdirmaTipi = pTRTFPDF)
+    then begin
+     if not DirectoryExists('C:\NoktaV3\Temp')
+     then
+      MkDir('C:\NoktaV3\Temp');
+      frmRapor.frxReport1.PrepareReport(true);
+      frmRapor.frxRTFExport1.ShowDialog := False;
+      frmRapor.frxRTFExport1.FileName := 'C:\NoktaV3\Temp\' + caption + '.RTF';
+      frmRapor.frxRTFExport1.ExportObject(frmRapor.frxReport1);
+      frmRapor.frxReport1.Export(frmRapor.frxRTFExport1);
+     //     frmRapor.frxPDFExport1.Finish;
+      if Form <> nil then TGirisForm(Form).DurumGoster(False);
+    end;
 
   finally
     FreeAndNil(frmRapor);
@@ -5566,6 +5716,17 @@ begin
     FreeAndNil(frmRapor);
   end;
 end;
+
+procedure PrintLogo(raporKodu : string);
+begin
+  Application.CreateForm(TfrmRapor, frmRapor);
+  try
+    frmRapor.raporDataLogoYukle(raporKodu);
+  finally
+    FreeAndNil(frmRapor);
+  end;
+end;
+
 
 procedure PrintIcerikFontDegis(raporKodu : string);
 begin
@@ -8415,6 +8576,76 @@ begin
 end;
 
 
+
+Procedure TedaviKartiYaz(DosyaNo, GelisNo: string; QR: Boolean ; QRText : string = '');
+var
+  sql , text : string;
+  printT : TprintTip;
+  TopluDataset : TDataSetKadir;
+begin
+
+  TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+
+  sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Baslýk')
+    + ',' + GelisNo;
+  TopluDataset.Dataset1 := datalar.QuerySelect(sql);
+
+  sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Tahlil')
+    + ',' + GelisNo;
+  TopluDataset.Dataset2 :=  datalar.QuerySelect(sql);
+
+
+  sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Radyoloji')
+    + ',' + GelisNo;
+  TopluDataset.Dataset6 :=   datalar.QuerySelect(sql);
+
+
+  sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Ilac')
+    + ',' + GelisNo;
+  TopluDataset.Dataset3 := datalar.QuerySelect(sql);
+
+
+  sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Kurum');
+  TopluDataset.Dataset4 :=   datalar.QuerySelect(sql);
+
+
+  sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr
+    ('TahlilHesap') + ',' + GelisNo;
+  TopluDataset.Dataset5 :=   datalar.QuerySelect(sql);
+
+
+  sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Asi')
+    + ',' + GelisNo;
+  TopluDataset.Dataset7 :=   datalar.QuerySelect(sql);;
+
+
+  sql := 'exec sp_epikriz ' + QuotedStr(DosyaNo) + ',' + QuotedStr('Kons')
+    + ',' + GelisNo;
+  TopluDataset.Dataset8 :=   datalar.QuerySelect(sql);
+
+  try
+    if DirectoryExists('C:\NoktaV3\MobilQR') = False
+    then
+      MkDir('C:\NoktaV3\MobilQR');
+    FotoEkle('');
+    text := 'http://mavinokta-store.net:8080/m?token='+
+    EncodeString(EncodeString(EncodeString('mvnkt'))+#29+EncodeString(EncodeString(QRText))+#29+EncodeString(EncodeString('YeM')));
+    text := StringReplace(text ,#$D#$A,'',[rfReplaceAll]);
+    QRBarkod(text,'C:\NoktaV3\MobilQR\' + DosyaNo +'.jpg');
+    QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\MobilQR\' + DosyaNo+'.jpg');
+    TopluDataset.Dataset10 := datalar.ADO_FOTO;
+  except
+  end;
+
+
+    PrintYap('030TK','\Tedavi Kartý','',TopluDataset,pTNone);
+
+
+
+end;
+
+
+
 Procedure EpikrizYaz(DosyaNo, GelisNo : string ; DataSet : Tdataset = nil);
 var
   sql: string;
@@ -8624,6 +8855,76 @@ begin
   finally
     ado.Free;
   end;
+end;
+
+
+function TestKodToNormalDegerYukle : Boolean;
+var
+  sql : string;
+  ado: TADOQuery;
+  adoC: TADOQuery;
+begin
+  TestKodToNormalDegerYukle := False;
+  try
+   sql := 'select butKodu,minD,maxD from labtestler where uygulamaAdet = ''G''';
+   ado := datalar.QuerySelect(sql);
+
+  // sql := 'select code,min,max from labtestler where uygulamaAdet = ''C''';
+ //  adoC := datalar.QuerySelect(sql);
+
+   ado.locate('butKodu','901940',[]);
+   datalar.LabNormal.min901940 := ado.fieldbyname('minD').asvariant;
+   datalar.LabNormal.max901940 := ado.fieldbyname('maxD').asvariant;
+
+   ado.locate('butKodu','902210',[]);
+   datalar.LabNormal.min902210 := ado.fieldbyname('minD').asvariant;
+   datalar.LabNormal.max902210 := ado.fieldbyname('maxD').asvariant;
+
+   ado.locate('butKodu','903130',[]);
+   datalar.LabNormal.min903130 := ado.fieldbyname('minD').asvariant;
+   datalar.LabNormal.max903130 := ado.fieldbyname('maxD').asvariant;
+
+   ado.locate('butKodu','901260',[]);
+   datalar.LabNormal.min901260 := ado.fieldbyname('minD').asvariant;
+   datalar.LabNormal.max901260 := ado.fieldbyname('maxD').asvariant;
+
+  finally
+    ado.free;
+    adoC.free;
+  end;
+
+  TestKodToNormalDegerYukle := True;
+end;
+
+
+function TestKodToNormalmi(kod : string ; deger : double): Boolean;
+begin
+  TestKodToNormalmi := False;
+
+  case AnsiIndexStr(kod, ['901940', '902210', '903130','901260']) of
+    0 : begin
+                if (datalar.LabNormal.min901940 < deger) and
+                   (datalar.LabNormal.max901940 > deger)
+                 then TestKodToNormalmi := True;
+             end;
+    1 : begin
+                if (datalar.LabNormal.min902210 < deger) and
+                   (datalar.LabNormal.max902210 > deger)
+                 then TestKodToNormalmi := True;
+             end;
+    2 : begin
+                if (datalar.LabNormal.min903130 < deger) and
+                   (datalar.LabNormal.max903130 > deger)
+                 then TestKodToNormalmi := True;
+             end;
+    3 : begin
+                if (datalar.LabNormal.min901260 < deger) and
+                   (datalar.LabNormal.max901260 > deger)
+                 then TestKodToNormalmi := True;
+             end;
+
+  end;
+
 end;
 
 function TestKodToNormalDeger(kod, yas, cins: string; deger: double): Boolean;
@@ -9678,6 +9979,7 @@ var
 begin
  //'S','L','R','T','MLZM','Tümü','LR'
 
+
   sql := 'exec sp_meduladataset_kl_m3 ' + QuotedStr(_takipNo) + ' ,''Giris''';
   TopluDataset.Dataset1 := datalar.QuerySelect(sql);
 
@@ -9703,7 +10005,25 @@ begin
     + ',''HizmetDetay''';
   TopluDataset.Dataset8 :=   datalar.QuerySelect(sql);
 
+
 end;
+
+procedure datasetiDoldurHD(dosyaNo,gelisNo : string ; var TopluDataset : TDatasetKadir);
+var
+  sql: string;
+begin
+
+  sql := 'exec sp_HizmetDetay ' + QuotedStr(dosyaNo) + ',' + gelisNo + ',''Dosya''';
+  TopluDataset.Dataset1 :=   datalar.QuerySelect(sql);
+
+  sql := 'exec sp_HizmetDetay ' + QuotedStr(dosyaNo) + ',' + gelisNo + ',''Tümü''';
+  TopluDataset.Dataset2 := datalar.QuerySelect(sql);
+
+  sql := 'exec sp_HizmetDetay ' + QuotedStr(dosyaNo) + ',' + gelisNo + ',''T''';
+  TopluDataset.Dataset3 := datalar.QuerySelect(sql);
+end;
+
+
 
 function TakipTuruAdi(turu: string): string;
 var

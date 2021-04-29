@@ -352,6 +352,7 @@ begin
                   datalar.memDataRaporlar.FieldByName('butKodu').AsString := datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.islemler[0].evHemodiyaliziRaporBilgisi.butKodu;
                  end;
 
+
                  _tanilar_ := '';
 
                  if Length(datalar.RaporIslemWS.RaporAraCevap.raporlar[x].tedaviRapor.raporDVO.tanilar) > 0
@@ -4823,6 +4824,7 @@ begin
        if memData.fieldbyname('icode').AsString = '901620'
        Then Begin
           sql1 := 'select h.code,cast(h.sirano as varchar) sira ,h.gd,t.SGKTip,t.birim ' +
+
                   ' from hareketler h ' +
                   ' join hastaKArt hk on hk.dosyaNo = h.dosyaNo ' +
                   ' join hasta_Gelisler g on h.dosyano = g.dosyano and h.gelisno = g.gelisno ' +

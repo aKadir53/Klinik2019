@@ -63,6 +63,12 @@ type
     YillikEgitimPlanSatirlaregitimVeren: TcxGridDBBandedColumn;
     YillikEgitimPlanSatirlaraciklama: TcxGridDBBandedColumn;
     YillikEgitimPlanSatirlaregitimVerenDoktor: TcxGridDBBandedColumn;
+    YillikEgitimPlanSatirlarColumn1: TcxGridDBBandedColumn;
+    YillikEgitimPlanSatirlarColumn2: TcxGridDBBandedColumn;
+    YillikEgitimPlanSatirlarColumn3: TcxGridDBBandedColumn;
+    YillikEgitimPlanSatirlarColumn4: TcxGridDBBandedColumn;
+    YillikEgitimPlanSatirlarColumn5: TcxGridDBBandedColumn;
+    YillikEgitimPlanSatirlarColumn6: TcxGridDBBandedColumn;
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -140,10 +146,11 @@ var
 begin
 
 sql :=
-     'SELECT * ' +
+     'SELECT *,D.id DetayId ' +
      ' from firmaYillikEgitimPlani P ' +
      ' join firmaYillikEgitimPlanDetay D on D.FirmaYillikEgitimPlanID = P.id  ' +
-     ' where P.id = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text);
+     ' where P.id = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text) +
+     'order by sira ';
 
      YillikEgitimPlanGrid.Dataset.Active := False;
      YillikEgitimPlanGrid.Dataset.SQL.Text := sql;
@@ -236,43 +243,68 @@ procedure datawrite;
 var
   Blob : TADOBlobStream;
 begin
-   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('faliyetid').AsInteger := datalar.YillikCalismaPlan.faliyetid;
-   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('peryod').AsInteger := datalar.YillikCalismaPlan.peryod;
-   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('ocak').AsInteger := datalar.YillikCalismaPlan.ocak;
-   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('subat').AsInteger := datalar.YillikCalismaPlan.subat;
-   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('mart').AsInteger := datalar.YillikCalismaPlan.mart;
-   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('nisan').AsInteger := datalar.YillikCalismaPlan.nisan;
-   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('sorumlu2Konu').AsInteger := datalar.YillikCalismaPlan.konu2;
+  // YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('FirmaYillikEgitimPlanID').AsInteger := datalar.YillikEgitimPlan.Planid;
+ //  YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('id').AsInteger := datalar.YillikEgitimPlan.id;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('sira').AsInteger := datalar.YillikEgitimPlan.sira;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimTanimi').AsString := datalar.YillikEgitimPlan.egitimTanimi;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimKonulari').AsString := datalar.YillikEgitimPlan.egitimKonulari;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimeKatilacaklar').AsString := datalar.YillikEgitimPlan.egitimeKatilacaklar;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('sure').AsInteger := datalar.YillikEgitimPlan.sure;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('PTarih').AsString := datalar.YillikEgitimPlan.PTarih;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimVerenIGU').AsString := datalar.YillikEgitimPlan.egitimVerenIGU;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('aciklama').AsString := datalar.YillikEgitimPlan.aciklama;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimYeri').AsString := datalar.YillikEgitimPlan.egitimYeri;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimDegerlendirme').AsString := datalar.YillikEgitimPlan.egitimDegerlendirme;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('degerlendirmeSure').AsInteger := datalar.YillikEgitimPlan.degerlendirmeSure;
+   YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('meteryal').AsString := datalar.YillikEgitimPlan.meteryal;
 end;
 
-procedure dataRead;
+procedure dataRead(Tip : string = 'G');
 begin
-   datalar.YillikCalismaPlan.faliyetid := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('faliyetid').AsInteger;
-   datalar.YillikCalismaPlan.peryod := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('peryod').AsInteger;
-   datalar.YillikCalismaPlan.ocak := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('ocak').AsInteger;
-   datalar.YillikCalismaPlan.subat := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('subat').AsInteger;
-   datalar.YillikCalismaPlan.mart := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('mart').AsInteger;
-   datalar.YillikCalismaPlan.nisan := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('nisan').AsInteger;
-   datalar.YillikCalismaPlan.mayis := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('mayis').AsInteger;
-   datalar.YillikCalismaPlan.haziran := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('haziran').AsInteger;
-   datalar.YillikCalismaPlan.temmuz := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('temmuz').AsInteger;
-   datalar.YillikCalismaPlan.agustos := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('agustos').AsInteger;
-   datalar.YillikCalismaPlan.eylul := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('eylul').AsInteger;
-   datalar.YillikCalismaPlan.ekim := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('ekim').AsInteger;
-   datalar.YillikCalismaPlan.kasim := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('kasim').AsInteger;
-   datalar.YillikCalismaPlan.aralik := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('aralik').AsInteger;
-   datalar.YillikCalismaPlan.ocakR := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('ocak_R').AsInteger;
-   datalar.YillikCalismaPlan.subatR := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('subat_R').AsInteger;
-   datalar.YillikCalismaPlan.martR := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('mart_R').AsInteger;
-   datalar.YillikCalismaPlan.nisanR := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('nisan_R').AsInteger;
+  if Tip = 'G' then
+   begin
+   datalar.YillikEgitimPlan.sira := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('sira').AsInteger;
+   datalar.YillikEgitimPlan.Planid := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('FirmaYillikEgitimPlanID').AsInteger;
+   datalar.YillikEgitimPlan.id := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('DetayId').AsInteger;
+   datalar.YillikEgitimPlan.egitimTanimi := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimTanimi').AsString;
+   datalar.YillikEgitimPlan.egitimKonulari := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimKonulari').AsString;
+   datalar.YillikEgitimPlan.egitimeKatilacaklar := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimeKatilacaklar').AsString;
+   datalar.YillikEgitimPlan.sure := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('sure').AsInteger;
+   datalar.YillikEgitimPlan.PTarih := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('PTarih').AsString;
+   datalar.YillikEgitimPlan.egitimVerenIGU := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimVerenIGU').AsString;
+   datalar.YillikEgitimPlan.aciklama := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('aciklama').AsString;
+   datalar.YillikEgitimPlan.egitimYeri := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimYeri').AsString;
+   datalar.YillikEgitimPlan.egitimDegerlendirme := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('egitimDegerlendirme').AsString;
+   datalar.YillikEgitimPlan.degerlendirmeSure := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('degerlendirmeSure').AsInteger;
+   datalar.YillikEgitimPlan.meteryal := YillikEgitimPlanSatirlar.DataController.DataSet.FieldByName('meteryal').AsString;
+
+   end
+   else
+   begin
+   datalar.YillikEgitimPlan.sira := 0;
+   datalar.YillikEgitimPlan.egitimTanimi := '';
+   datalar.YillikEgitimPlan.egitimKonulari := '';
+   datalar.YillikEgitimPlan.egitimeKatilacaklar := '';
+   datalar.YillikEgitimPlan.sure := 1;
+   datalar.YillikEgitimPlan.PTarih := FormatDateTime('DD.MM.YYYY : HH:nn',now);
+   datalar.YillikEgitimPlan.egitimVerenIGU := '';
+   datalar.YillikEgitimPlan.aciklama := '';
+   datalar.YillikEgitimPlan.egitimYeri := '';
+   datalar.YillikEgitimPlan.egitimDegerlendirme := '';
+   datalar.YillikEgitimPlan.degerlendirmeSure := 15;
+   datalar.YillikEgitimPlan.meteryal := '';
+
+
+
+   end;
 end;
 
 begin
 
   case AButtonIndex of
    6 : begin
-
-        if mrYes = ShowPopupForm('Faaliyet Ekle',yeniFaaliyet)
+        dataRead('Y');
+        if mrYes = ShowPopupForm('Etimi Ekle',yeniEgitimPlanDetay)
         then begin
          try
           YillikEgitimPlanSatirlar.DataController.DataSet.Append;
@@ -291,9 +323,26 @@ begin
         end;
     end;
 
+   8 : begin
+               ADone := True;
+               dataRead;
+               if mrYES = ShowMessageSkin('Satýr Silinecek Eminmisiniz','','','msg')  then
+               begin
+                 datalar.QueryExec(
+                 'delete firmaYillikEgitimPlanDetay ' +
+                 'where id = ' + intToStr(datalar.YillikEgitimPlan.id));
+
+
+
+                 YillikEgitimPlanGrid.Dataset.Requery();
+
+               end;
+
+       end;
+
    9 : begin
         dataRead;
-        if mrYes = ShowPopupForm('Düzenle',FaaliyetDuzenle)
+        if mrYes = ShowPopupForm('Düzenle',yeniEgitimPlanDetayDuzenle)
         then begin
          try
           Book := YillikEgitimPlanSatirlar.DataController.DataSet.Bookmark;
@@ -426,7 +475,13 @@ begin
   case Tcontrol(sender).Tag of
  -20 : begin
           TopluDataset.Dataset0 := datalar.QuerySelect('select * from firmaYillikEgitimPlani_View where id = ' +
-                                                        varTostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
+                                                        varTostr(TcxButtonEditKadir(FindComponent('id')).EditValue) +
+                                                        ' order by DATEPART(MONTH,PTarih) ');
+
+          TopluDataset.Dataset1 := datalar.ADO_aktifSirketLogo;
+          TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
+
+
 
           PrintYap('YEP','Çalýþma Planý','',TopluDataset);
         end;

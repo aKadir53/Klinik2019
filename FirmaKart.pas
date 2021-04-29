@@ -808,7 +808,10 @@ begin
 
 
   addButton(self,nil,'btnSubeler','','Firma WS Eriþim Bilgileri',Kolon3,'',230,ButtonClick);
-(*
+
+ // addButton(self,nil,'btnISGEkipleri','','Ýþ Saðlýðý ve Güvenliði Ekipleri',Kolon3,'',230,ButtonClick);
+
+  (*
   addButton(self,nil,'btnSubeGetir','','Baþka Firmadan Þube Taþý (Firma Birleþtir)',Kolon3,'',230,ButtonClick);
   addButton(self,nil,'btnCalismalar','','Firma Çalýþmalarý',Kolon3,'',230,ButtonClick);
   addButton(self,nil,'btnSozlesmeler','','Firma Sözleþmeleri',Kolon3,'',230,ButtonClick);

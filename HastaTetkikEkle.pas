@@ -250,6 +250,7 @@ procedure TfrmHastaTetkikEkle.Sonuclar;
 begin
    sql := 'exec sp_HastaGelisTetkik ' + QuotedStr(_dosyaNo_) + ',' + _gelisNO_ + ',' + inttostr(ABS(cxTabTetkik.TabIndex+2)) ;
    datalar.QuerySelect(ADO_Tetkikler,sql);
+
    cxGridTetkikler.ViewData.Expand(true);
 
    sql := 'select * from labsonucdegerlendirme where dosyaNo = ' + #39 + _dosyaNo_ + #39 +
@@ -340,8 +341,9 @@ begin
    try
      if length(List) > 0 then
      begin
-          uzmanDoktor :=
-           datalar.QuerySelect('select kod from doktorlarT where durum = ''Aktif'' and uzman = ''Evet'' and sirketKod = ' + QuotedStr(datalar.AktifSirket)).FieldByName('kod').AsString;
+           sql := Format(sirketUzmanDoktor,[quotedStr(datalar.AktifSirket)]);
+        //   sql := 'exec sp_UzmanDoktorBul ' + QuotedStr(datalar.AktifSirket);
+           uzmanDoktor := datalar.QuerySelect(sql).FieldByName('kod').AsString;
 
        if List[0].kolon1 = '908170'
        then begin
@@ -354,7 +356,9 @@ begin
        while not ado.Eof do
        begin
 
-           sql := 'if not exists(select * from hareketlerLab where dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNo_ + ' and code = ' + QuotedStr(ado.FieldByName('butKodu').AsString) + ' ) ' +
+           sql := 'if not exists(select * from hareketlerLab where dosyaNo = ' + QuotedStr(_dosyaNO_) + ' and gelisNo = ' + _gelisNo_ +
+                  ' and code = ' + QuotedStr(ado.FieldByName('butKodu').AsString) +
+                  ' and tip1 = ' + QuotedStr(ado.FieldByName('butKodu').AsString)  + ' ) ' +
                   ' begin ' +
                   ' insert into hareketler (dosyaNo,gelisNo,gelisSIRANO,Tarih,Doktor,adet,code,name1,tip,tip1) ' +
                   'values(' + QuotedStr(_dosyaNO_) + ',' +
@@ -446,16 +450,22 @@ begin
                     GrupTetkikEkle(TMenuItem(sender).Tag);
                   end;
     -30 : begin
+             if mrYes = ShowMessageSkin('Tetkiki Silmek İstediğinizden Eminmisiniz?','','','msg') then
+             begin
                if cxGridTetkikler.Controller.SelectedRowCount > 0
                Then begin
                  TetkikSil(ADO_Tetkikler.FieldByName('sirano').AsInteger);
                end;
+             end;
          end;
     -31,-32 : begin
+             if mrYes = ShowMessageSkin('Tetkiki Silmek İstediğinizden Eminmisiniz?','','','msg') then
+             begin
                if cxGridTetkikler.Controller.SelectedRowCount > 0
                Then begin
                  TetkikSil(TMenuItem(sender).Tag);
                end;
+             end;
          end;
 
     -2 : begin

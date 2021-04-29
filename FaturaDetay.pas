@@ -171,32 +171,51 @@ var
   faturaId , id , sql : string;
 begin
   //SirketKodx.Text := datalar.AktifSirket; giriþ formuna eklendi.
+  case TControl(sender).Tag  of
+    Kaydet : begin
+               if varToStr(TcxImageComboKadir(FindComponent('FaturaTip')).EditValue) <> '3'
+               Then
+                 if Length(TcxTextEdit(FindComponent('GIBFaturaNo')).Text) = 0
+                 Then begin
+                    TcxTextEdit(FindComponent('GIBFaturaNo')).Text :=
+                    GibFaturaNoUret(datalar.AktifSirket,
+                                    TcxDateEditKAdir(FindComponent('FaturaTarihi')).GetValue,
+                                    '-1');
 
-  if Length(TcxTextEdit(FindComponent('GIBFaturaNo')).Text) <> 16
-  Then begin
-    ShowMessageSkin('Fatura GÝB No Hatalý','Örnek , ABC0123456789 Formatýnda 16 karakter Olmalý','','info');
-    TcxTextEdit(FindComponent('GIBFaturaNo')).SetFocus;
-    exit;
+                 end;
+    end;
   end;
 
   inherited;
 
   case TControl(sender).Tag  of
     Kaydet : begin
-               FaturaGrid.Enabled := True;
+               if varToStr(TcxImageComboKadir(FindComponent('FaturaTip')).EditValue) <> '3'
+               Then begin
+                 if Length(TcxTextEdit(FindComponent('GIBFaturaNo')).Text) <> 16
+                 Then begin
+                    ShowMessageSkin('Fatura GÝB No Hatalý','Örnek , ABC0123456789 Formatýnda 16 karakter Olmalý','','info');
+                    TcxTextEdit(FindComponent('GIBFaturaNo')).SetFocus;
+                    exit;
+                 end;
 
-               if faturaNoDegisti = True
-               then begin
-                   faturaId := TcxButtonEdit(FindComponent('sira')).Text;
-                   sql :=  'exec sp_FaturaNumaraTarihceIDUpdate ' + faturaId;
-                   datalar.QueryExec(sql);
-                   faturaNoDegisti := False;
+                 FaturaGrid.Enabled := True;
+
+                 if faturaNoDegisti = True
+                 then begin
+                     faturaId := TcxButtonEdit(FindComponent('sira')).Text;
+                     sql :=  'exec sp_FaturaNumaraTarihceIDUpdate ' + faturaId;
+                     datalar.QueryExec(sql);
+                     faturaNoDegisti := False;
+                 end;
+
                end;
-
 
 
              end;
     Yeni   : begin
+
+
                TcxTextEditKadir(FindComponent('faturaNo')).text := '0';
                TcxImageComboKadir(FindComponent('FaturaTip')).EditValue := 1;
                TcxImageComboKadir(FindComponent('ozelKod')).EditValue := 1;
@@ -443,7 +462,7 @@ begin
   sirketKod.TableName := 'SIRKETLER_TNM';
   sirketKod.ValueField := 'sirketKod';
   sirketKod.DisplayField := 'tanimi';
-  sirketKod.Filter := ' FirmaTip = 3';
+  sirketKod.Filter := ' FirmaTip in (2,3)';
   sirketKod.BosOlamaz := True;
   setDataStringKontrol(self,sirketKod,'SirketKod','Müþteri',Kolon1,'',250);
   OrtakEventAta(sirketKod);

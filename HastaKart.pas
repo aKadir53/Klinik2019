@@ -512,6 +512,8 @@ begin
     datalar.GelisDuzenleRecordK.GirisTarihi :=  cxGridGelis.Dataset.FieldByName('Tarih').AsDateTime;
     datalar.GelisDuzenleRecordK.CikisTarih :=  cxGridGelis.Dataset.FieldByName('CikisTarih').AsDateTime;
     datalar.GelisDuzenleRecordK.SIRANO := cxGridGelis.Dataset.FieldByName('SIRANO').AsString;
+    datalar.GelisDuzenleRecordK.KabulDurum := cxGridGelis.Dataset.FieldByName('KabulDurum').AsString;
+
 
     if mrYes = ShowPopupForm('Hasta Geliþ Düzenle',hastaGelisDuzenle)
     Then Begin
@@ -612,17 +614,26 @@ begin
      exit;
    end;
 
+   if UserRight('GELÝÞ ÝÞLEMLERÝ', 'Aç') = False
+   then begin
+       ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !','','','info');
+       exit;
+   end;
+
    if TcxCustomEdit(FindComponent('Aktif')).EditValue = '0'
    then begin
        ShowMessageSkin('Hasta Pasif!','Ýþlem Yapýlamaz','','info');
        exit;
    end;
 
-   if UserRight('GELÝÞ ÝÞLEMLERÝ', 'Aç') = False
+   if TcxCustomEdit(FindComponent('Aktif')).EditValue = '2'
    then begin
-       ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !','','','info');
-       exit;
+       if mrYes <> ShowMessageSkin('Misafir Hasta !','Ýþleme Devam Edilsin mi?','Misafir Geliþi Açýlacak, Bu Geliþteki Ýþlemler Ýstatistiklere Yansýtýlmaz','msg')
+        Then  exit;
    end;
+
+
+
 
    if sureKontrol
    then begin
@@ -1219,6 +1230,12 @@ begin
     TcxTextEdit(FindComponent('KVKK_Paylas')).Enabled := False;
   end;
 
+
+ // if _HastaBilgileriniCaptionGoster_ then
+   cxTab.Tabs[0].Caption := TcxTextEdit(FindComponent('HASTAADI')).Text + ' ' +
+                            TcxTextEdit(FindComponent('HASTASOYADI')).Text
+
+
 end;
 
 procedure TfrmHastaKart.cxButtonSKSCClick(Sender: TObject);
@@ -1460,7 +1477,8 @@ begin
    TcxImageComboKadir(FindComponent('sirketKod')).Enabled := cxGridGelis.Dataset.Eof;
    if not inherited Init(Sender) then exit;
 
-
+   cxTab.Tabs[0].Caption := TcxTextEdit(FindComponent('HASTAADI')).Text + ' ' +
+                            TcxTextEdit(FindComponent('HASTASOYADI')).Text
 end;
 
 
@@ -1485,7 +1503,7 @@ begin
  // USER_ID.Tag := 0;
   //sirketKod.Tag := 0;
   PopupMenu1.Images := datalar.imag24png;
-
+  Tag := TagfrmHastaKart;
   Menu := PopupMenu1;
 
   ClientHeight := formYukseklik;
@@ -1779,6 +1797,7 @@ begin
   DiyalizTedaviControlleriniFormaEkle(sayfa2_Kolon1);
 
   setDataStringCurr(self,'idealKilo','Kilo(Kg)',sayfa2_Kolon1,'kilo',50,'0.00', 1);
+  setDataStringCurr(self,'UF','Max.UF',sayfa2_Kolon1,'kilo',50,'0', 1);
   setDataStringCurr(self,'boy','Boy(Cm)',sayfa2_Kolon1,'kilo',50,'0', 1);
   setDataStringCurr(self,'VKI','VKI',sayfa2_Kolon1,'vkig',50,'0.00', 1);
   addButton(self,nil,'btnVKI','','VKI Hesapla',Kolon1,'vkig',80,ButtonClick,20);
@@ -1913,6 +1932,9 @@ begin
     TcxTextEdit(FindComponent('KVKK_Paylas')).Text := '';
     TcxTextEdit(FindComponent('KVKK_Paylas')).Enabled := False;
   end;
+
+   cxTab.Tabs[0].Caption := TcxTextEdit(FindComponent('HASTAADI')).Text + ' ' +
+                            TcxTextEdit(FindComponent('HASTASOYADI')).Text
 
 end;
 
@@ -2209,7 +2231,11 @@ begin
 
 
 
+
     _TakipNo_ := cxGridGelis.Dataset.FieldByName('TakipNo').AsString;
+
+
+
     sysTakipNo := cxGridGelis.Dataset.FieldByName('sysTakipNo').AsString;
 
   except
@@ -2399,8 +2425,16 @@ begin
        end;
 
  -39 : begin
+         if  _TakipNo_ <> ''
+         Then begin
           datasetiDoldur(_TakipNo_,_TedaviTuru_, _BasvuruNo_,TopluDataset);
           PrintYap('014','Hizmet Detay','',TopluDataset,kadirType.pTNone);
+         end
+         else
+         begin
+          datasetiDoldurHD(GirisFormRecord.F_dosyaNo_ ,GirisFormRecord.F_gelisNo_,TopluDataset);
+          PrintYap('014HD','Hizmet Detay','',TopluDataset,kadirType.pTNone);
+         end;
        end;
 
 

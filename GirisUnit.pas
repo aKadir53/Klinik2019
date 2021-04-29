@@ -240,6 +240,7 @@ type
     F_value_ : Variant;
     F_pasifSebeb_ : string;
     F_Aktif_ : string;
+    F_ShowTip_ : integer;
 
     F_SaveKontrol : Boolean;
 
@@ -284,6 +285,11 @@ type
       parent : TdxLayoutGroup;grup : string ;uzunluk : integer;List : Tstrings);overload;
     procedure setDataStringC(sender : Tform ; fieldName,caption : string;
      parent : TdxLayoutGroup;grup : string ;uzunluk : integer;List : string); overload;
+
+    procedure setDataStringC(sender : Tform ; fieldName,caption : string;
+     parent : TdxLayoutGroup;grup : string ;uzunluk : integer;TableName,Field,where : string); overload;
+
+
     procedure setDataStringIC(sender : Tform ; fieldName,caption : string;
      parent : TdxLayoutGroup;grup : string ;uzunluk : integer;TableName,valueField,DescField : string;filter :string = '';tag : integer = -1;itemList : string = '');
 
@@ -389,6 +395,7 @@ type
     property _pasifSebeb_ : string read F_pasifSebeb_ write F_pasifSebeb_;
     property _Aktif_ : string read F_Aktif_ write F_Aktif_;
     property _SaveKontrol : Boolean read F_SaveKontrol write SetSaveKontrol Default False ;
+    property _showTip_ : integer read F_showTip_ write F_showTip_ Default 0;
   end;
 
 const
@@ -817,7 +824,7 @@ begin
   TcxImageComboKadir (sender).OnEnter := cxEditEnter;
   TcxImageComboKadir(sender).OnExit := cxEditExit;
   TcxImageComboKadir(sender).OnKeyDown := cxTextEditBKeyDown;
- // TcxImageComboKadir(sender).Properties.OnEditValueChanged := PropertiesEditValueChanged;
+  TcxTextEdit(sender).Properties.OnEditValueChanged := PropertiesEditValueChanged;
 end;
 
 function TGirisForm.Init(Sender: TObject) : Boolean;
@@ -828,21 +835,24 @@ begin
   //sirketKod.Text := datalar.AktifSirket; //sadece yeni kayýt ise yap dedik, diðerlerinde veritabanýndan geldikçe eziliyor zaten.
   FormInputZorunluKontrolPaint(self,$00FCDDD1);
 
-  sayfa1.Width := AnaForm.sayfalar.Width - 20;
-  sayfa2.Width := sayfa1.Width;
-  sayfa3.Width := sayfa1.Width;
-  sayfa4.Width := sayfa1.Width;
+ //  if self._showTip_ = 0
+//   then begin
+        sayfa1.Width := AnaForm.sayfalar.Width - 20;
+        sayfa2.Width := sayfa1.Width;
+        sayfa3.Width := sayfa1.Width;
+        sayfa4.Width := sayfa1.Width;
 
 
-  if ToolBar1.Visible then ToolBar1H := ToolBar1.Height else ToolBar1H := 0;
-  if TopPanel.Visible then TopPanelH := TopPanel.Height else TopPanelH := 0;
-  if cxPanel.Visible then cxPanelH := cxPanel.Height else cxPanelH := 0;
+        if ToolBar1.Visible then ToolBar1H := ToolBar1.Height else ToolBar1H := 0;
+        if TopPanel.Visible then TopPanelH := TopPanel.Height else TopPanelH := 0;
+        if cxPanel.Visible then cxPanelH := cxPanel.Height else cxPanelH := 0;
 
-  sayfa1.Height := AnaForm.sayfalar.Height - (ToolBar1H + TopPanelH + cxPanelH + sayfalar.TabHeight + AnaForm.sayfalar.TabHeight + dxStatusBar1.Height);
-  sayfa2.Height := sayfa1.Height;
-  sayfa3.Height := sayfa1.Height;
-  sayfa4.Height := sayfa1.Height;
+        sayfa1.Height := AnaForm.sayfalar.Height - (ToolBar1H + TopPanelH + cxPanelH + sayfalar.TabHeight + AnaForm.sayfalar.TabHeight + dxStatusBar1.Height);
+        sayfa2.Height := sayfa1.Height;
+        sayfa3.Height := sayfa1.Height;
+        sayfa4.Height := sayfa1.Height;
 
+ // end;
  // cxTab.PopupMenu := menu;
 
 //  pnlDurum.Alignment := alCenterCenter;
@@ -1076,6 +1086,12 @@ begin
     setDataStringIC(self,'D','Diyalizat',Grp,'',120,'Diyaliz_Diyalizat','Kod','Tanimi','',1);
     setDataStringIC(self,'GIRISYOLU','Damar Giriþ',Grp,'GY',120,'Diyaliz_DamarGiris','Kod','Tanimi','',1);
 
+    if self.Tag = TagfrmHastaKart
+    then begin
+     setDataStringC(self,'LokalizasyonTip','Tip/Lokalizasyon',Grp,'lkl',60,'Sað,Sol');
+     setDataStringIC(self,'Lokalizasyon','',Grp,'lkl',150,'Diyaliz_Lokalizasyon','Kod','Tanimi','',1);
+    end;
+
     if self.Tag = TagfrmPopup
     then
      setDataStringChk(self,'GIRISYOLU_ENF','',Grp,'GY',150,ctint,'Enfeksiyon');
@@ -1093,7 +1109,7 @@ begin
 
     D.name := 'txtAPH';
     ComboDoldur3('select tanimi from Diyaliz_APH',D,0,-1);
-
+    setDataStringCurr(self,'Flow','Flow',Grp,'_isi_',50,'0',1);
     setDataStringC(self,'HCOOO','HCO3',Grp,'_isi_',50,'20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40');
     setDataStringCurr(self,'ISI','ISI',Grp,'_isi_',50,'0',1);
     setDataStringC(self,'APH','APH',Grp,'aphNa',50,D.Properties.Items);
@@ -2298,7 +2314,10 @@ begin
    cxEditB.OnExit := cxEditExit;
    cxEditB.OnKeyDown := cxTextEditBKeyDown;
    cxEditB.Properties.OnButtonClick := cxButtonEditPropertiesButtonClick;
-  end;
+   cxEditB.Properties.OnEditValueChanged := PropertiesEditValueChanged;
+  end
+  else
+   cxEditB.Properties.OnEditValueChanged := PropertiesEditValueChanged;
 end;
 
 
@@ -2459,6 +2478,61 @@ begin
   cxEditC.Properties.ClearKey := VK_DELETE;
 
 end;
+
+procedure TGirisForm.setDataStringC(sender : Tform ; fieldName,caption : string;
+     parent : TdxLayoutGroup;grup : string ;uzunluk : integer;TableName,Field,where : string);
+var
+  cxEditC : TcxComboBox;
+  dxLaC : TdxLayoutItem;
+  dxLaGC : TdxLayoutGroup;
+  ado : TADOQuery;
+begin
+  ado := datalar.QuerySelect('select ' + Field + ' from ' + TableName + ' ' + where);
+  try
+    cxEditC := TcxComboBox.Create(self);
+    cxEditC.Name := fieldName;
+    cxEditC.Text := '';
+    cxEditC.Properties.Items.Clear;
+    while not ado.Eof do
+      begin
+        cxEditC.Properties.Items.Add(ado.FieldByName(Field).AsString);
+        ado.next;
+      end;
+  finally
+    ado.Free;
+  end;
+
+
+  cxEditC.Properties.DropDownListStyle := lsFixedList;
+  dxLaC := TdxLayoutGroup(parent).CreateItemForControl(cxEditC);
+  dxLaC.Name := 'dxLa'+fieldName;
+  dxLaC.AlignHorz := ahLeft;
+  cxEDitC.Width := uzunluk;
+ // dxLaC.Width := uzunluk;
+  dxLaC.Caption := caption;
+
+  if grup = '' then
+    dxLaC.Parent := parent
+    else begin
+        if Self.FindComponent(grup) = nil
+        then begin
+         dxLaGC := TdxLayoutGroup.Create(self);
+         dxLaGC.Name := grup;
+         dxLaGC.LayoutDirection := ldHorizontal;
+         dxLaGC.Parent := parent;
+         dxLagC.ShowBorder := false;
+        end;
+      dxLaC.Parent := TdxLayoutGroup(Self.findcomponent(grup));
+    end;
+  cxEditC.Style.Color := clWhite;
+  cxEditC.OnEnter := cxEditEnter;
+  cxEditC.OnExit := cxEditExit;
+  cxEditC.OnKeyDown := cxTextEditBKeyDown;
+  cxEditC.Properties.OnEditValueChanged := PropertiesEditValueChanged;
+
+end;
+
+
 
 procedure TGirisForm.setDataStringC(sender : Tform ; fieldName,caption : string;
      parent : TdxLayoutGroup;grup : string ;uzunluk : integer;List : string);
@@ -3239,6 +3313,13 @@ begin
                        'info');
   end;
 
+  if (key = vk_f11) and (Shift = [ssCtrl,ssShift])
+  then begin
+
+    datalar.SQLQueryGoster := not datalar.SQLQueryGoster;
+
+
+  end;
 
   if (key = VK_ESCAPE) //and (Shift = [ssShift])
   then begin

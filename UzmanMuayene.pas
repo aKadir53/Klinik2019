@@ -338,6 +338,7 @@ begin
     TcxComboBox(FindComponent('Igne')).EditValue := ADO_UzmanMuayene.fieldbyname('Igne').AsString;
     TcxComboBox(FindComponent('IgneV')).EditValue:= ADO_UzmanMuayene.fieldbyname('IgneV').AsString;
     TcxCustomEdit(FindComponent('ISI')).EditValue:= ADO_UzmanMuayene.fieldbyname('ISI').AsString;
+    TcxCustomEdit(FindComponent('Flow')).EditValue:= ADO_UzmanMuayene.fieldbyname('Flow').AsString;
 
 
     TcxImageComboKadir(FindComponent('HbsAg')).EditValue  := ADO_UzmanMuayene.fieldbyname('HbsAg').AsString;
@@ -473,7 +474,7 @@ begin
                 sql := 'SELECT ug.*,k.*,dr.*,' +
                        ' DC.tanimi DiyalizorCinsiTanimi,D.tanimi Diyalizat,DT.tanimi DiyalizorTipiTanimi,DG.tanimi GIRISYOLUTanimi' +
                        ' FROM UzmanGozlem ug ' +
-                       'join hastakart k on k.dosyaNo = ug.dosyaNo ' +
+                       'join HastaKartView k on k.dosyaNo = ug.dosyaNo ' +
                        'join DoktorlarT dr on dr.kod = ug.doktor ' +
                        'left join Diyalizor_Cinsleri DC on DC.kod = ug.DiyalizorCinsi ' +
                        'left join Diyalizor_Tipleri DT on DT.kod = ug.DiyalizorTipi ' +
@@ -510,10 +511,26 @@ begin
 
             end;
     -10  : begin
+    (*
                sql := 'exec  sp_IlacTedaviTakipPIVOT @dosyaNo = ' + QuotedStr(_dosyaNo_) +
                                                    ',@yil = ' + QuotedStr(NoktasizTarih(_provizyonTarihi_)) +
                                                    ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
                 Datasets.Dataset1 := datalar.QuerySelect(sql);
+      *)
+
+
+               sql := 'select * from HastaKart where dosyaNo = ' + QuotedStr(_dosyaNo_);
+               Datasets.Dataset0 := datalar.QuerySelect(sql);
+
+
+
+               sql := 'exec sp_IlacTedaviFormuYazdir ' + QuotedStr(_dosyaNo_) + ',' + QuotedStr(copy(NoktasizTarih(_provizyonTarihi_),1,4)+'01');
+               Datasets.Dataset1 := datalar.QuerySelect(sql);;
+
+               Datasets.Dataset2 := datalar.ADO_AktifSirket;
+
+               Datasets.Dataset3 := datalar.ADO_aktifSirketLogo  ;
+
 
                 PrintYap('051','Ýlaç Tedavi Form','',Datasets,pTNone);
 
@@ -564,6 +581,7 @@ case TControl(sender).Tag  of
                           ',HCOOO = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('HCOOO')).Text)) +
                           ',APH = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('APH')).Text)) +
                           ',Na = ' +  QuotedStr(varTostr(TcxTextEdit(FindComponent('Na')).Text)) +
+                          ',Flow = ' +  QuotedStr(varTostr(TcxTextEdit(FindComponent('Flow')).Text)) +
                           ',Igne = ' +  QuotedStr(varTostr(TcxTextEdit(FindComponent('Igne')).Text)) +
                           ',IgneV = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('IgneV')).Text)) +
                           ',ISI = ' + QuotedStr(varTostr(TcxTextEdit(FindComponent('ISI')).Text))+
@@ -598,7 +616,7 @@ case TControl(sender).Tag  of
                 else
                 begin
                   sql := 'insert into UzmanGozlem (dosyaNo,gelisNo,gelisSIRANO,Tarih,doktor,basboyun,sistemSorgusu,psiko,digerNot, ' +
-                           'kurukilo,D,Diyalizor,GIRISYOLU,HEPARIN,HEPARINUYG,HEPARINTIP,YA,DiyalizorCinsi,DiyalizorTipi,HCOOO,APH,Na,Igne,IgneV,ISI  ) ' +
+                           'kurukilo,D,Diyalizor,GIRISYOLU,HEPARIN,HEPARINUYG,HEPARINTIP,YA,DiyalizorCinsi,DiyalizorTipi,HCOOO,APH,Na,Igne,IgneV,ISI,Flow  ) ' +
                          'values(' + QuotedStr(_dosyaNo_) + ','
                                    + QuotedStr(_gelisNo_) + ','
                                    + QuotedStr(_gelisSiraNo_) + ','
@@ -623,7 +641,8 @@ case TControl(sender).Tag  of
                                    + QuotedStr(varTostr(TcxTextEdit(FindComponent('Na')).Text)) + ','
                                    + QuotedStr(varTostr(TcxTextEdit(FindComponent('Igne')).Text)) + ','
                                    + QuotedStr(varTostr(TcxTextEdit(FindComponent('IgneV')).Text)) + ','
-                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('ISI')).Text)) +
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('ISI')).Text)) + ','
+                                   + QuotedStr(varTostr(TcxTextEdit(FindComponent('Flow')).Text)) +
 
                                     ') select SCOPE_IDENTITY() id';
                   TcxTextEdit(FindComponent('id')).Text := datalar.QuerySelect(sql).FieldByName('id').AsString;
@@ -789,6 +808,7 @@ begin
 
   setDataStringBLabel(self,'tedaviOrder',Kolon2,'',250,'Diyaliz Order', '', '', True, clRed, taCenter);
   setDataStringCurr(self,'kurukilo','Kuru Kilo',Kolon2,'',80,'0.00',1);
+
   DiyalizTedaviControlleriniFormaEkle(Kolon2,False);
 
   sql := 'select S.Tarih, H.* from HemsireTakip H  join hareketlerSeans S on S.sirano = H.siraNo ' +

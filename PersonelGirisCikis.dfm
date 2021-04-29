@@ -83,7 +83,7 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
         end
         item
           Caption = 'Cihaz Hareket Bilgileri'
-          Width = 436
+          Width = 500
         end>
       object GridEkstredosyaNo: TcxGridDBBandedColumn
         DataBinding.FieldName = 'dosyaNo'
@@ -131,7 +131,7 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
         Properties.ImmediatePost = True
         Properties.Kind = ckDateTime
         HeaderAlignmentHorz = taCenter
-        Width = 142
+        Width = 126
         Position.BandIndex = 1
         Position.ColIndex = 0
         Position.RowIndex = 0
@@ -145,7 +145,7 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
-        Width = 66
+        Width = 58
         Position.BandIndex = 1
         Position.ColIndex = 1
         Position.RowIndex = 0
@@ -159,7 +159,7 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
-        Width = 56
+        Width = 50
         Position.BandIndex = 1
         Position.ColIndex = 2
         Position.RowIndex = 0
@@ -173,7 +173,7 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Options.Editing = False
-        Width = 103
+        Width = 91
         Position.BandIndex = 1
         Position.ColIndex = 3
         Position.RowIndex = 0
@@ -186,7 +186,7 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 69
+        Width = 62
         Position.BandIndex = 1
         Position.ColIndex = 4
         Position.RowIndex = 0
@@ -207,8 +207,32 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
         Properties.ImmediatePost = True
         Properties.Items = <>
         HeaderAlignmentHorz = taCenter
+        Width = 79
+        Position.BandIndex = 1
+        Position.ColIndex = 7
+        Position.RowIndex = 0
+      end
+      object GridEkstreColumn6: TcxGridDBBandedColumn
+        Caption = 'Tip'
+        DataBinding.FieldName = 'tip'
+        PropertiesClassName = 'TcxComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Items.Strings = (
+          'N'
+          'R'
+          'I')
+        HeaderAlignmentHorz = taCenter
+        Width = 34
         Position.BandIndex = 1
         Position.ColIndex = 6
+        Position.RowIndex = 0
+      end
+      object GridEkstreColumn7: TcxGridDBBandedColumn
+        DataBinding.FieldName = 'id'
+        Visible = False
+        Position.BandIndex = 0
+        Position.ColIndex = 3
         Position.RowIndex = 0
       end
     end
@@ -284,17 +308,18 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
         '1'#39' and Aktif = 1'
       ''
       '')
+    Left = 24
     Top = 264
   end
   object DataSource1: TDataSource
     DataSet = ado
-    Left = 72
-    Top = 344
+    Left = 24
+    Top = 224
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 136
-    Top = 56
+    Left = 272
+    Top = 8
     object Y1: TMenuItem
       Tag = -5
       Caption = 'Yazd'#305'r'
@@ -308,13 +333,25 @@ object frmPersonelGirisCikis: TfrmPersonelGirisCikis
     end
     object H1: TMenuItem
       Tag = -2
-      Caption = 'Hasta Kart'#305
+      Caption = 'Personel Kart'#305
       ImageIndex = 44
+    end
+    object H2: TMenuItem
+      Tag = -3
+      Caption = 'Hareket Ekle'
+      ImageIndex = 30
+      OnClick = H3Click
+    end
+    object H3: TMenuItem
+      Tag = -4
+      Caption = 'Hareket Sil'
+      ImageIndex = 42
+      OnClick = H3Click
     end
   end
   object cxStyleRepository1: TcxStyleRepository
-    Left = 184
-    Top = 48
+    Left = 200
+    Top = 8
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svFont, svTextColor]

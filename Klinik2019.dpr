@@ -125,8 +125,8 @@ uses
 // KadirMedula3 in '..\..\medula3wsdl\KadirMedula3.pas';
 
 const
-  AppalicationVer : integer = 4092;
-  yvKversiyon : integer = 3;
+  AppalicationVer : integer = 4125;
+  yvKversiyon : integer = 4;
   NoktaURL : string = 'https://www.noktayazilim.net';
   VersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019Versiyon.txt';
   DLLVersiyonURL : string = 'http://www.noktayazilim.net/Diyaliz_Klinik2019/Klinik2019DLLVersiyon.txt';
@@ -249,15 +249,15 @@ begin
 
     end;
 
-    if not FileExists('C:\NoktaV3\Newtonsoft.Json.dll')
-    then begin
+ //   if not FileExists('C:\NoktaV3\Newtonsoft.Json.dll')
+ //   then begin
       try
         filename := 'Newtonsoft.Json.dll';
         Application.ProcessMessages;
         Download('https://www.noktayazilim.net/Diyaliz_Klinik2019/'+filename,'mavinokta','nokta53Nokta','C:\NoktaV3\'+filename);
       finally
       end;
-    end;
+  //  end;
 
   GetBuildInfo(Application.ExeName, V1, V2, V3,V4);
   ExeVersiyon:= Format('%d.%d.%d.%d', [V1, V2, V3,V4]);

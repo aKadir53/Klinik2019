@@ -51,7 +51,7 @@ object frmHastaDiyalizIzlem: TfrmHastaDiyalizIzlem
         ParentShowHint = False
         ShowHint = False
         TabOrder = 0
-        Properties.ActivePage = cxTabSheet1
+        Properties.ActivePage = cxTabSheet2
         Properties.MultiLine = True
         Properties.Options = [pcoAlwaysShowGoDialogButton, pcoGoDialog, pcoGradient, pcoGradientClientArea]
         Properties.Style = 11

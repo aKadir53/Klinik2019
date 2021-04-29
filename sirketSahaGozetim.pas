@@ -292,6 +292,7 @@ begin
                     'dbo.SahaGozetimFaaliyetTuru AS sft ON sft.kod = sgd.YapilacakFaliyetTuru LEFT OUTER JOIN '+
                     'dbo.SahaGozetimTakipTetkikSonuc AS sts ON sts.kod = sgd.Sonuc ' +
          ' where sgd.sirketSahaGozetimId = ' + QuotedStr(TcxButtonEditKadir(FindComponent('id')).Text) +
+
          ' order by TespitTarihi';
 
          SahaGozetimGrid.Dataset.Active := False;
@@ -310,6 +311,18 @@ end;
 procedure TfrmSirketSahaGozetim.cxKaydetClick(Sender: TObject);
 begin
   //SirketKodx.Text := datalar.AktifSirket; giriþ formuna eklendi.
+
+  case TControl(sender).Tag  of
+    Sil : begin
+//            datalar.ADOConnection2.BeginTrans;
+            if not datalar.QuerySelect('select * from SirketSahaGozetimDetay where sirketSahaGozetimId = ' + TcxTextEdit(FindComponent('id')).Text).Eof
+            then begin
+              ShowMessageSkin('Döf Satýrlarýný Ýptal Etmeden , Silme iþlemi yapýlamaz','','','info');
+              exit;
+            end;
+          end;
+  end;
+
 
   if varToStr(TcxImageComboBox(FindComponent('sirketKod')).EditValue) = ''
   Then begin
@@ -331,6 +344,20 @@ begin
            TcxTextEdit(FindComponent('isveren')).Text := datalar.username;
            SahaGozetimGrid.Enabled := False;
            FaturaDetay;
+        end;
+
+ sil :  begin
+           (*
+           try
+               datalar.QueryExec('delete from SirketSahaGozetim where sirketSahaGozetimId = ' + TcxTextEdit(FindComponent('id')).Text);
+               datalar.ADOConnection2.CommitTrans;
+           except on e : exception do
+              begin
+                datalar.ADOConnection2.RollbackTrans;
+                ShowMessageSkin(e.Message,'','','info');
+              end;
+           end;
+             *)
         end;
 
   end;
@@ -726,6 +753,7 @@ var
   dosya : TOpenDialog;
   TopluDataset : TDataSetKadir;
   FB : TFirmaBilgi;
+  sql : string;
 begin
   inherited;
 
@@ -734,11 +762,12 @@ begin
 
   1,2,-98,-99,-100
         : begin
-           datalar.QuerySelect(DofList.Dataset,'exec sp_Dof_Filters ' +
+           sql := 'exec sp_Dof_Filters ' +
                           ' @sirketKod = ' + QuotedStr(datalar.aktifSirket) +
                           ',@tarih1 = ' + TcxDateEditKadir(FindComponent('Tarih1')).GetSQLValue  +
                           ',@tarih2 = '  + TcxDateEditKadir(FindComponent('Tarih2')).GetSQLValue +
-                          ',@tip = ' + intTostr(Tcontrol(sender).Tag));
+                          ',@tip = ' + intTostr(Tcontrol(sender).Tag);
+           datalar.QuerySelect(DofList.Dataset,sql);
           end;
 
 
@@ -849,6 +878,7 @@ begin
   *)
 
 
+  where := ' sirketKod = ' + QuotedStr(datalar.AktifSirket);
 
   Faturalar := ListeAcCreate('SirketSahaGozetim_view','id,sirketKod,sirketAdi,date_create,paylasilan,RDS_ID',
                        'ID,ÞirketKodu,ÞirketAdý,Tarihi,Taným,GozlemID',
@@ -864,15 +894,15 @@ begin
 
   sirketlerx := TcxImageComboKadir.Create(self);
   sirketlerx.Conn := Datalar.ADOConnection2;
-  sirketlerx.TableName := 'SIRKETLER_TNM_view';
+  sirketlerx.TableName := 'KullaniciSirketleri_View';
   sirketlerx.ValueField := 'SirketKod';
   sirketlerx.DisplayField := 'Tanimi';
   sirketlerx.BosOlamaz := False;
-  sirketlerx.Filter := ' firmaTip = 1';
+  sirketlerx.Filter := ' kullanici = ' + QuotedStr(datalar.username);
   setDataStringKontrol(self,sirketlerx,'SirketKod','Þirket',Kolon1,'trh',230,0,alNone,'');
   TcxImageComboKadir(FindComponent('SirketKod')).Properties.OnEditValueChanged := SirketlerPropertiesChange;
 
-  sube := ' and IGU = ' + QuotedStr(datalar.IGU);
+  //sube := ' and IGU = ' + QuotedStr(datalar.IGU);
 
   (*
   Subeler := TcxImageComboKadir.Create(self);

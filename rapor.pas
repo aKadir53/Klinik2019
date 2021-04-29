@@ -26,11 +26,7 @@ type
     memo: TDBMemo;
     DataSource1: TDataSource;
     frxReport1: TfrxReport;
-    frxXLSExport1: TfrxXLSExport;
-    frxRTFExport1: TfrxRTFExport;
     frxPDFExport1: TfrxPDFExport;
-    frxHTMLExport1: TfrxHTMLExport;
-    frxXMLExport1: TfrxXMLExport;
     frxDBDataset2: TfrxDBDataset;
     frxDBDataset3: TfrxDBDataset;
     frxDBDataset4: TfrxDBDataset;
@@ -61,6 +57,7 @@ type
     frxMailExport1: TfrxMailExport;
     frxADOComponents2: TfrxADOComponents;
     frxCrossObject1: TfrxCrossObject;
+    frxRTFExport1: TfrxRTFExport;
     procedure raporData(Dataset : TADOQuery ; kod ,dosya ,yazici: string);
     procedure rapor1Data(dataset : TADOQuery ; kod , dosya , yazici : string);
     procedure raporDataset(Dataset : TDataset ; kod ,dosya ,yazici: string);
@@ -79,7 +76,11 @@ type
     procedure DesignerOnShow(sender: TObject);
 
     procedure IcerikAl(var template : TStream ; dokumanNo: string ; ObjeName : string = 'Icerik' ; Dataset : TDataset = nil);
+
     procedure IcerikFontDegistir(var template : TStream ; dokumanNo: string ; ObjeName : string = 'Icerik' ; Dataset : TDataset = nil);
+
+    procedure LogoAl(var template : TStream ; dokumanNo: string ;
+                     ObjeName : string = 'Picture4' ; Dataset : TDataset = nil);
 
  //   function GenReportPDF(const RepName, Id: string): string;
   private
@@ -92,10 +93,16 @@ type
 
        procedure raporData2(dataset : TDataSetKadir ; kod , dosya : string ; SablonLoad : sablonTip = stHayir; Expo : Boolean = True);
        procedure raporDataIcerikYukle(kod : string);
+       procedure raporDataLogoYukle(kod : string);
        procedure raporDataIcerikFontDegistir(kod : string);
     { Public declarations }
   end;
 
+const
+  fr01cm = 3.77953;
+  fr1cm  = 37.7953;
+  fr01in = 9.6;
+  fr1in  = 96;
 
 var
   frmRapor: TfrmRapor;
@@ -233,6 +240,84 @@ begin
 end;
 
 
+procedure TfrmRapor.LogoAl(var template : TStream ; dokumanNo: string ; ObjeName : string = 'Picture4' ; Dataset : TDataset = nil);
+var
+ PictureView : TfrxPictureView;
+ Stream: TMemoryStream;
+ Str: string;
+begin
+
+  if Dataset = nil then dataset := datalar.ADO_RAPORLAR;
+
+  if not FileExists('C:\NoktaV3\SB_Logo\logo.jpg')
+  then begin
+   ShowMessageSkin('C:\NoktaV3\SB_Logo\logo.jpg','Logo Bulunamadý','','info');
+   exit;
+  end;
+
+  try
+    template.Position := 0;
+    frxReport1.LoadFromStream(template);
+  finally
+  // template.free;
+  end;
+
+
+
+ PictureView := TfrxPictureView(frxReport1.FindObject(ObjeName));
+ if PictureView = nil then
+   Exit;
+ Stream := TMemoryStream.Create;
+ try
+   try
+     Stream.LoadFromFile('C:\NoktaV3\SB_Logo\logo.jpg');
+     SetLength(Str, Stream.Size);
+     Stream.Read(Str[1], Stream.Size);
+     PictureView.LoadPictureFromStream(Stream);
+    // PictureView.Name := 'BakanlikLogo1';
+
+   finally // wrap up
+     Stream.Free;
+   end;    // try/finally
+ except
+ end;
+
+ //frxDesigner1SaveReport(frxReport1,False);
+
+
+  Stream := TMemoryStream.Create;
+  try
+    Stream.Position := 0;
+    frxReport1.SaveToStream(Stream);
+
+    if Dataset.Active = true
+    Then Begin
+      Dataset.Edit;
+      try
+         Dataset.DisableControls;
+         Dataset.FieldByName('raporAdi').AsString := d;
+         (Dataset.FieldByName('rapor') as TBlobField).LoadFromStream(Stream);
+         Dataset.Post;
+         //ShowMessageSkin('Logo Alýndý','','','info');
+      finally
+        Dataset.EnableControls;
+      end;
+    End
+  finally
+    Stream.Free;
+  end;
+
+
+
+ template.Position := 0;
+ frxReport1.SaveToStream(template);
+
+
+end;
+
+
+
+
 procedure TfrmRapor.IcerikFontDegistir(var template : TStream ; dokumanNo: string ; ObjeName : string = 'Icerik' ; Dataset : TDataset = nil);
 var
  RichView : TfrxRichView;
@@ -329,11 +414,11 @@ var
 begin
      if Expo then
      begin
-        frxXLSExport1 := TfrxXLSExport.Create(frmRapor);
+        //frxXLSExport1 := TfrxXLSExport.Create(frmRapor);
         frxPDFExport1 := TfrxPDFExport.Create(frmRapor);
-        frxHTMLExport1 := TfrxHTMLExport.Create(frmRapor);
-        frxMailExport1 := TfrxMailExport.Create(frmRapor);
-        frxRTFExport1 := TfrxRTFExport.Create(frmRapor);
+        //frxHTMLExport1 := TfrxHTMLExport.Create(frmRapor);
+        //frxMailExport1 := TfrxMailExport.Create(frmRapor);
+        //frxRTFExport1 := TfrxRTFExport.Create(frmRapor);
      end;
 
      datalar.ADO_RAPORLAR.Active := true;
@@ -507,6 +592,28 @@ begin
 end;
 
 
+
+procedure TfrmRapor.raporDataLogoYukle(kod : string);
+var
+  template : TStream;
+  Table,AdoRapor : TADOQuery;
+begin
+  AdoRapor := Datalar.QuerySelect('Select * from RaporlarDizayn where raporKodu = ' + QuotedStr(kod) +
+                                  ' and sirketKod = ' + QuotedStr(datalar.AktifSirket));
+
+  if AdoRapor.Eof
+  Then begin
+  end
+  else
+  begin
+      template := AdoRapor.CreateBlobStream(AdoRapor.FieldByName('Rapor'), bmRead);
+      LogoAl(template,kod,'Picture4',AdoRapor);
+      LogoAl(template,kod,'Picture2',AdoRapor);
+  end;
+
+end;
+
+
 procedure TfrmRapor.raporDataIcerikFontDegistir(kod : string);
 var
   template : TStream;
@@ -641,7 +748,15 @@ begin
   else
   if printTip in [pTOnIzle,pTDizayn] then
   begin
+
+  if UserRight('SKS', 'Döküman PDF Export') = True
+  then begin
+    frxReport1.PreviewOptions.Buttons := [pbPrint, pbZoom, pbFind,  pbExport, pbOutline, pbPageSetup, pbTools, pbNavigator];
+  end
+  else
     frxReport1.PreviewOptions.Buttons := [pbPrint, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbNavigator];
+
+
     frxReport1.PrintOptions.ShowDialog := True;
     if printer <> ''
     Then begin
@@ -655,9 +770,15 @@ end;
 
 
 procedure TfrmRapor.raporData1(dataset : TDataSetKadir ; kod , caption : string;formId : string = '' ;printTip : TprintTip = pTNone;printer : string = '');
+const aylar : array[1..12] of string = ('OCAK', 'SUBAT', 'MART','NISAN','MAYIS','HAZIRAN','TEMMUZ','AGUSTOS','EYLUL','EKIM','KASIM','ARALIK');
 var
   template : TStream;
   Table : TADOQuery;
+  text : TfrxMemoView;
+  ay : string;
+  ayno : integer;
+  w,h,l,t : Extended;
+  Typ_ : TfrxFrameType;
 begin
 
   frxDesigner1.OnShow:= DesignerOnShow;
@@ -701,6 +822,8 @@ begin
   frmRapor.Caption := kod;
 
 
+
+
   try
     template.Position := 0;
     frxReport1.LoadFromStream(template);
@@ -721,6 +844,55 @@ begin
   finally
     template.Free;
   end;
+
+
+    if kod = '205_6'
+    then begin
+
+       for ayno := 12 to 17 do
+       begin
+         if TfrxMemoView(frxReport1.FindObject(dataset.Dataset1.Fields[ayno].FieldName)) = Nil
+         then begin
+           text := TfrxMemoView.Create(TfrxBand(frxReport1.FindObject('MasterData2')));
+           text.Name := dataset.Dataset1.Fields[ayno].FieldName;
+           text.DataSet := frxDBDataset1;
+           text.DataField := dataset.Dataset1.Fields[ayno].FieldName;
+           w := 2.4;
+           h := 0.52;
+           l := ((ayno-12)*w);
+           t := 0;
+           text.SetBounds((5.40*fr1cm)+(l*fr1cm),t,w*fr1cm,h*fr1cm);
+          // text.Align := baLeft;
+           text.Frame.Typ := [ftLeft, ftRight, ftTop, ftBottom];
+           text.Visible := True;
+           text.HAlign := haCenter;
+           text.VAlign := vaCenter;
+
+           text := TfrxMemoView.Create(TfrxGroupHeader(frxReport1.FindObject('GroupHeader1')));
+           text.Name := dataset.Dataset1.Fields[ayno].FieldName+'B';
+           text.Memo.Text := dataset.Dataset1.Fields[ayno].FieldName;
+           t := 0.62;
+           text.SetBounds((5.40*fr1cm)+(l*fr1cm),t*fr1cm,w*fr1cm,h*fr1cm);
+          // text.Align := baLeft;
+           text.Frame.Typ := [ftLeft, ftRight, ftTop, ftBottom];
+           text.Visible := True;
+           text.HAlign := haCenter;
+           text.VAlign := vaCenter;
+         end;
+
+       end;
+
+    (*
+       for ay in aylar do
+       begin
+         if dataset.Dataset1.FindField(ay) <> nil
+         then TfrxMemoView(frxReport1.FindObject(ay)).Visible := True
+
+         else TfrxMemoView(frxReport1.FindObject(ay)).Visible := False;
+         TfrxMemoView(frxReport1.FindObject(ay+'B')).Visible := TfrxMemoView(frxReport1.FindObject(ay)).Visible;
+       end;
+      *)
+    end;
 
   frxReport1.ReportOptions.Name := frmRapor.Caption;
   frxReport1.PrepareReport(True);

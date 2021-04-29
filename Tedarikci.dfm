@@ -12,6 +12,7 @@ object frmTedarikci: TfrmTedarikci
   Font.Style = []
   OldCreateOrder = False
   PopupMenu = PopupMenu1
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PopupMenu1: TPopupMenu
@@ -21,13 +22,13 @@ object frmTedarikci: TfrmTedarikci
     object E1: TMenuItem
       Tag = -1
       Caption = #214'deme Ekle'
-      ImageIndex = 15
+      ImageIndex = 146
       OnClick = cxButtonCClick
     end
     object T1: TMenuItem
       Tag = -2
       Caption = 'Tahsilat Ekle'
-      ImageIndex = 13
+      ImageIndex = 16
       OnClick = cxButtonCClick
     end
   end

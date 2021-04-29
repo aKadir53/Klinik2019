@@ -22,6 +22,7 @@ object frmCariHesapEkstre: TfrmCariHesapEkstre
     Align = alClient
     TabOrder = 0
     ExceleGonder = False
+    PopupForm = False
     object GridList: TcxGridDBBandedTableView
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>

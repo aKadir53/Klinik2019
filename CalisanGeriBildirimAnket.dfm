@@ -30,6 +30,10 @@ object frmCalisanGeriBildirimAnket: TfrmCalisanGeriBildirimAnket
     ClientRectTop = 3
     object cxTabSheet1: TcxTabSheet
       ImageIndex = 0
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object cxGridKadir1: TcxGridKadir
         Left = 0
         Top = 0

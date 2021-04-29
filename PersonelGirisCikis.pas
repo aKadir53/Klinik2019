@@ -56,6 +56,10 @@ type
     E3: TMenuItem;
     vardiyaColumns: TcxGridDBBandedColumn;
     G1: TMenuItem;
+    GridEkstreColumn6: TcxGridDBBandedColumn;
+    H2: TMenuItem;
+    H3: TMenuItem;
+    GridEkstreColumn7: TcxGridDBBandedColumn;
     procedure K1Click(Sender: TObject);
     procedure B1Click(Sender: TObject);
     procedure adoAfterPost(DataSet: TDataSet);
@@ -68,6 +72,8 @@ type
     procedure SayfalarChange(Sender: TObject);
     procedure O1Click(Sender: TObject);
     procedure SummaryGroup(ASummary: TcxDataSummary; AColumn: TcxGridDBBandedColumn;  AKind: TcxSummaryKind; AFormat: string);
+    procedure H3Click(Sender: TObject);
+
   private
     { Private declarations }
   public
@@ -81,6 +87,9 @@ var
 implementation
    uses data_modul,AnaUnit;
 {$R *.dfm}
+
+
+
 
 procedure TfrmPersonelGirisCikis.SummaryGroup(ASummary: TcxDataSummary; AColumn: TcxGridDBBandedColumn;
   AKind: TcxSummaryKind; AFormat: string);
@@ -207,7 +216,7 @@ begin
 
   ENabizMesajTipi.Width := 200;
   ENabizMesajTipi.Conn := nil;
-  ENabizMesajTipi.ItemList := 'sp_PDKS_CalismaSaatList;Mesai Saat Listesi';
+  ENabizMesajTipi.ItemList := 'sp_PDKS_CalismaSaatList;Mesai Saat Listesi,sp_PDKS_PuantajList;Puantaj Listesi';
   ENabizMesajTipi.Filter := '';
 
   //sayfalar.Width := AnaForm.sayfalar.Width;
@@ -241,6 +250,34 @@ var
  sql : string;
 begin
 
+
+end;
+
+procedure TfrmPersonelGirisCikis.H3Click(Sender: TObject);
+begin
+
+ if TMenuItem(sender).Tag = -3
+ then begin
+    if mrYes = ShowPopupForm('PDKS Hareket Ekle',PDKS_HareketEkle)
+    Then Begin
+      Grid_GirisCikislar.Dataset.Append;
+      Grid_GirisCikislar.Dataset.FieldByName('EnrollNumber').AsVariant := datalar.PDKS_Hareket.PDKS_ID;
+      Grid_GirisCikislar.Dataset.FieldByName('Tarih').AsVariant := datalar.PDKS_Hareket.Tarih;
+      Grid_GirisCikislar.Dataset.FieldByName('Tip').AsVariant := datalar.PDKS_Hareket.Tip;
+      Grid_GirisCikislar.Dataset.post;
+      Grid_GirisCikislar.Dataset.Requery();
+    End
+ end
+ else
+ if TMenuItem(sender).Tag = -4
+ then begin
+  if mrYes = ShowMessageSkin('Hareketi Silmek Ýstediðinizden Emin misiniz?','','','msg')
+  then begin
+    datalar.QueryExec('delete from PDKS_Hareketler where id = ' + Grid_GirisCikislar.Dataset.FieldByName('id').AsString);
+    Grid_GirisCikislar.Dataset.Requery;
+
+  end;
+ end;
 
 end;
 
@@ -354,11 +391,21 @@ procedure TfrmPersonelGirisCikis.SayfalarChange(Sender: TObject);
 begin
 //
    if Sayfalar.ActivePageIndex = 0
-   then
-    ENabizMesajTipi.Visible := False
+   then begin
+    ENabizMesajTipi.Visible := False;
+    H2.Visible := True;
+    H3.Visible := True;
+    H1.Visible := True;
+   end
    else
+   begin
     ENabizMesajTipi.Visible := True;
+    H2.Visible := False;
+    H3.Visible := False;
+    H1.Visible := False;
+   end;
 
+   PopupMenuToToolBar(Self,ToolBar1,PopupMenu1);
 
 end;
 
@@ -420,8 +467,26 @@ var
 begin
     TopluDataset.Dataset2 := datalar.ADO_AktifSirket;
     TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
-    TopluDataset.Dataset1 := ado;
-    PrintYap('VKI','\VKI','',TopluDataset,pTNone);
+
+    if Sayfalar.ActivePageIndex = 0
+    then begin
+      TopluDataset.Dataset1 := Grid_GirisCikislar.Dataset;
+      PrintYap('P_GCL','\PDKS_GirisÇýkýþlar','',TopluDataset,pTNone);
+    end
+    else
+    begin
+      TopluDataset.Dataset1 := Grid_Raporlama.Dataset;
+      if ENabizMesajTipi.EditValue = 'sp_PDKS_CalismaSaatList'
+      then begin
+        PrintYap('P_CSL','\PDKS_CalismaSaatList','',TopluDataset,pTNone);
+      end
+      else
+      begin
+        PrintYap('P_PL','\PDKS_Puantaj Listesi','',TopluDataset,pTNone);
+      end;
+
+    end;
+
 end;
 
 end.

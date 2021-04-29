@@ -199,6 +199,7 @@ type
     K2: TMenuItem;
     gridHastalarColumn4: TcxGridDBBandedColumn;
     U2: TMenuItem;
+    T2: TMenuItem;
 
     procedure TopPanelButonClick(Sender: TObject);
     procedure HastalarAfterScroll(DataSet: TDataSet);
@@ -228,6 +229,8 @@ type
     procedure gridHastalarkanahPropertiesEditValueChanged(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     Procedure TDISKaydet(islem : integer);
+    Procedure TDISVeriler(TC : int64);
+
     procedure FormCreate(Sender: TObject);
     procedure H2Click(Sender: TObject);
     procedure TopluDuzenle(Liste : TcxGridDBBandedTableView ; Doktor , Tarih : string);
@@ -378,10 +381,29 @@ begin
 end;
 
 
+Procedure TfrmIzlem.TDISVeriler(TC : int64);
+var
+  CvpDIYALIZTEDAVISONUC : DISWS.DIYALIZTEDAVISONUC;
+  Tedavi : DIYALIZTEDAVI;
+begin
+  datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\DYOB\'+intTostr(TC)+'_DIYALIZTEDAVISONUC';
+  CvpDIYALIZTEDAVISONUC := (datalar.DYOB as KRIZMA_DIS_TREATMENTSERVICESoap).GETHASTADIYALIZTEDAVILIST(datalar._DyobKurumKodu_,datalar._DyobSifre_,datalar._DyobServiceKodu_,TC);
+
+  for Tedavi in CvpDIYALIZTEDAVISONUC.DIYALIZTEDAVILIST do
+  begin
+     //Tedavi.ID;
+
+  end;
+
+
+
+end;
+
 procedure TfrmIzlem.TDISKaydet(islem : integer);
 var
     DiyalizTedavi : DISWS.DIYALIZTEDAVI;
     Cvp : DISWS.SONUC;
+    CvpDIYALIZTEDAVISONUC : DISWS.DIYALIZTEDAVISONUC;
     UTarih , TTarih : TXSDateTime;
     r , islemTip , x : integer;
     DIYALIZTEDAVIKODS : DISWS.ArrayOfDIYALIZTEDAVI_KOD;
@@ -390,37 +412,50 @@ var
     HASTATESTLER : DISWS.ArrayOfHASTATEST;
     HASTATEST : DISWS.HASTATEST;
     Tarih,sql ,dosyaNo , gelisNo : string;
+    TC : Int64;
     ado : TADOQuery;
     XsDec : TXSDecimal;
     ApT : Variant;
 begin
 
-    DiyalizTedavi := DISWS.DIYALIZTEDAVI.Create;
-    Cvp := SONUC.Create;
-
-    datalar.DYOB.URL := DyopURL; //'https://dyob.saglik.gov.tr/DYOBWS/DIYALIZWS.asmx';
+   datalar.DYOB.URL := DyopURL; //'https://dyob.saglik.gov.tr/DYOBWS/DIYALIZWS.asmx';
      //
-
-
+   DurumGoster(TRue);
+  // cxGrid1.Enabled := False;
+   try
    stop := 0;
    for x := 0 to gridHastalar.Controller.SelectedRowCount - 1 do
    begin
-       Application.ProcessMessages;
-       if stop = 1 then break;
+        Application.ProcessMessages;
+        if stop = 1 then break;
+        DiyalizTedavi := DISWS.DIYALIZTEDAVI.Create;
+        Cvp := SONUC.Create;
 
-       dosyaNo := gridHastalar.DataController.GetValue(
-                                      gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('dosyaNo').Index);
-       gelisNo := gridHastalar.DataController.GetValue(
-                                      gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('gelisNo').Index);
-       Tarih := gridHastalar.DataController.GetValue(
-                                      gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('KanAlimTarihi').Index);
+        try
+          dosyaNo := gridHastalar.DataController.GetValue(
+                                        gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('dosyaNo').Index);
+          gelisNo := gridHastalar.DataController.GetValue(
+                                        gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('gelisNo').Index);
+          Tarih := gridHastalar.DataController.GetValue(
+                                        gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('KanAlimTarihi').Index);
+
+          TC := gridHastalar.DataController.GetValue(
+                                        gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('TCKIMLIKNO').Index);
 
 
-        VeriSetiDoldur(DiyalizTedavi,dosyaNo,gelisNo,Tarih);
-        if not DirectoryExists('C:\NoktaV3\DYOB')
-        then MkDir('C:\NoktaV3\DYOB');
+          VeriSetiDoldur(DiyalizTedavi,dosyaNo,gelisNo,Tarih);
+          if not DirectoryExists('C:\NoktaV3\DYOB')
+          then MkDir('C:\NoktaV3\DYOB');
 
-        datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\DYOB\'+dosyaNo+'_'+gelisNo;
+          datalar.HTTP_XMLDosya_Name := 'C:\NoktaV3\DYOB\'+dosyaNo+'_'+gelisNo;
+
+        except on e : Exception do
+          begin
+            txtLog.Lines.Add(e.Message);
+            Continue;
+          end;
+        end;
+
         try
 
           case islem of
@@ -428,6 +463,7 @@ begin
                                                                       DiyalizTedavi);
             -10 :  Cvp := (datalar.DYOB as KRIZMA_DIS_TREATMENTSERVICESoap).UPDATEDIYALIZTEDAVI(datalar._DyobKurumKodu_,datalar._DyobSifre_,datalar._DyobServiceKodu_,
                                                                        DiyalizTedavi);
+     //       -9 : CvpDIYALIZTEDAVISONUC := (datalar.DYOB as KRIZMA_DIS_TREATMENTSERVICESoap).GETHASTADIYALIZTEDAVILIST(datalar._DyobKurumKodu_,datalar._DyobSifre_,datalar._DyobServiceKodu_,TC);
           end;
 
 
@@ -448,16 +484,20 @@ begin
               sql := 'update hasta_gelisler set DYOBID = ' + QuotedStr(Cvp.KOD) +
                      ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
               datalar.QueryExec(sql);
-
             end;
 
-       (*
-        <KOD>6122084</KOD>
-        <HATAKODU>017</HATAKODU>
-        <HATAVAR>true</HATAVAR>
-        <HATAMESAJI>HASTANIN MONTH MUST BE BETWEEN 1-12 AYINA AÝT ÝZLEMÝ BULUNMAKTADIR.HASTAYA AYDA BÝR ADET ÝZLEM KAYDI GÝREBÝLÝRSÝNÝZ.(DIYALIZTEDAVI ID=6122084)</HATAMESAJI>
-         *)
+          //  'GÖNDERMÝÞ OLDUÐUNUZ DIYALIZTEDAVIID(6213157) ÝLE KURUM HASTA BÝLGÝSÝ EÞLEÞMEMEKTEDÝR.'
+
+            if (POS('GÖNDERMÝÞ OLDUÐUNUZ DIYALIZTEDAVIID',cvp.HATAMESAJI) > 0) AND
+               (pOS('ÝLE KURUM HASTA BÝLGÝSÝ EÞLEÞMEMEKTEDÝR',Cvp.HATAMESAJI) > 0)
+            then begin
+              sql := 'update hasta_gelisler set DYOBID = ' + QuotedStr('') +
+                     ' where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelisNo;
+              datalar.QueryExec(sql);
+            end;
+
         End
+
         Else
         begin
             ado := TADOQuery.Create(nil);
@@ -470,8 +510,16 @@ begin
             gridHastalar.DataController.SetValue(
                                       gridHastalar.Controller.SelectedRows[x].RecordIndex,gridHastalar.DataController.GetItemByFieldName('DYOBID').Index,Cvp.KOD);
         end;
+
+
+
+
    end; // for end
 
+   finally
+     DurumGoster(False);
+   //  cxGrid1.Enabled := True;
+   end;
 end;
 
 
@@ -862,12 +910,17 @@ begin
                                      Hastalar.FieldByName('HASTASOYADI').AsString;
   GirisFormRecord.F_PasifSebeb_ := Hastalar.FieldByName('PasifSebeb').AsString;
 
+  GirisFormRecord.F_TC_ := Hastalar.FieldByName('TCKIMLIKNO').AsString;
+
   DurumGoster;
   try
     case Tcontrol(sender).tag of
    -10,-11 : begin
               TDISKaydet(Tcontrol(sender).tag);
             end;
+   -9 : begin
+          TDISVeriler(Hastalar.FieldByName('TCKIMLIKNO').AsLargeInt);
+        end;
 
    -20 : begin
            for x := 0 to gridHastalar.Controller.SelectedRowCount - 1 do

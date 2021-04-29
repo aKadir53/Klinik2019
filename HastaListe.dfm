@@ -43,6 +43,7 @@ object frmHastaListe: TfrmHastaListe
       LevelTabs.ImageBorder = 2
       LevelTabs.Style = 1
       ExceleGonder = False
+      PopupForm = False
       object Liste: TcxGridDBTableView
         PopupMenu = PopupMenu1
         OnDblClick = ListeDblClick
@@ -384,10 +385,6 @@ object frmHastaListe: TfrmHastaListe
       object cxTabSheet1: TcxTabSheet
         Caption = 'Uyar'#305' Bilgisi'
         ImageIndex = 133
-        ExplicitLeft = 4
-        ExplicitTop = 0
-        ExplicitWidth = 1155
-        ExplicitHeight = 34
         object txtUyariMesaj: TcxMemo
           Left = 0
           Top = 0
@@ -402,6 +399,8 @@ object frmHastaListe: TfrmHastaListe
           StyleHot.LookAndFeel.NativeStyle = False
           StyleHot.LookAndFeel.SkinName = 'McSkin'
           TabOrder = 0
+          ExplicitLeft = 64
+          ExplicitTop = -3
           Height = 31
           Width = 1153
         end
@@ -582,6 +581,12 @@ object frmHastaListe: TfrmHastaListe
       Tag = -10
       Caption = 'Pesonel '#350'irket De'#287'i'#351'tir'
       ImageIndex = 69
+      OnClick = cxButtonCClick
+    end
+    object P1: TMenuItem
+      Tag = -100
+      Caption = 'Personel Tan'#305'm Kartlar'#305
+      ImageIndex = 6
       OnClick = cxButtonCClick
     end
   end

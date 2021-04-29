@@ -1072,6 +1072,12 @@ object frmTopluGelis: TfrmTopluGelis
     Images = DATALAR.imag24png
     Left = 284
     Top = 182
+    object H2: TMenuItem
+      Tag = -500
+      Caption = 'Hasta Seans G'#252'nleri De'#287'i'#351'tir'
+      ImageIndex = 80
+      OnClick = cxButtonCClick
+    end
     object P1: TMenuItem
       Tag = -50
       Caption = 'Pasif Yap'
@@ -1099,6 +1105,12 @@ object frmTopluGelis: TfrmTopluGelis
       Tag = 4
       Caption = 'Laboratuvar Tetkik Ekle'
       ImageIndex = 47
+      OnClick = cxButtonCClick
+    end
+    object T2: TMenuItem
+      Tag = 5
+      Caption = 'Tan'#305' Ekle'
+      ImageIndex = 74
       OnClick = cxButtonCClick
     end
     object T1: TMenuItem

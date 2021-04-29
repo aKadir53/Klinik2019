@@ -15,7 +15,8 @@ uses
   Buttons, sBitBtn, sComboBox, Mask, EditType, cxPC,cxGridExportlink, Menus,
   dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary, dxSkinLilian,
   dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMoneyTwins,
-  dxSkinsDefaultPainters, cxMaskEdit, cxDropDownEdit, cxImageComboBox, cxButtons;
+  dxSkinsDefaultPainters, cxMaskEdit, cxDropDownEdit, cxImageComboBox, cxButtons,
+  cxSplitter;
 
 type
   TfrmSorgulamalar = class(TGirisForm)
@@ -37,7 +38,6 @@ type
     SQlTab: TcxTabSheet;
     SQL_text: TMemo;
     Panel8: TPanel;
-    SQL_grid: TDBGridEh;
     ADO_SQL1: TADOQuery;
     DataSource2: TDataSource;
     SaveDialog1: TSaveDialog;
@@ -71,6 +71,10 @@ type
     Label3: TLabel;
     prm_Yenile: TcxButton;
     pnlSP: TPanel;
+    SQL_Grid: TcxGridKadir;
+    cxGridDBBandedTableView1: TcxGridDBBandedTableView;
+    cxGridLevel1: TcxGridLevel;
+    cxSplitter1: TcxSplitter;
     procedure Raporlar;
     procedure O1Click(Sender: TObject);
     procedure btnSorgulamalarKaydetClick(Sender: TObject);
@@ -240,9 +244,9 @@ begin
     else
 
     datalar.QuerySelect(ADO_SQL11,SQL_text.Lines.Text);
-
-    SQL_grid.DataSource := DataSource3;
-
+    cxGridDBBandedTableView1.DataController.DataSource := DataSource3;
+    cxGridDBBandedTableView1.ClearItems;
+    cxGridDBBandedTableView1.DataController.CreateAllItems(true);
 end;
 procedure TfrmSorgulamalar.E3Click(Sender: TObject);
 begin

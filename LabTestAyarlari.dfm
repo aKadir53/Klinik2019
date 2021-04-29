@@ -215,9 +215,10 @@ object frmTestAyarlari: TfrmTestAyarlari
       object cxGrid1DBTableView1Column5: TcxGridDBColumn
         Caption = 'Min'
         DataBinding.FieldName = 'minD'
-        PropertiesClassName = 'TcxTextEditProperties'
-        Properties.Alignment.Horz = taLeftJustify
+        PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
+        Properties.DisplayFormat = '0.00'
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Width = 22
@@ -225,9 +226,10 @@ object frmTestAyarlari: TfrmTestAyarlari
       object cxGrid1DBTableView1Column6: TcxGridDBColumn
         Caption = 'Max'
         DataBinding.FieldName = 'maxD'
-        PropertiesClassName = 'TcxTextEditProperties'
-        Properties.Alignment.Horz = taLeftJustify
+        PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
+        Properties.DisplayFormat = '0.00'
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Width = 25
@@ -302,6 +304,28 @@ object frmTestAyarlari: TfrmTestAyarlari
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
         Width = 100
+      end
+      object cxGrid1DBTableView1Column13: TcxGridDBColumn
+        Caption = 'Panik Min'
+        DataBinding.FieldName = 'panikminD'
+        PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.DisplayFormat = '0.00'
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 50
+      end
+      object cxGrid1DBTableView1Column14: TcxGridDBColumn
+        Caption = 'Panik Max'
+        DataBinding.FieldName = 'panikmaxD'
+        PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.DisplayFormat = '0.00'
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Width = 50
       end
     end
     object cxGrid1Level1: TcxGridLevel

@@ -374,6 +374,8 @@ object frmPopupDBGridForm: TfrmPopupDBGridForm
       Style.IsFontAssigned = True
       TabOrder = 3
       Visible = False
+      ExplicitLeft = 91
+      ExplicitTop = 513
       Height = 358
       Width = 763
       object txtSeansSikayet: TcxCheckListBox

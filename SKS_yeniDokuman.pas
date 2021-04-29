@@ -120,6 +120,7 @@ type
     N4: TMenuItem;
     M1: TMenuItem;
     gridGGColumn2: TcxGridDBColumn;
+    Standart: TListeAc;
     procedure FormCreate(Sender: TObject);
     procedure PropertiesEditValueChanged(Sender: TObject);override;
     procedure cxButtonEditPropertiesButtonClick(Sender: TObject;
@@ -302,8 +303,13 @@ procedure TfrmSKS_YeniDokuman.cxButtonEditPropertiesButtonClick(Sender: TObject;
 begin
 
  // if kilit = 1 then exit;
-
   inherited;
+
+  if TcxButtonEditKadir(sender).name = 'StandartCode'
+  then begin
+    TcxButtonEditKadir(FindComponent('StandartCode')).EditValue := Standart.ListString;
+    exit;
+  end;
 
   if (TcxButtonEditKadir(sender).kolon4 = '1') or (kilit = 1)
   then begin
@@ -568,6 +574,10 @@ begin
   sonrakiGGTarihi.ValueTip := tvDate;
   setDataStringKontrol(self,sonrakiGGTarihi, 'sonrakiGGTarihi','Sonraki Gözden Geçirme Tarihi ',Kolon1,'yt',100);
 
+
+  setDataStringB(self,'StandartCode','StandartCode',Kolon1,'',100,Standart,False,nil,'','',False,False);
+
+  OrtakEventAta(TcxButtonEditKadir(FindComponent('StandartCode')));
    (*
   _IC_ := TcxImageComboKadir.Create(self);
   _IC_.Conn := Datalar.ADOConnection2;

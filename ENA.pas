@@ -671,13 +671,32 @@ begin
                          begin
                            try
                               try
-                                 if testKod = '705140'
+                                if testKod = '705140'
                                  then begin
                                    sql := 'update hareketler set islemAciklamasi  = ' + QuotedStr(sonuc) +
                                           ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
                                           ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
                                  datalar.QueryExec(sql);
                                  end;
+
+                                 if testKod = '908170'
+                                 then begin
+                                      if (pos('NEG',_tetkikSonuc_.Sonuc) > 0)
+                                      Then Sonuc := '-1'
+                                      Else
+                                      if (pos('POZ',_tetkikSonuc_.Sonuc) > 0)
+                                      Then Sonuc := '1'
+                                      else Sonuc :=  _tetkikSonuc_.Sonuc;
+
+                                       sql := 'update hareketler set Gd = ' + Sonuc + ' ,islemAciklamasi  = ' + QuotedStr(_tetkikSonuc_.Sonuc) +
+                                              ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
+                                              ' and gelisNO = ' + gelisNo + ' and tip1 = ' + QuotedStr(_F_);
+                                     datalar.QueryExec(sql);
+
+                                     Continue;
+                                 end;
+
+
 
                                  sql := 'update hareketler set Gd = dbo.fn_gecerliKarakterRakam(' + QuotedStr(_tetkikSonuc_.Sonuc) + ')' +
                                           ' where onay = 1 and code = ' + QuotedStr(testKod) + ' and dosyaNo = ' + QuotedStr(dosyaNo) +
@@ -725,6 +744,7 @@ var
   istekler : TenayENA.Array_Of_Tetkik;
   istek : TenayENA.Tetkik;
   ado : TADOQuery;
+  DoktorBilgisi : TenayENA.Doktor;
   i , j : integer;
   yil, ay, gun, saat, dakika, saniye, salise : word;
   ckod,kod,TurId : string;
@@ -767,6 +787,15 @@ begin
       datalar.QuerySelect(ado,sql);
 
       KanAlimZamani := ado.fieldbyname('KanAlimZamani').AsDateTime;
+
+
+      DoktorBilgisi := TenayENA.Doktor.Create;
+      DoktorBilgisi.KimlikNo := datalar._mesulMudurTc_;
+      DoktorBilgisi.Adi := datalar._mesulMudurAdi_;
+      DoktorBilgisi.Soyadi := datalar.mesulMudurSoyadi_;
+      HastaTenay.DoktorBilgileri := DoktorBilgisi;
+
+
 
       HastaTenay.OrnekNo := 0;
 

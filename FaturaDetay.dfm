@@ -82,7 +82,9 @@ object frmFaturaDetay: TfrmFaturaDetay
         Caption = 'Fiyat'
         DataBinding.FieldName = 'fiyat'
         PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.DecimalPlaces = 3
         Properties.DisplayFormat = ',0.00'
+        Properties.EditFormat = ',0.000'
         HeaderAlignmentHorz = taCenter
         Width = 83
       end

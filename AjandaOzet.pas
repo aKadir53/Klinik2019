@@ -157,7 +157,8 @@ begin
   AjandaGrid.Dataset.SQL.Text := 'exec sp_ajanda ' + QuotedStr(_ResourceID) + ',' +
                                                      QuotedStr(_Tarih1_) + ',' +
                                                      QuotedStr(_Tarih2_);
-  AjandaGrid.Dataset.Active := True;
+  datalar.QuerySelect(AjandaGrid.Dataset,AjandaGrid.Dataset.SQL.Text);
+  //AjandaGrid.Dataset.Active := True;
   Result := True;
 end;
 

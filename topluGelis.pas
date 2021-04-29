@@ -123,6 +123,8 @@ type
     cxLabel4: TcxLabel;
     LaboratuvarTetkikleriniEkle1: TMenuItem;
     Tetkikler: TListeAc;
+    T2: TMenuItem;
+    H2: TMenuItem;
     procedure gridAktifCheckBoxClick(Sender: TObject; ACol, ARow: Integer;
       State: Boolean);
     procedure mnSe1Click(Sender: TObject);
@@ -150,6 +152,8 @@ type
     procedure H1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure LabHizmetEkle(code : string = '');
+    procedure SeansGunUpdate(code : string);
+    procedure TaniEkle(code : string);
     procedure cxButtonCClick(Sender: TObject);
     procedure txtProvizyonTarihiPropertiesChange(Sender: TObject);
     procedure Listele(Tag : integer);
@@ -227,6 +231,10 @@ inherited;
            end;
          end;
 
+   5 : begin
+         TaniEkle('N18.0');
+       end;
+
   -5 : begin
          TakipAl;
        end;
@@ -249,6 +257,12 @@ inherited;
           then
             PasifYap;
         end;
+-500 : begin
+            if mrYes = ShowPopupForm('Seans Gün Grubu Deðiþtir',SeansGunDegistir)
+            Then Begin
+              SeansGunUpdate(datalar.SeansGunleri);
+            End;
+       end;
 
   end;
 end;
@@ -703,20 +717,26 @@ begin
   ListTip := Tag;
 
   if Tag = -8
-  then
+  then begin
    sql := 'exec er_aphastalistesi ''1''' + ',' + QuotedStr(ilkS) + ',' +
            QuotedStr(sonS) + ',' + QuotedStr(txtSeansNo.Text) + ',' + QuotedStr(copy(hastaTip.Text,1,1)) +
-           ',' + QuotedStr(datalar.AktifSirket)
-  else
+           ',' + QuotedStr(datalar.AktifSirket);
+      G1.Enabled := True;
+  end
+  else begin
    sql := 'exec er_aphastalistesiGelis ''1''' + ',' + QuotedStr(ilkS) + ',' + QuotedStr(sonS) + ',' +
            QuotedStr(txtSeansNo.Text) + ',' + QuotedStr(copy(hastaTip.Text,1,1)) + ',' + QuotedStr(datalar.AktifSirket);
+   G1.Enabled := False;
+  end;
 
+  PopupMenuToToolBarEnabled(self,ToolBar1,PopupMenu1);
 
    cxGrid2.Dataset.Active := False;
    cxGrid2.Dataset.SQL.Text := sql;
-   cxGrid2.Dataset.Active := True;
 
-  // datalar.QuerySelect(cxGrid2.Dataset,sql);
+  // cxGrid2.Dataset.Active := True;
+
+   datalar.QuerySelect(cxGrid2.Dataset,sql);
 
 //   Liste.DataController.SelectRows(0,0);
  //  SetDataFocused(0);
@@ -826,10 +846,10 @@ begin
 
        for x := 0 to Liste.Controller.SelectedRowCount - 1 do
        begin
-           Application.ProcessMessages;
-           pbar.Position := pbar.Position + 1;
+              Application.ProcessMessages;
+              pbar.Position := pbar.Position + 1;
 
-           setData(x);
+              setData(x);
 
               sql := 'select * from hareketler where dosyaNo = ' + QuotedStr(dosyaNo) +
               ' and gelisNo = ' + gelisNo + ' and Tip = ''L'' and isnull(gd,0) <> 0';
@@ -852,6 +872,77 @@ begin
 end;
 
 
+
+procedure TfrmTopluGelis.SeansGunUpdate(code : string);
+var
+  sql : string;
+  ado : TADOQuery;
+  x : integer;
+begin
+   DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
+   try
+
+       pBar.Position := 0;
+       pBar.Properties.Max := Liste.Controller.SelectedRowCount;
+
+       for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+       begin
+              Application.ProcessMessages;
+              pbar.Position := pbar.Position + 1;
+
+              setData(x);
+
+              sql := 'update hastakart set seansGunleri = ' + QuotedStr(code) +
+                      ' where dosyano = ' + QuotedStr(dosyaNo);
+
+              datalar.QueryExec(sql);
+
+
+       end;
+
+   finally
+    DurumGoster(False);
+    cxGrid2.Dataset.Requery();
+   end;
+
+end;
+
+procedure TfrmTopluGelis.TaniEkle(code : string);
+var
+  sql : string;
+  ado : TADOQuery;
+  x : integer;
+begin
+   DurumGoster(True,True,islemYapiliyor,Liste.Controller.SelectedRowCount - 1);
+   try
+
+       pBar.Position := 0;
+       pBar.Properties.Max := Liste.Controller.SelectedRowCount;
+
+       for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+       begin
+              Application.ProcessMessages;
+              pbar.Position := pbar.Position + 1;
+
+              setData(x);
+
+              sql := 'select * from hareketler where dosyaNo = ' + QuotedStr(dosyaNo) +
+              ' and gelisNo = ' + gelisNo + ' and Tip = ''T'' and code = ' + QuotedStr(code);
+               if datalar.QuerySelect(sql).Eof
+               Then begin
+                  sql := 'exec sp_TaniEkle @dosya = ' + QuotedStr(dosyaNo) + ',' +
+                                         ' @gelis = ' + gelisNo + ',' +
+                                         ' @gelisSiraNo = ' + gelisSiraNo;
+                  datalar.QueryExec(sql);
+               end;
+
+       end;
+
+   finally
+    DurumGoster(False);
+   end;
+
+end;
 
 
 function TfrmTopluGelis.seans : string;

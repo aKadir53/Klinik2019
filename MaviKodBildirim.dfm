@@ -115,8 +115,25 @@ object frmMaviKodBildirimListesi: TfrmMaviKodBildirimListesi
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
       end
+      object gridRaporlarColumn5: TcxGridDBColumn
+        Caption = 'Form Doldur'
+        DataBinding.FieldName = 'FormDoldurma'
+        PropertiesClassName = 'TcxImageComboBoxProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.Items = <
+          item
+            Description = 'Tam'
+            ImageIndex = 0
+            Value = 1
+          end
+          item
+            Description = 'Eksik'
+            Value = 0
+          end>
+      end
       object gridRaporlarColumn2: TcxGridDBColumn
-        Caption = 'Rapor'
+        Caption = 'Rapor Form'
         DataBinding.FieldName = 'dosyaVar'
         PropertiesClassName = 'TcxImageComboBoxProperties'
         Properties.Alignment.Horz = taCenter

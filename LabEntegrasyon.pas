@@ -272,6 +272,17 @@ begin
                   DurumGoster(False);
                 end;
               end;
+
+  SISTEMTIP  : begin
+                DurumGoster(True,True);
+                try
+                  TenayOrderKaydetSISTEM(Liste,txtLog,pBar);
+                finally
+                  DurumGoster(False);
+                end;
+              end;
+
+
     ENALAB  : begin
                 DurumGoster(True,True);
                 try
@@ -308,6 +319,7 @@ REFERANSLAB : begin
       SYNLAB : begin
                 DurumGoster(True,True);
                 try
+
                   TenayOrderKaydetSYNLAB(Liste,txtLog,pBar);
                 finally
                   DurumGoster(False);
@@ -776,6 +788,7 @@ begin
     GirisFormRecord.F_HastaAdSoyad_ := GridListe.Dataset.FieldByName('ADSOYAD').AsString;
     GirisFormRecord.F_TC_ := GridListe.Dataset.FieldByName('TCKIMLIKNO').AsString;
     GirisFormRecord.F_provizyonTarihi_ := GridListe.Dataset.FieldByName('BHDAT').AsString;
+    GirisFormRecord.F_Doktor_ := GridListe.Dataset.FieldByName('doktor').AsString;
   except
   end;
 
@@ -832,6 +845,7 @@ begin
           end;
        end;
  -32 : begin
+
           F := FormINIT(TagfrmHastaTetkikEkle,GirisFormRecord);
          // F._Foto_ := foto;
           if F <> nil then F.ShowModal;
@@ -1182,10 +1196,13 @@ end;
 
 procedure TfrmLabEntegrasyon.TetkikEkle;
 var
-  sql : string;
+  sql   : string;
   ado : TADOQuery;
   List : ArrayListeSecimler;
 begin
+    _gelisNo_ := GridListe.Dataset.FieldByName('gelisNo').AsString;
+    _provizyonTarihi_ := GridListe.Dataset.FieldByName('BHDAT').AsString;
+    _Doktor_ := GridListe.Dataset.FieldByName('doktor').AsString;
 
    Tetkikler.Filter := '%2%';
 

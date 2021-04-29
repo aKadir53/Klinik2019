@@ -122,19 +122,38 @@ procedure sonucyaz(Cvp : C_GeneralResult);
                 //   HTSOCvp.Testler[x].Aciklama := StringReplace(HTSOCvp.Testler[x].Aciklama,'Neg','NEG',[rfReplaceAll]);
                 //   HTSOCvp.Testler[x].Aciklama := StringReplace(HTSOCvp.Testler[x].Aciklama,'Poz','POZ',[rfReplaceAll]);
 
-                   markerSonuc := '0';
-                   if (pos('NEG',Cvp.Result_[j].LabResult[m].Result_Value) > 0)
-                   Then markerSonuc := '-1'
-                   Else
-                   if (pos('POZ',Cvp.Result_[j].LabResult[m].Result_Value) > 0)
-                   Then markerSonuc := '1'
-                   Else
-                   if (pos('NEG',Cvp.Result_[j].LabResult[m].Result_Value) > 0)
-                   Then markerSonuc := '-1'
-                   Else
-                   if (pos('POZ',Cvp.Result_[j].LabResult[m].Result_Value) > 0)
-                   Then markerSonuc := '1';
 
+
+                   if (kod = '907440') or
+                      (kod = '906610') or
+                      (kod = '906630') or
+                      (kod = '906660')
+                   then begin
+                     markerSonuc := '0';
+                       Cvp.Result_[j].LabResult[m].Result_Text := StringReplace(Cvp.Result_[j].LabResult[m].Result_Text,'Poz','POZ',[rfReplaceAll]);
+                       Cvp.Result_[j].LabResult[m].Result_Text := StringReplace(Cvp.Result_[j].LabResult[m].Result_Text,'Neg','NEG',[rfReplaceAll]);
+                       Cvp.Result_[j].LabResult[m].Result_Text := StringReplace(Cvp.Result_[j].LabResult[m].Result_Text,',','.',[rfReplaceAll]);
+
+                       if (pos('NEG',Cvp.Result_[j].LabResult[m].Result_Text) > 0)
+                       Then markerSonuc := '-1'
+                       Else
+                       if (pos('POZ',Cvp.Result_[j].LabResult[m].Result_Text) > 0)
+                       Then markerSonuc := '1'
+                       Else
+                       if (pos('NEG',Cvp.Result_[j].LabResult[m].Result_Text) > 0)
+                       Then markerSonuc := '-1'
+                       Else
+                       if (pos('POZ',Cvp.Result_[j].LabResult[m].Result_Text) > 0)
+                       Then markerSonuc := '1';
+
+                     if Cvp.Result_[j].LabResult[m].Result_Value  = ''
+                     then begin
+                       sonuc := QuotedStr(Cvp.Result_[j].LabResult[m].Result_Text);
+                     end
+                     else sonuc := QuotedStr(Cvp.Result_[j].LabResult[m].Result_Value);
+
+                   end
+                   else
                    sonuc := Cvp.Result_[j].LabResult[m].Result_Value;
 
 

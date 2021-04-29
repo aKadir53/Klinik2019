@@ -182,7 +182,9 @@ begin
     'select * from CalisanGeriBildirimAnket ' +
     'where sirketKodu = ' + QuotedStr (DATALAR.AktifSirket) +
     'order by tarih';
-  ADO_Anket .Active := true;
+  datalar.QuerySelect(ADO_Anket,ADO_Anket.SQL.Text);
+
+ // ADO_Anket .Active := true;
   Result := True;
 end;
 
@@ -247,7 +249,7 @@ begin
             aModalResult := ShowMessageSkin('Anket silmek istediðinizden emin misiniz ?', '', '', 'conf');
             if aModalResult <> mrYes then Exit;
             if not AnketSil (ADO_Anket.FieldByName('id').AsInteger) then Exit;
-            RefreshAnketler(False);
+            ADO_Anket.Requery();
           end;
         end;
   -21:begin

@@ -93,6 +93,12 @@ type
     M2: TMenuItem;
     IdHTTP1: TIdHTTP;
     IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL;
+    S1: TMenuItem;
+    A2: TMenuItem;
+    H4: TMenuItem;
+    Asilar: TListeAc;
+    S2: TMenuItem;
+    T4: TMenuItem;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure TopPanelButonClick(Sender: TObject);
@@ -101,6 +107,7 @@ type
     procedure btnGuncelleClick(Sender: TObject);
     procedure Bilgiler;
     Procedure JSONSend;
+    function seciliHastaDosyaNos : string;
     procedure ado_BransKodlariAfterPost(DataSet: TDataSet);
     procedure ListeDblClick(Sender: TObject);
     procedure SeansKart1Click(Sender: TObject);
@@ -131,6 +138,7 @@ type
     procedure cxEditRepository1ButtonItem1PropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);
     procedure M2Click(Sender: TObject);
+    procedure S2Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -176,9 +184,9 @@ var
  Datasets : TDataSetKadir;
  x , satir : integer;
  dosyaNo , dosyaNos ,sql,_dosyaNos_ : string;
-
+ List : ArrayListeSecimler;
  ado,ado0,ado1,ado2,ado3,ado4,ado5,ado6,ado7,ado8,ado9,ado10,ado11,ado12 : TADOQuery;
- m : string;
+ m , ff : string;
 begin
   if _Dataset.Eof then exit;
 
@@ -202,6 +210,8 @@ begin
 
   GirisFormRecord.F_Aktif_ := _Dataset.FieldByName('Aktif').AsString;
 
+
+  GirisFormRecord.F_SeansBilgi.yas := _Dataset.FieldByName('yas').AsString;
 
   GirisFormRecord.F_SeansBilgi.DiyalizorTipi := _Dataset.FieldByName('DiyalizorTipi').AsString;
   GirisFormRecord.F_SeansBilgi.DiyalizorCinsi := _Dataset.FieldByName('DiyalizorCinsi').AsString;
@@ -407,7 +417,13 @@ begin
        end;
 
 
- 10,11,12 : begin
+     14 : begin
+            TedaviKartiYaz(_Dataset.FieldByName('dosyaNo').AsString,_Dataset.FieldByName('gelisNo').AsString,false);
+
+          end;
+
+
+ 10,11,12,13 : begin
              m := 'E';
 
              case TMenuItem(sender).Tag of
@@ -424,25 +440,39 @@ begin
 
               DurumGoster(True);
 
-               for x := 0 to Liste.Controller.SelectedRowCount - 1 do
-               begin
-                   satir := Liste.Controller.SelectedRows[x].RecordIndex;
-                   _dosyaNos_ := ifThen(_dosyaNos_='',_dosyaNos_+'',_dosyaNos_+',') +
-                     varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
-               end;
+              _dosyaNos_ := seciliHastaDosyaNos;
 
 
               try
               ado := TADOQuery.Create(nil);
-              sql := 'exec  sp_HastaTetkikTakipPIVOTToplu @dosyaNO = ' + QuotedStr(_dosyaNos_) + ' , @yil = ' + QuotedStr(ay1) +
-                            ',@marker = ' + QuotedStr(m) + ',@f= -1 , @sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+
+              if TMenuItem(sender).Tag = 13
+              then begin
+                m := '6H';
+                ff := '1';
+              end
+              else
+              begin
+                ff := '-1';
+              end;
+
+              sql := 'exec sp_HastaTetkikTakipPIVOTToplu @dosyaNO = ' + QuotedStr(_dosyaNos_) + ' , @yil = ' + QuotedStr(ay1) +
+                            ',@marker = ' + QuotedStr(m) + ',@f= ' + ff + ' , @sirketKod = ' + QuotedStr(datalar.AktifSirket) +
                             ',@seans = ' + QuotedStr(txtSeansTopPanel.text);
               datalar.QuerySelect(ado,sql);
 
               Datasets.Dataset1 := ado;
               Datasets.Dataset2 := datalar.ADO_AktifSirket;
               Datasets.Dataset3 := datalar.ADO_aktifSirketLogo;
-              PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),Datasets);
+
+              if TMenuItem(sender).Tag = 13
+              then begin
+                PrintYap('205_6','Son 6 ay Toplu Tetkik Takip',inttostr(TagfrmHastaListe),Datasets);
+               end
+              else
+                PrintYap('205','Toplu Tetkik Takip',inttostr(TagfrmHastaListe),Datasets);
+
+
               finally
                 DurumGoster(False);
                 ado.Free;
@@ -462,6 +492,22 @@ begin
  330,9020 : begin
                F := FormINIT(Tcontrol(sender).tag,GirisFormRecord,ikEvet,'Giriþ');
                if F <> nil then F.ShowModal;
+            end;
+
+     9021 : begin
+                DurumGoster(True);
+                try
+                  List := Asilar.ListeGetir;
+                  if Length(List) >  0
+                  then
+                    if mryes = ShowMessageSkin('Seçili Aþýlar , Hastalara uygulanacak','','','msg')
+                    then begin
+                     sql := 'exec sp_HastaTopluAsiEkle ' + QuotedStr(seciliHastaDosyaNos) + ',' + QuotedStr(ArrayListeSecimlerToSTR(List));
+                     datalar.QueryExec(sql);
+                    end;
+                finally
+                  DurumGoster(False);
+                end;
             end;
 
     -50    : begin
@@ -862,6 +908,8 @@ begin
      g.Free;
    end;
 
+   _dosyaNO_ := _Dataset.FieldByName('dosyaNo').AsString;
+
   //index := AFocusedRecord.Index;
   Hadi := _Dataset.FieldByName('HASTAADI').AsString; //Liste.DataController.GetValue(index,HastaAdi.Index);
   HSadi := _Dataset.FieldByName('HASTASOYADI').AsString;//Liste.DataController.GetValue(index,HastaSoyadi.Index);
@@ -970,6 +1018,36 @@ begin
   end;
 end;
 
+procedure TfrmHastaListeD.S2Click(Sender: TObject);
+var
+ List : TListeAc;
+ _L_ : ArrayListeSecimler;
+ _name_, tel,msj,sysTakipNo,eNabizSonuc , _dosyaNos_ : string;
+ F : TGirisForm;
+ GirisFormRecord : TGirisFormRecord;
+ TopluDataset : TDataSetKadir;
+begin
+  _dosyaNos_ := seciliHastaDosyaNos;
+
+    if _dosyaNos_ <> ''
+    then
+      if mrYes = ShowPopupForm('SKS Hasta Formlarý',SKS_HastaForm)
+      Then Begin
+               TopluDataset.Dataset1 := datalar.QuerySelect(
+                                        'exec sp_HastaTanimBilgileri ' +
+                                        ' @dosyaNO = ' + QuotedStr(_dosyaNos_));
+               TopluDataset.Dataset2 := datalar.ADO_aktifSirketLogo;
+               TopluDataset.Dataset3 := datalar.ADO_AktifSirket;
+
+               PrintYap(datalar.SKSForm.raporKodu,datalar.SKSForm.raporKodu,'',TopluDataset,kadirType.pTNone);
+
+      End
+    else
+    ShowMessageSkin('Hasta Dosyasý Seçilmeden Bu Ýþlem Kullanýlamaz...','','','info');
+
+
+end;
+
 procedure TfrmHastaListeD.SeansKart1Click(Sender: TObject);
 begin
 
@@ -1029,6 +1107,20 @@ begin
   frmRapor.raporData1(frmRapor.topluset ,'035','\SeansTahakkuk');
   frmRapor.ShowModal;
   *)
+end;
+
+function TfrmHastaListeD.seciliHastaDosyaNos: string;
+var
+ x ,satir : integer;
+ _dosyaNos_ : string;
+begin
+     for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+     begin
+         satir := Liste.Controller.SelectedRows[x].RecordIndex;
+         _dosyaNos_ := ifThen(_dosyaNos_='',_dosyaNos_+'',_dosyaNos_+',') +
+           varToStr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+     end;
+     seciliHastaDosyaNos := _dosyaNos_;
 end;
 
 procedure TfrmHastaListeD.TopPanelPropertiesChange(Sender: TObject);

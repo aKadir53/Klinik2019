@@ -96,6 +96,9 @@ type
     D7: TMenuItem;
     gridDokumanlarColumn4: TcxGridDBColumn;
     D8: TMenuItem;
+    N7: TMenuItem;
+    l2: TMenuItem;
+    gridDokumanlarColumn5: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnListClick(Sender: TObject);
@@ -118,6 +121,8 @@ type
     procedure EkUDFList1Functions0Calculate(Sender: TObject; Args: TEkUDFArgs;
       ArgCount: Integer; UDFResult: TObject);
     procedure D5Click(Sender: TObject);
+    procedure N7Click(Sender: TObject);
+    procedure l2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -407,6 +412,95 @@ begin
 
 end;
 
+procedure TfrmSKS_Dokumanlar.l2Click(Sender: TObject);
+var
+ x ,satir : integer;
+ dokumanNo,sql,id : string;
+ TopluDataset : TDatasetKadir;
+begin
+
+          if not FileExists('C:\NoktaV3\SB_Logo\logo.jpg')
+          then begin
+             ShowMessageSkin('C:\NoktaV3\SB_Logo\logo.jpg','Logo Bulunamadý','','info');
+             exit;
+          end;
+
+          if mrYes = ShowMessageSkin('Seçilen Dökümanlar Ýçin','Bakanlýk Logosu Yüklenecek','','msg')
+          then begin
+             DurumGoster(True,True,'Logo Yükleme Yapýlýyor, Lütfen Bekleyiniz...');
+             try
+                   pbar.Properties.Max := gridDokumanlar.Controller.SelectedRowCount;
+                   pbar.Position := 0;
+
+                   for x := 0 to gridDokumanlar.Controller.SelectedRowCount - 1 do
+                   begin
+                     satir := gridDokumanlar.Controller.SelectedRows[x].RecordIndex;
+                     dokumanNo := gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('dokumanNo').Index);
+                     id := gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('id').Index);
+
+                     PrintLogo(dokumanNo);
+
+                     Application.ProcessMessages;
+                     pbar.Position := pbar.Position + 1;
+
+                   end;
+                   ShowMessageSkin('Logo Yüklendi','','','info');
+
+             finally
+               DurumGoster(False);
+             end;
+
+          end;
+
+
+
+end;
+
+procedure TfrmSKS_Dokumanlar.N7Click(Sender: TObject);
+var
+ x ,satir : integer;
+ dokumanNo,sql,id : string;
+ TopluDataset : TDatasetKadir;
+begin
+          if mrYes = ShowMessageSkin('Seçilen Dökümanlar','PDF olarak Export edilecek','','msg')
+          then begin
+             DurumGoster(True,True,'Döküman Yükleme Yapýlýyor, Lütfen Bekleyiniz...');
+             try
+                   pbar.Properties.Max := gridDokumanlar.Controller.SelectedRowCount;
+                   pbar.Position := 0;
+
+                   for x := 0 to gridDokumanlar.Controller.SelectedRowCount - 1 do
+                   begin
+                     satir := gridDokumanlar.Controller.SelectedRows[x].RecordIndex;
+                     dokumanNo := gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('dokumanNo').Index);
+                     id := gridDokumanlar.DataController.GetValue(satir,gridDokumanlar.DataController.GetItemByFieldName('id').Index);
+
+                     TopluDataset.Dataset0 := datalar.ADO_aktifSirketLogo;
+                     TopluDataset.Dataset1 := datalar.ADO_AktifSirket;
+                     sql := 'select *,DK.tanimi KapsamAdi,DT.tanimi TurAdi from SKS_Dokumanlar D' +
+                          ' join SKS_DokumanKapsamlari DK on DK.kod = D.Kapsam ' +
+                          ' join SKS_DokumanTurleri DT on DT.kod = D.tur ' +
+                          ' left join SKS_DokumanlarRev DR on DR.dokumanid = D.id'+ // and DR.aktif = 1' +
+                          ' where D.id = ' + id;
+                     TopluDataset.Dataset2 := datalar.QuerySelect(sql);
+
+                     PrintYap(dokumanNo,dokumanNo,'0',TopluDataset,pTRTFPDF,Self);
+                     Application.ProcessMessages;
+                     pbar.Position := pbar.Position + 1;
+
+                   end;
+                   ShowMessageSkin('Dokumanlar Export Edildi','','','info');
+
+             finally
+               DurumGoster(False);
+             end;
+
+          end;
+
+
+
+end;
+
 procedure TfrmSKS_Dokumanlar.T2Click(Sender: TObject);
 begin
   inherited;
@@ -555,7 +649,10 @@ begin
   if datalar.KontrolUserSet = True then exit;
 begin
 
-  if Ado_Dokumanlar.Eof then exit;
+
+  if TControl(sender).Tag <> -1
+  then
+   if Ado_Dokumanlar.Eof then exit;
   
 
   case TControl(sender).Tag  of
@@ -785,6 +882,13 @@ begin
 
   case TMenuItem(sender).Tag of
    500,501 : begin
+                if UserRight('SKS', 'Döküman Kilitle-Aç') = False
+                then begin
+                     ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !','SKS Ýþlemleri','','info');
+                     exit;
+                end;
+
+
                  DurumGoster(True,True,'Ýþlem Yapýlýyor, Lütfen Bekleyiniz...');
                  try
                        pbar.Properties.Max := gridDokumanlar.Controller.SelectedRowCount;
@@ -815,6 +919,12 @@ begin
          end;
 
    502 : begin
+          if UserRight('SKS', 'Noktadan Döküman Yükle') = False
+          then begin
+               ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !','SKS Ýþlemleri','','info');
+               exit;
+          end;
+
           if mrYes = ShowMessageSkin('Seçilen Dökümanlar','Nokta Sunucusundan Yüklenecek','Döküman Sizdeki döküman üzerine yazýlacak , Eminmisiniz','msg')
           then begin
              DurumGoster(True,True,'Döküman Yükleme Yapýlýyor, Lütfen Bekleyiniz...');
@@ -852,6 +962,11 @@ begin
          end;
 
    503 : begin
+          if UserRight('SKS', 'Döküman Diðer Þirketlere Gönder') = False
+          then begin
+               ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !','SKS Ýþlemleri','','info');
+               exit;
+          end;
 
           if mrYes = ShowMessageSkin('Seçilen Dökümanlar','Diðer Þirketlere Yüklenecek','Diðere Þirketlerdeki Dökümanýn Üzerine Yazýlacak , Eminmisiniz','msg')
           then begin

@@ -1172,6 +1172,11 @@ object frmKurumFatura: TfrmKurumFatura
         Caption = 'Fatura '#304'cmali'
         OnClick = cxButtonCClick
       end
+      object H1: TMenuItem
+        Tag = 18
+        Caption = 'Hizmet '#304'cmali'
+        OnClick = cxButtonCClick
+      end
       object K2: TMenuItem
         Tag = -19
         Caption = 'Fatura Olu'#351'tur'

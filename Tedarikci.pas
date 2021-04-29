@@ -62,6 +62,9 @@ begin
         indexFieldName := 'kod';
         TableName := 'cari_Tedarikciler';
 
+        cxYeni.Visible := False;
+        cxIptal.Visible := False;
+        cxKaydet.Visible := False;
 
         List := TListeAc.Create(nil);
         List.Table := 'cari_Tedarikciler';
@@ -80,6 +83,8 @@ begin
        // TcxButtonEditKadir(FindComponent('kod')).Identity := True;
 
         setDataString(self,'tanimi','Tedarikçi',Kolon1,'',300,True);
+
+        (*
 
         bransKodu := TcxImageComboKadir.Create(self);
         bransKodu.Conn := Datalar.ADOConnection2;
@@ -117,7 +122,7 @@ begin
         setDataString(self,'ePosta','EMail',Kolon1,'',100,True);
         setDataString(self,'Telefon','Telefon',Kolon1,'',100,True);
         setDataString(self,'Yetkili','Yetkili',Kolon1,'',100,True);
-
+          *)
         SayfaCaption('Tedarikçi Bilgileri','','','','');
         Result := True;
         Disabled(self,True);

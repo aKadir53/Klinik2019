@@ -82,11 +82,15 @@ begin
 end;
 
 procedure TfrmTaniKart.TaniSil;
+var
+ islemRefNo : string;
 begin
    if sqlRun.Eof then exit;
+   islemRefNo := sqlRun.FieldByName('SiraNo').AsString;
    if sqlRun.FieldByName('islemSiraNo').AsString = ''
    then begin
-    sqlRun.Delete;
+     datalar.QueryExec('delete from hareketler where siraNo = ' + islemRefNo);
+     sqlRun.Requery();
    end
    else
     ShowMessageSkin('Taný Medulaya Kayýtlý','','','info');

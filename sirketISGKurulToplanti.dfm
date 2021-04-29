@@ -18,12 +18,13 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
   object KurulEkipGrid: TcxGridKadir
     Left = 168
     Top = 8
-    Width = 410
+    Width = 465
     Height = 150
     TabOrder = 0
     ExceleGonder = False
     PopupForm = False
     object KurulEkipGridList: TcxGridDBBandedTableView
+      PopupMenu = PopupMenu2
       Navigator.Buttons.First.Visible = False
       Navigator.Buttons.PriorPage.Visible = False
       Navigator.Buttons.Prior.Visible = False
@@ -57,7 +58,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
-        Width = 110
+        Width = 91
         Position.BandIndex = 0
         Position.ColIndex = 0
         Position.RowIndex = 0
@@ -69,7 +70,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
-        Width = 88
+        Width = 73
         Position.BandIndex = 0
         Position.ColIndex = 1
         Position.RowIndex = 0
@@ -80,7 +81,7 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
-        Width = 120
+        Width = 99
         Position.BandIndex = 0
         Position.ColIndex = 2
         Position.RowIndex = 0
@@ -91,9 +92,30 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
-        Width = 87
+        Width = 102
         Position.BandIndex = 0
         Position.ColIndex = 3
+        Position.RowIndex = 0
+      end
+      object KurulEkipGridListColumn1: TcxGridDBBandedColumn
+        DataBinding.FieldName = 'katilim'
+        PropertiesClassName = 'TcxCheckBoxProperties'
+        Properties.Alignment = taCenter
+        Properties.NullStyle = nssUnchecked
+        Properties.ValueChecked = 1
+        Properties.ValueUnchecked = '0'
+        Options.Editing = False
+        Width = 23
+        Position.BandIndex = 0
+        Position.ColIndex = 4
+        Position.RowIndex = 0
+        IsCaptionAssigned = True
+      end
+      object KurulEkipGridListColumn2: TcxGridDBBandedColumn
+        DataBinding.FieldName = 'id'
+        Visible = False
+        Position.BandIndex = 0
+        Position.ColIndex = 5
         Position.RowIndex = 0
       end
     end
@@ -723,8 +745,8 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 152
-    Top = 16
+    Left = 104
+    Top = 8
     object Y1: TMenuItem
       Caption = 'Yazd'#305'r'
       ImageIndex = 28
@@ -791,5 +813,18 @@ object frmISGKurulToplanti: TfrmISGKurulToplanti
     GrupCol = 0
     Left = 104
     Top = 64
+  end
+  object PopupMenu2: TPopupMenu
+    Left = 664
+    Top = 24
+    object K1: TMenuItem
+      Tag = 1
+      Caption = 'Kat'#305'ld'#305
+      OnClick = K2Click
+    end
+    object K2: TMenuItem
+      Caption = 'Kat'#305'lmad'#305
+      OnClick = K2Click
+    end
   end
 end

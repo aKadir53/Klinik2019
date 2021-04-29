@@ -44,11 +44,15 @@ uses
     DonemSonlandir = 'https://medula.sgk.gov.tr/hastane/login.jsf';
     ktsHbysKodu : string = 'C740D0288EFAC45FE0407C0A04162BDD';
     DBUserName : string = 'LyotVG05cmRHRT0=';
-    DBPasword : string = 'LyotTlRNMU13PT0=';
+    DBPasword : string = 'THlvdFRsUk5NVTEzUFQwPQ==';
+ //   DBPasword : string = 'LyotTlRNMU13PT0=';
     AppalicationVer : integer = 2201;
 
     KayitYukleMesaj : string = 'Kayýtlar Yükleniyor , Lütfen Bekleyiniz';
 
+    sirketDoktorlari = 'exec sp_SirketDoktorlari %s';
+    sirketUzmanDoktor = 'exec sp_UzmanDoktorBul %s';
+    sirketMesulMudur = 'exec sp_BashekimDoktorBul %s';
 
 type
   TDATALAR = class(TDataModule)
@@ -431,6 +435,7 @@ type
     procedure LabBeforeExecute(const MethodName: string; SOAPRequest: TStream);
     procedure DYOBAfterExecute(const MethodName: string; SOAPResponse: TStream);
     procedure DYOBBeforeExecute(const MethodName: string; SOAPRequest: TStream);
+    procedure DestekTalepSayTimer(Sender: TObject);
   private
 
     { Private declarations }
@@ -441,6 +446,8 @@ type
    _tesisKodu , _labusername , _labsifre , doktor ,doktorKodu,doktorTC, doktorAdi , SonReceteDoktorKodu,SonImzaDoktorKodu,sirketKodu,
    IGU, DSPers, _dosyaNo_,_gelisNo_,kontrolKod,RiskTanimBilgiEkle,
    _labkurumkod , _labkurumkodText, _laburl , _labfirma , _LabCalismaYon,_LabBarkodBasim, _LabBarkodOlustur,
+   _mesulMudurAdi_,mesulMudurSoyadi_ : string;
+   _mesulMudurTc_ : Int64;
    _SKRS , _saglikNetUser , _labID,_labSonucIcinGozArdiEt : string;
    _saglikNetPass , _firmaSKRS , _usermernis , _passmernis, UserGroup, UserGroupName , Personel : string;
    _doktorReceteUser,_doktorRecetePas,_KurumSKRS_, _userSaglikNet_ , _passSaglikNet_ , _userSaglikNet2_ , _passSaglikNet2_ , itsGLN , itsUser , itsPass: string;
@@ -450,7 +457,7 @@ type
    AktifSirketAdi,AktifSirket ,AktifSube ,AktifSubeAdi,_donemSonlandir_ ,TenayMNTRequest , TenayBIORequest , DyobRequest , _database , _Tip : string;
    AktifSirketSayisi : integer;
    CentroResponse ,SMSHesapFrom,SMSHesapUser,SMSHesapSifre , AlpemixRun,AlpemixGrupAdi,AlpemixGrupParola : string;
-   SMTPSunucu,SMTPUserName,SMTPPassword,SMTPPort,SMTPSEndTip : string;
+   SMTPSunucu,SMTPUserName,SMTPPassword,SMTPPort,SMTPSEndTip,SMTPSSL : string;
    _kurumKod  , _donemgoster,Cinsiyet : integer;
    _YazilimGelistirici : integer;
    LisansBitis,LisansBasla,LisansTarih ,LisansTip,LisansTipDeger: string;
@@ -464,6 +471,7 @@ type
    ReceteSatir : TReceteSatir;
    ReceteAciklama : TAck;
    YeniRecete : TYeniRecete;
+   YeniReceteSablon : TYeniReceteSablon;
    Risk : TRiskRecord;
    SahaDenetim : TSahaDenetim;
    OrtamOlcum : TOlcumKriter;
@@ -482,6 +490,7 @@ type
    ProgTarih : string;
    HastaBil : THasta;
    YillikCalismaPlan : TYillikCalismaPlani;
+   YillikEgitimPlan : TYillikEgitimPlaniDetay;
    VeriSeti : THizmetVeriSeti;
    islemSiralari : HizmetKayitIslemleriWS.Array_Of_string;
    _Program_ : string;
@@ -557,6 +566,14 @@ type
    E2033HataTakipYaz : string;
    WhatsappTelefonToken : string;
    WhatsappMesajTagEkle : string;
+   PDKS_Hareket : TPDKS_Hareket;
+   KaliteBirim : TKaliteBirim;
+   SKSKriter : TSKSKriter;
+   Zayi : TZayi;
+   LabNormal : TLabNormal;
+   SeansGunleri : string;
+
+   SQLQueryGoster : Boolean;
 
     function MasterBaglan(MasterKod : string ; var DB, OSGBDesc : string ; var YazilimGelistirici : integer; Server : string = ''; pSQLUserName : String = ''; pSQLPassword : String = '') : boolean; overload;
     function MasterBaglan : Boolean; overload;
@@ -610,8 +627,10 @@ var
   ado : TADOQuery;
 begin
   servername := Server;
-  pSQLUserName := Decode64(copy(Decode64(DBUserName),4,100));
-  pSQLPassword := Decode64(copy(Decode64(DBPasword),4,100));
+ // pSQLUserName := Decode64(copy(Decode64(DBUserName),4,100));
+ // pSQLPassword := Decode64(copy(Decode64(DBPasword),4,100));
+    pSQLUserName := 'MaviNokta';//Decode64(copy(Decode64(DBUserName),4,100));
+    pSQLPassword := Decode64(DBPasword);//Decode64(copy(Decode64(DBPasword),4,100));
 
   Master.Connected := false;
   Master.ConnectionString :=
@@ -663,8 +682,8 @@ begin
       pSQLPassword := 'nokta53Nokta';
       pSQLUserName := 'noktaosgB';
 
-    pSQLUserName := Decode64(copy(Decode64(DBUserName),4,100));
-    pSQLPassword := Decode64(copy(Decode64(DBPasword),4,100));
+    pSQLUserName := 'MaviNokta';//Decode64(copy(Decode64(DBUserName),4,100));
+    pSQLPassword := Decode64(DBPasword);//Decode64(copy(Decode64(DBPasword),4,100));
 
     if (_db_ <> '')
     Then Begin
@@ -908,6 +927,11 @@ begin
   try
    Q := TADOQuery.Create(datalar);
    Q.Connection := datalar.ADOConnection2;
+
+    if SQLQueryGoster = True
+    then
+    ShowMessageSkin(sql,'','','info');
+
    b:= queryExec (Q, sql);
    if not b then ;;;
   finally
@@ -935,6 +959,12 @@ begin
     Q.SQL.Clear;
     Q.SQL.Add (sql);
     //    Q.Prepare;
+
+    if SQLQueryGoster = True
+    then
+    ShowMessageSkin(sql,'','','info');
+
+
     Q.ExecSQL;
     Result := True;
   finally
@@ -983,6 +1013,11 @@ begin
     Then sql := 'SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED  '+ sql;
     Q.SQL.Add (sql);
 //    Q.Prepare;
+
+    if SQLQueryGoster = True
+    then
+    ShowMessageSkin(sql,'','','info');
+
     Q.Open;
     Result := True;
 end;
@@ -1006,6 +1041,9 @@ begin
       Then sql := 'SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED  '+ sql;
       Result.SQL.Add (sql);
   //    Q.Prepare;
+      if SQLQueryGoster = True
+      then
+      ShowMessageSkin(sql,'','','info');
       Result.Open;
     except
       FreeAndNil (Result);
@@ -1195,6 +1233,16 @@ end;
 procedure TDATALAR.DataModuleDestroy(Sender: TObject);
 begin
   CommandLog.Free;
+end;
+
+procedure TDATALAR.DestekTalepSayTimer(Sender: TObject);
+begin
+ // dec(datalar.SorunBildirTime);
+ // SorunBildirKaydetButtonCaption := 'Yeni Kayýt Ýçin :' + inttostr(SorunBildirTime) + ' saniye';
+
+ // btnOnayKodu.Caption := 'Kalan Süre:' + inttostr(say) + ' saniye';
+
+
 end;
 
 procedure TDATALAR.DuzenHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp;

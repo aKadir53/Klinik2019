@@ -25,10 +25,6 @@ object frmTaniKart: TfrmTaniKart
     Align = alClient
     TabOrder = 0
     Properties.ActivePage = Tab_Tani
-    ExplicitLeft = 8
-    ExplicitTop = 32
-    ExplicitWidth = 289
-    ExplicitHeight = 193
     ClientRectBottom = 440
     ClientRectLeft = 3
     ClientRectRight = 720
@@ -36,9 +32,6 @@ object frmTaniKart: TfrmTaniKart
     object Tab_Tani: TcxTabSheet
       Caption = 'Tan'#305'lar'
       ImageIndex = 0
-      ExplicitTop = 30
-      ExplicitWidth = 279
-      ExplicitHeight = 160
       object Grid_Tanilar: TcxGrid
         Left = 0
         Top = 0
@@ -55,10 +48,6 @@ object frmTaniKart: TfrmTaniKart
         LevelTabs.ImageBorder = 2
         LevelTabs.Style = 1
         LookAndFeel.Kind = lfFlat
-        ExplicitLeft = 54
-        ExplicitTop = -9
-        ExplicitWidth = 727
-        ExplicitHeight = 447
         object ListeS: TcxGridDBTableView
           Navigator.Buttons.First.Visible = False
           Navigator.Buttons.PriorPage.Visible = False
@@ -180,8 +169,8 @@ object frmTaniKart: TfrmTaniKart
             Visible = False
           end
           object ListeSColumn6: TcxGridDBColumn
+            Caption = 'islemRefNo'
             DataBinding.FieldName = 'siraNo'
-            Visible = False
           end
         end
         object cxGridLevel2: TcxGridLevel
@@ -195,8 +184,6 @@ object frmTaniKart: TfrmTaniKart
     object Tab_log: TcxTabSheet
       Caption = 'Log'
       ImageIndex = 1
-      ExplicitWidth = 279
-      ExplicitHeight = 160
       object txtLog: TcxMemo
         Left = 0
         Top = 0

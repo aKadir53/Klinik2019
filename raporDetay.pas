@@ -82,6 +82,7 @@ type
     N6: TMenuItem;
     T2: TMenuItem;
     T3: TMenuItem;
+    R4: TMenuItem;
     Procedure Raporlar(dosyaNo ,gelisNo : string);
     procedure btnVazgecClick(Sender: TObject);
     procedure RaporKaydet(dosyaNo , RaporNo , turu , Tip: string);
@@ -176,6 +177,7 @@ type
     procedure SablonKaydet;
     procedure T2Click(Sender: TObject);
     procedure T3Click(Sender: TObject);
+    procedure R4Click(Sender: TObject);
   private
     { Private declarations }
    function findMethod(dllHandle: Cardinal; methodName: string): FARPROC;
@@ -789,6 +791,26 @@ begin
    end;
 end;
 
+
+procedure TfrmRaporDetay.R4Click(Sender: TObject);
+begin
+  inherited;
+
+  if mrYes = ShowMessageSkin('Rapor Bugün Tarihli olarak yeniden oluþturulacak','','','msg') then
+  begin
+   try
+    datalar.QueryExec('exec sp_RaporTekrarla ' + RaporGrid.Dataset.FieldByName('sira').AsString);
+    RaporGrid.Dataset.Requery();
+    ShowMessageSkin('Rapor Tekrarlandý','','','info');
+   except on e : exception do
+    begin
+       ShowMessageSkin(e.Message,'','','info');
+    end;
+   end;
+  end;
+
+
+end;
 
 function TfrmRaporDetay.RaporAciklamaEkle(RaporTakip,aciklama ,TakipformNo: string ; var msg : string) : string;
 var
@@ -2181,6 +2203,7 @@ function TfrmRaporDetay.Init(Sender: TObject): Boolean;
 begin
    Result := False;
    datalar.QuerySelect(RaporGrid.Dataset, 'select * from Raporlar where dosyaNo = ' + QuotedStr(_dosyaNO_) + ' order by bitisTarihi desc' );
+   ListeRaporlar.Controller.GridView.ViewData.Expand(True);
    Result := True;
 end;
 

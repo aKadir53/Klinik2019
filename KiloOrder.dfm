@@ -352,7 +352,7 @@ object frmKiloOrder: TfrmKiloOrder
         Position.ColIndex = 10
         Position.RowIndex = 0
       end
-      object GridEkstreColumn2: TcxGridDBBandedColumn
+      object GridEkstreVSivi: TcxGridDBBandedColumn
         Caption = 'Ver.S'#305'v'#305
         DataBinding.FieldName = 'verilecekSivi'
         PropertiesClassName = 'TcxCurrencyEditProperties'

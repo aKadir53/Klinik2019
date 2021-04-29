@@ -468,6 +468,7 @@ var
 begin
   inherited;
   Result := False;
+  DbGrid.FilterRow.Visible := True;
   case abs(Tag) of
     TagfrmBolum,TagfrmBirim :
     begin
@@ -586,6 +587,16 @@ TagfrmISGKurulToplantiTanim
                    txtTable.Enabled := False;
                    Result := True;
                  end;
+TagfrmRaporAciklamaMetni :
+                 begin
+                   cxPanel.Visible := false;
+                   indexFieldName := ' Kod is not null';
+                   txtTable.EditValue := 50;
+                   txtTable.Enabled := False;
+                   DbGrid.FilterRow.Visible := False;
+                   Result := True;
+
+                 end;
 
     TagfrmSube :
     begin
@@ -650,7 +661,7 @@ TagfrmISGKurulToplantiTanim
 
         cxGrid3.Dataset.BeforePost := ADOBeforePost;
         cxGrid3.Dataset.Connection := datalar.ADOConnection2;
-        cxGrid3.Dataset.SQL.Text := 'Select id,SirketKod,SubeKod,TCKimlikNo,AdiSoyadi,Telefon,eMail,ISGEkipId,ISGEkipGorevID,Aktif,AtamaTarihi ' +
+        cxGrid3.Dataset.SQL.Text := 'Select id,SirketKod,TCKimlikNo,AdiSoyadi,Telefon,eMail,ISGEkipId,ISGEkipGorevID,Aktif,AtamaTarihi ' +
                                     ' from SIRKET_SUBE_EKIP where sirketKod = ' + QuotedStr(_firmaKod_);
         cxGrid3.Dataset.Open;
         DBGrid.ClearItems;
@@ -828,7 +839,7 @@ begin
            //   TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Horz := taCenter;
             //  DBgrid.Columns[i].Width := DBgrid.Columns[i].BestFitMaxWidth;
              end;
-            if SameText (Tips[i], 'memo') then
+            if SameText (Tips[i], 'memoR') then
              begin
               DBgrid.Columns[i].PropertiesClassName := 'TcxRichEditProperties';
           //    TcxRichEditProperties(DBgrid.Columns[i].Properties).PlainText := True;
@@ -840,6 +851,19 @@ begin
            //   TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Horz := taCenter;
            //   DBgrid.Columns[i].BestFitMaxWidth := 400;
              end;
+             if SameText (Tips[i], 'memo') then
+             begin
+              DBgrid.Columns[i].PropertiesClassName := 'TcxMemoProperties';
+          //    TcxRichEditProperties(DBgrid.Columns[i].Properties).PlainText := True;
+        //      TcxRichEditProperties(DBgrid.Columns[i].Properties).StreamModes := [resmPlainRtf];
+              DBgrid.Columns[i].Width := 350;
+              TcxRichEditProperties(DBgrid.Columns[i].Properties).VisibleLineCount := 4;
+              TcxRichEditProperties(DBgrid.Columns[i].Properties).ScrollBars := ssBoth;
+              //TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Vert := taVCenter;
+           //   TcxTextEditProperties(DBgrid.Columns[i].Properties).Alignment.Horz := taCenter;
+           //   DBgrid.Columns[i].BestFitMaxWidth := 400;
+             end;
+
             if SameText (Tips[i], 'Check') then
              begin
               DBgrid.Columns[i].PropertiesClassName := 'TcxCheckBoxProperties';

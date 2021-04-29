@@ -330,6 +330,7 @@ function OrderSYNLAB(dosyaNo : string ; gelis : string) : Order;
 var
   sql           : string;
   HastaTenay    : TenayServiceSYNLAB_SYNEVO_CENTRO.Order;
+  DoktorBilgisi : TenayServiceSYNLAB_SYNEVO_CENTRO.Doktor;
   GelisSYNLAB   : TenayServiceSYNLAB_SYNEVO_CENTRO.Gelis;
   istekler      : TenayServiceSYNLAB_SYNEVO_CENTRO.Array_Of_Tetkik;
   istek         : TenayServiceSYNLAB_SYNEVO_CENTRO.Tetkik;
@@ -344,6 +345,7 @@ var
 begin
   ado := TADOQuery.Create(nil);
   ado.Connection := datalar.ADOConnection2;
+  try
   HastaTenay := Order.Create;
 
   sql := 'select * from HastaKart where dosyano = ' + QuotedStr(dosyaNo);
@@ -367,8 +369,14 @@ begin
   HastaTenay.DogumTarihi := DTarih;
 
 
-    sql := 'select * from hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
-    datalar.QuerySelect(ado,sql);
+  sql := 'select * from hasta_gelisler where dosyaNo = ' + QuotedStr(dosyaNo) + ' and gelisNo = ' + gelis;
+  datalar.QuerySelect(ado,sql);
+
+  DoktorBilgisi := TenayServiceSYNLAB_SYNEVO_CENTRO.Doktor.Create;
+  DoktorBilgisi.KimlikNo := datalar._mesulMudurTc_;
+  DoktorBilgisi.Adi := datalar._mesulMudurAdi_;
+  DoktorBilgisi.Soyadi := datalar.mesulMudurSoyadi_;
+  HastaTenay.DoktorBilgileri := DoktorBilgisi;
 
     HastaTenay.OrnekNo := strtoint(ifthen(ado.fieldbyname('OrnekNo').AsString = '',
                                '0',ado.fieldbyname('OrnekNo').AsString));
@@ -423,10 +431,10 @@ begin
     GelisSYNLAB.Tetkikler := istekler;
     HastaTenay.Gelis := GelisSYNLAB;
 
+  finally
+    ado.Free;
+  end;
 
-
-
-  ado.Free;
   result := HastaTenay;
 end;
 

@@ -51,6 +51,7 @@ type
     foto1: TcxImage;
     kilo: TcxLabel;
     yas: TcxLabel;
+    LabelTc: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -173,6 +174,7 @@ begin
       try
         kilo.Caption := 'Kilo : ' +  AdoHastaGelis.FieldByName('kilo').AsString;
         yas.Caption := 'Yaþ : ' + AdoHastaGelis.FieldByName('yas').AsString;
+        LabelTc.Caption := 'Tc : ' + self._TC_;
       except
       end;
 

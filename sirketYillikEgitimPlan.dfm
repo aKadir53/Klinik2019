@@ -17,9 +17,9 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
   PixelsPerInch = 96
   TextHeight = 13
   object YillikEgitimPlanGrid: TcxGridKadir
-    Left = 248
-    Top = 216
-    Width = 1161
+    Left = 287
+    Top = 40
+    Width = 1433
     Height = 297
     TabOrder = 0
     LookAndFeel.NativeStyle = False
@@ -53,27 +53,43 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
       Navigator.Buttons.SaveBookmark.Visible = False
       Navigator.Buttons.GotoBookmark.Visible = False
       Navigator.Buttons.Filter.Visible = False
+      Navigator.Visible = True
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
       NewItemRow.SeparatorColor = 8454143
-      NewItemRow.Visible = True
+      OptionsData.Editing = False
+      OptionsData.Inserting = False
       OptionsSelection.InvertSelect = False
       OptionsView.CellAutoHeight = True
-      OptionsView.GroupByBox = False
       OptionsView.HeaderAutoHeight = True
       Styles.NewItemRowInfoText = cxStyle10
       Bands = <
         item
           Caption = 'Planlama'
           Styles.Header = cxStyle7
-          Width = 1118
+          Width = 1376
         end>
+      object YillikEgitimPlanSatirlarColumn6: TcxGridDBBandedColumn
+        Caption = 'S'#305'ra'
+        DataBinding.FieldName = 'sira'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 34
+        Position.BandIndex = 0
+        Position.ColIndex = 2
+        Position.RowIndex = 0
+      end
       object YillikEgitimPlanSatirlarFirmaYillikEgitimPlanID: TcxGridDBBandedColumn
         DataBinding.FieldName = 'FirmaYillikEgitimPlanID'
         Visible = False
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Position.BandIndex = 0
         Position.ColIndex = 0
         Position.RowIndex = 0
@@ -83,6 +99,7 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
         Visible = False
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Position.BandIndex = 0
         Position.ColIndex = 1
         Position.RowIndex = 0
@@ -94,9 +111,10 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
         Properties.Alignment = taCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 200
+        Options.Editing = False
+        Width = 173
         Position.BandIndex = 0
-        Position.ColIndex = 2
+        Position.ColIndex = 3
         Position.RowIndex = 0
       end
       object YillikEgitimPlanSatirlaregitimKonulari: TcxGridDBBandedColumn
@@ -106,31 +124,40 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
         Properties.Alignment = taLeftJustify
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 220
+        Options.Editing = False
+        Width = 256
         Position.BandIndex = 0
-        Position.ColIndex = 3
+        Position.ColIndex = 4
         Position.RowIndex = 0
       end
       object YillikEgitimPlanSatirlaregitimeKatilacaklar: TcxGridDBBandedColumn
         Caption = 'Egitime Katilacaklar'
         DataBinding.FieldName = 'egitimeKatilacaklar'
-        PropertiesClassName = 'TcxMemoProperties'
-        Properties.Alignment = taCenter
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 127
+        Options.Editing = False
+        Width = 139
         Position.BandIndex = 0
-        Position.ColIndex = 4
+        Position.ColIndex = 7
         Position.RowIndex = 0
       end
       object YillikEgitimPlanSatirlarsure: TcxGridDBBandedColumn
         Caption = 'S'#252're (Saat)'
         DataBinding.FieldName = 'sure'
+        PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.AssignedValues.DisplayFormat = True
+        Properties.DecimalPlaces = 0
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 45
+        Options.Editing = False
+        Width = 31
         Position.BandIndex = 0
-        Position.ColIndex = 5
+        Position.ColIndex = 6
         Position.RowIndex = 0
       end
       object YillikEgitimPlanSatirlarPTarih: TcxGridDBBandedColumn
@@ -139,11 +166,13 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
         PropertiesClassName = 'TcxDateEditProperties'
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
+        Properties.Kind = ckDateTime
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 79
+        Options.Editing = False
+        Width = 72
         Position.BandIndex = 0
-        Position.ColIndex = 6
+        Position.ColIndex = 5
         Position.RowIndex = 0
       end
       object YillikEgitimPlanSatirlarGTarih: TcxGridDBBandedColumn
@@ -152,25 +181,27 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
         PropertiesClassName = 'TcxDateEditProperties'
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
+        Visible = False
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 80
         Position.BandIndex = 0
-        Position.ColIndex = 7
+        Position.ColIndex = 8
         Position.RowIndex = 0
       end
       object YillikEgitimPlanSatirlaregitimVeren: TcxGridDBBandedColumn
-        Caption = 'Egitim Veren IGU'
+        Caption = 'Egitim Veren'
         DataBinding.FieldName = 'egitimVerenIGU'
-        PropertiesClassName = 'TcxImageComboBoxProperties'
+        PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
-        Properties.Items = <>
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 90
+        Options.Editing = False
+        Width = 92
         Position.BandIndex = 0
-        Position.ColIndex = 8
+        Position.ColIndex = 9
         Position.RowIndex = 0
       end
       object YillikEgitimPlanSatirlaraciklama: TcxGridDBBandedColumn
@@ -180,9 +211,10 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
         Properties.Alignment = taCenter
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
-        Width = 138
+        Options.Editing = False
+        Width = 173
         Position.BandIndex = 0
-        Position.ColIndex = 10
+        Position.ColIndex = 11
         Position.RowIndex = 0
       end
       object YillikEgitimPlanSatirlaregitimVerenDoktor: TcxGridDBBandedColumn
@@ -192,11 +224,85 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
         Properties.Alignment.Horz = taCenter
         Properties.Alignment.Vert = taVCenter
         Properties.Items = <>
+        Visible = False
         HeaderAlignmentHorz = taCenter
         HeaderAlignmentVert = vaCenter
+        Options.Editing = False
         Width = 90
         Position.BandIndex = 0
-        Position.ColIndex = 9
+        Position.ColIndex = 10
+        Position.RowIndex = 0
+      end
+      object YillikEgitimPlanSatirlarColumn1: TcxGridDBBandedColumn
+        Caption = 'E'#287'itimin De'#287'erlendirme'
+        DataBinding.FieldName = 'egitimDegerlendirme'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 113
+        Position.BandIndex = 0
+        Position.ColIndex = 12
+        Position.RowIndex = 0
+      end
+      object YillikEgitimPlanSatirlarColumn2: TcxGridDBBandedColumn
+        Caption = 'De'#287' Sure'
+        DataBinding.FieldName = 'degerlendirmeSure'
+        PropertiesClassName = 'TcxCurrencyEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        Properties.AssignedValues.DisplayFormat = True
+        Properties.DecimalPlaces = 0
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 35
+        Position.BandIndex = 0
+        Position.ColIndex = 13
+        Position.RowIndex = 0
+      end
+      object YillikEgitimPlanSatirlarColumn3: TcxGridDBBandedColumn
+        Caption = 'Egitim Yeri'
+        DataBinding.FieldName = 'egitimYeri'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 76
+        Position.BandIndex = 0
+        Position.ColIndex = 14
+        Position.RowIndex = 0
+      end
+      object YillikEgitimPlanSatirlarColumn4: TcxGridDBBandedColumn
+        Caption = 'Gerekli Materyaller'
+        DataBinding.FieldName = 'meteryal'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 124
+        Position.BandIndex = 0
+        Position.ColIndex = 15
+        Position.RowIndex = 0
+      end
+      object YillikEgitimPlanSatirlarColumn5: TcxGridDBBandedColumn
+        Caption = 'D'#246'nem'
+        DataBinding.FieldName = 'ay'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.Alignment.Vert = taVCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderAlignmentVert = vaCenter
+        Options.Editing = False
+        Width = 58
+        Position.BandIndex = 0
+        Position.ColIndex = 16
         Position.RowIndex = 0
       end
     end
@@ -290,8 +396,8 @@ object frmSirketYillikEgitimPlan: TfrmSirketYillikEgitimPlan
   end
   object PopupMenu1: TPopupMenu
     Images = DATALAR.imag24png
-    Left = 232
-    Top = 176
+    Left = 248
+    Top = 40
     object E1: TMenuItem
       Tag = -20
       Caption = 'Yazd'#305'r'

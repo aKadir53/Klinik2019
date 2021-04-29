@@ -6,7 +6,7 @@ interface
 uses HizmetKayitIslemleriWS,DB,sysUtils,XSBuiltIns,Classes,cxImage,ADODB,
      Vcl.Graphics,jpeg,ExtCtrls;
 
-type TprintTip = (pTYazdir,pTOnIzle,pTDizayn,pTNone,pTPDF,pTReadOnly);
+type TprintTip = (pTYazdir,pTOnIzle,pTDizayn,pTNone,pTPDF,pTReadOnly,pTRTF,pTRTFPDF);
 type sqlType = (sql_Select,sql_Exec,sql_sp,sql_fn,sql_new,sql_edit,sql_delete,sql_none);
 type showDialog = (OFShow,OFShowModal);
 type userGroup = (ugUser,ugGroup);
@@ -528,6 +528,7 @@ type
       SIRANO : string;
       sysTakipNo : string;
       DiyalizTedaviYonetimiDegisti : Boolean;
+      KabulDurum : string;
     end;
 
 
@@ -784,6 +785,14 @@ type
 end;
 
 type
+  TYeniReceteSablon = record
+    doktor : string;
+    ReceteTuru : string;
+    ReceteAltTuru : string;
+    sablonAdi : string;
+end;
+
+type
   TAck = Record
      ackKod : string;
      ack : string;
@@ -830,6 +839,8 @@ type
     KodVerilisNedeni : string;
     KodVerilisSaati : string;
     EkibininOlayYerineGelisSaati : string;
+    FormDoldurma : string;
+    sirketKod : string;
   End;
 
 
@@ -875,6 +886,14 @@ type
     Adres : string;
     KapaliAlan : string;
     AcikAlan : string;
+  End;
+
+type
+  TKaliteBirim = Record
+    BirimDirektoruAdi : string;
+    BirimDirektoruTel : string;
+    BirimDirektoruMail : string;
+
   End;
 
 
@@ -1093,6 +1112,23 @@ type
     uygulamaBitisTarihi : variant;
   end;
 
+  TYillikEgitimPlaniDetay = record
+    sira : integer;
+    Planid : integer;
+    id : integer;
+    egitimTanimi : string;
+    egitimKonulari : string;
+    egitimeKatilacaklar : string;
+    sure : integer;
+    PTarih : string;
+    egitimVerenIGU : string;
+    aciklama : string;
+    egitimYeri : string;
+    egitimDegerlendirme : string;
+    degerlendirmeSure : integer;
+    meteryal : string;
+  end;
+
 
   TYillikCalismaPlani = record
     faliyetid : integer;
@@ -1227,6 +1263,11 @@ type
       sorumlular : string;
       paylasilacakKisiler : string;
       dikkatedilecekhususlar : string;
+      sira : string;
+      tip : string;
+      refTip : string;
+      KriterOperator : string;
+      Hedef : string;
   end;
 
 
@@ -1280,6 +1321,60 @@ type
     aciklama : string;
   end;
 
+ TPDKS_Hareket = record
+   PDKS_ID : string;
+   Tarih : string;
+   Tip : string;
+   iTip : string;
+   mola : string;
+ end;
+
+TSKSKriter = record
+  TetkikKod : string;
+  Tanimi : string;
+  Sira : string;
+  gostergeKodu : string;
+  Tip : string;
+  refTip : string;
+  KriterOperator : string;
+  Hedef : string;
+
+end;
+
+TZayi = record
+  sirketKod : string;
+  sira : string;
+  code : string;
+  Tarih : string;
+  adet : string;
+  birim : string;
+  lot : string;
+  LotSira : string;
+  tip : string;
+  aciklama : string;
+  islemiYapan : string;
+end;
+
+
+TLabNormal = record
+  min901940 : variant;
+  max901940 : variant;
+  min901940C : variant;
+  max901940C : variant;
+  min902210 : variant;
+  max902210 : variant;
+  min902210C : variant;
+  max902210C : variant;
+  min903130 : variant;
+  max903130 : variant;
+  min903130C : variant;
+  max903130C : variant;
+
+  min901260 : variant;
+  max901260 : variant;
+end;
+
+
   TIntegerArray = array of Integer;
 
 
@@ -1296,6 +1391,7 @@ Const
   TagfrmFirmaISGEkip = 9013;
   TagfrmEkipmanTuru = 9014;
   TagfrmEkipmanTuruOzellik = 9015;
+  TagfrmRaporAciklamaMetni = 9016;
   TagfrmTakipNo = 10;
   TagfrmAsiKarti = 9020;
   TagfrmDoktorlar = 80;
@@ -1435,6 +1531,8 @@ Const
   TagfrmHastaListeD = 5002;
   TagfrmHastaSeans = 5004;
   TagfrmSKSKriter = 5005;
+  TagfrmSKSKriterHedefTablo = -5005;
+
   TagfrmRaporDetay = 5006;
   TagfrmMedulaFatura = 5007;
   TagfrmAylikSeansToplamlari = 5008;
@@ -1454,12 +1552,14 @@ Const
   TagfrmMedula = 5081;
   TagfrmENabiz = 5082;
   TagfrmUyum = 5083;
+  TagfrmOlayBildirimRaporlama = 5084;
 
   TagfrmITS = 6000;
   TagfrmITSPaket = 6001;
   TagfrmKurumFaturaHazirlik = 6002;
   TagfrmVKI = 6003;
   TagfrmPersonelGirisCikis = 6004;
+  TagfrmStokZayi = 6005;
 
 
 
@@ -1518,7 +1618,6 @@ Const
   TeleEkgDuzenle = 14;
   ReceteSifre = 15;
   PrgSifre = 16;
-  ReceteYeniSablon = 17;
   AylikTetkik = -1;
   UcAylikTetkik = -3;
   AltiAylikTetkik = -6;
@@ -1611,6 +1710,8 @@ Const
   ReceteyiSablonKaydet = 86;
   ilacTedaviUygula = 87;
   ilacTedaviIptal = 88;
+  yeniSKSKriter = 89;
+  SKSKriterHedefTablo = 90;
   SKSdokumanOku = 100;
   SKSdokumanRevDuzenle = 101;
   yeniTalimat = 102;
@@ -1644,6 +1745,11 @@ Const
   ElHijyenDetayDuzenle = 129;
   SKS_HastaForm = 130;
   RaporAciklamaEkle = 131;
+  ReceteYeniSablon = 132;
+  ReceteDuzenleSablon = 133;
+  yeniEgitimPlanDetay = 134;
+  yeniEgitimPlanDetayDuzenle = 135;
+
 
 
   PortaldenFaturaOku = 200;
@@ -1654,14 +1760,23 @@ Const
   UTSKullanimiBildirimTablosu = 304;
   MedulaSifreGecmisi = 305;
   QREpikrizLinki = 306;
+  PDKS_HareketEkle = 307;
+  PDKS_HareketSil = 308;
+
 
   NelerYeni = 333;
 
+
   EtkinMaddeTeshisOku = 334;
+  EgitimPanelZoom = 335;
+  SeansGunDegistir = 336;
+
 
   ITSAlimBildir = 6000;
   ITSSarfBildir = 6001;
   BitmemisIlacListesi = 6003;
+  ZayiYeni = 6005;
+  ZayiDuzenle = 6006;
 
 
 

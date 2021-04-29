@@ -550,7 +550,10 @@ begin
           '@TEDAVITURU = ' + #39 + 'G' + #39 + ',' +
           '@Kullanici = ' + #39 + datalar.username + #39 + ',' +
           '@TakipNo = '   + QuotedStr(txtTakipNo.Text) + ',' +
-          '@basvuruNo = ' + QuotedStr(txtBasvuruNo.Text) ;
+          '@basvuruNo = ' + QuotedStr(txtBasvuruNo.Text) + ',' +
+          '@diyaliztedaviTipi = ' + QuotedStr('H') + ',' +
+          '@kanAlimTarihi = ' + QuotedStr(tarihal(txtTakipTarihi.Date));
+
 
 
            datalar.QuerySelect(ado,sql);

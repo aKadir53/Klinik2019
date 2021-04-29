@@ -92,6 +92,7 @@ type
     cxButtonKadirAckEkle: TcxButtonKadir;
     cxButtonKadirilacackekle1: TcxButtonKadir;
     cxButtonKadirilacacksil1: TcxButtonKadir;
+    D1: TMenuItem;
     procedure btnSendClick(Sender: TObject);
     procedure TabloAc(doktor : string);
     procedure FormCreate(Sender: TObject);
@@ -103,6 +104,7 @@ type
     procedure sablonilacekle(islem:integer);
     procedure Sablontaniekle;
     procedure sablonackekle(islem:integer);
+    procedure E1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -200,6 +202,48 @@ begin
 
 end;
 
+procedure TfrmReceteSablon.E1Click(Sender: TObject);
+begin
+  inherited;
+
+  if TMenuItem(sender).Tag = 1 then
+  begin
+
+  if mrYes = ShowPopupForm('Yeni Reçete Þablon',ReceteYeniSablon)
+  then begin
+     Sablonlar.Append;
+     SAblonlar.FieldByName('sablonAdi').AsString := datalar.YeniReceteSablon.sablonAdi;
+     SAblonlar.FieldByName('receteTur').AsString := datalar.YeniReceteSablon.ReceteTuru;
+     SAblonlar.FieldByName('receteAltTur').AsString := datalar.YeniReceteSablon.ReceteAltTuru;
+     SAblonlar.FieldByName('doktor').AsString := datalar.YeniReceteSablon.doktor;
+     Sablonlar.Post;
+     Sablonlar.Requery();
+  end;
+
+  end
+  else
+  begin
+
+     datalar.YeniReceteSablon.sablonAdi := SAblonlar.FieldByName('sablonAdi').AsString;
+     datalar.YeniReceteSablon.ReceteTuru := SAblonlar.FieldByName('receteTur').AsString;
+     datalar.YeniReceteSablon.ReceteAltTuru := SAblonlar.FieldByName('receteAltTur').AsString;
+     datalar.YeniReceteSablon.doktor := SAblonlar.FieldByName('doktor').AsString;
+
+     if mrYes = ShowPopupForm('Reçete Þablon Duzenle',ReceteDuzenleSablon)
+     then begin
+       Sablonlar.Edit;
+       SAblonlar.FieldByName('sablonAdi').AsString := datalar.YeniReceteSablon.sablonAdi;
+       SAblonlar.FieldByName('receteTur').AsString := datalar.YeniReceteSablon.ReceteTuru;
+       SAblonlar.FieldByName('receteAltTur').AsString := datalar.YeniReceteSablon.ReceteAltTuru;
+       SAblonlar.FieldByName('doktor').AsString := datalar.YeniReceteSablon.doktor;
+       Sablonlar.Post;
+       Sablonlar.Requery();
+     end;
+
+  end;
+
+end;
+
 procedure TfrmReceteSablon.FormCreate(Sender: TObject);
 var
 doktorlar:TcxImageComboKadir;
@@ -218,7 +262,15 @@ begin
     doktorlar.BosOlamaz := False;
     doktorlar.Filter := ' durum = ''Aktif''';
 
+  if datalar.doktorKodu = ''
+  then
+    SAblonlar.Filter := ''
+     else
+      SAblonlar.Filter := ' doktor = '''' or doktor = ' + datalar.doktorKodu;
   Sablonlar.Active := true;
+
+
+
   SablonDetay.Active := true;
   IlacAciklama.Active := true;
   Aciklama.active:=true;

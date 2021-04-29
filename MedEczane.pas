@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ADODB,  DBGrids,  Grids, ComCtrls, Mask, ExtCtrls,
   Buttons, Gauges, MSHTML,  ToolWin, REGISTRY,
-  BaseGrid, DBCtrls,comobj,
+  BaseGrid, DBCtrls,comobj,System.Variants,
   ImgList,   Menus, JvPageList,
   JvNavigationPane, JvExControls, JvComponent, JvButton, JvComponentBase,
   JvBalloonHint, SHDocVw, IdBaseComponent, IdComponent, IdTCPConnection,
@@ -16,7 +16,7 @@ uses
   cxLookAndFeels, cxLookAndFeelPainters, dxSkinsCore, dxSkinBlue, dxSkinCaramel,
   dxSkinCoffee, dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky,
   dxSkinLondonLiquidSky, dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters,
-  cxSplitter;
+  cxSplitter, cxContainer, cxEdit, cxTextEdit, cxMemo;
 
 type
   TfrmMedEczane = class(TGirisForm)
@@ -31,12 +31,20 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FillStringGridWithHTMLTable(aStrGrid:TAdvStringGrid;HTMLTable:String);
     procedure aStrGridButtonClick(Sender: TObject; ACol, ARow: Integer);
+
+    procedure ParseEdilsin( aDoc: IHTMLDocument2; aListe: TStrings );
+
+    procedure Click( aDoc: IHTMLDocument2 ; id : string);
+    procedure comboChange( aDoc: IHTMLDocument2 ; id : string; value : string);
+    procedure FormShow(Sender: TObject);
+
   private
     { Private declarations }
 
   public
       receteForm : TGirisForm;
      _user , _pas , _tc , _url, userKutuName,sifreKutuName : string;
+     _yer,_yapan,_zaman,_anaprm,_altprm,_konu,_tip : string;
       function Init(Sender: TObject) : Boolean; override;
     { Public declarations }
   end;
@@ -66,10 +74,15 @@ begin
        TagfrmUyum : SayfaCaption('Portal','','','','');
     end;
     *)
+
+
+
+
 end;
 
-function TfrmMedEczane.Init(Sender: TObject): Boolean;
+procedure TfrmMedEczane.FormShow(Sender: TObject);
 begin
+  inherited;
   inherited;
     case tag of
        TagfrmMedEczane : begin
@@ -108,7 +121,27 @@ begin
                         pnlAdres.Align := alClient;
                     end;
 
+TagfrmOlayBildirimRaporlama
+                  : begin
+                        if _tip = 'HG' then _url := 'https://grs.saglik.gov.tr/B_HGHSS.aspx'
+                        else
+                        if _tip = 'H' then _url := 'https://grs.saglik.gov.tr/B_IHSS.aspx'
+                        else
+                        if _tip = 'AN' then _url := 'https://grs.saglik.gov.tr/B_LHSS.aspx';
+
+                        WebBrowser1.Navigate(_url);
+                        aStrGrid.Visible := False;
+                        cxSplitter1.Visible := False;
+                        pnlAdres.Align := alClient;
+
+                    end;
+
     end;
+end;
+
+function TfrmMedEczane.Init(Sender: TObject): Boolean;
+begin
+
 
   Result := True;
 end;
@@ -208,6 +241,8 @@ begin
 
 end;
 
+
+
 Procedure TfrmMedEczane.FillStringGridWithHTMLTable(aStrGrid:TAdvStringGrid;HTMLTable:String);
 Var
  P,TagStart , p1 , row , col  :Integer;
@@ -290,6 +325,129 @@ end;
 
 
 
+procedure TfrmMedEczane.ParseEdilsin( aDoc: IHTMLDocument2; aListe: TStrings );
+var
+  aDIVtags,
+  aTableRows,
+  aTableCols        : OleVariant;
+  iDiv, iRow, iCol  : Integer;
+  strVeri           : String;
+begin
+  aListe.Clear;
+  aDIVtags := aDoc.all.tags('DIV');
+  for iDiv := 0 to aDIVtags.length - 1 do
+  begin
+    if Pos( 'Hata', aDIVtags.item(iDiv).className ) > 0
+    then
+    begin // Div Class = 'Container40 Responsive100' olana baktýk... Sizin veriler burada...
+      aTableRows := aDIVtags.item(iDiv).all.Tags['TR'];
+      for iRow := 0 to aTableRows.Length-1 do
+      begin
+        strVeri    := '';
+        aTableCols := aTableRows.item(iRow).all.Tags['TD'];
+        for iCol := 0 to aTableCols.Length-1 do
+        begin
+          if strVeri = ''
+            then strVeri := aTableCols.item(iCol).innerText
+            else strVeri := strVeri + ', ' + aTableCols.item(iCol).innerText;
+        end;
+        if strVeri <> ''
+          then aListe.Add( strVeri );
+      end;
+    end;
+  end;
+  aDIVtags    := Unassigned;
+  aTableRows  := Unassigned;
+  aTableCols  := Unassigned;
+end;
+
+
+
+procedure TfrmMedEczane.Click(aDoc: IHTMLDocument2; id: string);
+var
+   i,x: integer;
+   ov: OleVariant;
+   iDisp: IDispatch;
+   iColl: IHTMLElementCollection;
+   iInputElement : IHTMLInputElement;
+   iTextElement:IHTMLTextAreaElement;
+   iHTMLElement: IHTMLFormElement;
+   InputImage: HTMLInputImage;
+   FormElements: OleVariant;
+   WebForm: IHTMLFormElement;
+   Buttons: OleVariant;
+   Button: OleVariant;
+begin
+        (*
+         if Assigned(aDoc) then begin
+          WebForm := aDoc.Forms.Item(0,0) as IHTMLFormElement;
+          FormElements := WebForm.Elements;
+          for x := 0 to FormElements.Length - 1 do begin
+            if (FormElements.Item(x).id = id)
+            then begin
+              FormElements.Item(x).Click;
+              break;
+            end;
+          end;
+         end;
+          *)
+      ov := 'INPUT';
+      IDisp := aDoc.all.tags(ov);
+      if assigned(IDisp)
+      then begin
+               IDisp.QueryInterface(IHTMLElementCollection, iColl);
+               if assigned(iColl)
+               then begin
+                         for i := 1 to iColl.Get_length do
+                         begin
+                           iDisp := iColl.item(pred(i), 0);
+                           iDisp.QueryInterface(HTMLInputImage, InputImage);
+
+                           if assigned(InputImage)
+                           then begin
+                               if InputImage.name = 'ctl00$ContentPlaceHolder1$ImageButton1'
+                               Then
+                                 InputImage.click;
+                           end;
+
+                         end;
+               end;
+      end;
+
+
+
+  (*
+  Buttons := WebBrowser1.OleObject.Document.getElementsByTagName('ctl00$ContentPlaceHolder1$ImageButton1');
+  for I := 0 to Buttons.Length - 1 do
+  begin
+    Button := Buttons.item(I);
+    if Button.innerText = 'Sign in' then
+    begin
+      Button.click();
+      Break;
+    end;
+  end;
+    *)
+
+end;
+
+
+procedure TfrmMedEczane.comboChange( aDoc: IHTMLDocument2 ; id : string ; value : string);
+var
+  doc : IHTMLDocument3;
+  el  : OleVariant;
+  v   : OleVariant;
+begin
+  if WebBrowser1.Document <> nil then begin
+    if WebBrowser1.Document.QueryInterface(IHTMLDocument3,doc) = S_OK then begin
+      el := doc.getElementById(id);
+      el.value := value;
+      el.FireEvent('onchange', v);
+    end;
+  end;
+end;
+
+
 procedure TfrmMedEczane.WebBrowser1DocumentComplete(ASender: TObject;
   const pDisp: IDispatch; const URL: OleVariant);
 var
@@ -301,22 +459,55 @@ var
    iColl: IHTMLElementCollection;
    iInputElement : IHTMLInputElement;
    iTextElement:IHTMLTextAreaElement;
+   HTMLElement: IHTMLSelectElement;
    FormElements: OleVariant;
    WebForm: IHTMLFormElement;
    Buttons: OleVariant;
    Button: OleVariant;
-   _goster : integer;
-   DocV : string;
+   _goster , selectedIndex ,selecti : integer;
+   DocV , DocO : string;
    bb , muayeneKayit , YeniSifreDogrulama , sifreDegistirildi , hosgeldin : integer;
-   ss : string;
+   ss ,selectedValue : string;
+   List : TStringList;
+     cb: IHTMLElement;
+  v: OleVariant;
 begin
      if ButtonClick = True then exit;
+
+      List := TStringList.Create;
 
       idoc := Webbrowser1.document as IHTMLDocument2;
 
       DocV := idoc.body.innerHTML;
+      DocO := idoc.body.outerHTML;
+
       DocV := StringReplace(DocV,#13#10,'',[rfReplaceAll]);
     //  Memo1.Text := DocV;
+
+
+      if pos('Hata Kodu',DocO) > 0
+      Then begin
+        (*  ov := 'SPAN';
+          IDisp := iDoc.all.tags(ov);
+          if assigned(IDisp)
+          then begin
+                   IDisp.QueryInterface(IHTMLElementCollection, iColl);
+                   if assigned(iColl)
+                   then begin
+                             for i := 1 to iColl.Get_length do
+                             begin
+                             iDisp := iColl.item(pred(i), 0);
+                             iDisp.QueryInterface(IHTMLTextAreaElement, iTextElement);
+
+                                    iTextElement.Get_name;
+
+                             end;
+                   end;
+          end;
+          *)
+      end;
+
+
       if pos('Ýlaçlar',DocV) > 0
       Then begin
         if pos('</THEAD><TBODY>',DocV) > 0
@@ -330,6 +521,108 @@ begin
       else
         aStrGrid.Visible := False;
 
+
+      ov := 'DIV';
+      IDisp := iDoc.all.tags(ov);
+      if assigned(IDisp)
+      then begin
+        ParseEdilsin (idoc,List);
+
+      end;
+
+      ov := 'SELECT';
+      IDisp := iDoc.all.tags(ov);
+      if assigned(IDisp)
+      then begin
+               IDisp.QueryInterface(IHTMLElementCollection, iColl);
+               if assigned(iColl)
+               then begin
+                         for i := 1 to iColl.Get_length do
+                         begin
+                         iDisp := iColl.item(pred(i), 0);
+                         iDisp.QueryInterface(IHTMLSelectElement, HTMLElement);
+
+                             if HTMLElement.Get_name = 'ctl00$ContentPlaceHolder1$DropDownList1'
+                             Then begin
+                              for selecti := 0 to HTMLElement.length - 1 do
+                                if (HTMLElement.item(selecti, selecti) as IHTMLOptionElement).value = 'HGKL' then
+                                begin
+                                  selectedIndex := selecti;
+                                  Break;
+                                end;
+                              HTMLElement.selectedIndex := selecti;
+                             end;
+
+                             if HTMLElement.Get_name = 'ctl00$ContentPlaceHolder1$DropDownList2'
+                             Then begin
+                             // HTMLElement.value := _yapan;
+                              for selecti := 0 to HTMLElement.length - 1 do
+                                if (HTMLElement.item(selecti, selecti) as IHTMLOptionElement).value = _yapan then
+                                begin
+                                  selectedIndex := selecti;
+                                  Break;
+                                end;
+                              HTMLElement.selectedIndex := selecti;
+                             end;
+
+                             if HTMLElement.Get_name = 'ctl00$ContentPlaceHolder1$DropDownList3'
+                             Then begin
+                              HTMLElement.value := _zaman;
+                              //HTMLElement.selectedIndex := 4;
+                             end;
+
+                             if HTMLElement.Get_name = 'ctl00$ContentPlaceHolder1$DropDownList4'
+                             Then begin
+                              for selecti := 0 to HTMLElement.length - 1 do
+                                if (HTMLElement.item(selecti, selecti) as IHTMLOptionElement).value = _anaprm then
+                                begin
+                                  selectedIndex := selecti;
+                                  Break;
+                                end;
+                              HTMLElement.selectedIndex := selecti;
+
+                              comboChange(idoc,'ContentPlaceHolder1_DropDownList4',_anaprm);
+                             // Click(iDoc,'ContentPlaceHolder1_ImageButton1');
+                             end;
+
+                             if HTMLElement.Get_name = 'ctl00$ContentPlaceHolder1$DropDownList5'
+                             Then begin
+                             //comboChange(idoc,'ContentPlaceHolder1_DropDownList5',_altprm);
+                              for selecti := 0 to HTMLElement.length - 1 do
+                              begin
+                                selectedValue := (HTMLElement.item(selecti, selecti) as IHTMLOptionElement).text;// value;
+                                if selectedValue = _altprm then
+                                begin
+                                  selectedIndex := selecti;
+                                  Break;
+                                end;
+                              end;
+                              HTMLElement.selectedIndex := selectedIndex;//selecti;
+                               //comboChange(idoc,'ContentPlaceHolder1_DropDownList5',_altprm);
+                             end;
+                         end;
+               end;
+      end;
+
+      (*
+      ov := 'SPAN';
+      IDisp := iDoc.all.tags(ov);
+      if assigned(IDisp)
+      then begin
+               IDisp.QueryInterface(IHTMLElementCollection, iColl);
+               if assigned(iColl)
+               then begin
+                         for i := 1 to iColl.Get_length do
+                         begin
+                         iDisp := iColl.item(pred(i), 0);
+                         iDisp.QueryInterface(IHTMLTextAreaElement, iTextElement);
+
+                                iTextElement.Get_name;
+
+                         end;
+               end;
+      end;
+      *)
       ov := 'INPUT';
       IDisp := iDoc.all.tags(ov);
       if assigned(IDisp)
@@ -341,9 +634,9 @@ begin
                          begin
                          iDisp := iColl.item(pred(i), 0);
                          iDisp.QueryInterface(IHTMLInputElement, iInputElement);
+
                          if assigned(iInputElement)
                          then begin
-
                            if iInputElement.Get_name = userKutuName
                            then iInputElement.Set_value(_user);
 
@@ -358,8 +651,10 @@ begin
 
                            if iInputElement.Get_name = 'form1:checkbox1'
                            then iInputElement.checked := True;
-                         end;
 
+
+
+                         end;
 
 
                          if Assigned(idoc) then begin

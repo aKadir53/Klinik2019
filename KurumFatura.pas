@@ -161,6 +161,7 @@ type
     FaturaListColumn6: TcxGridDBColumn;
     ADOQuery1: TADOQuery;
     FaturaListColumn7: TcxGridDBColumn;
+    H1: TMenuItem;
     procedure TopPanelButonClick(Sender: TObject);
     procedure cxButtonCClick(Sender: TObject);
     procedure tarihbilgi;
@@ -367,6 +368,7 @@ procedure TfrmKurumFatura.cxButtonCClick(Sender: TObject);
 var
   Form : TGirisForm;
   GirisFormRecord : TGirisFormRecord;
+  TopluDataset : TDataSetKadir;
 begin
 inherited;
 
@@ -391,6 +393,12 @@ inherited;
   -18 : begin
          FaturaIcmal;
         end;
+   18 : begin
+          datasetiDoldurHD(GirisFormRecord.F_dosyaNo_ ,GirisFormRecord.F_gelisNo_,TopluDataset);
+          PrintYap('014HD','Hizmet Detay','',TopluDataset,kadirType.pTNone);
+
+        end;
+
   -19 : begin
          FaturaKes;
         end;

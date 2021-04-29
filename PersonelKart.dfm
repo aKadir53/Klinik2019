@@ -776,130 +776,6 @@ object frmPersonelKart: TfrmPersonelKart
     ListeAcTus = 0
     Width = 121
   end
-  object PopupMenu1: TPopupMenu
-    Images = DATALAR.imag24png
-    Left = 72
-    Top = 64
-    object Kapat1: TMenuItem
-      Tag = 9999
-      Caption = 'Kapat'
-      ImageIndex = 18
-      Visible = False
-      OnClick = cxKaydetClick
-    end
-    object N1: TMenuItem
-      Caption = '-'
-    end
-    object M1: TMenuItem
-      Tag = 28
-      Caption = 'Mesaj G'#246'nder'
-      ImageIndex = 144
-      object SmsGnder1: TMenuItem
-        Tag = -28
-        Caption = 'Sms G'#246'nder'
-        ImageIndex = 94
-        OnClick = cxButtonCClick
-      end
-      object W1: TMenuItem
-        Tag = -128
-        Caption = 'Whatsapp'
-        ImageIndex = 143
-        OnClick = cxButtonCClick
-      end
-    end
-    object AKart1: TMenuItem
-      Tag = -25
-      Caption = 'A'#351#305' Kart'#305
-      ImageIndex = 60
-      OnClick = cxButtonCClick
-    end
-    object T2: TMenuItem
-      Tag = -35
-      Caption = 'Tan'#305' Kart'#305
-      ImageIndex = 74
-      OnClick = cxButtonCClick
-    end
-    object Epikriz1: TMenuItem
-      Tag = -26
-      Caption = #304#351'e Giri'#351' Muayene Formu'
-      ImageIndex = 28
-      OnClick = cxButtonCClick
-    end
-    object R1: TMenuItem
-      Tag = 130
-      Caption = 'Re'#231'ete'
-      ImageIndex = 97
-      OnClick = cxButtonCClick
-    end
-    object N3: TMenuItem
-      Tag = 140
-      Caption = 'Personel E'#287'itimleri'
-      ImageIndex = 63
-      Visible = False
-      OnClick = cxButtonCClick
-    end
-    object HastaRaporlar1: TMenuItem
-      Tag = -29
-      Caption = 'Hasta Raporlar'#305
-      ImageIndex = 98
-      Visible = False
-      OnClick = cxButtonCClick
-    end
-    object A1: TMenuItem
-      Tag = -51
-      Caption = 'Anamnez / Muayene Detay'#305
-      ImageIndex = 56
-      OnClick = cxButtonCClick
-    end
-    object N2: TMenuItem
-      Caption = '-'
-    end
-    object T1: TMenuItem
-      Tag = -32
-      Caption = 'Tetkik Sonu'#231
-      ImageIndex = 47
-      OnClick = cxButtonCClick
-    end
-    object lemler1: TMenuItem
-      Tag = -20
-      Caption = #304#351'lemler'
-      ImageIndex = 79
-      object MenucxYeni: TMenuItem
-        Tag = 2
-        Caption = 'Yeni Personel'
-        ImageIndex = 82
-        OnClick = cxKaydetClick
-      end
-      object MenucxKaydet: TMenuItem
-        Action = PersonelKaydet
-        Caption = 'Personel Kaydet'
-      end
-      object MenucxIptal: TMenuItem
-        Tag = 1
-        Caption = 'Personel Kart Sil'
-        ImageIndex = 33
-        OnClick = cxKaydetClick
-      end
-      object GeliA1: TMenuItem
-        Tag = -27
-        Action = YeniMuayene
-        Caption = 'Yeni Muayene'
-      end
-      object G1: TMenuItem
-        Tag = -31
-        Caption = 'Muayeneyi D'#252'zenle'
-        ImageIndex = 49
-        Visible = False
-        OnClick = cxButtonCClick
-      end
-      object G2: TMenuItem
-        Tag = -33
-        Caption = 'Se'#231'ili Muayeneyi Sil'
-        ImageIndex = 50
-        OnClick = cxButtonCClick
-      end
-    end
-  end
   object DataSource1: TDataSource
     DataSet = ADO_Gelisler
     Left = 48
@@ -1014,6 +890,134 @@ object frmPersonelKart: TfrmPersonelKart
       ImageIndex = 48
       ShortCut = 16461
       OnExecute = cxButtonCClick
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    Images = DATALAR.imag24png
+    Left = 72
+    Top = 64
+    object Kapat1: TMenuItem
+      Tag = 9999
+      Caption = 'Kapat'
+      ImageIndex = 18
+      Visible = False
+      OnClick = cxKaydetClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object M1: TMenuItem
+      Tag = 28
+      Caption = 'Mesaj G'#246'nder'
+      ImageIndex = 144
+      object SmsGnder1: TMenuItem
+        Tag = -28
+        Caption = 'Sms G'#246'nder'
+        ImageIndex = 94
+        OnClick = cxButtonCClick
+      end
+      object W1: TMenuItem
+        Tag = -128
+        Caption = 'Whatsapp'
+        ImageIndex = 143
+        OnClick = cxButtonCClick
+      end
+    end
+    object AKart1: TMenuItem
+      Tag = -25
+      Caption = 'A'#351#305' Kart'#305
+      ImageIndex = 60
+      OnClick = cxButtonCClick
+    end
+    object T2: TMenuItem
+      Tag = -35
+      Caption = 'Tan'#305' Kart'#305
+      ImageIndex = 74
+      OnClick = cxButtonCClick
+    end
+    object Epikriz1: TMenuItem
+      Tag = -26
+      Caption = #304#351'e Giri'#351' Muayene Formu'
+      ImageIndex = 28
+      OnClick = cxButtonCClick
+    end
+    object R1: TMenuItem
+      Tag = 130
+      Caption = 'Re'#231'ete'
+      ImageIndex = 97
+      OnClick = cxButtonCClick
+    end
+    object N3: TMenuItem
+      Tag = 140
+      Caption = 'Personel E'#287'itimleri'
+      ImageIndex = 63
+      Visible = False
+      OnClick = cxButtonCClick
+    end
+    object HastaRaporlar1: TMenuItem
+      Tag = -29
+      Caption = 'Hasta Raporlar'#305
+      ImageIndex = 98
+      Visible = False
+      OnClick = cxButtonCClick
+    end
+    object A1: TMenuItem
+      Tag = -51
+      Caption = 'Anamnez / Muayene Detay'#305
+      ImageIndex = 56
+      OnClick = cxButtonCClick
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object T1: TMenuItem
+      Tag = -32
+      Caption = 'Tetkik Sonu'#231
+      ImageIndex = 47
+      OnClick = cxButtonCClick
+    end
+    object lemler1: TMenuItem
+      Tag = -20
+      Caption = #304#351'lemler'
+      ImageIndex = 79
+      object MenucxYeni: TMenuItem
+        Tag = 2
+        Caption = 'Yeni Personel'
+        ImageIndex = 82
+        OnClick = cxKaydetClick
+      end
+      object MenucxKaydet: TMenuItem
+        Action = PersonelKaydet
+      end
+      object MenucxIptal: TMenuItem
+        Tag = 1
+        Caption = 'Personel Kart Sil'
+        ImageIndex = 33
+        OnClick = cxKaydetClick
+      end
+      object GeliA1: TMenuItem
+        Tag = -27
+        Action = YeniMuayene
+      end
+      object G1: TMenuItem
+        Tag = -31
+        Caption = 'Muayeneyi D'#252'zenle'
+        ImageIndex = 49
+        Visible = False
+        OnClick = cxButtonCClick
+      end
+      object G2: TMenuItem
+        Tag = -33
+        Caption = 'Se'#231'ili Muayeneyi Sil'
+        ImageIndex = 50
+        OnClick = cxButtonCClick
+      end
+    end
+    object HastaTanmKartYazdr1: TMenuItem
+      Tag = -100
+      Caption = 'Personel Tan'#305'm Kart'#305' Yazd'#305'r'
+      ImageIndex = 6
+      OnClick = HastaTanmKartYazdr1Click
     end
   end
 end

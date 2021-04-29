@@ -147,10 +147,13 @@ end;
 
 procedure TfrmFaturalar.Gonder;
 var
- i : integer;
- sql ,faturaId,sonucStr : string;
+ i,r : integer;
+ sql ,faturaId,sonucStr,GibFaturaNo,sirketKod : string;
  Sonuc : TStringList;
+ FaturaTarihi : TDate;
+ FaturaVar : TADOQuery;
 begin
+
    if datalar.efaturaTaslak = 'Hayýr'
    then begin
      if mrNo = ShowMessageSkin('Fatura Gönderim Taslak Deðil','Direk Gönderilecek','Emin misiniz?','msg')
@@ -158,7 +161,7 @@ begin
    end;
 
    sonucStr := '';
-   if mrYes = ShowMessageSkin('Seçili Faturalar  Gönderilecek',
+   if mrYes = ShowMessageSkin('Seçili Fatura  Gönderilecek',
                                '','','msg')
    then begin
      pBar.Properties.Max := GridFaturalar.Controller.SelectedRowCount;
@@ -170,33 +173,61 @@ begin
          for i := 0 to GridFaturalar.Controller.SelectedRowCount - 1 do
          begin
             faturaId := GridCellToString(GridFaturalar,'sira',i);
+            GibFaturaNo := GridCellToString(GridFaturalar,'GibFaturaNo',i);
+            FaturaTarihi := GridCellToVariant(GridFaturalar,'FaturaTarihi',i);
+
             Application.ProcessMessages;
             pBar.Position := i;
 
-            sonucStr := EArsivGonder(faturaId);
-            Sonuc.Text := '';
-            ExtractStrings(['|'],[],PWideChar(sonucStr),Sonuc);
-            txtLog.Lines.Add('Fatura ID : ' + faturaId + ' Sonuc : ' + SonucStr);
-            if Sonuc[0]= '0000' then
+
+            sql := 'exec sp_FaturaNoKontrol @faturaNo = ' + QuotedStr(GibFaturaNo) +
+                   ',@faturaTarihi = ' + QuotedStr(FormatDateTime('YYYYMMDD',FaturaTarihi))+
+                   ',@sirketKod = ' + QuotedStr(datalar.AktifSirket);
+            FaturaVar := datalar.QuerySelect(sql);
+
+            if FaturaVar.RecordCount = 0
+            then begin
+                sonucStr := EArsivGonder(faturaId);
+                Sonuc.Text := '';
+                ExtractStrings(['|'],[],PWideChar(sonucStr),Sonuc);
+                txtLog.Lines.Add('Fatura ID : ' + faturaId + ' Sonuc : ' + SonucStr);
+                if Sonuc[0]= '0000' then
+                begin
+                  sql := 'update faturalar set ' +
+                         'Guid = ' + QuotedStr(Sonuc[1]) +
+                         ',GIBFaturaNo = ' + QuotedStr(Sonuc[2]) +
+                         ' where sira = ' + faturaId;
+                  datalar.QueryExec(sql);
+
+                  sql := 'update KurumFatura set ' +
+                         'FaturaGuid = ' +  QuotedStr(Sonuc[1]) +
+                         ' where id = (select KurumFaturaID from faturalar where sira = ' + faturaId + ' and KurumFaturaID is not null)';
+                  datalar.QueryExec(sql);
+
+                  EArsivDurumSorgula(Sonuc[1]);
+
+                end;
+                ShowMessageSkin('Fatura Gönderim Ýþlemi Tamamlandý','Log Bilgilerini Kontrol Ediniz','','info');
+
+            end
+            else
             begin
-              sql := 'update faturalar set ' +
-                     'Guid = ' + QuotedStr(Sonuc[1]) +
-                     ',GIBFaturaNo = ' + QuotedStr(Sonuc[2]) +
-                     ' where sira = ' + faturaId;
-              datalar.QueryExec(sql);
-
-              sql := 'update KurumFatura set ' +
-                     'FaturaGuid = ' +  QuotedStr(Sonuc[1]) +
-                     ' where id = (select KurumFaturaID from faturalar where sira = ' + faturaId + ' and KurumFaturaID is not null)';
-              datalar.QueryExec(sql);
-
-              EArsivDurumSorgula(Sonuc[1]);
-
+               if mrYes = ShowMessageSkin('Daha Eski GIBFaturaNo yada Tarihli','Gönderilmemiþ Fatura Var','','msg')
+               then begin
+                 FaturaVar.First;
+                 for r := 0 to FaturaVar.RecordCount -1 do
+                 begin
+                   txtLog.Lines.Add('FaturaId : ' + FaturaVar.FieldByName('sira').AsString + ' , FaturaNo :' + FaturaVar.FieldByName('GIBFaturaNO').AsString);
+                   FaturaVar.Next;
+                 end;
+               end;
             end;
+
          end;
-         ShowMessageSkin('Fatura Gönderim Ýþlemi Tamamlandý','Log Bilgilerini Kontrol Ediniz','','info');
+ //        ShowMessageSkin('Fatura Gönderim Ýþlemi Tamamlandý','Log Bilgilerini Kontrol Ediniz','','info');
        finally
          DurumGoster(False,False,faturaId);
+         FaturaVar.Free;
        end;
      finally
        Sonuc.free;

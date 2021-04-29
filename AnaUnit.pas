@@ -194,6 +194,7 @@ type
     procedure WebBrowser1NavigateComplete2(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
     procedure ToolButton11Click(Sender: TObject);
+    procedure ToolButton7Click(Sender: TObject);
   private
     { Private declarations }
     procedure WMSettingChange(var Message: TMessage); message WM_SETTINGCHANGE;
@@ -523,6 +524,7 @@ begin
       datalar.SMTPPassword := WebErisimBilgi('EML','03');
       datalar.SMTPPort := WebErisimBilgi('EML','04');
       datalar.SMTPSEndTip := WebErisimBilgi('EML','06');
+      datalar.SMTPSSL :=  WebErisimBilgi('EML','05');
 
       datalar._labusername := WebErisimBilgiFirma('LA','00');
       datalar._labsifre := WebErisimBilgiFirma('LA','01');
@@ -531,7 +533,27 @@ begin
       datalar._labID := WebErisimBilgiFirma('LA','05');
       datalar._LabBarkodOlustur := WebErisimBilgiFirma('LA','11');
 
+
       datalar.KurumBransi := WebErisimBilgiFirma('98','11');
+
+      try
+        try
+          ado := datalar.QuerySelect('select tcKimlikNo,substring(tanimi,1,charindex('' '',tanimi)) adi, ' +
+                                     'substring(tanimi,charindex('' '',tanimi)+1,50) soyadi ' +
+                                     ' from doktorlarT where sirketKod = ' + QuotedStr(datalar.AktifSirket) +
+                            ' and durum = ''Aktif'' and MesulMudur = 1');
+          if not ado.Eof
+          then begin
+            datalar._mesulMudurTc_ := ado.FieldByName('tcKimlikNo').AsVariant;
+            datalar._mesulMudurAdi_ := ado.FieldByName('adi').AsString;
+            datalar.mesulMudurSoyadi_ := ado.FieldByName('soyadi').AsString;
+          end;
+        finally
+          ado.free;
+        end;
+      except
+      end;
+
    //   datalar._labSonucIcinGozArdiEt := WebErisimBilgiFirma('817');
 
       _LabDataset_ := datalar.QuerySelect('select WebserviceURL,CalismaTipi,BarkodBasim from OSGB_MASTER.dbo.LabFirmalar where kod = ' +
@@ -540,6 +562,9 @@ begin
        datalar._laburl := _LabDataset_.FieldByName('WebserviceURL').AsString;
        datalar._LabCalismaYon := _LabDataset_.FieldByName('CalismaTipi').AsString;
        datalar._LabBarkodBasim := _LabDataset_.FieldByName('BarkodBasim').AsString;
+
+       TestKodToNormalDegerYukle;
+
 
        datalar.eNabizKayit := WebErisimBilgi('PRM','03');
        datalar.MakineNoKontrol := WebErisimBilgi('PRM','06');
@@ -560,7 +585,20 @@ begin
        datalar.AlpemixRun := WebErisimBilgi('UD','03');
        datalar.AlpemixGrupAdi := WebErisimBilgiFirma('UD','00');
        datalar.AlpemixGrupParola := WebErisimBilgiFirma('UD','01');
-    except
+
+
+       ado := datalar.QuerySelect('select Telefon,AdiSoyadi from SIRKET_SUBE_EKIP where SirketKod = ' + QuotedStr(datalar.AktifSirket) + ' and Gorevi = ''59''');
+       try
+        datalar.KaliteBirim.BirimDirektoruAdi := ado.FieldByName('AdiSoyadi').AsString;
+        datalar.KaliteBirim.BirimDirektoruTel := ado.FieldByName('Telefon').AsString;
+       finally
+        ado.Free;
+       end;
+
+    except on e : exception do
+     begin
+       ShowMessageSkin(e.Message,'','','info');
+     end;
     end;
 
 
@@ -1331,6 +1369,11 @@ begin
   pnl_Ajanda.Visible := True;
 end;
 
+procedure TAnaForm.ToolButton7Click(Sender: TObject);
+begin
+  ShowPopupForm('Eðitime Katýl',EgitimPanelZoom);
+end;
+
 procedure TAnaForm.ToolButtonClick(Sender: TObject);
 var
   u,s : string;
@@ -1410,7 +1453,7 @@ procedure TAnaForm.menuclik(_tag_ : integer ; FormID : integer = 0 ; ShowTip : i
 var
   GirisRecord : TGirisFormRecord;
   F : TGirisForm;
-  tc : string;
+  tc ,PDKSCihazIP : string;
   aTabSheet : TcxTabSheet;
   bTamam : Boolean;
   sSifre : String;
@@ -1477,8 +1520,11 @@ begin
               end;
 
       4003 : begin
-                 prm := EncodeString(datalar.osgbKodu+','+datalar._database+','+datalar.AktifSirket);
-                 ShellExecute(0, 'open', PChar('D:\Projeler\VS\PDKS\bin\x86\Debug\FK623AttendDllCSSample.exe'), PChar(prm),
+
+                 PDKSCihazIP := PDKSCihazlar;
+
+                 prm := EncodeString(datalar.osgbKodu+','+datalar._database+','+datalar.AktifSirket+','+ifThen(PDKSCihazIP='','127.0.0.0',PDKSCihazIP));
+                 ShellExecute(0, 'open', PChar('C:\NoktaV3\PDKS\FK623AttendDllCSSample.exe'), PChar(prm),
                  nil, SW_SHOWNORMAL);
                  exit;
 

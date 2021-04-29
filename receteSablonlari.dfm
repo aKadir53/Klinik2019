@@ -3,7 +3,7 @@ object frmReceteSablon: TfrmReceteSablon
   Top = 81
   BorderStyle = bsDialog
   Caption = 'frmReceteSablon'
-  ClientHeight = 487
+  ClientHeight = 480
   ClientWidth = 988
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object frmReceteSablon: TfrmReceteSablon
     Left = 0
     Top = 0
     Width = 265
-    Height = 487
+    Height = 480
     Align = alLeft
     TabOrder = 0
     object DBGridEh3: TDBGridEh
@@ -68,7 +68,7 @@ object frmReceteSablon: TfrmReceteSablon
       Left = 1
       Top = 1
       Width = 263
-      Height = 485
+      Height = 478
       Align = alClient
       TabOrder = 1
       object cxGridHastaGelis: TcxGridDBTableView
@@ -121,7 +121,7 @@ object frmReceteSablon: TfrmReceteSablon
     Left = 265
     Top = 0
     Width = 723
-    Height = 487
+    Height = 480
     Align = alClient
     TabOrder = 1
     object cxGroupBox1: TcxGroupBox
@@ -259,6 +259,7 @@ object frmReceteSablon: TfrmReceteSablon
       Align = alTop
       Caption = #304'la'#231' A'#231#305'klama'
       TabOrder = 1
+      Visible = False
       DesignSize = (
         721
         89)
@@ -474,9 +475,10 @@ object frmReceteSablon: TfrmReceteSablon
   object Sablonlar: TADOTable
     Connection = DATALAR.ADOConnection2
     CursorType = ctStatic
+    Filtered = True
     TableName = 'ReceteSablon'
     Left = 88
-    Top = 161
+    Top = 137
   end
   object SablonDetay: TADOTable
     Connection = DATALAR.ADOConnection2
@@ -534,7 +536,7 @@ object frmReceteSablon: TfrmReceteSablon
   object DataSource1: TDataSource
     DataSet = Sablonlar
     Left = 128
-    Top = 161
+    Top = 137
   end
   object DataSource2: TDataSource
     DataSet = SablonDetay
@@ -599,12 +601,20 @@ object frmReceteSablon: TfrmReceteSablon
     object S1: TMenuItem
       Tag = -1
       Caption = 'Sil'
-      ImageIndex = 42
+      ImageIndex = 50
       OnClick = S1Click
     end
     object E1: TMenuItem
+      Tag = 1
       Caption = 'Ekle'
-      ImageIndex = 34
+      ImageIndex = 48
+      OnClick = E1Click
+    end
+    object D1: TMenuItem
+      Tag = 2
+      Caption = 'Duzenle'
+      ImageIndex = 49
+      OnClick = E1Click
     end
   end
 end

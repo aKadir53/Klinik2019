@@ -123,6 +123,11 @@ type
     cxGridDBBandedColumn6: TcxGridDBBandedColumn;
     cxGridLevel2: TcxGridLevel;
     W1: TMenuItem;
+    KurulEkipGridListColumn1: TcxGridDBBandedColumn;
+    PopupMenu2: TPopupMenu;
+    K1: TMenuItem;
+    K2: TMenuItem;
+    KurulEkipGridListColumn2: TcxGridDBBandedColumn;
     procedure NewRecord(DataSet: TDataSet);
     procedure Fatura(islem: Integer);
     procedure cxButtonCClick(Sender: TObject);
@@ -147,6 +152,7 @@ type
     procedure SatirlarNavigatorButtonsButtonClick(Sender: TObject;
       AButtonIndex: Integer; var ADone: Boolean);
     procedure E2Click(Sender: TObject);
+    procedure K2Click(Sender: TObject);
  //   function EArsivGonder(FaturaId : string) : string;
  //   function EArsivIptal(FaturaGuid : string) : string;
  //   function EArsivPDF(FaturaGuid : string ; _tag_ : integer) : string;
@@ -191,19 +197,30 @@ begin
 end;
 
 function TfrmISGKurulToplanti.Ekip(EkipId : string = '') : TDataset;
+var
+  ado : TADOQuery;
 begin
   Ekip := nil;
   KurulEkipGrid.Dataset.Connection := Datalar.ADOConnection2;
   KurulEkipGrid.Dataset.Active := False;
   KurulEkipGrid.Dataset.SQL.Text :=
-  'select AdiSoyadi,GT.tanimi Gorevi,eMail,Telefon from SirketISGKurulToplantiEkibi E ' +
+  'select id,AdiSoyadi,GT.tanimi Gorevi,eMail,Telefon,katilim from SirketISGKurulToplantiEkibi E ' +
   ' join SIRKET_SUBE_EKIP_View SE on SE.kod = E.EkipID ' +
   ' join FirmaISGEkipGorevTnm Gt on GT.kod = SE.Gorevi ' +
   ' where SirketKod = ' +
   QuotedStr(datalar.AktifSirket) +
   ' and E.ISGKurulToplantiID = ' + QuotedStr(vartoStr(TcxButtonEditKadir(FindComponent('id')).EditValue));
   KurulEkipGrid.Dataset.Active := True;
-  Ekip := KurulEkipGrid.Dataset;
+
+  Ekip := datalar.QuerySelect(
+  'select id,AdiSoyadi,GT.tanimi Gorevi,eMail,Telefon,katilim from SirketISGKurulToplantiEkibi E ' +
+  ' join SIRKET_SUBE_EKIP_View SE on SE.kod = E.EkipID ' +
+  ' join FirmaISGEkipGorevTnm Gt on GT.kod = SE.Gorevi ' +
+  ' where SirketKod = ' +
+  QuotedStr(datalar.AktifSirket) +
+  ' and E.ISGKurulToplantiID = ' + QuotedStr(vartoStr(TcxButtonEditKadir(FindComponent('id')).EditValue)) +
+  ifThen(EkipId <> '',' and katilim = ' + EkipId,''));
+
 end;
 
 function TfrmISGKurulToplanti.Maddeler : TDataset;
@@ -449,6 +466,21 @@ var
  sql : string;
 begin
   //SirketKodx.Text := datalar.AktifSirket; giriþ formuna eklendi.
+
+  case TControl(sender).Tag  of
+    Sil : begin
+           if MrYes = ShowMessageSkin('Silmek Ýstediðinizden Emin misiniz ?','','','msg')
+           then begin
+              datalar.QueryExec('delete from SirketISGKurulToplantiEkibi where ISGKurulToplantiID = ' + varToStr(TcxButtonEdit(FindComponent('id')).EditValue));
+              datalar.QueryExec('delete from KurulToplantiMaddeler where kurulId = ' + varToStr(TcxButtonEdit(FindComponent('id')).EditValue));
+              datalar.QueryExec('delete from SirketISGKurulToplanti where id = ' + varToStr(TcxButtonEdit(FindComponent('id')).EditValue));
+              indexKaydiBul('');
+              ShowMessageSkin('Toplantý Silindi','','','info');
+              exit;
+           end;
+          end;
+  end;
+
   inherited;
 
   case TControl(sender).Tag  of
@@ -492,6 +524,20 @@ begin
 end;
 
 
+procedure TfrmISGKurulToplanti.K2Click(Sender: TObject);
+var
+  sql : string;
+begin
+  inherited;
+
+  sql := 'update SirketISGKurulToplantiEkibi set katilim = ' + intTostr(TMenuItem(sender).Tag) +
+                    ' where id = ' + KurulEkipGrid.Dataset.FieldByName('id').AsString;
+  datalar.QueryExec(sql);
+                    KurulEkipGrid.Dataset.Requery();
+
+
+end;
+
 procedure TfrmISGKurulToplanti.Fatura(islem: Integer);
 
 begin
@@ -531,7 +577,7 @@ var
   F : TGirisForm;
   Tels , sonuc : string;
   SS : TStringList;
-  DataSet : TADOQuery;
+  DataSet,katilan,katilmayan : TADOQuery;
   mesaj : PWideChar;
 begin
   inherited;
@@ -541,7 +587,15 @@ begin
   TopluDataset.Dataset1 := datalar.QuerySelect('select * from SirketISGKurulToplanti_view where id = ' +
                                                         varTostr(TcxButtonEditKadir(FindComponent('id')).EditValue));
 
+
+
+
+
   TopluDataset.Dataset2 := KurulEkipGrid.Dataset;
+
+
+
+
   TopluDataset.Dataset3 := KurulMaddeler.Dataset;
   TopluDataset.Dataset4 := datalar.ADO_aktifSirketLogo;
 
@@ -551,6 +605,8 @@ begin
         end;
 
   -21 : begin
+          TopluDataset.Dataset2 := Ekip('1');
+          TopluDataset.Dataset5 := Ekip('0');
           PrintYap('KTT','Kurul Toplantý Tutanaðý','',TopluDataset);
 
         end;

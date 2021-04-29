@@ -23,7 +23,7 @@ uses
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
   cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxImage,
-  cxSplitter, cxImageComboBox, Vcl.ImgList;
+  cxSplitter, cxImageComboBox, Vcl.ImgList, cxSpinEdit, cxTimeEdit;
 
 type
   TfrmMaviKodBildirimListesi = class(TGirisForm)
@@ -66,6 +66,7 @@ type
     e3: TMenuItem;
     gridRaporlarColumn3: TcxGridDBColumn;
     gridRaporlarColumn4: TcxGridDBColumn;
+    gridRaporlarColumn5: TcxGridDBColumn;
     procedure cxButtonCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Gozlem(islem: Integer);
@@ -153,7 +154,7 @@ begin
   ADO_SahaGozetim.SQL.Text := 'select h.*,t.*,case when E.dosya is null then 0 else 1 end dosyaVar from MaviKodBildirim  t ' +
                               ' join HastaKart h on h.dosyaNo = t.dosyaNo ' +
                               ' left join TaranmisEvraklar E on E.ReferansID = t.id and E.ReferansTip = ''MaviKod'' ' +
-                              ' where h.sirketKod = ' + QuotedStr(datalar.AktifSirket);
+                              ' where t.sirketKod = ' + QuotedStr(datalar.AktifSirket);
 
   ADO_SahaGozetim .Active := true;
   Result := True;
@@ -285,6 +286,8 @@ begin
             aModalResult := ShowMessageSkin('MaviKod Bildirim silmek istediðinizden emin misiniz ?', '', '', 'conf');
             if aModalResult <> mrYes then Exit;
 
+            sql := ' delete from TaranmisEvraklar where ReferansID = ' + ADO_SahaGozetim.FieldByName('id').AsString  + ' and ReferansTip = ''MaviKod''';
+            DATALAR.QueryExec(SQL);
             SQL := 'delete from MaviKodBildirim where id = ' + ADO_SahaGozetim.FieldByName('id').AsString;
             DATALAR.QueryExec(SQL);
 
@@ -442,7 +445,9 @@ begin
         datalar.MaviKod.Tarih := date;
         datalar.MaviKod.AnonsuYaptiran := -1;
         datalar.MaviKod.KodVerilisNedeni := '';
-        datalar.MaviKod.KodVerilisSaati := '0';
+        datalar.MaviKod.KodVerilisSaati := '00:00';
+        datalar.MaviKod.EkibininOlayYerineGelisSaati := '00:00';
+        datalar.MaviKod.FormDoldurma := '0';
       end
       else begin
         datalar.MaviKod.id := ADO_SahaGozetim.FieldByName('id').AsString;
@@ -454,7 +459,8 @@ begin
         datalar.MaviKod.AnonsuYaptiran := ADO_SahaGozetim.FieldByName('AnonsuYaptiran').AsInteger;
         datalar.MaviKod.KodVerilisNedeni:= ADO_SahaGozetim.FieldByName('KodVerilisNedeni').AsString;
         datalar.MaviKod.KodVerilisSaati := ADO_SahaGozetim.FieldByName('KodVerilisSaati').AsString;
-
+        datalar.MaviKod.EkibininOlayYerineGelisSaati := ADO_SahaGozetim.FieldByName('EkibininOlayYerineGelisSaati').AsString;
+        datalar.MaviKod.FormDoldurma := ADO_SahaGozetim.FieldByName('FormDoldurma').AsString;
       end;
 
       if mrYes = ShowPopupForm(IfThen (islem = MaviKodYeni, 'Yeni', 'Düzenle'),islem,F)
@@ -464,13 +470,17 @@ begin
         try
           if islem = MaviKodYeni then
             begin
-               datalar.QueryExec('insert into MaviKodBildirim(dosyaNo,Tarih,AnonsuYaptiran,KodVerilisSaati,KodVerilisNedeni)' +
+               datalar.QueryExec('insert into MaviKodBildirim(dosyaNo,Tarih,AnonsuYaptiran,KodVerilisSaati,KodVerilisNedeni,EkibininOlayYerineGelisSaati,FormDoldurma,sirketKod)' +
                                   ' values('
                                   + QuotedStr(datalar.MaviKod.dosyaNo) + ','
                                   + QuotedStr(FormatDateTime('YYYYMMDD',datalar.MaviKod.Tarih)) + ','
                                   + intTostr(datalar.MaviKod.AnonsuYaptiran) + ','
                                   + QuotedStr(datalar.MaviKod.KodVerilisSaati) + ','
-                                  + QuotedStr(datalar.MaviKod.KodVerilisNedeni) + ')'
+                                  + QuotedStr(datalar.MaviKod.KodVerilisNedeni) + ','
+                                  + QuotedStr(datalar.MaviKod.EkibininOlayYerineGelisSaati) + ','
+                                  + QuotedStr(datalar.MaviKod.FormDoldurma) + ','
+                                  + QuotedStr(datalar.AktifSirket) +
+                                  ')'
 
                                 );
 
@@ -483,6 +493,9 @@ begin
                                  ',AnonsuYaptiran = ' + intTostr(datalar.MaviKod.AnonsuYaptiran) +
                                  ',KodVerilisSaati = ' + QuotedStr(datalar.MaviKod.KodVerilisSaati) +
                                  ',KodVerilisNedeni = ' + QuotedStr(datalar.MaviKod.KodVerilisNedeni) +
+                                 ',EkibininOlayYerineGelisSaati = ' + QuotedStr(datalar.MaviKod.EkibininOlayYerineGelisSaati) +
+                                 ',FormDoldurma = ' + QuotedStr(datalar.MaviKod.FormDoldurma) +
+
                                  ' where id = ' + datalar.MaviKod.id
                                 );
 

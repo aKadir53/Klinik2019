@@ -22,6 +22,7 @@ object frmAjandaOzet: TfrmAjandaOzet
     Height = 225
     TabOrder = 0
     ExceleGonder = False
+    PopupForm = False
     object cxGridDBTableView1: TcxGridDBTableView
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>

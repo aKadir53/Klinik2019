@@ -17,7 +17,7 @@ uses
   cxGridLevel, cxGridBandedTableView, cxGridDBBandedTableView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGridCustomView,
   cxGrid, cxLabel, cxMaskEdit, Vcl.ExtCtrls,dateUtils,kadir,GirisUnit,
-  kadirType,  StrUtils ,ComObj,cxGridExportlink,pngimage,
+  kadirType,  StrUtils ,ComObj,cxGridExportlink,pngimage,cxCheckGroup,
   ComCtrls, (*OdemeBilgisiIslemleriTEST*)
   kadirmedula3, dxLayoutContainer,
   HizmetKayitIslemleriws,SOAPHTTPTrans,WinInet, GetFormClass,
@@ -112,13 +112,11 @@ type
     cxGridDBTableView1Toplam: TcxGridDBColumn;
     cxGridDBTableView1P704230: TcxGridDBColumn;
     cxGridDBTableView1P704230Girilen: TcxGridDBColumn;
-    cxGridDBTableView1P704234: TcxGridDBColumn;
-    cxGridDBTableView1P704234Girilen: TcxGridDBColumn;
-    cxGridDBTableView1P704233: TcxGridDBColumn;
+    cxGridDBTableView1P704230Girilmeyen: TcxGridDBColumn;
+    cxGridDBTableView1P704233Girilmeyen: TcxGridDBColumn;
     cxGridDBTableView1P704233Girilen: TcxGridDBColumn;
-    cxGridDBTableView1Kodsuz: TcxGridDBColumn;
-    cxGridDBTableView1Column1: TcxGridDBColumn;
-    cxGridDBTableView1Column2: TcxGridDBColumn;
+    cxGridDBTableView1P704230Gonderilmeyen: TcxGridDBColumn;
+    cxGridDBTableView1P704233Gonderilmeyen: TcxGridDBColumn;
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
     cxStyle2: TcxStyle;
@@ -317,6 +315,8 @@ type
     ListeColumn10: TcxGridDBBandedColumn;
     Sebeb: TListeAc;
     GridListColumn13: TcxGridDBBandedColumn;
+    cxSplitter2: TcxSplitter;
+    ADOQuery2: TADOQuery;
     procedure hastalar(durum : string);
     procedure btnListClick(Sender: TObject);
     procedure btnYazdirClick(Sender: TObject);
@@ -503,6 +503,16 @@ begin
 
                Datalar.SeansBilgi.hizmetSunucuRefNo := cxGrid_Seans.Dataset.FieldByName('islemRefNo').AsString;
 
+               if sec = 0 then
+               begin
+                 if not datalar.QuerySelect('select * from hareketlerIS where hareketSira = ' + intTostr(siraNo)).Eof
+                 then begin
+                   txtLog.Lines.Add('Seansta Kullanýlan Malzeme var ,Seans Ýptal Edilemez');
+                   Continue;
+                 end;
+               end;
+
+
 (*
               if ((ktip = '1') or (ktip = '99')) and (ilkSeansTarihiKontrol = 0)
               then begin
@@ -605,7 +615,7 @@ begin
             DurumGoster(False);
           end;
           cxGrid_Seans.dataset.Requery();
-          ADO_Detay_toplam.Requery();
+          if chkList.EditValue = 1 then ADO_Detay_toplam.Requery();
 
 end;
 
@@ -632,11 +642,13 @@ begin
 
         datalar.QuerySelect(cxGrid_Seans.Dataset,sql);
 
-
-        ADO_Detay_toplam.Close;
-        ADO_Detay_toplam.Parameters[0].Value :=  copy(txtTopPanelTarih1.GetValue,1,6);
-        ADO_Detay_toplam.Parameters[1].Value :=  datalar.AktifSirket;
-        ADO_Detay_toplam.Active := True;
+        if chkList.EditValue = 1 then
+        begin
+          ADO_Detay_toplam.Close;
+          ADO_Detay_toplam.Parameters[0].Value :=  copy(txtTopPanelTarih1.GetValue,1,6);
+          ADO_Detay_toplam.Parameters[1].Value :=  datalar.AktifSirket;
+          ADO_Detay_toplam.Active := True;
+        end;
       finally
         DurumGoster(False);
       end;
@@ -671,6 +683,19 @@ end;
 procedure TfrmTopluSeans.TopPanelPropertiesChange(Sender: TObject);
 begin
   inherited;
+
+  if chkList.EditValue = '1' then
+  begin
+     cxSplitter2.Visible := True;
+     pnlOnay.Visible := True;
+
+  end
+  else begin
+   pnlOnay.Visible := False;
+   cxSplitter2.Visible := false;
+  end;
+
+
 //  GridComboDoldur;
 //
 end;
@@ -1175,6 +1200,7 @@ var
   TB : TToolBar;
   TBB : TToolButton;
   DevKurum : TcxImageComboKadir;
+  chk : TcxCheckGroupItem;
 begin
   inherited;
   top := 1;
@@ -1223,10 +1249,21 @@ begin
    TcxImageComboKadir(FindComponent('DoktorCombo')).Properties.Items;
    *)
 
+
+
    TopPanel.Visible := True;
-   TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False);
+   TapPanelElemanVisible(True,True,True,False,True,False,False,False,False,False,False,False,True);
    Liste.DataController.DataSource := DataSource;
    SeansKriter.EditValue := '';
+
+   chkList.Properties.Items.Clear;
+   Chk := chkList.Properties.Items.Add;
+   Chk.Caption := 'Toplam Detayýný Göster';
+   Chk.Tag := 0;
+   chkList.Width := 200;
+   chkList.EditValue := '1';
+   pnlOnay.Visible := True;
+
 
 end;
 
@@ -2168,7 +2205,7 @@ begin
                  end;
 
           TADODataSet(Liste.DataController.Dataset).Requery();
-          ADO_Detay_toplam.Requery();
+          if chkList.EditValue = 1 then ADO_Detay_toplam.Requery();
        end;
     End;
   end;
@@ -3374,11 +3411,13 @@ var
  bm : TBookmark;
 begin
   inherited;
+  if chkList.EditValue = 1 then
+  begin
+    ADO_Detay_toplam.Close;
+    ADO_Detay_toplam.Parameters[0].Value :=  copy(txtTopPanelTarih1.GetValue,1,6);
+    ADO_Detay_toplam.Active := True;
 
-  ADO_Detay_toplam.Close;
-  ADO_Detay_toplam.Parameters[0].Value :=  copy(txtTopPanelTarih1.GetValue,1,6);
-  ADO_Detay_toplam.Active := True;
-
+  end;
 
 end;
 
@@ -3804,6 +3843,7 @@ procedure TfrmTopluSeans.cxGridDBTableView1StylesGetContentStyle(
   AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
 begin
   inherited;
+  (*
  try
   if (ARecord.Values[5] > 0) or (ARecord.Values[8] > 0)
   Then
@@ -3811,7 +3851,7 @@ begin
     AStyle := cxStyle2;
 
  except end;
-
+    *)
 end;
 
 procedure TfrmTopluSeans.cxRadioGroup1PropertiesChange(Sender: TObject);

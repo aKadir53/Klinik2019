@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
-  cxContainer, cxEdit, Menus, StdCtrls, cxButtons, cxGroupBox, DB, ADODB,
+  cxContainer, cxEdit, Menus, StdCtrls, cxButtons, cxGroupBox, DB, ADODB,GetFormClass,
   cxTextEdit, cxMaskEdit, cxButtonEdit, cxDBEdit,kadirType,KadirLabel,Kadir,  GirisUnit,Data_Modul, dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
   dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
   dxSkinMcSkin, dxSkinMoneyTwins, dxSkinsDefaultPainters, cxCheckBox, cxLabel,
@@ -63,6 +63,9 @@ type
     cxGridLevel2: TcxGridLevel;
     ListeColumn5: TcxGridDBBandedColumn;
     ListeColumn6: TcxGridDBBandedColumn;
+    K1: TMenuItem;
+    S1: TMenuItem;
+    W1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure cxKaydetClick(Sender: TObject);override;
     procedure cxTextEditKeyDown(Sender: TObject; var Key: Word;
@@ -75,6 +78,8 @@ type
     procedure cxButtonCClick(Sender: TObject);
     procedure PropertiesEditValueChanged(Sender: TObject);override;
     procedure Yazdir(Tip : integer);
+    procedure g1Click(Sender: TObject);
+    procedure W1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -88,10 +93,10 @@ const _TableName_ = 'OlayBildirim';
 
 var
   frmOlayBildirim: TfrmOlayBildirim;
-
+  konuKod , anaParametreKod , altParametreKod : string;
 
 implementation
-
+   uses MedEczane;
 
 {$R *.dfm}
 procedure TfrmOlayBildirim.cxButtonCClick(Sender: TObject);
@@ -178,17 +183,42 @@ begin
   setDataStringKontrol(self,Tarih,'Tarih','Tarih',kolon1,'trh',100);
   Tarih.Tag := 1;
 
-  setDataString(self,'HataKodu','Hata Kodu',Kolon1,'trh',100,True);
+  setDataString(self,'HataKodu','Hata Kodu',Kolon1,'trh',110,True);
 
   IC := TcxImageComboKadir.Create(self);
   IC.Conn := Datalar.ADOConnection2;
-  IC.TableName := 'SIRKETLER_TNM_view';
+  IC.TableName := 'KullaniciSirketleri_View';
   IC.ValueField := 'SirketKod';
   IC.DisplayField := 'Tanimi';
   IC.BosOlamaz := False;
-  IC.Filter := '';
+  IC.Filter := datalar.sirketlerUserFilter;
+
+  //SirketComboFilter
+
   setDataStringKontrol(self,IC,'SirketKod','Þirket',Kolon1,'',370,0,alNone,'');
+
   TcxImageComboKadir(FindComponent('SirketKod')).Properties.OnEditValueChanged := PropertiesEditValueChanged;//SirketlerPropertiesChange;
+
+  IC := TcxImageComboKadir.Create(self);
+  IC.Conn := Datalar.ADOConnection2;
+  IC.TableName := 'OlayBildirim_Hata_Yapan';
+  IC.ValueField := 'kod';
+  IC.DisplayField := 'Tanimi';
+  IC.BosOlamaz := False;
+  IC.Filter := '';
+  setDataStringKontrol(self,IC,'hatayiYapan','Hatayi Yapan Meslek',Kolon1,'per',120,0,alNone,'');
+
+  setDataStringCurr(self,'personelSayisi','Personel Sayýsý',Kolon1,'per',50,'0',0);
+
+  IC := TcxImageComboKadir.Create(self);
+  IC.Conn := Datalar.ADOConnection2;
+  IC.TableName := 'OlayBildirim_Zaman';
+  IC.ValueField := 'kod';
+  IC.DisplayField := 'Tanimi';
+  IC.BosOlamaz := False;
+  IC.Filter := '';
+  setDataStringKontrol(self,IC,'hataZamani','Hatayi Zamaný',Kolon1,'',120,0,alNone,'');
+
 
   IC := TcxImageComboKadir.Create(self);
   IC.Conn := Datalar.ADOConnection2;
@@ -256,12 +286,14 @@ begin
   setDataString(self,'yetkiliKisi','Bildirim Yapýlan Yetkili',Kolon1,'',380,True);
 
   Tarih := TcxDateEditKadir.Create(self);
-  Tarih.ValueTip := tvDateTime;
-  setDataStringKontrol(self,Tarih,'zaman','Zamaný',kolon1,'',130);
+  Tarih.ValueTip := tvDate;
+  setDataStringKontrol(self,Tarih,'zaman','Tarih',kolon1,'',130);
   Tarih.Tag := 1;
 
-  setDataStringMemo(self,'aciklama','Açýklama',Kolon1,'',380,50);
-  setDataStringMemo(self,'gorusOneri','Görüþler',Kolon1,'',380,50);
+  setDataStringMemo(self,'Olay','Olay',Kolon1,'',380,50);
+
+  setDataStringMemo(self,'aciklama','Yapýlan Ýþlem',Kolon1,'',380,50);
+  setDataStringMemo(self,'gorusOneri','Sonuç',Kolon1,'',380,50);
   setDataStringMemo(self,'idariTibbiUygulama','Yapýlan Ýdari/Týbbi Uyg.',Kolon1,'',380,30);
 
   IC := TcxImageComboKadir.Create(self);
@@ -310,6 +342,44 @@ begin
 
 
 
+procedure TfrmOlayBildirim.g1Click(Sender: TObject);
+var
+  d , tc : string;
+  F : TGirisForm;
+  GirisFormRecord : TGirisFormRecord;
+begin
+
+     if UserRight('SKS', 'Olay Bildirim Gönderimi Yap') = False
+     then begin
+         ShowMessageSkin('Bu Ýþlem Ýçin Yetkiniz Bulunmamaktadýr !','','','info');
+         exit;
+     end;
+
+ //  if TcxImageComboKadir(FindComponent('Konu')).EditValue = 1 then
+ //  begin
+         GirisFormRecord.F_HastaAdSoyad_ := 'Güvenlik Raporlama';
+         try
+          F := FormINIT(TagfrmOlayBildirimRaporlama,GirisFormRecord,ikHayir,'');
+          TfrmMedEczane(F).receteForm := self;
+          TfrmMedEczane(F)._tip := konuKod;
+          TfrmMedEczane(F)._yer := 'KL';
+          TfrmMedEczane(F)._konu := konuKod;
+          TfrmMedEczane(F)._yapan := varTostr(TcxImageComboKadir(FindComponent('hatayiYapan')).EditValue);
+          TfrmMedEczane(F)._zaman := varTostr(TcxImageComboKadir(FindComponent('hataZamani')).EditValue);
+          TfrmMedEczane(F)._anaprm := anaParametreKod;
+          TfrmMedEczane(F)._altprm := altParametreKod;
+
+          if F <> nil then F.ShowModal;
+
+         finally
+           F.Free;
+         end;
+
+ //  end;
+
+
+end;
+
 function TfrmOlayBildirim.Init(Sender: TObject): Boolean;
 begin
   Result := True;
@@ -328,17 +398,67 @@ begin
   if TcxImageComboKadir(sender).Name = 'konu'
   then begin
     TcxImageComboKadir(FindComponent('anaParametre')).Filter := ' BildirimKonuKod = ' + varTostr(TcxImageComboKadir(FindComponent('konu')).EditValue);
+    konuKod := datalar.QuerySelect('select koddegeri from OlayBildirimKonu where kod = ' + varTostr(TcxImageComboKadir(FindComponent('konu')).EditValue)).Fields[0].AsString;
 
     if TcxImageComboKadir(FindComponent('konu')).EditValue = 1
     then
       TcxImageComboKadir(FindComponent('personelDosyaNo')).Clear
     else
       TcxImageComboKadir(FindComponent('hastaDosyaNo')).Clear;
-
   end;
+
   if TcxImageComboKadir(sender).Name = 'anaParametre'
-  then
+  then begin
     TcxImageComboKadir(FindComponent('altParametre')).Filter := ' AltModulKod = ' + varTostr(TcxImageComboKadir(FindComponent('anaParametre')).EditValue);
+    anaParametreKod := datalar.QuerySelect('select koddegeri from OlayBildirimKonu_Alt_Modul where kod = ' + varTostr(TcxImageComboKadir(FindComponent('anaParametre')).EditValue)).Fields[0].AsString;
+  end;
+
+   if TcxImageComboKadir(sender).Name = 'altParametre'
+  then begin
+    altParametreKod := datalar.QuerySelect('select koddegeri from OlayBildirimKonu_Alt_Modul_Detay where kod = ' + varTostr(TcxImageComboKadir(FindComponent('altParametre')).EditValue)).Fields[0].AsString;
+  end;
+
+  TcxTextEdit(FindComponent('hataKodu')).EditValue :=
+  konuKod + 'KL.' + varTostr(TcxImageComboKadir(FindComponent('hatayiYapan')).EditValue) + '.' +
+  varTostr(TcxImageComboKadir(FindComponent('hataZamani')).EditValue) + '.' + anaParametreKod+altParametreKod;
+
+
+
+end;
+
+procedure TfrmOlayBildirim.W1Click(Sender: TObject);
+var
+ Tel,msj,Ad : string;
+begin
+
+      tel := datalar.KaliteBirim.BirimDirektoruTel;
+      Ad :=  'Kalite Direktörü : ' + datalar.KaliteBirim.BirimDirektoruAdi;
+
+      tel := trim(StringReplace(StringReplace(StringReplace(tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+
+      msj := 'Olay Bildirim Sýra NO : ' + TcxTextEdit(FindComponent('Id')).Text + #13 +
+             'Hata Turu : ' + TcxImageComboBox(FindComponent('Konu')).Text + #13 +
+             'Hata : ' +  TcxImageComboBox(FindComponent('altParametre')).Text +  #13 +
+             'Hata Kodu : ' + TcxTextEdit(FindComponent('HataKodu')).Text;
+
+
+      if tel = ''
+      then begin
+        ShowMessageSkin('Mobil Telefon boþ olmamalýdýr','','','info');
+        exit;
+      end;
+
+      if (Length(tel) > 0) and (Length(tel) < 10)
+      then begin
+       ShowMessageSkin(tel,'Mobil Tel Hatalý','10 Haneli Geçerli Bir Numara Deðildir','info');
+       exit;
+      end;
+
+      if TMenuItem(sender).Tag = -22
+      then
+        WhatsappSend(datalar.WhatsappTelefonToken,tel,msj,Ad,'')
+      else
+      SMSSend(tel,msj,_HastaAdSoyad_,_dosyaNO_);
 
 
 end;
@@ -397,7 +517,9 @@ begin
   inherited;
 
   case TcxButton(sender).Tag  of
-    0 : begin
+Kaydet : begin
+          W1.Click;
+
         // ShowMessage('Kaydet');
         // ButonClick(self,'k');
       //   Olustur(self,'Users');

@@ -10,7 +10,7 @@ uses
   cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit,
   cxDBData, cxGridLevel, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, Menus,
-  cxContainer, cxGroupBox, cxRadioGroup,
+  cxContainer, cxGroupBox, cxRadioGroup, strUtils,
   cxTextEdit, cxMaskEdit, cxDropDownEdit, cxImageComboBox, cxMemo,
   cxPCdxBarPopupMenu, cxPC,GirisUnit, Vcl.ComCtrls, dxtree, dxdbtree,
   dxSkinsCore, dxSkinBlue, dxSkinCaramel, dxSkinCoffee, dxSkiniMaginary,
@@ -78,6 +78,7 @@ type
     ListeColumnSirketKod: TcxGridDBColumn;
     ListeColumnSube: TcxGridDBColumn;
     f1: TMenuItem;
+    P1: TMenuItem;
 
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure btnVazgecClick(Sender: TObject);
@@ -141,8 +142,9 @@ procedure TfrmHastaListe.cxButtonCClick(Sender: TObject);
 var
  GirisFormRecord : TGirisFormRecord;
  F : TGirisForm;
- dosyaNo,sirketKod,sube : string;
- i : integer;
+ dosyaNo,sirketKod,sube ,dosyaNos,sql : string;
+ i , x , satir : integer;
+ Datasets : TDatasetKadir;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -208,6 +210,43 @@ begin
                F := FormINIT(Tcontrol(sender).tag,GirisFormRecord,ikEvet,'');
                if F <> nil then F.ShowModal;
             end;
+
+-100 : begin
+              if DirectoryExists('C:\NoktaV3\QR') = False
+              then
+                MkDir('C:\NoktaV3\QR');
+
+          DurumGoster(True);
+
+          try
+            for x := 0 to Liste.Controller.SelectedRowCount - 1 do
+            begin
+               Application.ProcessMessages;
+               satir := Liste.Controller.SelectedRows[x].RecordIndex;
+               dosyaNo := varToSTr(Liste.DataController.GetValue(satir,Liste.DataController.GetItemByFieldName('dosyaNo').Index));
+               dosyaNos := dosyaNos + ifthen(dosyaNos = '','',',') + dosyaNo;
+               FotoEkle('',dosyaNo);
+             //  QRBarkod('http://185.99.199.39:8079?dosyaNo=' + dosyaNo,'C:\NoktaV3\QR\' + dosyaNo +'.jpg');
+             //  QRYukle(datalar.ADO_FOTO ,'QR','C:\NoktaV3\QR\' + dosyaNo+'.jpg');
+            end;
+
+              sql := 'select h.*,p.foto from personelKArt h ' +
+                     'left join PersonelFoto p on h.dosyano = p.dosyano ' +
+                     'where h.dosyaNo in (select datavalue from dbo.strTotable(' + QuotedStr(dosyaNos) + ','',''))' ;
+
+              Datasets.Dataset0 := datalar.QuerySelect(sql);
+              Datasets.Dataset2 := datalar.ADO_AktifSirket;
+              Datasets.Dataset3 := datalar.ADO_aktifSirketLogo;
+              PrintYap('P_PKB','Personel Kart','',Datasets,kadirType.pTNone);
+
+          finally
+            DurumGoster(False);
+          end;
+
+
+       end;
+
+
 
   end;
 end;

@@ -2377,6 +2377,12 @@ object frmReceteler: TfrmReceteler
       ImageIndex = 97
       OnClick = cxButtonCClick
     end
+    object N1: TMenuItem
+      Tag = -20
+      Caption = 'Epo Re'#231'etelerini Mail Olarak Bildir'
+      ImageIndex = 10
+      OnClick = cxButtonCClick
+    end
   end
   object cxStyleRepository2: TcxStyleRepository
     Left = 16

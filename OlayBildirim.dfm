@@ -15,8 +15,8 @@ object frmOlayBildirim: TfrmOlayBildirim
   PixelsPerInch = 96
   TextHeight = 13
   object List: TcxGridKadir
-    Left = 56
-    Top = 172
+    Left = 24
+    Top = 204
     Width = 993
     Height = 169
     TabOrder = 0
@@ -383,6 +383,23 @@ object frmOlayBildirim: TfrmOlayBildirim
     object g1: TMenuItem
       Caption = 'grs.saglik.gov.tr (Bildirim Yap)'
       ImageIndex = 15
+      OnClick = g1Click
+    end
+    object K1: TMenuItem
+      Tag = -20
+      Caption = 'Kalite Birimine Bildir'
+      ImageIndex = 144
+      object S1: TMenuItem
+        Tag = -21
+        Caption = 'SMS'
+        ImageIndex = 94
+      end
+      object W1: TMenuItem
+        Tag = -22
+        Caption = 'WhatsApp'
+        ImageIndex = 143
+        OnClick = W1Click
+      end
     end
   end
   object Olaylar: TListeAc

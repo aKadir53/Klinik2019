@@ -107,6 +107,14 @@ type
     O1: TMenuItem;
     gridSorunlarColumn1: TcxGridDBColumn;
     gridSorunlarColumn2: TcxGridDBColumn;
+    cxLabel8: TcxLabel;
+    btnOnayKodu: TcxButton;
+    txtCepTel: TcxMaskEdit;
+    txtOnayKodu: TcxTextEdit;
+    cxLabel9: TcxLabel;
+    btnOnay: TcxButton;
+    Timer1: TTimer;
+    T1: TMenuItem;
 
     procedure IdFTP1Work(ASender: TObject; AWorkMode: TWorkMode;
       AWorkCount: Int64);
@@ -130,6 +138,9 @@ type
     procedure cxButton6Click(Sender: TObject);
     procedure O1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure btnOnayKoduClick(Sender: TObject);
+    procedure btnOnayClick(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -141,7 +152,8 @@ type
 var
   frmDestekSorunBildir: TfrmDestekSorunBildir;
   sorunId, dosya,kurumkod : string;
-
+  randomSayi : string;
+  don,say : integer;
 implementation
  uses data_modul;
 {$R *.dfm}
@@ -180,14 +192,23 @@ begin
   ado := TADOQuery.Create(nil);
   try
     ado.Connection := datalar.ADOConnection1;
+
+    (*
     ADO_CVP.First;
     while not ADO_CVP.Eof do
     begin
         try
-          sql := 'update sorunCozumSureci ' +
-                 ' set durum = 9 ' +
-                 ' where id = ' + ado_CVP.FieldByName('id').AsString;
+          if TMenuItem(sender).Tag = 0
+          then
+            sql := 'update sorunCozumSureci ' +
+                   ' set durum = 9 ' +
+                   ' from sorunCozumSureci ss ' +
+                   'join sorunlar s on s.sorunId = ss.sorunId ' +
+                   ' where id = ' + ado_CVP.FieldByName('id').AsString +
+                   ' and taraf <> ''Nokta''';
+
           datalar.QueryExec(ado,sql);
+
         except on e : Exception do
          begin
           ShowMessageSkin(e.Message,'','','info');
@@ -195,10 +216,99 @@ begin
         end;
         ADO_CVP.Next;
     end;
+      *)
+
+            sql := 'update sorunCozumSureci ' +
+                   ' set durum = 9 ' +
+                   ' from sorunCozumSureci ss ' +
+                   ' join sorunlar s on s.sorunId = ss.sorunId ' +
+                   ' where kurumKodu = ' + QuotedStr(datalar._tesisKodu) +
+                   ' and Kullanici = ' + QuotedStr(datalar.username);
+
+
+          datalar.QueryExec(ado,sql);
+
   finally
     ado.Free;
   end;
   cozumler;
+end;
+
+procedure TfrmDestekSorunBildir.btnOnayClick(Sender: TObject);
+begin
+  if randomSayi <> txtOnayKodu.Text
+  Then begin
+    ShowMessageSkin('Onay Kodu Hatalý','','','info');
+    exit;
+  end
+  else
+  begin
+       cxButton1.Enabled := True;
+       timer1.Enabled := False;
+       btnOnayKodu.Caption := 'WhatsApp Kod Gönder';
+       Application.ProcessMessages;
+  end;
+
+
+end;
+
+procedure TfrmDestekSorunBildir.btnOnayKoduClick(Sender: TObject);
+var
+  tel , sonuc , doldur: string;
+  SS : TStringList;
+  mesaj : PWideChar;
+begin
+ try
+  say := 120;
+  tel := txtCepTel.EditValue;
+  tel := trim(StringReplace(StringReplace(StringReplace(tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+
+  if length(tel) <> 10 then
+  begin
+   txtCepTel.SetFocus;
+   exit;
+  end;
+
+  btnOnayKodu.Enabled := False;
+  SS := TStringList.Create;
+
+  try
+    randomSayi := intTostr(Random(9999));
+    doldur := DupeString('0', 4 - Length(randomSayi));
+    randomSayi := randomSayi + doldur;
+    mesaj := PwideChar('Onay Kodunuz : ' + randomSayi);
+
+    sonuc := SendMesajGonderWhatsapp(datalar.WhatsappTelefonToken,Tel,mesaj);
+    timer1.Enabled := True;
+
+    ExtractStrings(['|'], [], PChar(sonuc),SS);
+    if (SS[1] = '200') or (SS[1] = 'OK')
+    then begin
+       btnOnayKodu.Enabled := False;
+       btnOnay.Enabled := True;
+       don := 0;
+    end
+    else
+    begin
+
+    end;
+  finally
+    //btnOnayKodu.Enabled := True;
+    SS.Free;
+    inc(don);
+  end;
+
+ except on e : exception do
+  begin
+   ShowMessageSkin(e.Message,'','','info');
+   btnOnayKodu.Enabled  := True;
+   //inc(don);
+  end;
+ end;
+
+ if don = 3 then cxButton1.Enabled := True;
+
+
 end;
 
 procedure TfrmDestekSorunBildir.C1Click(Sender: TObject);
@@ -239,6 +349,25 @@ begin
 
 end;
 
+procedure TfrmDestekSorunBildir.Timer1Timer(Sender: TObject);
+ begin
+ dec(say);
+  cxButton1.Caption := 'Yeni Destek Ýçin :' + inttostr(say) + ' saniye';
+ // btnOnayKodu.Caption := 'Kalan Süre:' + inttostr(say) + ' saniye';
+
+  if say = 0 then
+  begin
+    // btnOnayKodu.Enabled := True;
+   //  btnOnay.Enabled := False;
+    // btnOnayKodu.Caption := 'WhatsApp Kod Gönder';
+     cxButton1.Enabled := True;
+     cxButton1.Caption := 'Destek Talebini Kaydet';
+     timer1.Enabled := False;
+  end;
+  Application.ProcessMessages;
+
+end;
+
 procedure TfrmDestekSorunBildir.SorunKaydet;
 var
   sql  : string;
@@ -263,7 +392,7 @@ begin
 
     try
       sql := 'insert into sorunlar (kurumkodu,sorunsahibi,sorunAciliyeti,sorunAciklamasi,' +
-             'ilgilenenPersonel,fonksiyonelEtki,sorunIhtiyac,Konu,secreen,kullanici,Tip)' +
+             'ilgilenenPersonel,fonksiyonelEtki,sorunIhtiyac,Konu,secreen,kullanici,Tip,Tel)' +
              ' values(' + QuotedStr(datalar._tesisKodu) + ','
                         + QuotedStr(datalar.AktifSirketAdi) + ','
                         + inttostr(txtAciliyet.ItemIndex) + ','
@@ -274,7 +403,9 @@ begin
                         + inttostr(txtKonu.ItemIndex) + ','
                         + QuotedStr(ifThen(cxCheckBox1.Checked,'1','0')) + ','
                         + QuotedStr(datalar.username) + ','
-                        + QuotedStr('O') +
+                        + QuotedStr('O') + ','
+                        + QuotedStr(trim(StringReplace(StringReplace(StringReplace(txtCepTel.text,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]))) +
+
 
                         ') select SCOPE_IDENTITY() ';
 
@@ -337,7 +468,22 @@ begin
 end;
 
 procedure TfrmDestekSorunBildir.cxButton1Click(Sender: TObject);
+var
+ tel : string;
 begin
+ try
+
+  tel := txtCepTel.EditValue;
+  tel := trim(StringReplace(StringReplace(StringReplace(tel,'(','',[rfReplaceAll]),')','',[rfReplaceAll]),'-','',[rfReplaceAll]));
+
+  if length(tel) <> 10
+  Then
+   ShowMessageSkin('Telefon Zorunludur','','','info')
+   else
+  if tip.ItemIndex < 0
+  Then
+   ShowMessageSkin('Bildirim Tipi Zorunludur','','','info')
+   else
   if txtKonu.ItemIndex < 1
   Then
    ShowMessageSkin('Bildirim Konusu Zorunludur','','','info')
@@ -346,7 +492,29 @@ begin
   Then
    ShowMessageSkin('Bildirim Mesaj Zorunludur','','','info')
   Else
+  if length(txtMesaj.Text) < 50
+  then
+    ShowMessageSkin('Mesajýnýzý Daha Detaylý Yazýn','','','info')
+  else
+  begin
    sorunKaydet;
+
+ //  btnOnay.Enabled := False;
+ //  btnOnayKodu.Enabled := True;
+
+   txtCepTel.Text := '';
+   txtMesaj.text := '';
+   txtPersonel.text := '';
+   txtKonu.ItemIndex := -1;
+   txtOnayKodu.Text := '';
+   tip.ItemIndex := -1;
+   cxButton1.Enabled := False;
+   say := 120;
+   timer1.Enabled := True;
+  end;
+ except
+
+ end;
  //  close;
 end;
 
@@ -420,6 +588,19 @@ end;
 procedure TfrmDestekSorunBildir.FormCreate(Sender: TObject);
 begin
   tag := TagfrmDestekTalep;
+
+  txtCepTel.Text := '';
+  txtMesaj.text := '';
+  txtPersonel.text := '';
+  txtKonu.ItemIndex := -1;
+  txtOnayKodu.Text := '';
+  tip.ItemIndex := -1;
+
+  if say = 0
+  then
+   cxButton1.Enabled := True
+  else
+    cxButton1.Enabled := False;
 end;
 
 procedure TfrmDestekSorunBildir.FormKeyDown(Sender: TObject; var Key: Word;

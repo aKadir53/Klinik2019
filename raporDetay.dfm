@@ -373,6 +373,11 @@ object frmRaporDetay: TfrmRaporDetay
         ImageIndex = 9
         OnClick = N5Click
       end
+      object R4: TMenuItem
+        Caption = 'Raporu Tekrarla'
+        ImageIndex = 69
+        OnClick = R4Click
+      end
     end
     object M1: TMenuItem
       Caption = 'Medula'

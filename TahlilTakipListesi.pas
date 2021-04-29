@@ -19,7 +19,7 @@ uses
   dxSkinOffice2007Silver, dxSkinOffice2010Black, dxSkinOffice2010Blue,
   dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver,
   dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008, dxSkinValentine,
-  dxSkinXmas2008Blue, Menus, cxGroupBox, cxRadioGroup, sGauge,
+  dxSkinXmas2008Blue, Menus, cxGroupBox, cxRadioGroup, sGauge, ShellApi,
   cxPCdxBarPopupMenu, cxMemo, cxPC, cxCheckBox, rxAnimate, rxGIFCtrl,
   JvExControls, JvAnimatedImage, JvGIFCtrl, cxButtons, cxCurrencyEdit,
   cxGridBandedTableView, cxGridDBBandedTableView, KadirLabel, cxCheckGroup,
@@ -108,7 +108,6 @@ type
     ListeDBBandedColumn801840: TcxGridDBBandedColumn;
     ListeDBBandedColumn900200: TcxGridDBBandedColumn;
     ListeDBBandedColumn900210: TcxGridDBBandedColumn;
-    ListeDBBandedColumn900340: TcxGridDBBandedColumn;
     ListeDBBandedColumn900681: TcxGridDBBandedColumn;
     ListeDBBandedColumn900900: TcxGridDBBandedColumn;
     ListeDBBandedColumn901020: TcxGridDBBandedColumn;
@@ -159,6 +158,23 @@ type
     chkDegerlendirme: TcxCheckBox;
     ListeColumn6: TcxGridDBBandedColumn;
     T8: TMenuItem;
+    G1: TMenuItem;
+    mavi: TcxStyle;
+    kirmizi: TcxStyle;
+    N901940: TcxGridDBBandedColumn;
+    N901940C: TcxGridDBBandedColumn;
+    N902210: TcxGridDBBandedColumn;
+    N902210C: TcxGridDBBandedColumn;
+    N903130: TcxGridDBBandedColumn;
+    N903130C: TcxGridDBBandedColumn;
+    N9016203: TcxGridDBBandedColumn;
+    N900210: TcxGridDBBandedColumn;
+    ListeColumn7: TcxGridDBBandedColumn;
+    ListeCinsiyet: TcxGridDBBandedColumn;
+    ListeYas: TcxGridDBBandedColumn;
+    ListeilkDiyalizTarihi: TcxGridDBBandedColumn;
+    Durum: TcxGridDBBandedColumn;
+    RowKirmizi: TcxStyle;
     procedure cxButtonCClick(Sender: TObject);
     procedure Tarih;
     procedure T1Click(Sender: TObject);
@@ -172,9 +188,6 @@ type
     procedure btnSendClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnTetkikDegerlendirClick(Sender: TObject);
-    procedure ListeCustomDrawCell(Sender: TcxCustomGridTableView;
-      ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
-      var ADone: Boolean);
     procedure ListeDblClick(Sender: TObject);
     procedure btnListClick(Sender: TObject);
     procedure K2Click(Sender: TObject);
@@ -183,6 +196,10 @@ type
     procedure ListeCustomization(Sender: TObject);
     procedure ListeMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure G1Click(Sender: TObject);
+    procedure ListeStylesGetContentStyle(Sender: TcxCustomGridTableView;
+      ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
+      out AStyle: TcxStyle);
 
   private
 
@@ -194,6 +211,7 @@ type
 
 var
   frmTahliltakip: TfrmTahliltakip;
+  ListButtonOk : Boolean = False;
 
 implementation
     uses data_modul , TahlilsonucGir, rapor , ktv_urrListesi, TedaviKart;
@@ -212,7 +230,11 @@ begin
   ADO_Uyar.Active := true;
   tarih2.Date := ayliktarih(date,tarih1);
 
-  Liste.RestoreFromRegistry('Klinik2019_TahlilTakipListesi');
+
+  //Liste.RestoreFromRegistry('Klinik2019_TahlilTakipListesi');
+
+  Liste.RestoreFromIniFile('C:\NoktaV3\Klinik2019_TahlilTakipListesi.ini');
+
 
   // Hemogramlarýn kolon baþlýklarýný labtestlerden alýp yazýyor. Dinamik olarak.
   for c := 0 to Liste.ColumnCount - 1 do
@@ -227,7 +249,7 @@ begin
        end;
   end;
 
-
+  Liste.OptionsView.GroupByBox := True;
   Result := True;
 end;
 
@@ -593,8 +615,8 @@ begin
     DurumGoster;
     try
       if chkMisafir.Checked
-      Then apm := '0,1'
-      Else apm := '0,1,2';
+      Then apm := '1'
+      Else apm := '0';
 
       band := chkBand.EditValue;
 
@@ -612,6 +634,7 @@ begin
       datalar.QuerySelect(ADO_TetkiklerHastaList,sql);
     finally
       DurumGoster(False);
+
     end;
 end;
 
@@ -674,36 +697,13 @@ end;
 
 
 
-procedure TfrmTahliltakip.ListeCustomDrawCell(Sender: TcxCustomGridTableView;
-  ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
-  var ADone: Boolean);
-begin
-
- try
-    if AViewInfo.Item.Index in [1..55]
-    Then Begin
-      if VarToStr(AViewInfo.GridRecord.Values[AViewInfo.Item.Index]) = '0'
-      then begin
-        ACanvas.Brush.Color := $008080FF;
-        ACanvas.Font.Color := clWhite;
-      end;
-      (*
-      else
-      if chk.Checked
-       then
-         if TestKodToNormalDeger(inttostr(AViewInfo.Item.Tag),'','',AViewInfo.GridRecord.Values[AViewInfo.Item.Index]) = False
-          then ACanvas.Brush.Color := $0080FFFF;
-          *)
-    End;
-  except
-  end;
-
-end;
-
 procedure TfrmTahliltakip.ListeCustomization(Sender: TObject);
 begin
   inherited;
-   Liste.StoreToRegistry('Klinik2019_TahlilTakipListesi');
+  // Liste.StoreToRegistry('Klinik2019_TahlilTakipListesi');
+
+   Liste.StoreToIniFile('C:\NoktaV3\Klinik2019_TahlilTakipListesi.ini');
+
 end;
 
 procedure TfrmTahliltakip.ListeDblClick(Sender: TObject);
@@ -737,7 +737,76 @@ procedure TfrmTahliltakip.ListeMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited;
-   Liste.StoreToRegistry('Klinik2019_TahlilTakipListesi');
+//   Liste.StoreToRegistry('Klinik2019_TahlilTakipListesi');
+   Liste.StoreToIniFile('C:\NoktaV3\Klinik2019_TahlilTakipListesi.ini');
+
+end;
+
+procedure TfrmTahliltakip.ListeStylesGetContentStyle(
+  Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+  AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+var
+  Field , FieldN: String;
+begin
+
+ try
+    if (TcxGridDBBandedColumn(TcxGridDBBandedTableView(sender).Columns[AItem.Index]).Position.BandIndex <> 0)
+    Then Begin
+      if VarToStr(ARecord.Values[AItem.Index]) = '0'
+      then begin
+       AStyle := mavi;
+      end
+      else
+      begin
+        Field := TcxGridDBTableView(sender).Columns[AItem.Index].DataBinding.FieldName;
+
+        if TcxGridDBBandedColumn(TcxGridDBBandedTableView(sender).Columns[AItem.Index]).Position.BandIndex = 3
+        then begin
+         if Field = '901620.3'
+         then begin
+           FieldN := 'N'+stringReplace(Field,'.','',[rfReplaceAll]);
+           if ARecord.Values[
+           TcxCustomGridTableItem(TcxGridDBTableView(sender).FindItemByName(FieldN)).Index] = 0
+           then AStyle := kirmizi;
+         end;
+        end
+        else begin
+           if (Field = '901940') or
+              (Field = '901940C') or
+              (Field = '902210') or
+              (Field = '902210C') or
+              (Field = '903130') or
+              (Field = '903130C') or
+              (Field = '900210')
+           then begin
+             FieldN := 'N'+stringReplace(Field,'.','',[rfReplaceAll]);
+             if ARecord.Values[
+             TcxCustomGridTableItem(TcxGridDBTableView(sender).FindItemByName(FieldN)).Index] = 0
+             then AStyle := kirmizi;
+           end;
+        end;
+
+       end;
+
+    End;
+
+
+
+   if ARecord.Values[Durum.Index] <> 'Sonuç Alýndý' then
+   begin
+      AStyle := RowKirmizi;
+
+   end;
+
+
+  except on e : exception do
+   begin
+   //  ShowMessageSkin(e.Message,'','','info');
+   end;
+  end;
+
+
+
 end;
 
 procedure TfrmTahliltakip.S1Click(Sender: TObject);
@@ -805,6 +874,16 @@ begin
   Sayfa3_Kolon3.Width := 0;
   Sayfa3_Kolon2.Width := 0;
   SayfaCaption('','','','','');
+end;
+
+procedure TfrmTahliltakip.G1Click(Sender: TObject);
+begin
+  inherited;
+
+  DeleteFile('C:\NoktaV3\Klinik2019_TahlilTakipListesi.ini');
+
+ // ShellExecute(0, nil, 'cmd.exe', 'reg delete HKEY_CURRENT_USER\Klinik2019_TahlilTakipListesi', nil, SW_NORMAL);
+ //GetDosOutput('reg delete HKEY_CURRENT_USER\Klinik2019_TahlilTakipListesi');
 end;
 
 procedure TfrmTahliltakip.K1Click(Sender: TObject);

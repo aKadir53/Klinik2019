@@ -1222,4 +1222,30 @@ object frmSKS_YeniDokuman: TfrmSKS_YeniDokuman
       end
     end
   end
+  object Standart: TListeAc
+    ListeBaslik = 'Standartlar'
+    TColcount = 4
+    TColsW = '50,250,100'
+    Table = 'OSGB_MASTER.dbo.SKS_StandartKod'
+    Conn = DATALAR.ADOConnection2
+    Filtercol = 2
+    BaslikRenk = clBackground
+    DipRenk = clBackground
+    ButtonImajIndex = 132
+    Kolonlar.Strings = (
+      'kod'
+      'tanimi'
+      'bolum')
+    KolonBasliklari.Strings = (
+      'Kod'
+      'Tanimi'
+      'Bolum')
+    Calistir = fgEvet
+    BiriktirmeliSecim = False
+    SkinName = 'lilian'
+    Grup = False
+    GrupCol = 0
+    Left = 328
+    Top = 205
+  end
 end

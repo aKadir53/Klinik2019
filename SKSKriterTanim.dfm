@@ -17,9 +17,9 @@ object frmSKSKriter: TfrmSKSKriter
   PixelsPerInch = 96
   TextHeight = 13
   object Grid_Sks_Tanim: TcxGridKadir
-    Left = 16
-    Top = 24
-    Width = 652
+    Left = 8
+    Top = 8
+    Width = 681
     Height = 385
     TabOrder = 0
     ExceleGonder = False
@@ -49,7 +49,6 @@ object frmSKSKriter: TfrmSKSKriter
       Filtering.MRUItemsList = False
       Filtering.ColumnMRUItemsList = False
       NewItemRow.InfoText = 'Yeni Sat'#305'r Ekle'
-      NewItemRow.Visible = True
       OptionsBehavior.AlwaysShowEditor = True
       OptionsBehavior.FocusCellOnTab = True
       OptionsBehavior.ExpandMasterRowOnDblClick = False
@@ -66,15 +65,18 @@ object frmSKSKriter: TfrmSKSKriter
         Caption = 'Sira'
         DataBinding.FieldName = 'sira'
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
       end
       object Grid_Sks_TanimDBTableView1TetkikKod: TcxGridDBColumn
         DataBinding.FieldName = 'TetkikKod'
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 64
       end
       object Grid_Sks_TanimDBTableView1TetkikAdi: TcxGridDBColumn
         DataBinding.FieldName = 'TetkikAdi'
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 116
       end
       object Grid_Sks_TanimDBTableView1Ref1: TcxGridDBColumn
@@ -100,11 +102,13 @@ object frmSKSKriter: TfrmSKSKriter
       object Grid_Sks_TanimDBTableView1Tip: TcxGridDBColumn
         DataBinding.FieldName = 'Tip'
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 64
       end
       object Grid_Sks_TanimDBTableView1RefTip: TcxGridDBColumn
         DataBinding.FieldName = 'RefTip'
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 49
       end
       object Grid_Sks_TanimDBTableView1Column1: TcxGridDBColumn
@@ -112,14 +116,21 @@ object frmSKSKriter: TfrmSKSKriter
         DataBinding.FieldName = 'Operator'
         GroupSummaryAlignment = taCenter
         HeaderAlignmentHorz = taCenter
-        Width = 249
+        Options.Editing = False
+        Width = 214
       end
       object Grid_Sks_TanimDBTableView1Column2: TcxGridDBColumn
         DataBinding.FieldName = 'Hedef'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taCenter
         HeaderAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 39
+      end
+      object Grid_Sks_TanimDBTableView1Column3: TcxGridDBColumn
+        Caption = 'G'#246'sterge Kod'
+        DataBinding.FieldName = 'gostergeKodu'
+        Options.Editing = False
       end
     end
     object Grid_Sks_TanimLevel1: TcxGridLevel

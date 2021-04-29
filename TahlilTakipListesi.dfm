@@ -166,10 +166,6 @@ object frmTahliltakip: TfrmTahliltakip
           object TetkikDegerlendirSayfa2: TcxTabSheet
             Caption = 'Tetkik De'#287'. Ayar'
             ImageIndex = 1
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object cxGrid13: TcxGrid
               Left = 0
               Top = 0
@@ -438,11 +434,15 @@ object frmTahliltakip: TfrmTahliltakip
           PopupMenu = PopupMenu1
           OnDblClick = ListeDblClick
           OnMouseDown = ListeMouseDown
-          OnCustomDrawCell = ListeCustomDrawCell
           DataController.DataSource = DataSource1
           DataController.Filter.Options = [fcoCaseInsensitive]
           DataController.Options = [dcoAnsiSort, dcoCaseInsensitive, dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoSortByDisplayText]
-          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.DefaultGroupSummaryItems = <
+            item
+              Format = '###'
+              Kind = skCount
+              Column = Listetc
+            end>
           DataController.Summary.FooterSummaryItems = <
             item
               Format = 'Listelenen : ###'
@@ -457,8 +457,8 @@ object frmTahliltakip: TfrmTahliltakip
           OptionsSelection.MultiSelect = True
           OptionsView.NoDataToDisplayInfoText = 'Kay'#305't Yok'
           OptionsView.Footer = True
-          OptionsView.GroupByBox = False
           OptionsView.HeaderHeight = 33
+          Styles.OnGetContentStyle = ListeStylesGetContentStyle
           OnCustomization = ListeCustomization
           Bands = <
             item
@@ -466,7 +466,7 @@ object frmTahliltakip: TfrmTahliltakip
               FixedKind = fkLeft
               Styles.Content = cxStyle8
               Styles.Header = cxStyle3
-              Width = 371
+              Width = 477
             end
             item
               Caption = 'Potasyum'
@@ -526,7 +526,7 @@ object frmTahliltakip: TfrmTahliltakip
             GroupSummaryAlignment = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 90
+            Width = 70
             Position.BandIndex = 0
             Position.ColIndex = 2
             Position.RowIndex = 0
@@ -540,7 +540,7 @@ object frmTahliltakip: TfrmTahliltakip
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
             Options.Editing = False
-            Width = 53
+            Width = 41
             Position.BandIndex = 0
             Position.ColIndex = 0
             Position.RowIndex = 0
@@ -561,7 +561,7 @@ object frmTahliltakip: TfrmTahliltakip
             GroupSummaryAlignment = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 134
+            Width = 130
             Position.BandIndex = 0
             Position.ColIndex = 3
             Position.RowIndex = 0
@@ -606,7 +606,7 @@ object frmTahliltakip: TfrmTahliltakip
             Position.RowIndex = 0
           end
           object Listetarih: TcxGridDBBandedColumn
-            Caption = 'Tarih'
+            Caption = 'Numune Tarih'
             DataBinding.FieldName = 'tarih'
             PropertiesClassName = 'TcxTextEditProperties'
             Properties.Alignment.Horz = taCenter
@@ -614,7 +614,7 @@ object frmTahliltakip: TfrmTahliltakip
             GroupSummaryAlignment = taCenter
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Width = 94
+            Width = 63
             Position.BandIndex = 0
             Position.ColIndex = 6
             Position.RowIndex = 0
@@ -664,6 +664,32 @@ object frmTahliltakip: TfrmTahliltakip
             Width = 38
             Position.BandIndex = 7
             Position.ColIndex = 6
+            Position.RowIndex = 0
+          end
+          object ListeCinsiyet: TcxGridDBBandedColumn
+            Caption = 'Cins'
+            DataBinding.FieldName = 'Cinsiyet'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 43
+            Position.BandIndex = 0
+            Position.ColIndex = 20
+            Position.RowIndex = 0
+          end
+          object ListeYas: TcxGridDBBandedColumn
+            Caption = 'Ya'#351
+            DataBinding.FieldName = 'yas'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Width = 25
+            Position.BandIndex = 0
+            Position.ColIndex = 21
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn530100: TcxGridDBBandedColumn
@@ -719,7 +745,7 @@ object frmTahliltakip: TfrmTahliltakip
             Position.ColIndex = 10
             Position.RowIndex = 0
           end
-          object ListeDBBandedColumn900340: TcxGridDBBandedColumn
+          object TcxGridDBBandedColumn
             Caption = 'ALP'
             DataBinding.FieldName = '900340'
             PropertiesClassName = 'TcxCurrencyEditProperties'
@@ -812,6 +838,7 @@ object frmTahliltakip: TfrmTahliltakip
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901940: TcxGridDBBandedColumn
+            Tag = 901940
             Caption = 'Giri'#351
             DataBinding.FieldName = '901940'
             PropertiesClassName = 'TcxCurrencyEditProperties'
@@ -838,6 +865,7 @@ object frmTahliltakip: TfrmTahliltakip
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn902210: TcxGridDBBandedColumn
+            Tag = 902210
             Caption = 'Giri'#351
             DataBinding.FieldName = '902210'
             PropertiesClassName = 'TcxCurrencyEditProperties'
@@ -1120,6 +1148,7 @@ object frmTahliltakip: TfrmTahliltakip
             Position.RowIndex = 0
           end
           object ListeDBBandedColumn901940C: TcxGridDBBandedColumn
+            Tag = 901940
             Caption = #199#305'k'#305#351
             DataBinding.FieldName = '901940C'
             PropertiesClassName = 'TcxCurrencyEditProperties'
@@ -1128,7 +1157,6 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Styles.Content = cxStyle8
             Width = 50
             Position.BandIndex = 8
             Position.ColIndex = 1
@@ -1143,7 +1171,6 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Styles.Content = cxStyle8
             Width = 48
             Position.BandIndex = 9
             Position.ColIndex = 1
@@ -1158,7 +1185,6 @@ object frmTahliltakip: TfrmTahliltakip
             Properties.AssignedValues.DisplayFormat = True
             HeaderAlignmentHorz = taCenter
             HeaderAlignmentVert = vaCenter
-            Styles.Content = cxStyle8
             Width = 40
             Position.BandIndex = 1
             Position.ColIndex = 1
@@ -1235,6 +1261,95 @@ object frmTahliltakip: TfrmTahliltakip
             Position.ColIndex = 10
             Position.RowIndex = 0
           end
+          object N901940: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'N901940'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 11
+            Position.RowIndex = 0
+          end
+          object N901940C: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'N901940C'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 12
+            Position.RowIndex = 0
+          end
+          object N902210: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'N902210'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 13
+            Position.RowIndex = 0
+          end
+          object N902210C: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'N902210C'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 14
+            Position.RowIndex = 0
+          end
+          object N903130: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'N903130'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 15
+            Position.RowIndex = 0
+          end
+          object N903130C: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'N903130C'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 16
+            Position.RowIndex = 0
+          end
+          object N9016203: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'N9016203'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 17
+            Position.RowIndex = 0
+          end
+          object N900210: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'N900210'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 18
+            Position.RowIndex = 0
+          end
+          object ListeColumn7: TcxGridDBBandedColumn
+            Caption = 'Ay'
+            DataBinding.FieldName = 'ay'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 65
+            Position.BandIndex = 0
+            Position.ColIndex = 19
+            Position.RowIndex = 0
+          end
+          object ListeilkDiyalizTarihi: TcxGridDBBandedColumn
+            Caption = #304'lk Diyaliz Tarihi'
+            DataBinding.FieldName = 'ilkDiyalizTarihi'
+            PropertiesClassName = 'TcxTextEditProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Position.BandIndex = 0
+            Position.ColIndex = 22
+            Position.RowIndex = 0
+          end
+          object Durum: TcxGridDBBandedColumn
+            DataBinding.FieldName = 'durum'
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 23
+            Position.RowIndex = 0
+          end
         end
         object cxGridKadir1Level1: TcxGridLevel
           GridView = Liste
@@ -1251,10 +1366,6 @@ object frmTahliltakip: TfrmTahliltakip
     object cxTabSheet2: TcxTabSheet
       Caption = 'LOG'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object txtHatalar: TcxMemo
         Left = 0
         Top = 0
@@ -1287,8 +1398,8 @@ object frmTahliltakip: TfrmTahliltakip
     Top = 304
   end
   object cxStyleRepository1: TcxStyleRepository
-    Left = 8
-    Top = 232
+    Left = 200
+    Top = 376
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svColor, svFont]
@@ -1361,8 +1472,8 @@ object frmTahliltakip: TfrmTahliltakip
     end
   end
   object cxStyleRepository2: TcxStyleRepository
-    Left = 32
-    Top = 176
+    Left = 112
+    Top = 384
     PixelsPerInch = 96
     object cxStyle2: TcxStyle
       AssignedValues = [svColor, svFont]
@@ -1372,6 +1483,23 @@ object frmTahliltakip: TfrmTahliltakip
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+    end
+    object mavi: TcxStyle
+      AssignedValues = [svTextColor]
+      TextColor = clBlue
+    end
+    object kirmizi: TcxStyle
+      AssignedValues = [svFont, svTextColor]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      TextColor = clRed
+    end
+    object RowKirmizi: TcxStyle
+      AssignedValues = [svColor]
+      Color = 12496890
     end
   end
   object SaveDialog1: TSaveDialog
@@ -1475,6 +1603,11 @@ object frmTahliltakip: TfrmTahliltakip
       Caption = 'Excel G'#246'nder'
       ImageIndex = 75
       OnClick = cxButtonCClick
+    end
+    object G1: TMenuItem
+      Caption = 'Grid Default Yerle'#351'im'
+      ImageIndex = 9
+      OnClick = G1Click
     end
   end
   object ADO_Tele: TADOQuery

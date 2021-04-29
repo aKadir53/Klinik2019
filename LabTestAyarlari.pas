@@ -18,7 +18,7 @@ uses
   dxSkinOffice2010Blue, dxSkinOffice2010Silver, dxSkinPumpkin, dxSkinSeven,
   dxSkinSharp, dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
   dxSkinValentine, dxSkinXmas2008Blue, cxDropDownEdit,GirisUnit,
-  cxDBLookupComboBox, cxTextEdit, Vcl.Menus;
+  cxDBLookupComboBox, cxTextEdit, Vcl.Menus, cxCurrencyEdit;
 
 type
   TfrmTestAyarlari = class(TGirisForm)
@@ -75,6 +75,8 @@ type
     cxStyle1: TcxStyle;
     cxGrid1DBTableView1Column12: TcxGridDBColumn;
     Yontem: TcxGridDBColumn;
+    cxGrid1DBTableView1Column13: TcxGridDBColumn;
+    cxGrid1DBTableView1Column14: TcxGridDBColumn;
     procedure btnVazgecClick(Sender: TObject);
     procedure L1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -115,8 +117,16 @@ var
   sql : string;
 begin
   Result := False;
+
+  sql := 'INSERT INTO [labtestler_firma] ([LabID],[butKodu],[Tip],[islemKodu],[islemKoduC],[birim])' +
+        'select ' + QuotedStr(datalar._labID) + ',L.butKodu,''G'',''0'',''0'',''''' +
+        'from LabTestler L ' +
+        'left join LabTestler_Firma F on F.butKodu = L.butKodu and F.Tip = L.UygulamaAdet and F.LabID = ' + QuotedStr(datalar._labID) +
+        'where  F.butKodu is null ';
+         datalar.QueryExec(sql);
+
   sql := 'select L.butKodu,L.tanimi,L.uygulamaSuresi,L.uygulamaAdet,L.tip,L.sira,L.minD,L.maxD,L.SGKTip,F.birim, ' +
-         'L.hepatitMarker,L.SonucTip,L.grupKodu,L.grupKodu_Centro,L.Loinc,L.ref_aciklama,F.islemKodu,F.islemKoduC,L.yeniButKodu,L.yontem ' +
+         'L.hepatitMarker,L.SonucTip,L.grupKodu,L.grupKodu_Centro,L.Loinc,L.ref_aciklama,F.islemKodu,F.islemKoduC,L.yeniButKodu,L.yontem,L.panikminD,L.panikmaxD ' +
          'from LabTestler L ' +
          'left join LabTestler_Firma F on F.butKodu = L.butKodu and F.Tip = L.UygulamaAdet ' +
          ' where F.labID = ' + QuotedStr(datalar._labID);

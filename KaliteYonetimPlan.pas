@@ -420,7 +420,7 @@ begin
         bBasarili := False;
         ADO_SahaGozetim.DisableControls;
         try
-          if islem = yeniGozlem then
+          if islem = KaliteYonetimPlanYeni then
             ADO_SahaGozetim.Append
            else
             ADO_SahaGozetim.Edit;

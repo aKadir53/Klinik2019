@@ -1526,6 +1526,12 @@ object frmIzlem: TfrmIzlem
       ImageIndex = 14
       OnClick = cxButtonCClick
     end
+    object T2: TMenuItem
+      Tag = -9
+      Caption = 'TD'#304'S Verileri'
+      Visible = False
+      OnClick = cxButtonCClick
+    end
     object U2: TMenuItem
       Tag = -100
       Caption = 'Doktor ve Muayene Tarihi D'#252'zenle'

@@ -79,7 +79,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     Width = 216
     object txtMesaj: TcxMemo
       Left = 7
-      Top = 144
+      Top = 133
       Style.LookAndFeel.NativeStyle = False
       Style.LookAndFeel.SkinName = 'McSkin'
       StyleDisabled.LookAndFeel.NativeStyle = False
@@ -89,12 +89,12 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
       StyleHot.LookAndFeel.NativeStyle = False
       StyleHot.LookAndFeel.SkinName = 'McSkin'
       TabOrder = 0
-      Height = 224
+      Height = 172
       Width = 203
     end
     object cxLabel5: TcxLabel
       Left = 7
-      Top = 128
+      Top = 117
       Caption = 'Mesaj'
       ParentFont = False
       Style.Font.Charset = DEFAULT_CHARSET
@@ -140,7 +140,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     end
     object cxLabel3: TcxLabel
       Left = 7
-      Top = 370
+      Top = 304
       Caption = 'Bildirim Yapan Ad'#305
       ParentFont = False
       Style.Font.Charset = DEFAULT_CHARSET
@@ -152,7 +152,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     end
     object cxLabel2: TcxLabel
       Left = 8
-      Top = 92
+      Top = 81
       Caption = 'Konu'
       ParentFont = False
       Style.Font.Charset = DEFAULT_CHARSET
@@ -164,7 +164,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     end
     object cxLabel1: TcxLabel
       Left = 7
-      Top = 52
+      Top = 41
       Caption = 'Aciliyet'
       ParentFont = False
       Style.Font.Charset = DEFAULT_CHARSET
@@ -188,7 +188,6 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
           Caption = 'Talep'
           Value = '2'
         end>
-      ItemIndex = 0
       Style.LookAndFeel.NativeStyle = False
       Style.LookAndFeel.SkinName = 'McSkin'
       StyleDisabled.LookAndFeel.NativeStyle = False
@@ -198,7 +197,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
       StyleHot.LookAndFeel.NativeStyle = False
       StyleHot.LookAndFeel.SkinName = 'McSkin'
       TabOrder = 7
-      Height = 29
+      Height = 23
       Width = 121
     end
     object txtEtki: TcxComboBox
@@ -222,7 +221,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     end
     object txtPersonel: TcxTextEdit
       Left = 7
-      Top = 387
+      Top = 320
       Style.LookAndFeel.NativeStyle = False
       Style.LookAndFeel.SkinName = 'McSkin'
       StyleDisabled.LookAndFeel.NativeStyle = False
@@ -236,7 +235,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     end
     object txtKonu: TcxComboBox
       Left = 7
-      Top = 108
+      Top = 97
       Properties.DropDownRows = 15
       Properties.Items.Strings = (
         ''
@@ -268,7 +267,7 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
     end
     object txtAciliyet: TcxComboBox
       Left = 8
-      Top = 70
+      Top = 59
       Properties.Items.Strings = (
         ''
         'D'#252#351#252'k'
@@ -312,6 +311,50 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
         Visible = False
         Width = 208
       end
+    end
+    object btnOnayKodu: TcxButton
+      Left = 8
+      Top = 382
+      Width = 120
+      Height = 25
+      Caption = 'WhatsApp Kod G'#246'nder'
+      Enabled = False
+      TabOrder = 13
+      OnClick = btnOnayKoduClick
+    end
+    object txtCepTel: TcxMaskEdit
+      Left = 7
+      Top = 359
+      Properties.EditMask = '!\(599\)000-00-00;1;_'
+      Properties.MaxLength = 0
+      TabOrder = 14
+      Text = '(5  )   -  -  '
+      Width = 122
+    end
+    object txtOnayKodu: TcxTextEdit
+      Left = 128
+      Top = 359
+      Enabled = False
+      Style.LookAndFeel.NativeStyle = False
+      Style.LookAndFeel.SkinName = 'McSkin'
+      StyleDisabled.LookAndFeel.NativeStyle = False
+      StyleDisabled.LookAndFeel.SkinName = 'McSkin'
+      StyleFocused.LookAndFeel.NativeStyle = False
+      StyleFocused.LookAndFeel.SkinName = 'McSkin'
+      StyleHot.LookAndFeel.NativeStyle = False
+      StyleHot.LookAndFeel.SkinName = 'McSkin'
+      TabOrder = 15
+      Width = 82
+    end
+    object btnOnay: TcxButton
+      Left = 129
+      Top = 382
+      Width = 80
+      Height = 25
+      Caption = 'Kodu Do'#287'rula'
+      Enabled = False
+      TabOrder = 16
+      OnClick = btnOnayClick
     end
   end
   object cxGroupBox2: TcxGroupBox
@@ -824,6 +867,23 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
           OptionsView.HeaderHeight = 25
           OptionsView.IndicatorWidth = 0
           OptionsView.RowSeparatorColor = clBlack
+          object gridCevaplarDurum: TcxGridDBColumn
+            DataBinding.FieldName = 'Durum'
+            PropertiesClassName = 'TcxImageComboBoxProperties'
+            Properties.Alignment.Horz = taCenter
+            Properties.Alignment.Vert = taVCenter
+            Properties.Items = <
+              item
+                Description = 'Okundu'
+                ImageIndex = 0
+                Value = '9'
+              end>
+            GroupSummaryAlignment = taCenter
+            HeaderAlignmentHorz = taCenter
+            HeaderAlignmentVert = vaCenter
+            Options.Editing = False
+            Width = 52
+          end
           object gridCevaplarColumn1: TcxGridDBColumn
             Caption = 'Kimden'
             DataBinding.FieldName = 'Taraf'
@@ -843,11 +903,6 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
           end
           object gridCevaplartarihSaat: TcxGridDBColumn
             DataBinding.FieldName = 'tarihSaat'
-            Options.Editing = False
-          end
-          object gridCevaplarDurum: TcxGridDBColumn
-            DataBinding.FieldName = 'Durum'
-            Visible = False
             Options.Editing = False
           end
           object gridCevaplarAciklama: TcxGridDBColumn
@@ -957,6 +1012,31 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
       OnClick = cxButton4Click
     end
   end
+  object cxLabel8: TcxLabel
+    Left = 8
+    Top = 350
+    Caption = 'Mobil Telefonu'
+    ParentFont = False
+    Style.Font.Charset = DEFAULT_CHARSET
+    Style.Font.Color = clWindowText
+    Style.Font.Height = -11
+    Style.Font.Name = 'Tahoma'
+    Style.Font.Style = [fsBold]
+    Style.IsFontAssigned = True
+  end
+  object cxLabel9: TcxLabel
+    Left = 128
+    Top = 350
+    Caption = 'Onay Kodu'
+    Enabled = False
+    ParentFont = False
+    Style.Font.Charset = DEFAULT_CHARSET
+    Style.Font.Color = clWindowText
+    Style.Font.Height = -11
+    Style.Font.Name = 'Tahoma'
+    Style.Font.Style = [fsBold]
+    Style.IsFontAssigned = True
+  end
   object IdFTP1: TIdFTP
     OnWork = IdFTP1Work
     OnWorkBegin = IdFTP1WorkBegin
@@ -1050,5 +1130,17 @@ object frmDestekSorunBildir: TfrmDestekSorunBildir
       Caption = 'Okudum'
       OnClick = O1Click
     end
+    object T1: TMenuItem
+      Tag = 1
+      Caption = 'T'#252'm Mesajlar'#305' Okudum'
+      Visible = False
+      OnClick = O1Click
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    Left = 264
+    Top = 144
   end
 end

@@ -13,7 +13,8 @@ uses
   dxSkinscxPCPainter, cxCustomData, cxFilter, cxData, cxDataStorage, cxDBData,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGridLevel,
   cxClasses, cxGridCustomView, cxGrid, cxButtons, KadirLabel, Menus,
-  cxImageComboBox, cxTextEdit, cxMemo, cxDBEdit, cxMaskEdit, cxDropDownEdit;
+  cxImageComboBox, cxTextEdit, cxMemo, cxDBEdit, cxMaskEdit, cxDropDownEdit,
+  cxCheckBox;
 
 type
   TfrmRaporSablon = class(TGirisForm)
@@ -76,6 +77,8 @@ type
     cxGroupBox8: TcxGroupBox;
     cxButtonKadirTetkikEkle: TcxButtonKadir;
     cxButtonKadirTetkikSil: TcxButtonKadir;
+    dozBirim: TcxGridDBColumn;
+    chkTum: TcxCheckBox;
     procedure btnSendClick(Sender: TObject);
     procedure TabloAc(doktor : string);
     procedure FormCreate(Sender: TObject);
@@ -87,6 +90,7 @@ type
     procedure btnAckKaydetClick(Sender: TObject);
     procedure cxDBMemo1PropertiesChange(Sender: TObject);
     procedure SablonlarAfterScroll(DataSet: TDataSet);
+    procedure chkTumPropertiesEditValueChanged(Sender: TObject);
 
   private
     { Private declarations }
@@ -244,6 +248,16 @@ begin
   btnAckKaydet.Enabled := False;
 end;
 
+procedure TfrmRaporSablon.chkTumPropertiesEditValueChanged(Sender: TObject);
+begin
+  inherited;
+    if chkTum.Checked
+    then
+      SAblonlar.Filter := ''
+       else
+        SAblonlar.Filter := ' doktor = '''' or doktor = ' + datalar.doktorKodu;
+end;
+
 procedure TfrmRaporSablon.cxButtonKadirTaniEkleClick(Sender: TObject);
 begin
   inherited;
@@ -301,7 +315,7 @@ end;
 
 procedure TfrmRaporSablon.FormCreate(Sender: TObject);
 var
-  doktorlar , pBirim , tetkikler :TcxImageComboKadir;
+  doktorlar , pBirim ,dBirim, tetkikler :TcxImageComboKadir;
 begin
   inherited;
   cxPanel.Visible := false;
@@ -316,6 +330,15 @@ begin
     pBirim.DisplayField := 'Tanimi';
     pBirim.BosOlamaz := False;
     pBirim.Filter := '';
+
+    dBirim := TcxImageComboKadir.Create(nil);
+    dBirim.Conn := Datalar.ADOConnection2;
+    dBirim.TableName := 'Medula_DozBirimleri';
+    dBirim.ValueField := 'Kod';
+    dBirim.DisplayField := 'Tanimi';
+    dBirim.BosOlamaz := False;
+    dBirim.Filter := '';
+
 
 
     doktorlar := TcxImageComboKadir.Create(nil);
@@ -334,6 +357,13 @@ begin
     tetkikler.BosOlamaz := False;
     tetkikler.Filter := '';
 
+    if datalar.doktorKodu = ''
+    then
+      SAblonlar.Filter := ''
+       else
+        SAblonlar.Filter := ' doktor = '''' or doktor = ' + datalar.doktorKodu;
+    Sablonlar.Active := true;
+
     Sablonlar.Active := true;
     Sablonlar.First;
     SablonDetay.Active := true;
@@ -342,6 +372,7 @@ begin
     SablonAciklama.Active := True;
     cxGridHastaGelisdoktor.Properties := doktorlar.Properties;
     cxGridDBTableView1kullanZamanUnit.Properties := pBirim.Properties;
+    dozBirim.Properties := dBirim.Properties;
     cxGridDBTetkik.Properties := tetkikler.Properties;
 
     btnAckKaydet.Enabled := False;

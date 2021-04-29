@@ -265,6 +265,7 @@ type
     cxSplitter3: TcxSplitter;
     Y2: TMenuItem;
     R2: TMenuItem;
+    N1: TMenuItem;
     procedure TopPanelButonClick(Sender: TObject);
     procedure TopPanelPropertiesChange(Sender: TObject);
     procedure cxGridDBTableView1DblClick(Sender: TObject);
@@ -298,6 +299,7 @@ procedure TfrmReceteler.cxButtonCClick(Sender: TObject);
 var
  F : TGirisForm;
  GirisFormRecord : TGirisFormRecord;
+ filename : string;
 begin
   datalar.KontrolUserSet := False;
   inherited;
@@ -331,6 +333,31 @@ begin
             end;
 
         end;
+   -20 : begin
+           recete.DataController.Filter.Active := False;
+           recete.DataController.Filter.Active := True;
+           recete.DataController.Filter.Root.Clear;
+         //  sender.DataController.Filter.Options := [fcoCaseInsensitive];
+           recete.DataController.Filter.Root.AddItem(ReceteEpoKutuAdet_IlacAdi,
+           foNotEqual, NULL , '');
+           recete.DataController.Filter.Refresh;
+
+           filename := 'Epo_Receteri_'+txtTopPanelTarih1.GetValue+'_'+txtTopPanelTarih2.GetValue+'.XLS';
+
+           cxGrid1.ExcelFileName := 'C:\NoktaV3\'+filename;
+           cxGrid1.ExceleKaydet;
+           recete.DataController.Filter.Root.Clear;
+
+           if
+           mailGonder(WebErisimBilgiFirma('PRM','07'),'Epo Reçeteleri','Epo Reçeteleri Ektedir',
+                      cxGrid1.ExcelFileName,datalar.AktifSirketAdi) = '0000'
+           Then
+            ShowMessageSkin('Mail Gönderildi','Ekli Dosya : ' + cxGrid1.ExcelFileName,'','info');
+
+
+
+         end;
+
    end;
   //a
 end;
